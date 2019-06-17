@@ -1,6 +1,8 @@
 npm i react-router-dom @types/react-router-dom
 npm i axios
 
+npm i redux react-redux @types/react-redux
+
 
 npm run build
 npm install -g serve
@@ -37,7 +39,7 @@ use model --> loginModel
 service is isolate from other cmp,...
 
 
-
+translate in react??
 
 ====================================================================================
 

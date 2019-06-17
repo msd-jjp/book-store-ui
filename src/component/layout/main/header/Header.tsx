@@ -6,7 +6,7 @@ import Role from '../../../role/Role';
 import NotFound from '../not-found/NotFound';
 import Products from '../../../products/Products';
 import CreateUser from '../../../user/CreateUser';
-import Login from '../../../login/Login';
+import { Login } from '../../../login/Login';
 import Register from '../../../register/Register';
 import { AppState } from '../../../../service/app-state';
 

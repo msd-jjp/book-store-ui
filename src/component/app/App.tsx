@@ -5,12 +5,17 @@ import React from 'react';
 // import { HashRouter as Router, Route, Link, Switch } from 'react-router-dom';
 // import Dashboard from '../dashboard/Dashboard';
 import Header from '../layout/main/header/Header';
+import { Provider } from 'react-redux';
+import { Store } from '../../redux/store';
 
 const App: React.FC = () => {
   return (
-    <div className="app container-fluid">
-      <Header />
-    </div>
+    <Provider store={Store}>
+      <div className="app container-fluid">
+        <Header />
+      </div>
+    </Provider>
+
   );
 }
 
