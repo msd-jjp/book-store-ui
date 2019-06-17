@@ -1,9 +1,8 @@
 import axios from 'axios';
-import { loginState } from '../component/login/Login';
 
 class loginService {
 
-    login(data: loginState) {
+    login(data: { username: string, password: string }) {
         const instance = axios.create({
             baseURL: '/api/',
             // timeout: 1000,
