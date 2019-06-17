@@ -1,7 +1,8 @@
 import React from 'react';
 
 interface InputProps {
-    value?: any;
+    // value?: any;
+    defaultValue?: any;
     onChange: (value: any) => void;
     elRef?: (elName: HTMLInputElement) => void;
     pattern?: RegExp;
@@ -25,13 +26,14 @@ class Input extends React.Component<InputProps, InputState> {
         type: 'text'
     };
     id = 'input_' + Math.random();
+    inputRef!: HTMLInputElement;
 
 
     setValidate(value: any) {
         this.setState({ ...this.state, invalid: !this.handleValidate(value) });
     }
     componentDidMount() {
-        this.setValidate(this.props.value);
+        this.setValidate(this.props.defaultValue);
     }
     componentWillReceiveProps(props: InputProps) {
         // this.setValidate(props.value);
@@ -53,7 +55,8 @@ class Input extends React.Component<InputProps, InputState> {
     }
     invalidFeedback() {
         let invalidMsg = 'invalid value';
-        if (this.props.required && !this.props.value) {
+        // if (this.props.required && !this.props.defaultValue) {
+        if (this.props.required && (this.inputRef && !this.inputRef.value)) {
             invalidMsg = 'this field is required';
         } else if (this.props.patternError) {
             invalidMsg = this.props.patternError;
@@ -64,6 +67,12 @@ class Input extends React.Component<InputProps, InputState> {
             </div>
         )
     }
+    setRef(el: HTMLInputElement | null) {
+        if (el) {
+            this.inputRef = el;
+            this.props.elRef && this.props.elRef(el);
+        }
+    }
     render() {
         return (
             <div className="form-group">
@@ -72,9 +81,11 @@ class Input extends React.Component<InputProps, InputState> {
                     id={this.id}
                     type={this.props.type}
                     className={`form-control ${this.state.invalid && this.state.touched ? 'is-invalid' : ''}`}
-                    value={this.props.value}
+                    // value={this.props.value}
+                    defaultValue={this.props.defaultValue}
                     onChange={e => this.handleChange(e)}
-                    ref={this.props.elRef}
+                    // ref={this.props.elRef}
+                    ref={inputEl => this.setRef(inputEl)}
                     onBlur={() => this.onBlur()}
                 />
                 {this.invalidFeedback()}
