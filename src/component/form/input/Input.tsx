@@ -3,7 +3,7 @@ import React from 'react';
 interface InputProps {
     // value?: any;
     defaultValue?: any;
-    onChange: (value: any) => void;
+    onChange: (value: any, isValid: boolean) => void;
     elRef?: (elName: HTMLInputElement) => void;
     pattern?: RegExp;
     patternName?: 'password' | 'number' | 'email';
@@ -40,7 +40,7 @@ class Input extends React.Component<InputProps, InputState> {
     }
     handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         this.setValidate(event.target.value);
-        this.props.onChange(event.target.value);
+        this.props.onChange(event.target.value, this.handleValidate(event.target.value)); // pass "this.handleValidate(event.target.value)"
     }
     onBlur() {
         this.setState({ ...this.state, touched: true });
