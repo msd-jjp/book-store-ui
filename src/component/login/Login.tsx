@@ -105,7 +105,7 @@ class LoginComponent extends React.Component<IProps, LoginState> {
                                 onClick={() => this.onLogin()}
                                 disabled={!this.state.isFormValid}
                             >login</button>
-                            <a className="text-info cursor-pointer" onClick={() => this.gotoRegister()}>register</a>
+                            <small className="text-info cursor-pointer" onClick={() => this.gotoRegister()}>register</small>
                         </div>
                     </div>
                 </div>

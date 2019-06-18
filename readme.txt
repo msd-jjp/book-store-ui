@@ -45,3 +45,5 @@ translate in react??
 
 submit mobile --> submit code --> submit code&username&name&password --> gotoDashboard.
 
+====================================================================================
+

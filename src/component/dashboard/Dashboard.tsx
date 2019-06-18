@@ -1,6 +1,4 @@
 import React from 'react';
-// import Server from '../../service/Server'
-// import BookManage from '../book/bookManage/BookManage';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { action_user_logged_out } from '../../redux/action/user';
@@ -8,9 +6,9 @@ import { redux_state } from '../../redux/app_state';
 import { IUser } from '../../model/model.user';
 
 export interface IProps {
-    logged_in_user?: IUser | null | undefined,
+    logged_in_user?: IUser | null;
 
-    do_logout?: () => void,
+    do_logout?: () => void;
 }
 
 class DashboardComponent extends React.Component<IProps, any> {
