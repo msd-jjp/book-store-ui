@@ -1,6 +1,9 @@
 import React from 'react';
-import { /* Link, */ BrowserRouter as Router, Route, Switch, NavLink/* , withRouter */ } from 'react-router-dom';
-import Dashboard from '../../../dashboard/Dashboard';
+import {
+    BrowserRouter as Router, Route, Switch, NavLink,
+    Redirect
+} from 'react-router-dom';
+import { Dashboard } from '../../../dashboard/Dashboard';
 import User from '../../../user/User';
 import Role from '../../../role/Role';
 import NotFound from '../not-found/NotFound';
@@ -12,7 +15,8 @@ import { AppState } from '../../../../service/app-state';
 
 const appRoutes = (
     <Switch>
-        <Route exact path="/" component={Dashboard} />
+        <Route exact path="/" component={() => <Redirect to="/dashboard" />} />
+        <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/user" component={User} />
         <Route path="/user/create" component={CreateUser} />
         <Route path="/role" component={Role} />
@@ -46,7 +50,7 @@ class Header extends React.Component<any> {
                 <Router>
                     <ul>
                         <li>
-                            <NavLink exact activeClassName="active" to="/">dashboard</NavLink>
+                            <NavLink exact activeClassName="active" to="/dashboard">dashboard</NavLink>
                         </li>
                         <li>
                             <NavLink exact activeClassName="active" to="/user">user</NavLink>
@@ -75,4 +79,4 @@ class Header extends React.Component<any> {
     }
 }
 
-export default Header; // withRouter(Header);
+export default Header; 

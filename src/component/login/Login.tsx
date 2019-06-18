@@ -1,7 +1,7 @@
 import React from 'react';
 import loginService from '../../service/login-service';
 import Input from '../form/input/Input';
-import { AppState } from '../../service/app-state';
+// import { AppState } from '../../service/app-state';
 import { redux_state } from '../../redux/app_state';
 import { Dispatch } from 'redux';
 import { IUser } from '../../model/model.user';
@@ -13,7 +13,7 @@ interface LoginState { // todo remove user pass from state  ? set state rebuild 
     username: {
         value: string | undefined;
         isValid: boolean;
-    }; // change to {value:string, isValid:boolean}
+    };
     password: {
         value: string | undefined;
         isValid: boolean;
@@ -49,6 +49,14 @@ class LoginComponent extends React.Component<IProps, LoginState> {
         });
         debugger;
         // AppState.isLogedIn = true;
+
+        user = {
+            name: 'hamid',
+            username: 'hamid',
+            password: '123456',
+            id: '1'
+        };
+
         if (user) {
             this.props.onUserLoggedIn && this.props.onUserLoggedIn(user);
             this.props.history.push('/dashboard');

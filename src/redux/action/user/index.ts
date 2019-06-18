@@ -12,6 +12,6 @@ export function action_user_logged_in(user: IUser): UserAction {
 export function action_user_logged_out(): UserAction {
     return {
         type: EACTIONS.LOGGED_IN,
-        payload: undefined
+        payload: null
     }
 }
