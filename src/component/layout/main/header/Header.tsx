@@ -1,82 +1,95 @@
 import React from 'react';
-import {
-    BrowserRouter as Router, Route, Switch, NavLink,
-    Redirect
-} from 'react-router-dom';
-import { Dashboard } from '../../../dashboard/Dashboard';
-import User from '../../../user/User';
-import Role from '../../../role/Role';
-import NotFound from '../not-found/NotFound';
-import Products from '../../../products/Products';
-import CreateUser from '../../../user/CreateUser';
-import { Login } from '../../../login/Login';
-import Register from '../../../register/Register';
-import { AppState } from '../../../../service/app-state';
+import { Route, NavLink } from 'react-router-dom';
+import { MapDispatchToProps, connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { action_user_logged_out } from '../../../../redux/action/user';
+import { redux_state } from '../../../../redux/app_state';
 
-const appRoutes = (
-    <Switch>
-        <Route exact path="/" component={() => <Redirect to="/dashboard" />} />
-        <Route exact path="/dashboard" component={Dashboard} />
-        <Route exact path="/user" component={User} />
-        <Route path="/user/create" component={CreateUser} />
-        <Route path="/role" component={Role} />
-        <Route path="/products" component={Products} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route component={NotFound} />
-    </Switch>
-);
-
-class Header extends React.Component<any> {
-    logOut(history: any) {
-        AppState.isLogedIn = false;
+class LayoutMain_Header_Component extends React.Component<any> {
+    /* logOut(history: any) {
+        // AppState.isLogedIn = false;
         history.push('/login');
+    } */
+    async logOut() {
+        debugger;
+        // let res = await ServiceUIFrameContext.logout().catch...
+        this.props.do_logout && this.props.do_logout();
+    }
+    logIn() {
+
+    }
+    renderLogIn() {
+        return (
+            <>
+                {
+                    !this.props.logged_in_user &&
+                    // <div className="btn btn-light" onClick={() => this.logIn()}>log in</div>
+                    <NavLink activeClassName="active" to="/login">login</NavLink>
+                }
+            </>
+        )
     }
     renderLogOut() {
-        if (AppState.isLogedIn) {
-            return (
-                <Route render={({ history }) => (
-                    <a className="text-danger cursor-pointer"
-                        onClick={() => this.logOut(history)}>
+        return (
+            <>
+                {
+                    this.props.logged_in_user &&
+                    <span>{JSON.stringify(this.props.logged_in_user)}</span>
+                }
+                {
+                    this.props.logged_in_user &&
+                    <div className="d-inline-block text-success" onClick={() => this.logOut()}>log out</div>
+                }
+                {/* <Route render={({ history }) => (
+                    <div className="d-inline-block text-danger cursor-pointer"
+                        onClick={() => this.logOut()}>
                         <small>log out</small>
-                    </a>
-                )} />
-            )
-        }
+                    </div>
+                )} /> */}
+            </>
+        )
     }
     render() {
         return (
             <>
-                <Router>
-                    <ul>
-                        <li>
-                            <NavLink exact activeClassName="active" to="/dashboard">dashboard</NavLink>
-                        </li>
-                        <li>
-                            <NavLink exact activeClassName="active" to="/user">user</NavLink>
-                        </li>
-                        <li>
-                            <NavLink activeClassName="active" to="/role">role</NavLink>
-                        </li>
-                        <li>
-                            <NavLink activeClassName="active" to="/products">products</NavLink>
-                        </li>
-                        <li>
-                            <NavLink activeClassName="active" to="/login">login</NavLink>
-                        </li>
-                        <li>
-                            <NavLink activeClassName="active" to="/register">register</NavLink>
-                        </li>
-                    </ul>
+                <ul>
+                    <li>
+                        <NavLink exact activeClassName="active" to="/dashboard">dashboard</NavLink>
+                    </li>
+                    <li>
+                        <NavLink exact activeClassName="active" to="/user">user</NavLink>
+                    </li>
+                    <li>
+                        <NavLink activeClassName="active" to="/role">role</NavLink>
+                    </li>
+                    <li>
+                        <NavLink activeClassName="active" to="/products">products</NavLink>
+                    </li>
+                    <li>
+                        <NavLink activeClassName="active" to="/login">login</NavLink>
+                    </li>
+                    <li>
+                        <NavLink activeClassName="active" to="/register">register</NavLink>
+                    </li>
+                </ul>
 
-                    {this.renderLogOut()}
-
-                    {appRoutes}
-                </Router>
-
+                {this.renderLogOut()}
+                {this.renderLogIn()}
             </>
         )
     }
 }
 
-export default Header; 
+const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
+    return {
+        do_logout: () => dispatch(action_user_logged_out()),
+    }
+}
+
+const state2props = (state: redux_state) => {
+    return {
+        logged_in_user: state.logged_in_user
+    }
+}
+
+export const LayoutMain_Header = connect(state2props, dispatch2props)(LayoutMain_Header_Component);
