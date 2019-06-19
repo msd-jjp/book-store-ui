@@ -5,7 +5,7 @@ import { Dispatch } from 'redux';
 import { action_user_logged_out } from '../../../../redux/action/user';
 import { redux_state } from '../../../../redux/app_state';
 
-class LayoutMain_Header_Component extends React.Component<any> {
+class LayoutMainHeaderComponent extends React.Component<any> {
     /* logOut(history: any) {
         // AppState.isLogedIn = false;
         history.push('/login');
@@ -92,4 +92,4 @@ const state2props = (state: redux_state) => {
     }
 }
 
-export const LayoutMain_Header = connect(state2props, dispatch2props)(LayoutMain_Header_Component);
+export const LayoutMainHeader = connect(state2props, dispatch2props)(LayoutMainHeaderComponent);

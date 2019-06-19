@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import {LayoutMain_Header} from './header/Header';
+import {LayoutMainHeader} from './header/Header';
 
 export const RouteLayout = ({ component: Component, ...rest }: { [key: string]: any }) => {
-    console.log("RouteLayout");
+    // console.log("RouteLayout");
     //todo: logic for validate user 
 
     return (
@@ -20,7 +20,7 @@ class LayoutMainComponent extends React.Component<any> {
         return (
             <>
                 <div className="container-fluid">
-                    <LayoutMain_Header />
+                    <LayoutMainHeader />
                     {this.props.children}
                 </div>
             </>
