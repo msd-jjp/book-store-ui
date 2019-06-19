@@ -266,20 +266,20 @@ class Register extends React.Component<any, IState> {
             <>
                 <div className="row">
                     <div className="col-md-4 offset-md-4">
-                        {
-                            this.state.registerStep === REGISTER_STEP.submit_mobile
-                            && this.submit_mobile_render()
-                        }
-                        {
-                            this.state.registerStep === REGISTER_STEP.validate_mobile
-                            && this.validate_mobile_render()
-                        }
-                        {
-                            this.state.registerStep === REGISTER_STEP.register
-                            && this.register_render()
-                        }
 
-                        <br /><br />
+                        {(() => {
+                            switch (this.state.registerStep) {
+                                case REGISTER_STEP.submit_mobile:
+                                    return this.submit_mobile_render();
+                                case REGISTER_STEP.validate_mobile:
+                                    return this.validate_mobile_render();
+                                case REGISTER_STEP.register:
+                                    return this.register_render();
+                                default:
+                                    return undefined;
+                            }
+                        })()}
+
                         <small className="text-info cursor-pointer" onClick={() => this.gotoLogin()}>login</small>
                     </div>
                 </div>
