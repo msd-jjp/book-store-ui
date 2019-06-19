@@ -1,14 +1,13 @@
 import React from 'react';
 import Number from '../form/number/Number';
 import { Route } from 'react-router-dom'
-import { AppState } from '../../service/app-state';
 
 class User extends React.Component<any> {
     state = { numberVal: '99sss' };
     componentWillMount() {
-        if (!AppState.isLogedIn) {
+        /* if (!AppState.isLogedIn) {
             this.props.history.push('/login');
-        }
+        } */
     }
     changeTo(val: any) {
         this.setState({ numberVal: val });

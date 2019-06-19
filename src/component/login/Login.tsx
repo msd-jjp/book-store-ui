@@ -1,7 +1,6 @@
 import React from 'react';
-import loginService from '../../service/login-service';
+import {LoginService} from '../../service/service.login';
 import Input from '../form/input/Input';
-// import { AppState } from '../../service/app-state';
 import { redux_state } from '../../redux/app_state';
 import { Dispatch } from 'redux';
 import { IUser } from '../../model/model.user';
@@ -31,7 +30,7 @@ class LoginComponent extends React.Component<IProps, LoginState> {
         password: { value: undefined, isValid: false },
         isFormValid: false
     };
-    private _loginService = new loginService();
+    private _loginService = new LoginService();
     inputUsername!: HTMLInputElement;
     // isFormValid: boolean = false;
 
@@ -40,15 +39,28 @@ class LoginComponent extends React.Component<IProps, LoginState> {
     }
 
     async onLogin() {
-        if (!this.state.username || !this.state.password) { return; }
-        let user: IUser | void = await this._loginService.login({
+        // if (!this.state.username || !this.state.password) { return; }
+        if (!this.state.isFormValid) { return; }
+        let token: string | void = await this._loginService.login({
             username: this.state.username.value!,
             password: this.state.password.value!
         }).catch((error) => {
             debugger;
+            // todo: notify here
         });
         debugger;
-        // AppState.isLogedIn = true;
+        token = '1111';
+
+        let user: IUser | void;
+        if (token) {
+            user = await this._loginService.profile(token/* , {
+                username: this.state.username.value!,
+                password: this.state.password.value!
+            } */).catch((error) => {
+                debugger;
+                //notifu
+            });
+        }
 
         user = {
             name: 'hamid',
