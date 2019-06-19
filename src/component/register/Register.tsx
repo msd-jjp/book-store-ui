@@ -1,5 +1,6 @@
 import React from 'react';
 import Input from '../form/input/Input';
+import { RegisterService } from '../../service/service.register';
 
 enum REGISTER_STEP {
     submit_mobile = 'submit_mobile',
@@ -74,6 +75,8 @@ class Register extends React.Component<any, IState> {
     inputElCode!: HTMLInputElement;
     inputElMobile!: HTMLInputElement;
     inputElConfirmPassword!: HTMLInputElement;
+    private _registerService = new RegisterService();
+    signup_token!: string;
 
     componentDidMount() {
         this.focusOnInput('inputElMobile');
@@ -142,7 +145,10 @@ class Register extends React.Component<any, IState> {
             )
         }
     }
-    onSubmit_mobile() {
+    async onSubmit_mobile() {
+        if (!this.state.isFormValid) { return; }
+        let { data: { message: smsCode } } = await this._registerService.sendCode({ cell_no: this.state.mobile.value! });
+        alert(smsCode);
         this.setState(
             {
                 ...this.state,
@@ -163,7 +169,7 @@ class Register extends React.Component<any, IState> {
                     <div>mobile: {this.state.mobile.value}
                         <small className="text-info"
                             onClick={() => this.from_validate_mobile_to_Submit_mobile()}
-                        >change mobile</small></div>
+                        >edit</small></div>
 
                     <Input
                         defaultValue={this.state.code.value}
@@ -181,25 +187,77 @@ class Register extends React.Component<any, IState> {
                         >submit code</button>
                     </div>
 
-
-                    <div>send again</div>
+                    <small><span>send again</span> <span>38</span></small>
                 </>
             )
         }
     }
-    onValidate_mobile() {
-        this.setState({ ...this.state, registerStep: REGISTER_STEP.register });
+    async onValidate_mobile() {
+        if (!this.state.isFormValid) { return; }
+        let response = await this._registerService.activateAcount(
+            { cell_no: this.state.mobile.value!, activation_code: this.state.code.value! }
+        );
+        debugger;
+        this.signup_token = response.data.signup_token;
+        this.setState({ ...this.state, registerStep: REGISTER_STEP.register, isFormValid: false });
     }
     from_validate_mobile_to_Submit_mobile() {
         this.setState(
             {
                 ...this.state,
                 registerStep: REGISTER_STEP.submit_mobile,
-                isFormValid: true, // note: we go back to last step and it is valid.
+                isFormValid: true, // note: we go back to last step and isFormValid is true there.
                 code: { value: undefined, isValid: false }
             },
             () => this.focusOnInput('inputElMobile')
         );
+    }
+
+    register_render() {
+        if (this.state.registerStep === REGISTER_STEP.register) {
+            return (
+                <>
+                    <Input
+                        defaultValue={this.state.name.value}
+                        onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'name') }}
+                        label="name"
+                        required
+                        elRef={input => { this.inputElName = input; }}
+                    />
+                    <Input
+                        defaultValue={this.state.username.value}
+                        onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'username') }}
+                        label="username"
+                        required
+                        elRef={input => { this.inputElUsername = input; }}
+                    />
+                    <Input
+                        defaultValue={this.state.password.value}
+                        onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'password') }}
+                        label="password"
+                        required
+                        elRef={input => { this.inputElPassword = input; }}
+                    />
+                    <Input
+                        defaultValue={this.state.confirmPassword.value}
+                        onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'confirmPassword') }}
+                        label="confirm password"
+                        required
+                        elRef={input => { this.inputElConfirmPassword = input; }}
+                    />
+
+                    <div className="form-group">
+                        <button className="btn btn-info mr-3"
+                            onClick={() => this.onRegister()}
+                            disabled={!this.state.isFormValid}
+                        >register</button>
+                    </div>
+                </>
+            )
+        }
+    }
+    onRegister() {
+        debugger;
     }
 
 
@@ -218,10 +276,10 @@ class Register extends React.Component<any, IState> {
                         }
                         {
                             this.state.registerStep === REGISTER_STEP.register
-                            && <div>register</div>
+                            && this.register_render()
                         }
 
-                        <br /><br /><br />
+                        <br /><br />
                         <small className="text-info cursor-pointer" onClick={() => this.gotoLogin()}>login</small>
                     </div>
                 </div>
