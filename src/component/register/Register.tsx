@@ -1,6 +1,7 @@
 import React from 'react';
 import Input from '../form/input/Input';
 import { RegisterService } from '../../service/service.register';
+import { Setup } from '../../config/setup';
 
 enum REGISTER_STEP {
     submit_mobile = 'submit_mobile',
@@ -79,7 +80,12 @@ class Register extends React.Component<any, IState> {
     signup_token!: string;
 
     componentDidMount() {
+        document.title = 'register';
         this.focusOnInput('inputElMobile');
+    }
+
+    componentWillUnmount() {
+        document.title = Setup.documentTitle;
     }
 
     gotoLogin() {
