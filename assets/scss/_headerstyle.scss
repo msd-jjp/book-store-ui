@@ -1,0 +1,16 @@
+@import "./variable";
+header{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background:linear-gradient(to top,$bg-main,white);
+    height: 10vh;
+    border-bottom: 1px solid rgb(212,212,212);
+    div{
+        color: $brand-color;
+        text-align: center;
+        padding-top : 1vh;
+        font-size: 5vh;
+        font-weight: bold;
+    }
+}

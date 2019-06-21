@@ -1,0 +1,11 @@
+$theme-colors:();
+
+$colors:(
+    "orange":#845c15,
+    
+);
+
+$theme-colors: map-merge(
+  $colors,
+  $theme-colors
+);
