@@ -11,6 +11,7 @@ interface InputProps {
     type?: 'text' | 'password';
     label?: string;
     required?: boolean;
+    validationFunc?: (value: any) => boolean;
 }
 interface InputState {
     invalid?: boolean;
@@ -49,7 +50,13 @@ class Input extends React.Component<InputProps, InputState> {
         if (this.props.required && !val) {
             return false;
         } else if (this.props.pattern) {
-            return this.props.pattern.test(val);
+            if (!this.props.validationFunc) {
+                return this.props.pattern.test(val);
+            } else {
+                return this.props.pattern.test(val) && this.props.validationFunc(val);
+            }
+        } else if (this.props.validationFunc) {
+            return this.props.validationFunc(val);
         }
         return true;
     }
@@ -61,6 +68,9 @@ class Input extends React.Component<InputProps, InputState> {
         } else if (this.props.patternError) {
             invalidMsg = this.props.patternError;
         }
+
+        if (!this.state.invalid) { return; }
+
         return (
             <div className="invalid-feedback">
                 {invalidMsg}
@@ -94,4 +104,4 @@ class Input extends React.Component<InputProps, InputState> {
     }
 }
 
-export default Input;
+export { Input };
