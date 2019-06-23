@@ -37,11 +37,24 @@ class Input extends React.Component<InputProps, InputState> {
         this.setValidate(this.props.defaultValue);
     }
     componentWillReceiveProps(props: InputProps) {
-        // this.setValidate(props.value);
+        // this.setValidate(props.defaultValue);
+
+        // if (this.handleValidate(props.defaultValue) !== this.handleValidate(this.props.defaultValue)) {
+        if (this.handleValidate(props.defaultValue) !== !this.state.invalid) {
+            this.setValidate(props.defaultValue);
+            this.props.onChange(props.defaultValue, this.handleValidate(props.defaultValue));
+        }
+
+        /* if (this.handleValidate(props.defaultValue) !== this.handleValidate(this.props.defaultValue)) {
+            this.setValidate(props.defaultValue);
+        }
+        if (props.defaultValue !== this.props.defaultValue) {
+            this.props.onChange(props.defaultValue, this.handleValidate(props.defaultValue));
+        } */
     }
     handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         this.setValidate(event.target.value);
-        this.props.onChange(event.target.value, this.handleValidate(event.target.value)); // pass "this.handleValidate(event.target.value)"
+        this.props.onChange(event.target.value, this.handleValidate(event.target.value));
     }
     onBlur() {
         this.setState({ ...this.state, touched: true });
