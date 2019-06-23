@@ -15,12 +15,17 @@ body {
   a {
     color: app-color(default, color);
 
-    &, &:focus, &:hover, &:active {
+    &,
+    &:focus,
+    &:hover,
+    &:active {
       outline: 0;
       text-decoration: none;
     }
 
-    &:focus, &:hover, &:active {
+    &:focus,
+    &:hover,
+    &:active {
       outline: 0;
       text-decoration: none;
       color: app-color(primary);
@@ -52,8 +57,8 @@ body {
   cursor: pointer;
   display: none;
   z-index: 1000;
-  @include transition(.5s);
-  @include opacity(.6);
+  @include transition(0.5s);
+  @include opacity(0.6);
 
   &:hover {
     @include opacity(1);
@@ -85,3 +90,13 @@ body {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
+
+// body {
+//   /* &:not(.rtl) {
+//   } */
+
+//   &.rtl {
+//     direction: rtl;
+//     font-family: farsi, sans-serif;
+//   }
+// }

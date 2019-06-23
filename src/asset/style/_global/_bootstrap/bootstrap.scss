@@ -16,17 +16,16 @@ $theme-colors: ();
 
 @each $color, $color-varient in $app-colors {
   $theme-colors: map-merge(
-      (
-        $color: app-color($color)
-      ),
-      $theme-colors
+    (
+      $color: app-color($color)
+    ),
+    $theme-colors
   );
 }
 
 //todo: uncomment or remove this todo
-$font-family-base: $font-app;
-
+// $font-family-base: $font-app;
 @import "~bootstrap/scss/bootstrap";
-
 $enable-shadows: true;
 
+@import "rtl";
