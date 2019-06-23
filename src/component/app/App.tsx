@@ -8,7 +8,7 @@ import CreateUser from '../user/CreateUser';
 import Role from '../role/Role';
 import Products from '../products/Products';
 import { Login } from '../login/Login';
-import Register from '../register/Register';
+import { Register } from '../register/Register';
 import NotFound from '../layout/main/not-found/NotFound';
 import { RouteLayout } from '../layout/main/Main';
 
@@ -21,11 +21,11 @@ const appRoutes = (
     <RouteLayout path="/user/create" component={CreateUser} />
     <RouteLayout path="/role" component={Role} />
     <RouteLayout path="/products" component={Products} />
-    
+
     <Route path="/login" component={Login} />
     <Route path="/register" component={Register} />
     <Route component={NotFound} />
-    
+
   </Switch>
 );
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import {LoginService} from '../../service/service.login';
-import Input from '../form/input/Input';
+import { LoginService } from '../../service/service.login';
+import { Input } from '../form/input/Input';
 import { redux_state } from '../../redux/app_state';
 import { Dispatch } from 'redux';
 import { IUser } from '../../model/model.user';
@@ -126,10 +126,7 @@ class LoginComponent extends React.Component<IProps, LoginState> {
     }
 }
 
-// export default Login;
-
-
-
+//#region redux
 const state2props = (state: redux_state) => {
     return {}
 }
@@ -141,3 +138,4 @@ const dispatch2props = (dispatch: Dispatch) => {
 }
 
 export const Login = connect(state2props, dispatch2props)(LoginComponent);
+//#endregion

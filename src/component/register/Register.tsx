@@ -1,7 +1,15 @@
 import React from 'react';
-import Input from '../form/input/Input';
+import { Input } from '../form/input/Input';
 import { RegisterService } from '../../service/service.register';
 import { Setup } from '../../config/setup';
+import { BaseComponent } from '../_base/BaseComponent';
+import { ToastContainer, toast } from 'react-toastify';
+import { redux_state } from '../../redux/app_state';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import { IUser } from '../../model/model.user';
+import { action_user_logged_in } from '../../redux/action/user';
+// import LaddaButton, { XL, SLIDE_UP } from 'react-ladda';
 
 enum REGISTER_STEP {
     submit_mobile = 'submit_mobile',
@@ -40,8 +48,13 @@ type TInputType = 'username' | 'password' | 'name' | 'code' | 'mobile' | 'confir
 type TInputElType = 'inputElUsername' | 'inputElPassword' |
     'inputElName' | 'inputElCode' | 'inputElMobile' | 'inputElConfirmPassword';
 
-class Register extends React.Component<any, IState> {
-    props: any;
+interface IProps {
+    onUserLoggedIn?: (user: IUser) => void;
+    history: any;
+}
+
+class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<any, IState> */ {
+    // props: IProps;
     state: IState = {
         registerStep: REGISTER_STEP.submit_mobile,
         mobile: {
@@ -92,10 +105,10 @@ class Register extends React.Component<any, IState> {
         this.props.history.push('/login');
     }
     handleInputChange(val: any, isValid: boolean, inputType: TInputType) {
-        const isFormValid = this.validateForm(isValid, inputType);
+        const isFormValid = this.validateForm(val, isValid, inputType);
         this.setState({ ...this.state, [inputType]: { value: val, isValid }, isFormValid });
     }
-    validateForm(currentInput_isValid: boolean, inputType: TInputType): boolean {
+    validateForm(val: any, currentInput_isValid: boolean, inputType: TInputType): boolean {
         if (this.state.registerStep === REGISTER_STEP.submit_mobile) {
             if (inputType !== 'mobile') {
                 // check env.dev
@@ -116,7 +129,15 @@ class Register extends React.Component<any, IState> {
             registerStep_inputList_exceptThisInput.forEach(inp => {
                 let inpObj: /* { value: string | undefined, isValid: boolean } */any = this.state[inp];
                 regFormValidate = inpObj.isValid && regFormValidate;
-            })
+            });
+
+            if (inputType === 'password') {
+                regFormValidate = (this.state.confirmPassword.value === val) && regFormValidate;
+            } else if (inputType === 'confirmPassword') {
+                regFormValidate = (this.state.password.value === val) && regFormValidate;
+            }
+            // regFormValidate = (this.state.confirmPassword.value === this.state.password.value) && regFormValidate;
+
             return regFormValidate;
         } else {
             // todo check env.dev
@@ -153,7 +174,15 @@ class Register extends React.Component<any, IState> {
     }
     async onSubmit_mobile() {
         if (!this.state.isFormValid) { return; }
-        let { data: { message: smsCode } } = await this._registerService.sendCode({ cell_no: this.state.mobile.value! });
+        let res = await this._registerService.sendCode({ cell_no: this.state.mobile.value! })
+            .catch(e => {
+                debugger;
+            });
+
+        res = { data: { message: 5599 } }; // todo: delete me
+        if (!res) return;
+
+        let smsCode = res.data.message;
         alert(smsCode);
         this.setState(
             {
@@ -165,7 +194,7 @@ class Register extends React.Component<any, IState> {
         );
     }
     server_getCode() {
-        // check if counter is 0; 60--> 0
+        // check if counter is 0; 60 --> 0
         // send again else wait
     }
     validate_mobile_render() {
@@ -178,6 +207,7 @@ class Register extends React.Component<any, IState> {
                         >edit</small></div>
 
                     <Input
+                        key={'register_code'}
                         defaultValue={this.state.code.value}
                         onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'code') }}
                         label="code"
@@ -202,8 +232,11 @@ class Register extends React.Component<any, IState> {
         if (!this.state.isFormValid) { return; }
         let response = await this._registerService.activateAcount(
             { cell_no: this.state.mobile.value!, activation_code: this.state.code.value! }
-        );
+        ).catch(e => { debugger; });
         debugger;
+        response = { data: { signup_token: 'qqqqqqqqqq' } };
+        if (!response) return;
+
         this.signup_token = response.data.signup_token;
         this.setState({ ...this.state, registerStep: REGISTER_STEP.register, isFormValid: false });
     }
@@ -217,6 +250,13 @@ class Register extends React.Component<any, IState> {
             },
             () => this.focusOnInput('inputElMobile')
         );
+    }
+
+    confirmPassword_validation(val: any): boolean {
+        if (val === this.state.password.value) {
+            return true
+        }
+        return false;
     }
 
     register_render() {
@@ -243,6 +283,7 @@ class Register extends React.Component<any, IState> {
                         label="password"
                         required
                         elRef={input => { this.inputElPassword = input; }}
+                        type="password"
                     />
                     <Input
                         defaultValue={this.state.confirmPassword.value}
@@ -250,6 +291,8 @@ class Register extends React.Component<any, IState> {
                         label="confirm password"
                         required
                         elRef={input => { this.inputElConfirmPassword = input; }}
+                        type="password"
+                        validationFunc={(val) => this.confirmPassword_validation(val)}
                     />
 
                     <div className="form-group">
@@ -262,11 +305,49 @@ class Register extends React.Component<any, IState> {
             )
         }
     }
-    onRegister() {
+    async onRegister() {
         debugger;
+        let res = await this._registerService.signUp({
+            "user": {
+                "password": this.state.password.value!,
+                "username": this.state.username.value!,
+            },
+            "persone": {
+                "address": '',
+                "email": '',
+                "last_name": '',
+                "name": this.state.name.value!,
+                "phone": '',
+            },
+            "cell_no": this.state.mobile.value!,
+            "signup_token": this.signup_token,
+        }).catch((e: any) => {
+            debugger;
+        });
+
+        res = {
+            user: {
+                name: this.state.name.value,
+                username: this.state.username.value,
+                password: this.state.password.value
+            }
+        } // todo: delete me
+
+        if (!res) return;
+        debugger;
+
+        //todo: 
+        // if extra apiCall need: do it
+        // set user in redux state
+        // navigate to main
+        let user = res.user;
+        if (user) {
+            this.props.onUserLoggedIn && this.props.onUserLoggedIn(user);
+            this.props.history.push('/dashboard');
+        }
     }
 
-
+    // notify = () => toast("Wow so easy !");
     render() {
         return (
             <>
@@ -287,6 +368,29 @@ class Register extends React.Component<any, IState> {
                         })()}
 
                         <small className="text-info cursor-pointer" onClick={() => this.gotoLogin()}>login</small>
+
+
+
+                        {/* <button onClick={this.notify}>Notify !</button> */}
+                        <ToastContainer />
+
+                        {/* <LaddaButton
+                            loading={true}
+                            onClick={this}
+                            data-color="#eee"
+                            data-size={XL}
+                            data-style={SLIDE_UP}
+                            data-spinner-size={30}
+                            data-spinner-color="#ddd"
+                            data-spinner-lines={12}
+                        >
+                            Click Here!
+                        </LaddaButton> */}
+
+                        {/* <div className="btn btn-info">
+                            <i className="fa fa-spinner fa-spin"></i>
+                            <span>clock to loaf d</span>
+                        </div> */}
                     </div>
                 </div>
             </>
@@ -294,4 +398,18 @@ class Register extends React.Component<any, IState> {
     }
 }
 
-export default Register;
+// export default Register;
+
+
+
+const state2props = (state: redux_state) => {
+    return {}
+}
+
+const dispatch2props = (dispatch: Dispatch) => {
+    return {
+        onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user))
+    }
+}
+
+export const Register = connect(state2props, dispatch2props)(RegisterComponent);
