@@ -1,0 +1,52 @@
+//bootstrap rtl need this
+/*.page-item {
+  &:first-child {
+    .page-link {
+      margin-#{$dir-mode-align}: 0;
+
+      border-top-#{$dir-mode-align}-radius: 0.25rem;
+      border-bottom-#{$dir-mode-align}-radius: 0.25rem;
+      margin-#{$dir-mode-align-inverse}: -1px;
+      border-top-#{$dir-mode-align-inverse}-radius: 0;
+      border-bottom-#{$dir-mode-align-inverse}-radius: 0;
+    }
+  }
+  &:last-child {
+    .page-link {
+      border-top-#{$dir-mode-align-inverse}-radius: 0.25rem;
+      border-bottom-#{$dir-mode-align-inverse}-radius: 0.25rem;
+      border-top-#{$dir-mode-align}-radius: 0;
+      border-bottom-#{$dir-mode-align}-radius: 0;
+    }
+  }
+}*/
+
+//
+
+.app-pagination {
+  /*> ul.pagination {
+    padding-#{$dir-mode-align}: 0;
+  }*/
+  &.app-pagination-shadow {
+    > ul.pagination {
+      @extend .shadow-default;
+      @extend .shadow-hover;
+      .page-item, .page-item.disabled {
+        .page-link {
+          border-top-color: transparent;
+          border-bottom-color: transparent;
+        }
+      }
+      .page-item:first-child {
+        .page-link {
+          border-#{$dir-mode-align}-color: transparent;
+        }
+      }
+      .page-item:last-child {
+        .page-link {
+          border-#{$dir-mode-align-inverse}-color: transparent;
+        }
+      }
+    }
+  }
+}

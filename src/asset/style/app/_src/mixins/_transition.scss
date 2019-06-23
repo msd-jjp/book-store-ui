@@ -1,0 +1,7 @@
+@mixin transition( $value ) {
+  -webkit-transition: $value !important; // important to override bootstrap
+  -moz-transition: $value !important;
+  -ms-transition: $value !important;
+  -o-transition: $value !important;
+  transition: $value !important;
+}

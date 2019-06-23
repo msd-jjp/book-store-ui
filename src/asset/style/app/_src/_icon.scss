@@ -1,0 +1,63 @@
+.fa-arrow-right-app {
+  @extend .fa-arrow-right;
+  @if $dir-mode-direction == rtl {
+    &:before {
+      content: "\F060";
+    }
+  }
+}
+
+.fa-arrow-left-app {
+  @extend .fa-arrow-left;
+  @if $dir-mode-direction == rtl {
+    &:before {
+      content: "\F061";
+    }
+  }
+}
+/////////////////////////////
+.fa-reply-app {
+  @extend .fa-reply;
+  @if $dir-mode-direction == rtl {
+    &:before {
+      content: "\F064";
+    }
+  }
+}
+/////////////////////////////
+.fa-chevron-right-app {
+  @extend .fa-chevron-right;
+  @if $dir-mode-direction == rtl {
+    &:before {
+      content: "\F053";
+    }
+  }
+}
+
+.fa-chevron-left-app {
+  @extend .fa-chevron-left;
+  @if $dir-mode-direction == rtl {
+    &:before {
+      content: "\F054";
+    }
+  }
+}
+/////////////////////////////
+.fa-angle-right-app {
+  @extend .fa-angle-right;
+  @if $dir-mode-direction == rtl {
+    &:before {
+      content: "\F104";
+    }
+  }
+}
+
+.fa-angle-left-app {
+  @extend .fa-angle-left;
+  @if $dir-mode-direction == rtl {
+    &:before {
+      content: "\F105";
+    }
+  }
+}
+/////////////////////////////

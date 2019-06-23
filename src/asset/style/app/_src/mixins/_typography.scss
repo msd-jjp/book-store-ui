@@ -1,0 +1,14 @@
+﻿@mixin set-size($size) {
+    @if $dir-mode-direction == rtl {
+        /*font-size: $size - 2;*/
+        @if $fontfamily-bigfont == true {
+            font-size: $size - 2;
+        }
+        @else {
+            font-size: $size;
+        }
+    }
+    @else {
+        font-size: $size;
+    }
+}

@@ -1,0 +1,68 @@
+﻿/*#region animation */
+
+/*#region dropdownSlideInDown-old */
+
+@-webkit-keyframes dropdownSlideInDown-old {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(-20px);
+  }
+
+  100% {
+    -webkit-transform: translateY(0);
+  }
+}
+
+@-moz-keyframes dropdownSlideInDown-old {
+  0% {
+    opacity: 0;
+    -moz-transform: translateY(-20px);
+  }
+
+  100% {
+    -moz-transform: translateY(0);
+  }
+}
+
+@-o-keyframes dropdownSlideInDown-old {
+  0% {
+    opacity: 0;
+    -o-transform: translateY(-20px);
+  }
+
+  100% {
+    -o-transform: translateY(0);
+  }
+}
+
+@keyframes dropdownSlideInDown-old {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/*#endregion */
+
+/*#endregion */
+
+/*#region animation class */
+
+.dropdownSlideInDown {
+  -webkit-animation-name: dropdownSlideInDown;
+  -moz-animation-name: dropdownSlideInDown;
+  -o-animation-name: dropdownSlideInDown;
+  animation-name: dropdownSlideInDown;
+  -webkit-animation-duration: .3s;
+  -moz-animation-duration: .3s;
+  -o-animation-duration: .3s;
+  animation-duration: .3s;
+  /*@include animation-name(dropdownSlideInDown);
+  @include animation-delay(.3s);*/
+}
+
+/*#endregion */

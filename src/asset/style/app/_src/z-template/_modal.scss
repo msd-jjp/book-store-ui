@@ -1,0 +1,42 @@
+//variables
+
+.modal-backdrop {
+  background-color: $white;
+
+  &.show {
+    opacity: .6;
+  }
+}
+
+.modal { //ngb-modal-window
+  .modal-dialog {
+    margin-top: 150px;
+
+    .modal-content {
+      border: none;
+      border-radius: $template-border-radius;
+      //min-height: 400px;
+      @include box-shadow($template-box-shadow);
+    }
+  }
+
+  &.window-xlg {
+
+  }
+}
+
+@include media-breakpoint-up(xl) {
+  .modal {
+    &.window-xlg {
+      .modal-dialog {
+        max-width: 1100px;
+      }
+    }
+  }
+}
+
+@include media-breakpoint-between(lg, xl) {
+}
+
+@include media-breakpoint-down(lg) {
+}

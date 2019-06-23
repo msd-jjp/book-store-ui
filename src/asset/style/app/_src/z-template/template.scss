@@ -1,0 +1,16 @@
+$template-border-radius: 0.25rem; // 5px;
+
+$template-mute-color: #a2a3a5;
+
+$template-box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.5);
+
+$template-dropDownItem-bgColor-hover: #f7f7f7;
+
+$template-placeholder-color: $template-mute-color; //#ccc; //#ddd
+$template-border-color: #dee1e5; //#ddd
+
+@import "sticky-footer";
+@import "checkbox";
+@import "template-common";
+@import "dropdown";
+@import "modal";

@@ -1,0 +1,87 @@
+﻿/*$font-app: $type1-regular;
+
+@if($dir-mode-direction==rtl){
+  $font-app: $font-farsi;
+}@else {
+
+}*/
+
+body {
+  //font-family: farsi, Arial;
+  //font-family: $font-app;//farsi, Arial, serif;
+  //direction: rtl;
+  //text-align: right;
+
+  a {
+    color: app-color(default, color);
+
+    &, &:focus, &:hover, &:active {
+      outline: 0;
+      text-decoration: none;
+    }
+
+    &:focus, &:hover, &:active {
+      outline: 0;
+      text-decoration: none;
+      color: app-color(primary);
+    }
+  }
+
+  //.tooltip {
+  //  font-family: $font-app; // farsi, Arial;
+  //}
+
+  //.popover {
+  //  font-family: $font-app; // farsi;
+  //}
+
+  &.has-preloader {
+    overflow: hidden;
+  }
+
+  /* &.modal-open {
+    //max-height: 100vh;
+  } */
+}
+
+.back-to-top {
+  position: fixed;
+  bottom: 0;
+  #{$dir-mode-align-inverse}: 0;
+  margin: 10px;
+  cursor: pointer;
+  display: none;
+  z-index: 1000;
+  @include transition(.5s);
+  @include opacity(.6);
+
+  &:hover {
+    @include opacity(1);
+  }
+}
+
+.phone-text {
+  display: inline-block;
+  direction: ltr;
+}
+
+//.bg-f {
+//  background-color: #fff;
+//}
+
+.bg-white {
+  background-color: $white;
+}
+
+/*#region border, margin, padding */
+
+/*#endregion */
+
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}

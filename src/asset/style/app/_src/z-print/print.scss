@@ -1,0 +1,36 @@
+@import "col-p";
+
+@media print {
+  .only-print-visibility {
+    visibility: visible;
+  }
+}
+
+/*
+@page {
+  @top-center {
+    content: element(pageHeader);
+  }
+
+  @bottom-center {
+    content: element(pageFooter);
+  }
+}
+
+.print-page-header {
+  position: running(pageHeader);
+  padding-bottom: 9px;
+  margin: 0 0 20px;//40px 0 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.print-page-footer {
+  position: running(pageFooter);
+  padding-top: 9px;
+  margin: 20px 0 40px;
+  border-top: 1px solid #eee;
+}
+
+.page-break-after {
+  page-break-after: always;
+}*/

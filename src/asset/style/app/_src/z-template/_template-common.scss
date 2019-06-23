@@ -1,0 +1,13 @@
+
+input, textarea {
+  @include placeholder($template-placeholder-color !important);
+}
+
+
+.template-box {
+  //p-3 shadow-default shadow-hover
+  @extend .shadow-default;
+  @extend .shadow-hover;
+  @extend .p-3;
+  border-radius: $template-border-radius;
+}

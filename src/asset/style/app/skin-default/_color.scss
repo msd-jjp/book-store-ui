@@ -1,0 +1,52 @@
+$app-colors:(
+    'default':
+    (
+        'default'       :#a2a3a5,//#eeeeee, // todo change back?
+        'color'         :#333333,
+    )
+    ,'primary':
+    (
+        'default'       :#3b86ff,//#0072c6,//#004b8d,
+        'color'         :#fff,
+    )
+    ,'success':
+    (
+        'default'       :#40b292,//#00c853
+        'color'         :#ffffff,//#fcfefb
+    )
+    ,'info':
+    (
+        'default'       :#2dc3e8,//#0091ea,
+        'color'         :#e7f5fa,
+    )
+    ,'warning':
+    (
+        'default'       :#ffb729,
+        'color'         :#ffffff,
+    )
+    ,'danger':
+    (
+        'default'       :#b44848,//#ff353e,
+        'color'         :#fef7f6,
+    )
+    ,'system':
+    (
+        'default'       :#01aaa4,//#009688
+        'color'         :#ffffff,
+    )
+    ,'dark':
+    (
+        'default'       :#112442,//#454545
+        'color'         :#ffffff,
+    )
+    ,'purple':
+    (
+        'default'       :#c77dff,
+        'color'         :#ffffff,
+    )
+    ,'orange':
+    (
+        'default'       :#ff7828,
+        'color'         :#ffffff,
+    )
+);

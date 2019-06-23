@@ -1,0 +1,12 @@
+﻿@import "color";
+@import "typography";
+//@import "mixins/_box-shadow";//same in bootstrap/mixins/vendor-prefixes
+@import "calc";
+//
+@import "prefix";
+//@import "mixins/transition";//same in bootstrap/mixins/vendor-prefixes without '!important'
+@import "transform";
+//@import "mixins/transform-origin";//same in bootstrap/mixins/vendor-prefixes
+@import "opacity";
+@import "placeholder";
+@import "transition-delay";

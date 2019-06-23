@@ -1,0 +1,44 @@
+﻿.shadow0 {
+  @include box-shadow(none !important);
+}
+
+.shadow2 {
+  @include box-shadow(0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12) !important);
+}
+
+.shadow4 {
+  @include box-shadow(0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important);
+}
+
+.shadow8 {
+  @include box-shadow(0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important);
+}
+
+.shadow12 {
+  @include box-shadow(0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19) !important);
+}
+
+.shadow16 {
+  @include box-shadow(0 16px 24px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21) !important);
+}
+
+.shadow24 {
+  @include box-shadow(0 24px 24px 0 rgba(0, 0, 0, 0.2), 0 40px 77px 0 rgba(0, 0, 0, 0.22) !important);
+}
+
+//
+.shadow-default {
+  @extend .shadow2;
+}
+
+.shadow-hover-default {
+  @extend .shadow4;
+}
+
+.shadow-hover {
+  @include transition(box-shadow .3s);
+
+  &:hover {
+    @extend .shadow-hover-default;
+  }
+}

@@ -1,0 +1,32 @@
+//todo: set $gray-x
+/*template-color --> $gray-900 --> #515151
+
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;*/
+// $gray-900: #515151;
+
+$theme-colors: ();
+
+@each $color, $color-varient in $app-colors {
+  $theme-colors: map-merge(
+      (
+        $color: app-color($color)
+      ),
+      $theme-colors
+  );
+}
+
+//todo: uncomment or remove this todo
+$font-family-base: $font-app;
+
+@import "~bootstrap/scss/bootstrap";
+
+$enable-shadows: true;
+

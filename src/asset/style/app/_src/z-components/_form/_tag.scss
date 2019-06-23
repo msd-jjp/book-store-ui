@@ -1,0 +1,132 @@
+app-tag-simple, app-tag {
+
+  label, .el-required, .el-tooltip {
+    margin-#{$dir-mode-align-inverse}: .25rem; //@extend .mr-1;
+  }
+  label {
+
+  }
+  .el-required, .el-tooltip {
+    font-size: .9rem;
+  }
+  .el-required {
+
+  }
+  .el-tooltip {
+
+  }
+  tag-input {
+    border: 1px solid #ddd;
+    padding: .5rem;
+
+    .ng2-tag-input {
+      border-bottom: none !important;
+      padding: 0 !important;
+      tag {
+        border-radius: 3px;
+        padding: .5rem;
+        margin-#{$dir-mode-align-inverse}: .125rem;
+        margin-bottom: .125rem;
+        margin-top: 0;
+        background-color: #dee1e5;
+
+        .tag-wrapper {
+          line-height: normal;
+
+          .tag__text {
+            line-height: normal;
+          }
+          delete-icon {
+            @include transform(none);
+
+            svg {
+              display: none;
+            }
+
+            &:before {
+              content: "\f057";
+              font: normal normal normal 14px/1 FontAwesome;
+              color: app-color(danger);
+              font-size: 20px;
+              //
+              position: absolute;
+              top: 7px;
+              #{$dir-mode-align-inverse}: 5px;
+            }
+
+            &:hover {
+              &:before {
+                color: app-color(danger) !important;
+              }
+            }
+          }
+        }
+
+        &:not(.readonly):not(.tag--editing):active, &:not(.readonly):not(.tag--editing):focus {
+          background-color: app-color(primary);
+        }
+
+        &:hover {
+          background-color: darken(#dee1e5, 30) !important;
+          color: $white !important;
+          @include box-shadow(none !important);
+
+          .tag-wrapper {
+            delete-icon {
+              &:before {
+                color: lighten(app-color(danger), 15);
+              }
+            }
+          }
+
+          &:not(.readonly):not(.tag--editing):active, &:not(.readonly):not(.tag--editing):focus {
+            background-color: darken(app-color(primary), 5) !important;
+          }
+        }
+      }
+    }
+
+    .error-messages {
+      .error-message {
+        color: app-color(danger);
+      }
+    }
+
+    &.is-invalid {
+      border-color: app-color(danger);
+    }
+
+  }
+
+  &.tag-sm {
+    /*transform: scale(0.8);
+    margin: -2.1rem -2.7rem;
+    display: inline-block;*/
+    font-size: .8rem;
+
+    .el-required, .el-tooltip {
+      font-size: .7rem;
+    }
+    tag-input {
+      .ng2-tag-input {
+        tag {
+          padding: .4rem;
+
+          .tag-wrapper {
+            .tag__text {
+              line-height: 20px;
+            }
+            delete-icon {
+
+              &:before {
+                font-size: 1rem;
+                top: 8px;
+                #{$dir-mode-align-inverse}: 5px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
