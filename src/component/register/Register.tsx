@@ -89,6 +89,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     inputElCode!: HTMLInputElement;
     inputElMobile!: HTMLInputElement;
     inputElConfirmPassword!: HTMLInputElement;
+    // inputElConfirmPassword_wrapper!: Input | null;
     private _registerService = new RegisterService();
     signup_token!: string;
 
@@ -107,6 +108,18 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     handleInputChange(val: any, isValid: boolean, inputType: TInputType) {
         const isFormValid = this.validateForm(val, isValid, inputType);
         this.setState({ ...this.state, [inputType]: { value: val, isValid }, isFormValid });
+
+        /* if (inputType === "password") {
+            debugger;
+            // this.inputElConfirmPassword.value = ''
+            this.inputElConfirmPassword_wrapper && 
+            this.inputElConfirmPassword_wrapper.setValidate(this.state.confirmPassword.value);
+            this.inputElConfirmPassword_wrapper &&
+            this.inputElConfirmPassword_wrapper.props.onChange(
+                this.state.confirmPassword.value,
+                this.inputElConfirmPassword_wrapper.handleValidate(this.state.confirmPassword.value)
+            );
+        } */
     }
     validateForm(val: any, currentInput_isValid: boolean, inputType: TInputType): boolean {
         if (this.state.registerStep === REGISTER_STEP.submit_mobile) {
@@ -159,6 +172,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                         label="mobile"
                         pattern={/^.{6,}$/}
                         patternError={'mobile format is not valid.'}
+                        required
                         elRef={input => { this.inputElMobile = input; }}
                     />
 
@@ -213,6 +227,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                         label="code"
                         pattern={/^.{4,}$/}
                         patternError={'code is not valid.'}
+                        required
                         elRef={input => { this.inputElCode = input; }}
                     />
 
@@ -293,7 +308,10 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                         elRef={input => { this.inputElConfirmPassword = input; }}
                         type="password"
                         validationFunc={(val) => this.confirmPassword_validation(val)}
+                        patternError="confirm not match password"
+                    // ref={rrr => { this.inputElConfirmPassword_wrapper = rrr }}
                     />
+
 
                     <div className="form-group">
                         <button className="btn btn-info mr-3"
@@ -337,7 +355,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         debugger;
 
         //todo: 
-        // if extra apiCall need: do it
+        // if extra apiCall need: do it (propbably signUp return token --> save it and get user(profile) & then continue..)
         // set user in redux state
         // navigate to main
         let user = res.user;
@@ -397,10 +415,6 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         )
     }
 }
-
-// export default Register;
-
-
 
 const state2props = (state: redux_state) => {
     return {}

@@ -13,8 +13,8 @@ export class RegisterService {
         return instance.post('/register/send-code', data);
     }
     activateAcount(data: {
-        "cell_no": string,
-        "activation_code": string
+        "cell_no": string;
+        "activation_code": string;
     }): Promise<any> {//IUser
         const instance = axios.create({
             baseURL: Setup.endpoint,
