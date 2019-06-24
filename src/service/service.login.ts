@@ -5,9 +5,12 @@ import { Setup } from '../config/setup';
 export class LoginService {
 
     login(data: { username: string, password: string }): Promise<{
-        expiration_date: number;
-        id: string;
-        username: string;
+        data: {
+            expiration_date: number;
+            id: string;
+            username: string;
+        };
+        [key: string]: any
     }> {
         var token = data.username + ":" + data.password;
         var hash = btoa(token);
@@ -20,7 +23,7 @@ export class LoginService {
 
         return instance.post('/tokens', {});
     }
-    
+
     profile_DELETE_ME(token: string/* , data: { username: string, password: string } */): Promise<IUser> {
         const instance = axios.create({
             baseURL: Setup.endpoint,

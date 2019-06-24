@@ -56,7 +56,7 @@ class LoginComponent extends React.Component<IProps, LoginState> {
 
         let user: any; // IUser | void;
         if (tokenObj) {
-            user = await this._loginService.profile(tokenObj.id/* , {
+            user = await this._loginService.profile(tokenObj.data.id/* , {
                 username: this.state.username.value!,
                 password: this.state.password.value!
             } */).catch((error) => {
