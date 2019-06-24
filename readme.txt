@@ -2,6 +2,7 @@ npm i react-router-dom @types/react-router-dom
 npm i axios
 npm i redux react-redux @types/react-redux
 npm i react-ladda react-toastify
+npm i react-localization
 
 ====================================================================================
 
