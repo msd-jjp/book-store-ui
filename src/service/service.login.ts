@@ -19,7 +19,7 @@ export class LoginService {
     profile(token: string/* , data: { username: string, password: string } */): Promise<IUser> {
         const instance = axios.create({
             baseURL: Setup.endpoint,
-            headers: { 'Content-Type': 'application/json', 'X-Custom-Header': token }
+            headers: { 'Content-Type': 'application/json', 'authorization': 'Bearer ' + token }
         });
 
         return instance.post('/profile', {});
