@@ -29,16 +29,19 @@ const appRoutes = (
   </Switch>
 );
 
-const App: React.FC = () => {
-  return (
-    <Provider store={Store}>
-      <div className="app">
-        <Router>
-          {appRoutes}
-        </Router>
-      </div>
-    </Provider>
-  );
+class App extends React.Component<any, any> {
+  // const App: React.FC = () => {
+  render() {
+    return (
+      <Provider store={Store}>
+        <div className="app">
+          <Router>
+            {appRoutes}
+          </Router>
+        </div>
+      </Provider>
+    );
+  }
 }
 
-export default App;
+export /* default */ { App };
