@@ -11,6 +11,7 @@ import { Login } from '../login/Login';
 import { Register } from '../register/Register';
 import NotFound from '../layout/main/not-found/NotFound';
 import { RouteLayout } from '../layout/main/Main';
+import { Setup } from '../../config/setup';
 
 const appRoutes = (
   <Switch>
@@ -30,6 +31,13 @@ const appRoutes = (
 );
 
 class App extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    //todo: set direction to body
+    if (Setup.internationalization.rtl) {
+      document.body.classList.add('rtl');
+    }
+  }
   // const App: React.FC = () => {
   render() {
     return (

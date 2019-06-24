@@ -339,11 +339,11 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
             "username": this.state.username.value!,
             // },
             // "persone": {
-            "address": '',
-            "email": '',
-            "last_name": '',
+            // "address": '',
+            // "email": '',
+            // "last_name": '',
             "name": this.state.name.value!,
-            "phone": '',
+            // "phone": '',
             // },
             "cell_no": this.state.mobile.value!,
             "signup_token": this.signup_token,
@@ -368,7 +368,10 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         // if extra apiCall need: do it (propbably signUp return token --> save it and get user(profile) & then continue..)
         // set user in redux state
         // navigate to main
-        this.props.history.push('/login');
+
+        // this.props.history.push('/login');
+        this.signUpNotify();
+
         /* let user = res.user;
         if (user) {
             this.props.onUserLoggedIn && this.props.onUserLoggedIn(user);
@@ -387,6 +390,21 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
             pauseOnHover: true,
             draggable: true,
         });
+    }
+    signUpNotify() {
+        // return toast("Wow so easy !");
+        return toast.success('registered successfully, we redirect you to login page', {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            onClose: this.onSignUpNotifyClosed.bind(this)
+        });
+    }
+    onSignUpNotifyClosed() {
+        this.props.history.push('/login');
     }
 
     render() {

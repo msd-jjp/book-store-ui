@@ -48,11 +48,11 @@ export class RegisterService {
         "username": string;
         // },
         // "persone": {
-        "address": string;
-        "email": string;
-        "last_name": string;
+        "address"?: string;
+        "email"?: string;
+        "last_name"?: string;
         "name": string;
-        "phone": string;
+        "phone"?: string;
         // },
         "cell_no": string;
         "signup_token": string;
@@ -68,11 +68,11 @@ export class RegisterService {
 
         bodyFormData.set('password', data.password);
         bodyFormData.set('username', data.username);
-        bodyFormData.set('address', data.address);
-        bodyFormData.set('email', data.email);
-        bodyFormData.set('last_name', data.last_name);
+        data.address && bodyFormData.set('address', data.address);
+        data.email && bodyFormData.set('email', data.email);
+        data.last_name && bodyFormData.set('last_name', data.last_name);
         bodyFormData.set('name', data.name);
-        bodyFormData.set('phone', data.phone);
+        data.phone && bodyFormData.set('phone', data.phone);
         bodyFormData.set('cell_no', data.cell_no);
         bodyFormData.set('signup_token', data.signup_token);
         /* Object.keys(data).forEach((dd: string) => {

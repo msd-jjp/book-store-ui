@@ -43,7 +43,7 @@ class LoginComponent extends React.Component<IProps, LoginState> {
     async onLogin() {
         // if (!this.state.username || !this.state.password) { return; }
         if (!this.state.isFormValid) { return; }
-        let token: string | void = await this._loginService.login({
+        let tokenObj/* : string | void */ = await this._loginService.login({
             username: this.state.username.value!,
             password: this.state.password.value!
         }).catch((error) => {
@@ -54,9 +54,9 @@ class LoginComponent extends React.Component<IProps, LoginState> {
         // debugger;
         // token = '1111';
 
-        let user: IUser | void;
-        if (token) {
-            user = await this._loginService.profile(token/* , {
+        let user: any; // IUser | void;
+        if (tokenObj) {
+            user = await this._loginService.profile(tokenObj.id/* , {
                 username: this.state.username.value!,
                 password: this.state.password.value!
             } */).catch((error) => {
@@ -117,7 +117,8 @@ class LoginComponent extends React.Component<IProps, LoginState> {
                             defaultValue={this.state.username.value}
                             onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'username') }}
                             label="username"
-                            pattern={/^.{6,}$/}
+                            // pattern={/^.{6,}$/}
+                            required
                             patternError={'min length 6 character.'}
                             elRef={input => { this.inputUsername = input; }}
                         />
@@ -125,7 +126,8 @@ class LoginComponent extends React.Component<IProps, LoginState> {
                             defaultValue={this.state.password.value}
                             onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'password') }}
                             label="password"
-                            required={true}
+                            required
+                            type="password"
                         />
 
                         <div className="form-group">
