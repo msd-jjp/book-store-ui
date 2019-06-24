@@ -362,17 +362,18 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         // todo: delete me
 
         if (!res) return;
-        debugger;
+        // debugger;
 
         //todo: 
         // if extra apiCall need: do it (propbably signUp return token --> save it and get user(profile) & then continue..)
         // set user in redux state
         // navigate to main
-        let user = res.user;
+        this.props.history.push('/login');
+        /* let user = res.user;
         if (user) {
             this.props.onUserLoggedIn && this.props.onUserLoggedIn(user);
             this.props.history.push('/dashboard');
-        }
+        } */
     }
 
     // notify = () => toast("Wow so easy !");

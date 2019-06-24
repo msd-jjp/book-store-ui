@@ -80,6 +80,6 @@ export class RegisterService {
             bodyFormData.set(dd, val);
         }); */
 
-        return instance.post('/sign-up', data);
+        return instance.post('/sign-up', bodyFormData);
     }
 }
