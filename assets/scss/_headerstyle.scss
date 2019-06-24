@@ -4,13 +4,13 @@ header{
     padding: 0;
     border: 0;
     background:linear-gradient(to top,$bg-main,white);
-    height: 10vh;
+    height: 4rem;
     border-bottom: 1px solid rgb(212,212,212);
     div{
-        color: $brand-color;
+        color: $jamejam;
         text-align: center;
-        padding-top : 1vh;
-        font-size: 5vh;
+        padding-top : .4rem;
+        font-size: 2rem;
         font-weight: bold;
     }
 }

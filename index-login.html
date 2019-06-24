@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="./assets/css/main.css">
     <title>Document</title>
 </head>
-<body class="">
-    <header class="">
-        <div class="">
+<body class="bodylogin">
+    <header class="headerlogin">
+        <div>
             Bookstore
         </div>
     </header>
-    <main class="mx-3">
+    <main class="mainlogin mx-3">
         <h2 class="mt-4">
             Sgin in
         </h2>
@@ -27,18 +27,19 @@
         </div>
         <form class="form-group" action="">
             <input class="form-control btn-lg" type="text" name="" id="" placeholder="Enter your username">
-            <input class="form-control btn-lg" type="password" name="" id="" placeholder="Enter your password">
-            <div class="form-check my-4">
-                <input class="form-check-input checkbox-sise" type="checkbox" name="" id="">
-                <label class="form-check-label mt-2 ml-4 label-center" for="">Show password</label>
-            </div>
-            <button class="btn btn-lg btn-block btn-info" type="submit">Sgin in</button>
+            <input class="form-control btn-lg mt-1" type="password" name="" id="" placeholder="Enter your password">
+            <label class="showpasswordlogin my-4"  for="loginpassword1">
+                <h6 class="pt-1">Show password</h6>
+                <input type="checkbox" checked="checked" id="loginpassword1">
+                <span class="checkmark"></span>
+            </label>
+            <button class="btn btn-lg btn-block btn-jamejam" type="submit">Sgin in</button>
         </form>
         <section>
-            <p class="">
+            <p class="login">
                 By tapping "Sgin in" you agree to the <a href="">Bookstore Content</a> <a href="">and Software Terms of Use</a>
             </p class>
-            <p class="">
+            <p class="login">
                 New to Bookstore ? Bookstore is a Jame-jam product. You'll need a free Jame-jam account to sgin in.
             </p>
         </section>

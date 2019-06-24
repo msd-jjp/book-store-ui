@@ -1,25 +1,30 @@
-main{
+.mainlogin{
     h2{
         font-weight: bold;
     }
     h3{
         font-size: 20px;
     }
-    form{
-        div{
-            .checkbox-sise{
-                width: 30px;
-                height: 30px;
-            }
-            .label-center{
-                font-weight: bold;
-            }
-        }
+    .register-h2{
+        font-size: 18px;
+        font-weight: bold;
     }
-    section{
+    .register-h3{
+        font-size: 15px;
+        text-align: justify;
+        text-justify: inter-word;
+    }
+    form{
         p{
             text-align: justify;
             text-justify: inter-word;
+        }
+        @include checkbox;
+    }
+    section{
+        .login{
+            text-align: justify;
+            text-justify: inter-word;   
         }
     }
 }

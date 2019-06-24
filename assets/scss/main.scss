@@ -1,7 +1,9 @@
 @import "./color";
 
 @import "../../node_modules/bootstrap/scss/bootstrap.scss";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "./variable";
+@import "./mixins";
 @import "./headerstyle";
 @import "./bodystyle";
 @import "./mainstyle";
