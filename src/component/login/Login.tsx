@@ -6,6 +6,8 @@ import { Dispatch } from 'redux';
 import { IUser } from '../../model/model.user';
 import { action_user_logged_in } from '../../redux/action/user';
 import { connect } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify';
+import { Localization } from '../../config/localization';
 
 type inputType = 'username' | 'password';
 interface LoginState { // todo remove user pass from state  ? set state rebuild dom
@@ -47,9 +49,10 @@ class LoginComponent extends React.Component<IProps, LoginState> {
         }).catch((error) => {
             debugger;
             // todo: notify here
+            this.errorNotify();
         });
-        debugger;
-        token = '1111';
+        // debugger;
+        // token = '1111';
 
         let user: IUser | void;
         if (token) {
@@ -59,15 +62,16 @@ class LoginComponent extends React.Component<IProps, LoginState> {
             } */).catch((error) => {
                 debugger;
                 //notifu
+                this.errorNotify();
             });
         }
 
-        user = {
+        /* user = {
             name: 'hamid',
             username: 'hamid',
             password: '123456',
             id: '1'
-        };
+        }; */
 
         if (user) {
             this.props.onUserLoggedIn && this.props.onUserLoggedIn(user);
@@ -90,6 +94,18 @@ class LoginComponent extends React.Component<IProps, LoginState> {
             this.isFormValid = true;
         }
     } */
+
+    errorNotify() {
+        // return toast("Wow so easy !");
+        return toast.error('error occurred!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+        });
+    }
 
     render() {
         // const handleInputChange = this.handleInputChange.bind(this);
@@ -116,11 +132,13 @@ class LoginComponent extends React.Component<IProps, LoginState> {
                             <button className="btn btn-info mr-3"
                                 onClick={() => this.onLogin()}
                                 disabled={!this.state.isFormValid}
-                            >login</button>
-                            <small className="text-info cursor-pointer" onClick={() => this.gotoRegister()}>register</small>
+                            >{Localization.login}</button>
+                            <small className="text-info cursor-pointer" onClick={() => this.gotoRegister()}>{Localization.register}</small>
                         </div>
                     </div>
                 </div>
+
+                <ToastContainer />
             </>
         )
     }
