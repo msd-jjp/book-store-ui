@@ -26,7 +26,7 @@ interface ISetup {
 }
 
 export const Setup: ISetup = {
-    endpoint: '/api', // http://10.0.160.34:7000
+    endpoint: '/api', // http://10.0.160.34:7000, '/171.22.27.108', // 
     documentTitle: 'Book Store',
     notify: {
         timeout: {

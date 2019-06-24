@@ -24,25 +24,61 @@ export class RegisterService {
         return instance.post('/register/activate-acount', data);
     }
 
+    /* 
+    {
+            "user": {
+                "password": string;
+                "username": string;
+            },
+            "persone": {
+                "address": string;
+                "email": string;
+                "last_name": string;
+                "name": string;
+                "phone": string;
+            },
+            "cell_no": string;
+            "signup_token": string;
+        }
+    */
+
     signUp(data: {
-        "user": {
-            "password": string;
-            "username": string;
-        },
-        "persone": {
-            "address": string;
-            "email": string;
-            "last_name": string;
-            "name": string;
-            "phone": string;
-        },
+        // "user": {
+        "password": string;
+        "username": string;
+        // },
+        // "persone": {
+        "address": string;
+        "email": string;
+        "last_name": string;
+        "name": string;
+        "phone": string;
+        // },
         "cell_no": string;
         "signup_token": string;
     }): any {
         const instance = axios.create({
             baseURL: Setup.endpoint,
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'multipart/form-data' } // application/json, multipart/form-data
         });
+
+        let bodyFormData = new FormData();
+        // bodyFormData.set('userName', 'Fred');
+        // bodyFormData.append('image', imageFile); 
+
+        bodyFormData.set('password', data.password);
+        bodyFormData.set('username', data.username);
+        bodyFormData.set('address', data.address);
+        bodyFormData.set('email', data.email);
+        bodyFormData.set('last_name', data.last_name);
+        bodyFormData.set('name', data.name);
+        bodyFormData.set('phone', data.phone);
+        bodyFormData.set('cell_no', data.cell_no);
+        bodyFormData.set('signup_token', data.signup_token);
+        /* Object.keys(data).forEach((dd: string) => {
+            let val = data[dd];
+            bodyFormData.set(dd, val);
+        }); */
 
         return instance.post('/sign-up', data);
     }

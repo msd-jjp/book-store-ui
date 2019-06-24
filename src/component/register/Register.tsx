@@ -9,6 +9,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { IUser } from '../../model/model.user';
 import { action_user_logged_in } from '../../redux/action/user';
+import { AppRegex } from '../../config/regex';
 // import LaddaButton, { XL, SLIDE_UP } from 'react-ladda';
 
 enum REGISTER_STEP {
@@ -170,7 +171,8 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                         defaultValue={this.state.mobile.value}
                         onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'mobile') }}
                         label="mobile"
-                        pattern={/^.{6,}$/}
+                        // pattern={/^.{6,}$/}
+                        pattern={AppRegex.mobile}
                         patternError={'mobile format is not valid.'}
                         required
                         elRef={input => { this.inputElMobile = input; }}
@@ -191,9 +193,10 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         let res = await this._registerService.sendCode({ cell_no: this.state.mobile.value! })
             .catch(e => {
                 debugger;
+                this.errorNotify();
             });
 
-        res = { data: { message: 5599 } }; // todo: delete me
+        // res = { data: { message: 5599 } }; // todo: delete me
         if (!res) return;
 
         let smsCode = res.data.message;
@@ -225,7 +228,9 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                         defaultValue={this.state.code.value}
                         onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'code') }}
                         label="code"
-                        pattern={/^.{4,}$/}
+                        // pattern={/^.{4,4}$/}
+                        // pattern={/^.{4,4}\d+$/}
+                        pattern={AppRegex.smsCode}
                         patternError={'code is not valid.'}
                         required
                         elRef={input => { this.inputElCode = input; }}
@@ -247,9 +252,12 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         if (!this.state.isFormValid) { return; }
         let response = await this._registerService.activateAcount(
             { cell_no: this.state.mobile.value!, activation_code: this.state.code.value! }
-        ).catch(e => { debugger; });
+        ).catch(e => {
+            debugger;
+            this.errorNotify();
+        });
         debugger;
-        response = { data: { signup_token: 'qqqqqqqqqq' } };
+        // response = { data: { signup_token: 'qqqqqqqqqq' } };
         if (!response) return;
 
         this.signup_token = response.data.signup_token;
@@ -326,30 +334,32 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     async onRegister() {
         debugger;
         let res = await this._registerService.signUp({
-            "user": {
-                "password": this.state.password.value!,
-                "username": this.state.username.value!,
-            },
-            "persone": {
-                "address": '',
-                "email": '',
-                "last_name": '',
-                "name": this.state.name.value!,
-                "phone": '',
-            },
+            // "user": {
+            "password": this.state.password.value!,
+            "username": this.state.username.value!,
+            // },
+            // "persone": {
+            "address": '',
+            "email": '',
+            "last_name": '',
+            "name": this.state.name.value!,
+            "phone": '',
+            // },
             "cell_no": this.state.mobile.value!,
             "signup_token": this.signup_token,
         }).catch((e: any) => {
             debugger;
+            this.errorNotify();
         });
 
-        res = {
+        /* res = {
             user: {
                 name: this.state.name.value,
                 username: this.state.username.value,
                 password: this.state.password.value
             }
-        } // todo: delete me
+        } */
+        // todo: delete me
 
         if (!res) return;
         debugger;
@@ -366,6 +376,18 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     }
 
     // notify = () => toast("Wow so easy !");
+    errorNotify() {
+        // return toast("Wow so easy !");
+        return toast.error('error occurred!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+        });
+    }
+
     render() {
         return (
             <>
