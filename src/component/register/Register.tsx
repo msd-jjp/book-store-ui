@@ -410,7 +410,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     signUpNotify() {
         // return toast("Wow so easy !");
         return toast.success('registered successfully, we redirect you to login page', {
-            position: "bottom-center",
+            position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
