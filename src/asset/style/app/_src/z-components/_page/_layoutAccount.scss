@@ -1,0 +1,50 @@
+.layout-wrapper {
+  background: #f6f6f6;
+  height: 100vh;
+  min-height: fit-content;
+
+  .header {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: linear-gradient(to top, rgb(246, 246, 246), white);
+    height: 4rem;
+    border-bottom: 1px solid rgb(212, 212, 212);
+
+    .title {
+      color: rgb(253, 166, 1);
+      text-align: center;
+      padding-top: 0.4rem;
+      font-size: 2rem;
+      // font-weight: bold;
+      font-weight: 500;
+    }
+  }
+
+  .main {
+    .title {
+      font-weight: bold;
+    }
+    .desc {
+      font-size: 20px;
+    }
+    
+    .account-form {
+      .input-wrapper {
+        border-radius: $template-border-radius;
+        border: 1px solid $template-border-color;
+        margin-bottom: 1rem;
+
+        .form-group {
+          margin-bottom: 0;
+          input {
+            border: 0;
+          }
+        }
+        .separator {
+          border-top: 1px solid $template-border-color;
+        }
+      }
+    }
+  }
+}

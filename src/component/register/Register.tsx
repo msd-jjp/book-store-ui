@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { IUser } from '../../model/model.user';
 import { action_user_logged_in } from '../../redux/action/user';
 import { AppRegex } from '../../config/regex';
+import { NavLink } from 'react-router-dom';
 // import LaddaButton, { XL, SLIDE_UP } from 'react-ladda';
 
 enum REGISTER_STEP {
@@ -167,22 +168,25 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         if (this.state.registerStep === REGISTER_STEP.submit_mobile) {
             return (
                 <>
-                    <Input
-                        defaultValue={this.state.mobile.value}
-                        onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'mobile') }}
-                        label="mobile"
-                        // pattern={/^.{6,}$/}
-                        pattern={AppRegex.mobile}
-                        patternError={'mobile format is not valid.'}
-                        required
-                        elRef={input => { this.inputElMobile = input; }}
-                    />
-
-                    <div className="form-group">
-                        <button className="btn btn-info mr-3"
-                            onClick={() => this.onSubmit_mobile()}
-                            disabled={!this.state.isFormValid}
-                        >submit your mobile</button>
+                    <h3 className="desc mt-4">Register your mobile number</h3>
+                    <div className="account-form">
+                        <div className="input-wrapper__">
+                            <Input
+                                defaultValue={this.state.mobile.value}
+                                onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'mobile') }}
+                                pattern={AppRegex.mobile}
+                                patternError={'mobile format is not valid.'}
+                                required
+                                elRef={input => { this.inputElMobile = input; }}
+                                placeholder="mobile"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <button className="btn btn-warning btn-block mr-3"
+                                onClick={() => this.onSubmit_mobile()}
+                                disabled={!this.state.isFormValid}
+                            >submit your mobile</button>
+                        </div>
                     </div>
                 </>
             )
@@ -218,31 +222,36 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         if (this.state.registerStep === REGISTER_STEP.validate_mobile) {
             return (
                 <>
-                    <div>mobile: {this.state.mobile.value}
-                        <small className="text-info"
+                    <div className="mt-4 mb-3 text-muted">
+                        mobile: {this.state.mobile.value}
+                        <small
+                            className="text-info"
                             onClick={() => this.from_validate_mobile_to_Submit_mobile()}
-                        >edit</small></div>
-
-                    <Input
-                        key={'register_code'}
-                        defaultValue={this.state.code.value}
-                        onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'code') }}
-                        label="code"
-                        // pattern={/^.{4,4}$/}
-                        // pattern={/^.{4,4}\d+$/}
-                        pattern={AppRegex.smsCode}
-                        patternError={'code is not valid.'}
-                        required
-                        elRef={input => { this.inputElCode = input; }}
-                    />
-
-                    <div className="form-group">
-                        <button className="btn btn-info mr-3"
-                            onClick={() => this.onValidate_mobile()}
-                            disabled={!this.state.isFormValid}
-                        >submit code</button>
+                        ><i className="fa fa-edit"></i></small>
                     </div>
 
+                    <h3 className="desc mt-4__">verification code sended via sms, submit here.</h3>
+
+                    <div className="account-form">
+                        <div className="input-wrapper__">
+                            <Input
+                                key={'register_code'}
+                                defaultValue={this.state.code.value}
+                                onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'code') }}
+                                placeholder="verification code"
+                                pattern={AppRegex.smsCode}
+                                patternError={'code is not valid.'}
+                                required
+                                elRef={input => { this.inputElCode = input; }}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <button className="btn btn-warning btn-block mr-3"
+                                onClick={() => this.onValidate_mobile()}
+                                disabled={!this.state.isFormValid}
+                            >submit code</button>
+                        </div>
+                    </div>
                     <small><span>send again</span> <span>38</span></small>
                 </>
             )
@@ -286,46 +295,53 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         if (this.state.registerStep === REGISTER_STEP.register) {
             return (
                 <>
-                    <Input
-                        defaultValue={this.state.name.value}
-                        onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'name') }}
-                        label="name"
-                        required
-                        elRef={input => { this.inputElName = input; }}
-                    />
-                    <Input
-                        defaultValue={this.state.username.value}
-                        onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'username') }}
-                        label="username"
-                        required
-                        elRef={input => { this.inputElUsername = input; }}
-                    />
-                    <Input
-                        defaultValue={this.state.password.value}
-                        onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'password') }}
-                        label="password"
-                        required
-                        elRef={input => { this.inputElPassword = input; }}
-                        type="password"
-                    />
-                    <Input
-                        defaultValue={this.state.confirmPassword.value}
-                        onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'confirmPassword') }}
-                        label="confirm password"
-                        required
-                        elRef={input => { this.inputElConfirmPassword = input; }}
-                        type="password"
-                        validationFunc={(val) => this.confirmPassword_validation(val)}
-                        patternError="confirm not match password"
-                    // ref={rrr => { this.inputElConfirmPassword_wrapper = rrr }}
-                    />
+                    <h3 className="desc mt-4">Create an account.</h3>
+                    <div className="account-form">
+                        <div className="input-wrapper">
+                            <Input
+                                defaultValue={this.state.name.value}
+                                onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'name') }}
+                                placeholder="name"
+                                required
+                                elRef={input => { this.inputElName = input; }}
+                            />
+                            <div className="separator"></div>
+                            <Input
+                                defaultValue={this.state.username.value}
+                                onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'username') }}
+                                placeholder="username"
+                                required
+                                elRef={input => { this.inputElUsername = input; }}
+                            />
+                            <div className="separator"></div>
+                            <Input
+                                defaultValue={this.state.password.value}
+                                onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'password') }}
+                                placeholder="password"
+                                required
+                                elRef={input => { this.inputElPassword = input; }}
+                                type="password"
+                            />
+                            <div className="separator"></div>
+                            <Input
+                                defaultValue={this.state.confirmPassword.value}
+                                onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'confirmPassword') }}
+                                placeholder="confirm password"
+                                required
+                                elRef={input => { this.inputElConfirmPassword = input; }}
+                                type="password"
+                                validationFunc={(val) => this.confirmPassword_validation(val)}
+                                patternError="confirm not match password"
+                            // ref={rrr => { this.inputElConfirmPassword_wrapper = rrr }}
+                            />
+                        </div>
 
-
-                    <div className="form-group">
-                        <button className="btn btn-info mr-3"
-                            onClick={() => this.onRegister()}
-                            disabled={!this.state.isFormValid}
-                        >register</button>
+                        <div className="form-group">
+                            <button className="btn btn-warning btn-block mr-3"
+                                onClick={() => this.onRegister()}
+                                disabled={!this.state.isFormValid}
+                            >register</button>
+                        </div>
                     </div>
                 </>
             )
@@ -426,11 +442,16 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                             }
                         })()}
 
-                        <small className="text-info cursor-pointer" onClick={() => this.gotoLogin()}>login</small>
+                        {/* <small className="text-info cursor-pointer" onClick={() => this.gotoLogin()}>login</small> */}
+
+                        <section>
+                            <p>
+                                Already have bookstore account?&nbsp;
+                                <NavLink to="/login">sign in</NavLink>
+                            </p>
+                        </section>
 
 
-
-                        {/* <button onClick={this.notify}>Notify !</button> */}
                         <ToastContainer />
 
                         {/* <LaddaButton
