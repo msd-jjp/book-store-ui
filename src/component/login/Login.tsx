@@ -95,11 +95,7 @@ class LoginComponent extends React.Component<IProps, LoginState> {
     gotoRegister() {
         this.props.history.push('/register');
     }
-    /* handleFormValidate(): void {
-        if (true) {
-            this.isFormValid = true;
-        }
-    } */
+    
     toggleShowPassword() {
         if (this.state.inputPasswordType === 'text') {
             this.setState({ ...this.state, inputPasswordType: 'password' });
@@ -124,115 +120,79 @@ class LoginComponent extends React.Component<IProps, LoginState> {
         // const handleInputChange = this.handleInputChange.bind(this);
         return (
             <>
-                <div className="row d-none">
-                    <div className="col-md-4 offset-md-4">
-                        <Input
-                            defaultValue={this.state.username.value}
-                            onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'username') }}
-                            label="username"
-                            // pattern={/^.{6,}$/}
-                            required
-                            patternError={'min length 6 character.'}
-                            elRef={input => { this.inputUsername = input; }}
-                        />
-                        <Input
-                            defaultValue={this.state.password.value}
-                            onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'password') }}
-                            label="password"
-                            required
-                            type="password"
-                        />
-
-                        <div className="form-group">
-                            <button className="btn btn-info mr-3"
-                                onClick={() => this.onLogin()}
-                                disabled={!this.state.isFormValid}
-                            >{Localization.login}</button>
-                            <small className="text-info cursor-pointer" onClick={() => this.gotoRegister()}>{Localization.register}</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="login-wrapper">
-                    <header className="header">
-                        <div className="title">
-                            Bookstore
-                        </div>
-                    </header>
-                    <main className="main mx-3">
-                        <h2 className="title mt-4 mb-3">
-                            Sign in
+                <main className="main mx-3">
+                    <h2 className="title mt-4 mb-3">
+                        Sign in
                         </h2>
-                        <h3 className="desc">
-                            Sign in with your Jame-jam account
+                    <h3 className="desc">
+                        Sign in with your bookstore account
                         </h3>
-                        <div className="forgot-password text-right mb-3">
-                            {/* <a href="javascript:;">
+                    <div className="forgot-password text-right mb-3">
+                        {/* <a href="javascript:;">
                                 Forgot password?
                             </a> */}
-                            <NavLink activeClassName="active__" to="/login">
-                                Forgot password?
+                        <NavLink activeClassName="active__" to="/login">
+                            Forgot password?
                             </NavLink>
+                    </div>
+                    <div className="login-form">
+                        <div className="input-wrapper">
+                            <Input
+                                defaultValue={this.state.username.value}
+                                onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'username') }}
+                                // label="username"
+                                // pattern={/^.{6,}$/}
+                                required
+                                patternError={'min length 6 character.'}
+                                elRef={input => { this.inputUsername = input; }}
+                                placeholder="username"
+                            />
+                            <div className="separator"></div>
+                            <Input
+                                defaultValue={this.state.password.value}
+                                onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'password') }}
+                                // label="password"
+                                required
+                                type={this.state.inputPasswordType}
+                                placeholder="password"
+                            />
                         </div>
-                        <div className="login-form">
-                            <div className="input-wrapper">
-                                <Input
-                                    defaultValue={this.state.username.value}
-                                    onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'username') }}
-                                    // label="username"
-                                    // pattern={/^.{6,}$/}
-                                    required
-                                    patternError={'min length 6 character.'}
-                                    elRef={input => { this.inputUsername = input; }}
-                                    placeholder="username"
-                                />
-                                <div className="separator"></div>
-                                <Input
-                                    defaultValue={this.state.password.value}
-                                    onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'password') }}
-                                    // label="password"
-                                    required
-                                    type={this.state.inputPasswordType}
-                                    placeholder="password"
-                                />
-                            </div>
 
-                            <div className="form-group">
-                                <input type="checkbox" className="app-checkbox"
-                                    id={this.showPasswordCheckBoxId}
-                                    onChange={() => this.toggleShowPassword()}
-                                />
-                                <label htmlFor={this.showPasswordCheckBoxId}></label>
-                                <label htmlFor={this.showPasswordCheckBoxId}>
-                                    <h6 className="pt-1__ ml-2">Show password</h6>
-                                </label>
-                            </div>
+                        <div className="form-group">
+                            <input type="checkbox" className="app-checkbox"
+                                id={this.showPasswordCheckBoxId}
+                                onChange={() => this.toggleShowPassword()}
+                            />
+                            <label htmlFor={this.showPasswordCheckBoxId}></label>
+                            <label htmlFor={this.showPasswordCheckBoxId}>
+                                <h6 className="pt-1__ ml-2">Show password</h6>
+                            </label>
+                        </div>
 
-                            <div className="form-group">
-                                <button className="btn btn-info__ btn-warning btn-block mr-3___"
-                                    onClick={() => this.onLogin()}
-                                    disabled={!this.state.isFormValid}
-                                >{Localization.sign_in}</button>
+                        <div className="form-group">
+                            <button className="btn btn-info__ btn-warning btn-block mr-3___"
+                                onClick={() => this.onLogin()}
+                                disabled={!this.state.isFormValid}
+                            >{Localization.sign_in}</button>
 
-                                {/* <small className="text-info cursor-pointer"
+                            {/* <small className="text-info cursor-pointer"
                                     onClick={() => this.gotoRegister()}>{Localization.register}</small> */}
-                            </div>
                         </div>
-                        <section>
-                            <p>
-                                By tapping "Sign in" you agree to the
+                    </div>
+                    <section>
+                        <p>
+                            By tapping "Sign in" you agree to the
                                 <span>Bookstore Content</span> <span>and Software Terms of Use</span>
-                            </p>
-                            <p>
-                                New to Bookstore? Bookstore is a Jame-jam product.&nbsp;
+                        </p>
+                        <p>
+                            New to Bookstore? Bookstore is a Jame-jam product.&nbsp;
                                 <NavLink to="/register">
-                                    You'll need a free Jame-jam account to sign in.
+                                You'll need a free Jame-jam account to sign in.
                                 </NavLink>
 
-                            </p>
-                        </section>
-                    </main>
-                </div>
+                        </p>
+                    </section>
+                </main>
 
                 <ToastContainer />
             </>

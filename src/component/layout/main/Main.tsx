@@ -2,7 +2,7 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import {LayoutMainHeader} from './header/Header';
 
-export const RouteLayout = ({ component: Component, ...rest }: { [key: string]: any }) => {
+export const RouteLayoutMain = ({ component: Component, ...rest }: { [key: string]: any }) => {
     // console.log("RouteLayout");
     //todo: logic for validate user 
 

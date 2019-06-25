@@ -57,7 +57,8 @@ input[type="checkbox"] {
       border: 1px solid $template-border-color; // gray;
       border-radius: 0.25rem;
       position: relative;
-      margin-bottom: 0;
+      // margin-bottom: 0;
+      margin-bottom: -0.4rem;
     }
 
     & + label:after {

@@ -10,7 +10,8 @@ import Products from '../products/Products';
 import { Login } from '../login/Login';
 import { Register } from '../register/Register';
 import NotFound from '../layout/main/not-found/NotFound';
-import { RouteLayout } from '../layout/main/Main';
+import { RouteLayoutMain } from '../layout/main/Main';
+import {RouteLayoutAccount} from '../layout/account/Account';
 import { Setup } from '../../config/setup';
 import { Localization } from '../../config/localization';
 
@@ -18,14 +19,14 @@ const appRoutes = (
   <Switch>
 
     <Route exact path="/" component={() => <Redirect to="/dashboard" />} />
-    <RouteLayout exact path="/dashboard" component={Dashboard} />
-    <RouteLayout exact path="/user" component={User} />
-    <RouteLayout path="/user/create" component={CreateUser} />
-    <RouteLayout path="/role" component={Role} />
-    <RouteLayout path="/products" component={Products} />
+    <RouteLayoutMain exact path="/dashboard" component={Dashboard} />
+    <RouteLayoutMain exact path="/user" component={User} />
+    <RouteLayoutMain path="/user/create" component={CreateUser} />
+    <RouteLayoutMain path="/role" component={Role} />
+    <RouteLayoutMain path="/products" component={Products} />
 
-    <Route path="/login" component={Login} />
-    <Route path="/register" component={Register} />
+    <RouteLayoutAccount path="/login" component={Login} />
+    <RouteLayoutAccount path="/register" component={Register} />
     <Route component={NotFound} />
 
   </Switch>
