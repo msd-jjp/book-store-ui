@@ -12,6 +12,7 @@ import { Register } from '../register/Register';
 import NotFound from '../layout/main/not-found/NotFound';
 import { RouteLayout } from '../layout/main/Main';
 import { Setup } from '../../config/setup';
+import { Localization } from '../../config/localization';
 
 const appRoutes = (
   <Switch>
@@ -33,7 +34,9 @@ const appRoutes = (
 class App extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
-    //todo: set direction to body
+
+    document.title = Localization.app_title;
+    
     if (Setup.internationalization.rtl) {
       document.body.classList.add('rtl');
     }

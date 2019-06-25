@@ -12,6 +12,7 @@ interface InputProps {
     label?: string;
     required?: boolean;
     validationFunc?: (value: any) => boolean;
+    placeholder?: string;
 }
 interface InputState {
     invalid?: boolean;
@@ -99,7 +100,10 @@ class Input extends React.Component<InputProps, InputState> {
     render() {
         return (
             <div className="form-group">
-                <label htmlFor={this.id}>{this.props.label}</label>
+                {
+                    this.props.label &&
+                    <label htmlFor={this.id}>{this.props.label}</label>
+                }
                 <input
                     id={this.id}
                     type={this.props.type}
@@ -110,6 +114,7 @@ class Input extends React.Component<InputProps, InputState> {
                     // ref={this.props.elRef}
                     ref={inputEl => this.setRef(inputEl)}
                     onBlur={() => this.onBlur()}
+                    placeholder={this.props.placeholder}
                 />
                 {this.invalidFeedback()}
             </div>

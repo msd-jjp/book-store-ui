@@ -8,8 +8,10 @@ import { action_user_logged_in } from '../../redux/action/user';
 import { connect } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { Localization } from '../../config/localization';
+import { NavLink } from 'react-router-dom';
 
 type inputType = 'username' | 'password';
+// type TInputPasswordType = 'text' | 'password';
 interface LoginState { // todo remove user pass from state  ? set state rebuild dom
     username: {
         value: string | undefined;
@@ -20,6 +22,7 @@ interface LoginState { // todo remove user pass from state  ? set state rebuild 
         isValid: boolean;
     };
     isFormValid: boolean;
+    inputPasswordType: 'text' | 'password'; // string;//TInputPasswordType;
 }
 interface IProps {
     onUserLoggedIn?: (user: IUser) => void;
@@ -27,14 +30,17 @@ interface IProps {
 }
 
 class LoginComponent extends React.Component<IProps, LoginState> {
-    state = {
+    state: LoginState = {
         username: { value: undefined, isValid: false },
         password: { value: undefined, isValid: false },
-        isFormValid: false
+        isFormValid: false,
+        inputPasswordType: "password"
     };
     private _loginService = new LoginService();
     inputUsername!: HTMLInputElement;
     // isFormValid: boolean = false;
+    showPasswordCheckBoxId = 'input_' + Math.random();
+    // inputPasswordType: 'text' | 'password' = 'password';
 
     componentDidMount() {
         this.inputUsername.focus();
@@ -94,6 +100,13 @@ class LoginComponent extends React.Component<IProps, LoginState> {
             this.isFormValid = true;
         }
     } */
+    toggleShowPassword() {
+        if (this.state.inputPasswordType === 'text') {
+            this.setState({ ...this.state, inputPasswordType: 'password' });
+        } else {
+            this.setState({ ...this.state, inputPasswordType: 'text' });
+        }
+    }
 
     errorNotify() {
         // return toast("Wow so easy !");
@@ -111,7 +124,7 @@ class LoginComponent extends React.Component<IProps, LoginState> {
         // const handleInputChange = this.handleInputChange.bind(this);
         return (
             <>
-                <div className="row">
+                <div className="row d-none">
                     <div className="col-md-4 offset-md-4">
                         <Input
                             defaultValue={this.state.username.value}
@@ -138,6 +151,87 @@ class LoginComponent extends React.Component<IProps, LoginState> {
                             <small className="text-info cursor-pointer" onClick={() => this.gotoRegister()}>{Localization.register}</small>
                         </div>
                     </div>
+                </div>
+
+                <div className="login-wrapper">
+                    <header className="header">
+                        <div className="title">
+                            Bookstore
+                        </div>
+                    </header>
+                    <main className="main mx-3">
+                        <h2 className="title mt-4 mb-3">
+                            Sign in
+                        </h2>
+                        <h3 className="desc">
+                            Sign in with your Jame-jam account
+                        </h3>
+                        <div className="forgot-password text-right mb-3">
+                            {/* <a href="javascript:;">
+                                Forgot password?
+                            </a> */}
+                            <NavLink activeClassName="active__" to="/login">
+                                Forgot password?
+                            </NavLink>
+                        </div>
+                        <div className="login-form">
+                            <div className="input-wrapper">
+                                <Input
+                                    defaultValue={this.state.username.value}
+                                    onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'username') }}
+                                    // label="username"
+                                    // pattern={/^.{6,}$/}
+                                    required
+                                    patternError={'min length 6 character.'}
+                                    elRef={input => { this.inputUsername = input; }}
+                                    placeholder="username"
+                                />
+                                <div className="separator"></div>
+                                <Input
+                                    defaultValue={this.state.password.value}
+                                    onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'password') }}
+                                    // label="password"
+                                    required
+                                    type={this.state.inputPasswordType}
+                                    placeholder="password"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <input type="checkbox" className="app-checkbox"
+                                    id={this.showPasswordCheckBoxId}
+                                    onChange={() => this.toggleShowPassword()}
+                                />
+                                <label htmlFor={this.showPasswordCheckBoxId}></label>
+                                <label htmlFor={this.showPasswordCheckBoxId}>
+                                    <h6 className="pt-1__ ml-2">Show password</h6>
+                                </label>
+                            </div>
+
+                            <div className="form-group">
+                                <button className="btn btn-info__ btn-warning btn-block mr-3___"
+                                    onClick={() => this.onLogin()}
+                                    disabled={!this.state.isFormValid}
+                                >{Localization.sign_in}</button>
+
+                                {/* <small className="text-info cursor-pointer"
+                                    onClick={() => this.gotoRegister()}>{Localization.register}</small> */}
+                            </div>
+                        </div>
+                        <section>
+                            <p>
+                                By tapping "Sign in" you agree to the
+                                <span>Bookstore Content</span> <span>and Software Terms of Use</span>
+                            </p>
+                            <p>
+                                New to Bookstore? Bookstore is a Jame-jam product.&nbsp;
+                                <NavLink to="/register">
+                                    You'll need a free Jame-jam account to sign in.
+                                </NavLink>
+
+                            </p>
+                        </section>
+                    </main>
                 </div>
 
                 <ToastContainer />
