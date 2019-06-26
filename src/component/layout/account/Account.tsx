@@ -16,7 +16,7 @@ class LayoutAccountComponent extends React.Component<any> {
     render() {
         return (
             <>
-                <div className="layout-wrapper">
+                <div className="layout-account-wrapper">
                     <LayoutAccountHeader />
                     <main className="main mx-3">
                         <div className="row">
