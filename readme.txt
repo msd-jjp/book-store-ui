@@ -23,16 +23,10 @@ craete envirenment
 
 return to edit mobile then sms again --> 403
 sms count down
-loader
+
 redux add change flag & direction
 translation
-zoom ham ru browser baad baste beshe
-
-input required --> username required || bgColor: #fff;
-
-route change to --> # --> aaa/#login
-
-remove input focus.
+--zoom ham ru browser baad baste beshe
 
 ====================================================================================
 
