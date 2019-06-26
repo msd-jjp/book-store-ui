@@ -32,8 +32,14 @@ redux add change flag & direction
 translation
 zoom ham ru browser baad baste beshe
 
+input required --> username required || bgColor: #fff;
 
+route change to --> # --> aaa/#login
+
+remove input focus.
 
 ====================================================================================
 
-btn_loader????
+Unhandled Rejection (InvalidCharacterError):
+    Failed to execute 'btoa' on 'Window':
+        The string to be encoded contains characters outside of the Latin1 range.

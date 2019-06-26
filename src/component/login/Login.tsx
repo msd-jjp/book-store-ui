@@ -9,10 +9,11 @@ import { connect } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import { Localization } from '../../config/localization';
 import { NavLink } from 'react-router-dom';
+import { BtnLoader } from '../form/btn-loader/BtnLoader';
 
 type inputType = 'username' | 'password';
-// type TInputPasswordType = 'text' | 'password';
-interface LoginState { // todo remove user pass from state  ? set state rebuild dom
+
+interface LoginState {
     username: {
         value: string | undefined;
         isValid: boolean;
@@ -22,7 +23,8 @@ interface LoginState { // todo remove user pass from state  ? set state rebuild 
         isValid: boolean;
     };
     isFormValid: boolean;
-    inputPasswordType: 'text' | 'password'; // string;//TInputPasswordType;
+    inputPasswordType: 'text' | 'password';
+    btnLoader: boolean;
 }
 interface IProps {
     onUserLoggedIn?: (user: IUser) => void;
@@ -34,50 +36,39 @@ class LoginComponent extends React.Component<IProps, LoginState> {
         username: { value: undefined, isValid: false },
         password: { value: undefined, isValid: false },
         isFormValid: false,
-        inputPasswordType: "password"
+        inputPasswordType: "password",
+        btnLoader: false
     };
     private _loginService = new LoginService();
     inputUsername!: HTMLInputElement;
-    // isFormValid: boolean = false;
     showPasswordCheckBoxId = 'input_' + Math.random();
-    // inputPasswordType: 'text' | 'password' = 'password';
 
     componentDidMount() {
-        this.inputUsername.focus();
+        // this.inputUsername.focus();
     }
 
     async onLogin() {
-        // if (!this.state.username || !this.state.password) { return; }
         if (!this.state.isFormValid) { return; }
+        this.setState({ ...this.state, btnLoader: true });
+
         let tokenObj/* : string | void */ = await this._loginService.login({
             username: this.state.username.value!,
             password: this.state.password.value!
         }).catch((error) => {
             debugger;
-            // todo: notify here
             this.errorNotify();
+            this.setState({ ...this.state, btnLoader: false });
         });
-        // debugger;
-        // token = '1111';
 
         let user: any; // IUser | void;
         if (tokenObj) {
-            user = await this._loginService.profile(tokenObj.data.id/* , {
-                username: this.state.username.value!,
-                password: this.state.password.value!
-            } */).catch((error) => {
+            user = await this._loginService.profile(tokenObj.data.id).catch((error) => {
                 debugger;
-                //notifu
                 this.errorNotify();
+                // this.setState({ ...this.state, btnLoader: false });
             });
         }
-
-        /* user = {
-            name: 'hamid',
-            username: 'hamid',
-            password: '123456',
-            id: '1'
-        }; */
+        this.setState({ ...this.state, btnLoader: false });
 
         if (user) {
             this.props.onUserLoggedIn && this.props.onUserLoggedIn(user);
@@ -120,7 +111,6 @@ class LoginComponent extends React.Component<IProps, LoginState> {
         // const handleInputChange = this.handleInputChange.bind(this);
         return (
             <>
-                {/* <main className="main mx-3"> */}
                 <h2 className="title mt-4 mb-3">Sign in</h2>
                 <h3 className="desc">Sign in with your bookstore account</h3>
                 <div className="forgot-password text-right mb-3">
@@ -161,18 +151,19 @@ class LoginComponent extends React.Component<IProps, LoginState> {
                         />
                         <label htmlFor={this.showPasswordCheckBoxId}></label>
                         <label htmlFor={this.showPasswordCheckBoxId}>
-                            <h6 className="pt-1__ ml-2">Show password</h6>
+                            <h6 className="ml-2">Show password</h6>
                         </label>
                     </div>
 
                     <div className="form-group">
-                        <button className="btn btn-info__ btn-warning btn-block mr-3___"
+                        <BtnLoader
+                            btnClassName="btn btn-warning btn-block"
+                            loading={this.state.btnLoader}
                             onClick={() => this.onLogin()}
                             disabled={!this.state.isFormValid}
-                        >{Localization.sign_in}</button>
-
-                        {/* <small className="text-info cursor-pointer"
-                                    onClick={() => this.gotoRegister()}>{Localization.register}</small> */}
+                        >
+                            {Localization.sign_in}
+                        </BtnLoader>
                     </div>
                 </div>
                 <section>
@@ -181,14 +172,12 @@ class LoginComponent extends React.Component<IProps, LoginState> {
                                 <span>Bookstore Content</span> <span>and Software Terms of Use</span>
                     </p>
                     <p>
-                        New to Bookstore? Bookstore is a Jame-jam product.&nbsp;
-                                <NavLink to="/register">
-                            You'll need a free Jame-jam account to sign in.
-                                </NavLink>
-
+                        New to Bookstore? &nbsp;
+                        <NavLink to="/register">
+                            You'll need a free Bookstore account to sign in.
+                        </NavLink>
                     </p>
                 </section>
-                {/* </main> */}
 
                 <ToastContainer />
             </>

@@ -11,6 +11,8 @@ import { IUser } from '../../model/model.user';
 import { action_user_logged_in } from '../../redux/action/user';
 import { AppRegex } from '../../config/regex';
 import { NavLink } from 'react-router-dom';
+import { BtnLoader } from '../form/btn-loader/BtnLoader';
+import { Localization } from '../../config/localization';
 // import LaddaButton, { XL, SLIDE_UP } from 'react-ladda';
 // import * as ladda from 'react-ladda';
 // import * as ladda from module("react-ladda");
@@ -47,6 +49,7 @@ interface IState {
         isValid: boolean;
     };
     isFormValid: boolean;
+    btnLoader: boolean;
 }
 type TInputType = 'username' | 'password' | 'name' | 'code' | 'mobile' | 'confirmPassword';
 type TInputElType = 'inputElUsername' | 'inputElPassword' |
@@ -85,7 +88,8 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
             value: undefined,
             isValid: false,
         },
-        isFormValid: false
+        isFormValid: false,
+        btnLoader: false
     };
     inputElUsername!: HTMLInputElement;
     inputElPassword!: HTMLInputElement;
@@ -163,7 +167,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     }
 
     focusOnInput(inputEl: TInputElType): void {
-        this[inputEl].focus();
+        // this[inputEl].focus();
     }
 
     submit_mobile_render() {
@@ -184,10 +188,14 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                             />
                         </div>
                         <div className="form-group">
-                            <button className="btn btn-warning btn-block mr-3"
+                            <BtnLoader
+                                btnClassName="btn btn-warning btn-block"
+                                loading={this.state.btnLoader}
                                 onClick={() => this.onSubmit_mobile()}
                                 disabled={!this.state.isFormValid}
-                            >submit your mobile</button>
+                            >
+                                submit your mobile
+                            </BtnLoader>
                         </div>
                     </div>
                 </>
@@ -196,13 +204,14 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     }
     async onSubmit_mobile() {
         if (!this.state.isFormValid) { return; }
+        this.setState({ ...this.state, btnLoader: true });
         let res = await this._registerService.sendCode({ cell_no: this.state.mobile.value! })
             .catch(e => {
                 debugger;
                 this.errorNotify();
             });
 
-        // res = { data: { message: 5599 } }; // todo: delete me
+        this.setState({ ...this.state, btnLoader: false });
         if (!res) return;
 
         let smsCode = res.data.message;
@@ -248,10 +257,14 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                             />
                         </div>
                         <div className="form-group">
-                            <button className="btn btn-warning btn-block mr-3"
+                            <BtnLoader
+                                btnClassName="btn btn-warning btn-block"
+                                loading={this.state.btnLoader}
                                 onClick={() => this.onValidate_mobile()}
                                 disabled={!this.state.isFormValid}
-                            >submit code</button>
+                            >
+                                submit code
+                            </BtnLoader>
                         </div>
                     </div>
                     <small><span>send again</span> <span>38</span></small>
@@ -261,14 +274,14 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     }
     async onValidate_mobile() {
         if (!this.state.isFormValid) { return; }
+        this.setState({ ...this.state, btnLoader: true });
         let response = await this._registerService.activateAcount(
             { cell_no: this.state.mobile.value!, activation_code: this.state.code.value! }
         ).catch(e => {
             debugger;
             this.errorNotify();
         });
-        debugger;
-        // response = { data: { signup_token: 'qqqqqqqqqq' } };
+        this.setState({ ...this.state, btnLoader: false });
         if (!response) return;
 
         this.signup_token = response.data.signup_token;
@@ -334,15 +347,18 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                                 type="password"
                                 validationFunc={(val) => this.confirmPassword_validation(val)}
                                 patternError="confirm not match password"
-                            // ref={rrr => { this.inputElConfirmPassword_wrapper = rrr }}
                             />
                         </div>
 
                         <div className="form-group">
-                            <button className="btn btn-warning btn-block mr-3"
+                            <BtnLoader
+                                btnClassName="btn btn-warning btn-block"
+                                loading={this.state.btnLoader}
                                 onClick={() => this.onRegister()}
                                 disabled={!this.state.isFormValid}
-                            >register</button>
+                            >
+                                {Localization.register}
+                            </BtnLoader>
                         </div>
                     </div>
                 </>
@@ -351,6 +367,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     }
     async onRegister() {
         debugger;
+        this.setState({ ...this.state, btnLoader: true });
         let res = await this._registerService.signUp({
             // "user": {
             "password": this.state.password.value!,
@@ -369,37 +386,13 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
             debugger;
             this.errorNotify();
         });
-
-        /* res = {
-            user: {
-                name: this.state.name.value,
-                username: this.state.username.value,
-                password: this.state.password.value
-            }
-        } */
-        // todo: delete me
+        this.setState({ ...this.state, btnLoader: false });
 
         if (!res) return;
-        // debugger;
-
-        //todo: 
-        // if extra apiCall need: do it (propbably signUp return token --> save it and get user(profile) & then continue..)
-        // set user in redux state
-        // navigate to main
-
-        // this.props.history.push('/login');
         this.signUpNotify();
-
-        /* let user = res.user;
-        if (user) {
-            this.props.onUserLoggedIn && this.props.onUserLoggedIn(user);
-            this.props.history.push('/dashboard');
-        } */
     }
 
-    // notify = () => toast("Wow so easy !");
     errorNotify() {
-        // return toast("Wow so easy !");
         return toast.error('error occurred!', {
             position: "top-right",
             autoClose: 5000,
@@ -410,7 +403,6 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         });
     }
     signUpNotify() {
-        // return toast("Wow so easy !");
         return toast.success('registered successfully, we redirect you to login page', {
             position: "top-center",
             autoClose: 5000,
@@ -428,8 +420,6 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     render() {
         return (
             <>
-                {/* <div className="row"> */}
-                {/* <div className="col-md-4 offset-md-4"> */}
 
                 {(() => {
                     switch (this.state.registerStep) {
@@ -444,8 +434,6 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                     }
                 })()}
 
-                {/* <small className="text-info cursor-pointer" onClick={() => this.gotoLogin()}>login</small> */}
-
                 <section>
                     <p>
                         Already have bookstore account?&nbsp;
@@ -453,34 +441,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                     </p>
                 </section>
 
-
                 <ToastContainer />
-
-                {/* <LaddaButton
-                            loading={true}
-                            onClick={this}
-                            data-color="#eee"
-                            data-size={XL}
-                            data-style={SLIDE_UP}
-                            data-spinner-size={30}
-                            data-spinner-color="#ddd"
-                            data-spinner-lines={12}
-                        >
-                            Click Here!
-                        </LaddaButton> */}
-
-                {/* <div className="btn btn-info">
-                            <i className="fa fa-spinner fa-spin"></i>
-                            <span>clock to loaf d</span>
-                        </div> */}
-
-                {/* {ladda.LaddaButton}
-                        <ladda.LaddaButton>
-                        Click Here!
-                        </ladda.LaddaButton> */}
-
-                {/* </div> */}
-                {/* </div> */}
             </>
         )
     }
