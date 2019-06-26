@@ -28,6 +28,8 @@ redux add change flag & direction
 translation
 --zoom ham ru browser baad baste beshe
 
+add $font-farsi & remove "farsi, sans-serif;"
+
 ====================================================================================
 
 Unhandled Rejection (InvalidCharacterError):

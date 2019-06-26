@@ -13,9 +13,6 @@ import { AppRegex } from '../../config/regex';
 import { NavLink } from 'react-router-dom';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { Localization } from '../../config/localization/localization';
-// import LaddaButton, { XL, SLIDE_UP } from 'react-ladda';
-// import * as ladda from 'react-ladda';
-// import * as ladda from module("react-ladda");
 
 enum REGISTER_STEP {
     submit_mobile = 'submit_mobile',
@@ -174,17 +171,17 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         if (this.state.registerStep === REGISTER_STEP.submit_mobile) {
             return (
                 <>
-                    <h3 className="desc mt-4">Register your mobile number</h3>
+                    <h3 className="desc mt-4">{Localization.register_your_mobile_number}</h3>
                     <div className="account-form">
                         <div className="input-wrapper__">
                             <Input
                                 defaultValue={this.state.mobile.value}
                                 onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'mobile') }}
                                 pattern={AppRegex.mobile}
-                                patternError={'mobile format is not valid.'}
+                                patternError={Localization.validation.mobileFormat}
                                 required
                                 elRef={input => { this.inputElMobile = input; }}
-                                placeholder="mobile"
+                                placeholder={Localization.mobile}
                             />
                         </div>
                         <div className="form-group">
@@ -194,7 +191,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                                 onClick={() => this.onSubmit_mobile()}
                                 disabled={!this.state.isFormValid}
                             >
-                                submit your mobile
+                                {Localization.submit}
                             </BtnLoader>
                         </div>
                     </div>
@@ -214,8 +211,8 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         this.setState({ ...this.state, btnLoader: false });
         if (!res) return;
 
-        let smsCode = res.data.message;
-        alert(smsCode);
+        // let smsCode = res.data.message;
+        // alert(smsCode);
         this.setState(
             {
                 ...this.state,
@@ -234,14 +231,16 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
             return (
                 <>
                     <div className="mt-4 mb-3 text-muted">
-                        mobile: {this.state.mobile.value}
+                        {Localization.mobile}: {this.state.mobile.value}
                         <small
                             className="text-info"
                             onClick={() => this.from_validate_mobile_to_Submit_mobile()}
-                        ><i className="fa fa-edit"></i></small>
+                        >
+                            <i className="fa fa-edit"></i>
+                        </small>
                     </div>
 
-                    <h3 className="desc mt-4__">verification code sended via sms, submit here.</h3>
+                    <h3 className="desc mt-4__">{Localization.verification_code_sended_via_sms_submit_here}</h3>
 
                     <div className="account-form">
                         <div className="input-wrapper__">
@@ -249,9 +248,9 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                                 key={'register_code'}
                                 defaultValue={this.state.code.value}
                                 onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'code') }}
-                                placeholder="verification code"
+                                placeholder={Localization.verification_code}
                                 pattern={AppRegex.smsCode}
-                                patternError={'code is not valid.'}
+                                patternError={Localization.validation.smsCodeFormat}
                                 required
                                 elRef={input => { this.inputElCode = input; }}
                             />
@@ -263,11 +262,12 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                                 onClick={() => this.onValidate_mobile()}
                                 disabled={!this.state.isFormValid}
                             >
-                                submit code
+                                {Localization.submit}
                             </BtnLoader>
                         </div>
                     </div>
-                    <small><span>send again</span> <span>38</span></small>
+                    {/* todo */}
+                    {/* <small><span>send again</span> <span>38</span></small> */}
                 </>
             )
         }
@@ -310,13 +310,13 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         if (this.state.registerStep === REGISTER_STEP.register) {
             return (
                 <>
-                    <h3 className="desc mt-4">Create an account.</h3>
+                    <h3 className="desc mt-4">{Localization.create_an_account}</h3>
                     <div className="account-form">
                         <div className="input-wrapper">
                             <Input
                                 defaultValue={this.state.name.value}
                                 onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'name') }}
-                                placeholder="name"
+                                placeholder={Localization.name}
                                 required
                                 elRef={input => { this.inputElName = input; }}
                             />
@@ -324,7 +324,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                             <Input
                                 defaultValue={this.state.username.value}
                                 onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'username') }}
-                                placeholder="username"
+                                placeholder={Localization.username}
                                 required
                                 elRef={input => { this.inputElUsername = input; }}
                             />
@@ -332,7 +332,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                             <Input
                                 defaultValue={this.state.password.value}
                                 onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'password') }}
-                                placeholder="password"
+                                placeholder={Localization.password}
                                 required
                                 elRef={input => { this.inputElPassword = input; }}
                                 type="password"
@@ -341,12 +341,12 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                             <Input
                                 defaultValue={this.state.confirmPassword.value}
                                 onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'confirmPassword') }}
-                                placeholder="confirm password"
+                                placeholder={Localization.confirm_password}
                                 required
                                 elRef={input => { this.inputElConfirmPassword = input; }}
                                 type="password"
                                 validationFunc={(val) => this.confirmPassword_validation(val)}
-                                patternError="confirm not match password"
+                                patternError={Localization.validation.confirmPassword}
                             />
                         </div>
 
@@ -393,7 +393,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     }
 
     errorNotify() {
-        return toast.error('error occurred!', {
+        return toast.error(Localization.msg.msg2, {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
@@ -403,7 +403,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         });
     }
     signUpNotify() {
-        return toast.success('registered successfully, we redirect you to login page', {
+        return toast.success(Localization.msg.msg3, {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
@@ -436,8 +436,8 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
 
                 <section>
                     <p>
-                        Already have bookstore account?&nbsp;
-                                <NavLink to="/login">sign in</NavLink>
+                        {Localization.already_have_bookstore_account}&nbsp;
+                        <NavLink to="/login">{Localization.sign_in}</NavLink>
                     </p>
                 </section>
 

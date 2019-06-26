@@ -8,9 +8,14 @@ export const en = {
     forgot_password: 'forgot password?',
     msg: {
         msg1: 'action succeeded',
+        msg2: 'error occurred',
+        msg3: 'registered successfully, we redirect you to login page.',
     },
     validation: {
         minLength: 'min length {value} character',
+        mobileFormat: 'mobile format is not valid',
+        smsCodeFormat: 'code is not valid.',
+        confirmPassword: 'confirm password not match password.',
     },
     username: 'username',
     password: 'password',
@@ -30,4 +35,10 @@ export const en = {
     },
     new_to_Bookstore: 'new to Bookstore?',
     need_free_bookstore_account: "You'll need a free Bookstore account to sign in.",
+    register_your_mobile_number: 'Register your mobile number',
+    submit: 'submit',
+    already_have_bookstore_account: 'already have bookstore account?',
+    verification_code_sended_via_sms_submit_here: 'verification code sended via sms, submit here.',
+    verification_code: 'verification code',
+    create_an_account: 'create an account',
 }

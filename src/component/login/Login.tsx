@@ -97,7 +97,7 @@ class LoginComponent extends React.Component<IProps, LoginState> {
 
     errorNotify() {
         // return toast("Wow so easy !");
-        return toast.error('error occurred!', {
+        return toast.error(Localization.msg.msg2, {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,

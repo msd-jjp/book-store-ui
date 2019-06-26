@@ -14,9 +14,14 @@ interface ILocalization extends LocalizedStringsMethods {
     forgot_password: string;
     msg: {
         msg1: string;
+        msg2: string;
+        msg3: string;
     };
     validation: {
         minLength: string;
+        mobileFormat: string;
+        smsCodeFormat: string;
+        confirmPassword: string;
     },
     username: string;
     password: string;
@@ -36,6 +41,12 @@ interface ILocalization extends LocalizedStringsMethods {
     };
     new_to_Bookstore: string;
     need_free_bookstore_account: string;
+    register_your_mobile_number: string;
+    submit: string;
+    already_have_bookstore_account: string;
+    verification_code_sended_via_sms_submit_here: string;
+    verification_code: string;
+    create_an_account: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

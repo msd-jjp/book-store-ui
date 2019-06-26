@@ -8,9 +8,14 @@ export const fa = {
     forgot_password: 'رمز عبورتان را فراموش کردید؟',
     msg: {
         msg1: 'عملیات با موفقیت انجام شد.',
+        msg2: 'خطا رخ داد.',
+        msg3: 'ثبت نام با موفقیت انجام شد، به صفحه ورود منتقل می شوید.',
     },
     validation: {
         minLength: 'حداقل {value} کاراکتر',
+        mobileFormat: 'فرمت موبایل صحیح نیست',
+        smsCodeFormat: 'فرمت کد صحیح نیست.',
+        confirmPassword: 'رمز عبور با تایید آن همخوانی ندارد.',
     },
     username: 'نام کاربری',
     password: 'رمز عبور',
@@ -23,11 +28,17 @@ export const fa = {
     invalid_value: 'مقدار نامعتبر است',
     required_field: 'فیلد ضروری است',
     Show_password: 'نمایش رمزعبور',
-    login_agree_msg:{
-        a:'با انتخاب "ورود" شما موافقت خود با {0} و {1} را تایید می کنید.',
-        b:'مطالب فروشگاه کتاب',
-        c:'شرایط استفاده از نرم افزار'
+    login_agree_msg: {
+        a: 'با انتخاب "ورود" شما موافقت خود با {0} و {1} را تایید می کنید.',
+        b: 'مطالب فروشگاه کتاب',
+        c: 'شرایط استفاده از نرم افزار'
     },
-    new_to_Bookstore:'تازه واردید؟',
+    new_to_Bookstore: 'تازه واردید؟',
     need_free_bookstore_account: "احتیاج به یک حساب کاربری رایگان فروشگاه کتاب دارید.",
+    register_your_mobile_number: 'شماره تلفن همراه خود را وارد کنید',
+    submit: 'ثبت',
+    already_have_bookstore_account: 'از قبل حساب کاربری فروشگاه کتاب دارید؟',
+    verification_code_sended_via_sms_submit_here: 'کد تایید برای شما پیامک شد، لطفا در اینجا ثبت کنید.',
+    verification_code: 'کد تایید',
+    create_an_account: 'ساخت حساب کاربری',
 }
