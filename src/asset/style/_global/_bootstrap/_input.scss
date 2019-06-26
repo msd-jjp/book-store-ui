@@ -1,0 +1,7 @@
+body.rtl {
+  .form-control.is-invalid {
+    padding-left: calc(1.5em + 0.75rem);
+    padding-right: 0.75rem;
+    background-position: center left calc(0.375em + 0.1875rem);
+  }
+}

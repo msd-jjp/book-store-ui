@@ -1,6 +1,11 @@
 //npm installed
 @import "~react-toastify/scss/main";
 
+body.rtl {
+  .Toastify__toast {
+    font-family: farsi, sans-serif;
+  }
+}
 /* @import "~ng-snotify/styles/material";
 
 .snotifyToast {
