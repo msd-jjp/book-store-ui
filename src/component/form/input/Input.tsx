@@ -78,7 +78,7 @@ class Input extends React.Component<InputProps, InputState> {
         let invalidMsg = 'invalid value';
         // if (this.props.required && !this.props.defaultValue) {
         if (this.props.required && (this.inputRef && !this.inputRef.value)) {
-            invalidMsg = 'this field is required';
+            invalidMsg = 'required field'; // this field is required
         } else if (this.props.patternError) {
             invalidMsg = this.props.patternError;
         }
