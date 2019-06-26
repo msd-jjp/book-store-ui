@@ -7,50 +7,50 @@
   font-family: farsi;
   font-style: normal;
   font-weight: 700;
-  src: url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Bold/IRANSansWeb_Bold.eot");
-  src: url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Bold/IRANSansWeb_Bold.eot?#iefix")
+  src: url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Bold/IRANSansWeb_Bold.eot");
+  src: url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Bold/IRANSansWeb_Bold.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Bold/IRANSansWeb_Bold.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Bold/IRANSansWeb_Bold.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Bold/IRANSansWeb_Bold.ttf") format("truetype");
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Bold/IRANSansWeb_Bold.woff2") format("woff2"),
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Bold/IRANSansWeb_Bold.woff") format("woff"),
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Bold/IRANSansWeb_Bold.ttf") format("truetype");
 }
 
 @font-face {
   font-family: farsi;
   font-style: normal;
   font-weight: 500;
-  src: url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Medium/IRANSansWeb_Medium.eot");
-  src: url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Medium/IRANSansWeb_Medium.eot?#iefix")
+  src: url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Medium/IRANSansWeb_Medium.eot");
+  src: url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Medium/IRANSansWeb_Medium.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Medium/IRANSansWeb_Medium.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Medium/IRANSansWeb_Medium.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Medium/IRANSansWeb_Medium.ttf") format("truetype");
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Medium/IRANSansWeb_Medium.woff2") format("woff2"),
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Medium/IRANSansWeb_Medium.woff") format("woff"),
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Medium/IRANSansWeb_Medium.ttf") format("truetype");
 }
 
 @font-face {
   font-family: farsi;
   font-style: normal;
   font-weight: 300;
-  src: url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Light/IRANSansWeb_Light.eot");
-  src: url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Light/IRANSansWeb_Light.eot?#iefix")
+  src: url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Light/IRANSansWeb_Light.eot");
+  src: url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Light/IRANSansWeb_Light.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Light/IRANSansWeb_Light.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Light/IRANSansWeb_Light.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_Light/IRANSansWeb_Light.ttf") format("truetype");
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Light/IRANSansWeb_Light.woff2") format("woff2"),
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Light/IRANSansWeb_Light.woff") format("woff"),
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_Light/IRANSansWeb_Light.ttf") format("truetype");
 }
 
 @font-face {
   font-family: farsi;
   font-style: normal;
   font-weight: 200;
-  src: url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_UltraLight/IRANSansWeb_UltraLight.eot");
-  src: url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_UltraLight/IRANSansWeb_UltraLight.eot?#iefix")
+  src: url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_UltraLight/IRANSansWeb_UltraLight.eot");
+  src: url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_UltraLight/IRANSansWeb_UltraLight.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_UltraLight/IRANSansWeb_UltraLight.woff2")
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_UltraLight/IRANSansWeb_UltraLight.woff2")
       format("woff2"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_UltraLight/IRANSansWeb_UltraLight.woff")
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_UltraLight/IRANSansWeb_UltraLight.woff")
       format("woff"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb_UltraLight/IRANSansWeb_UltraLight.ttf")
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb_UltraLight/IRANSansWeb_UltraLight.ttf")
       format("truetype");
 }
 
@@ -58,12 +58,12 @@
   font-family: farsi;
   font-style: normal;
   font-weight: 400;
-  src: url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb/IRANSansWeb.eot");
-  src: url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb/IRANSansWeb.eot?#iefix")
+  src: url("#{$global-font-url}/iransans/v4.2/IRANSansWeb/IRANSansWeb.eot");
+  src: url("#{$global-font-url}/iransans/v4.2/IRANSansWeb/IRANSansWeb.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb/IRANSansWeb.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb/IRANSansWeb.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/iransans/v4.2/IRANSansWeb/IRANSansWeb.ttf") format("truetype");
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb/IRANSansWeb.woff2") format("woff2"),
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb/IRANSansWeb.woff") format("woff"),
+    url("#{$global-font-url}/iransans/v4.2/IRANSansWeb/IRANSansWeb.ttf") format("truetype");
 }
 
 //#endregion
@@ -74,166 +74,166 @@
   font-family: nunito;
   font-style: normal;
   font-weight: 900;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-Black/Nunito-Black.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-Black/Nunito-Black.eot?#iefix") format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Black/Nunito-Black.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Black/Nunito-Black.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Black/Nunito-Black.ttf") format("truetype");
+  src: url("#{$global-font-url}/nunito/Nunito-Black/Nunito-Black.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-Black/Nunito-Black.eot?#iefix") format("embedded-opentype"),
+    url("#{$global-font-url}/nunito/Nunito-Black/Nunito-Black.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-Black/Nunito-Black.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-Black/Nunito-Black.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: italic;
   font-weight: 900;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-BlackItalic/Nunito-BlackItalic.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-BlackItalic/Nunito-BlackItalic.eot?#iefix")
+  src: url("#{$global-font-url}/nunito/Nunito-BlackItalic/Nunito-BlackItalic.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-BlackItalic/Nunito-BlackItalic.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-BlackItalic/Nunito-BlackItalic.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-BlackItalic/Nunito-BlackItalic.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-BlackItalic/Nunito-BlackItalic.ttf") format("truetype");
+    url("#{$global-font-url}/nunito/Nunito-BlackItalic/Nunito-BlackItalic.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-BlackItalic/Nunito-BlackItalic.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-BlackItalic/Nunito-BlackItalic.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: normal;
   font-weight: 800;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraBold/Nunito-ExtraBold.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraBold/Nunito-ExtraBold.eot?#iefix")
+  src: url("#{$global-font-url}/nunito/Nunito-ExtraBold/Nunito-ExtraBold.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-ExtraBold/Nunito-ExtraBold.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraBold/Nunito-ExtraBold.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraBold/Nunito-ExtraBold.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraBold/Nunito-ExtraBold.ttf") format("truetype");
+    url("#{$global-font-url}/nunito/Nunito-ExtraBold/Nunito-ExtraBold.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-ExtraBold/Nunito-ExtraBold.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-ExtraBold/Nunito-ExtraBold.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: italic;
   font-weight: 800;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraBoldItalic/Nunito-ExtraBoldItalic.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraBoldItalic/Nunito-ExtraBoldItalic.eot?#iefix")
+  src: url("#{$global-font-url}/nunito/Nunito-ExtraBoldItalic/Nunito-ExtraBoldItalic.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-ExtraBoldItalic/Nunito-ExtraBoldItalic.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraBoldItalic/Nunito-ExtraBoldItalic.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraBoldItalic/Nunito-ExtraBoldItalic.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraBoldItalic/Nunito-ExtraBoldItalic.ttf") format("truetype");
+    url("#{$global-font-url}/nunito/Nunito-ExtraBoldItalic/Nunito-ExtraBoldItalic.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-ExtraBoldItalic/Nunito-ExtraBoldItalic.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-ExtraBoldItalic/Nunito-ExtraBoldItalic.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: normal;
   font-weight: 700;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-Bold/Nunito-Bold.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-Bold/Nunito-Bold.eot?#iefix") format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Bold/Nunito-Bold.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Bold/Nunito-Bold.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Bold/Nunito-Bold.ttf") format("truetype");
+  src: url("#{$global-font-url}/nunito/Nunito-Bold/Nunito-Bold.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-Bold/Nunito-Bold.eot?#iefix") format("embedded-opentype"),
+    url("#{$global-font-url}/nunito/Nunito-Bold/Nunito-Bold.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-Bold/Nunito-Bold.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-Bold/Nunito-Bold.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: italic;
   font-weight: 700;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-BoldItalic/Nunito-BoldItalic.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-BoldItalic/Nunito-BoldItalic.eot?#iefix")
+  src: url("#{$global-font-url}/nunito/Nunito-BoldItalic/Nunito-BoldItalic.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-BoldItalic/Nunito-BoldItalic.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-BoldItalic/Nunito-BoldItalic.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-BoldItalic/Nunito-BoldItalic.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-BoldItalic/Nunito-BoldItalic.ttf") format("truetype");
+    url("#{$global-font-url}/nunito/Nunito-BoldItalic/Nunito-BoldItalic.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-BoldItalic/Nunito-BoldItalic.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-BoldItalic/Nunito-BoldItalic.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: normal;
   font-weight: 600;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-SemiBold/Nunito-SemiBold.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-SemiBold/Nunito-SemiBold.eot?#iefix")
+  src: url("#{$global-font-url}/nunito/Nunito-SemiBold/Nunito-SemiBold.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-SemiBold/Nunito-SemiBold.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-SemiBold/Nunito-SemiBold.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-SemiBold/Nunito-SemiBold.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-SemiBold/Nunito-SemiBold.ttf") format("truetype");
+    url("#{$global-font-url}/nunito/Nunito-SemiBold/Nunito-SemiBold.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-SemiBold/Nunito-SemiBold.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-SemiBold/Nunito-SemiBold.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: italic;
   font-weight: 600;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-SemiBoldItalic/Nunito-SemiBoldItalic.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-SemiBoldItalic/Nunito-SemiBoldItalic.eot?#iefix")
+  src: url("#{$global-font-url}/nunito/Nunito-SemiBoldItalic/Nunito-SemiBoldItalic.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-SemiBoldItalic/Nunito-SemiBoldItalic.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-SemiBoldItalic/Nunito-SemiBoldItalic.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-SemiBoldItalic/Nunito-SemiBoldItalic.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-SemiBoldItalic/Nunito-SemiBoldItalic.ttf") format("truetype");
+    url("#{$global-font-url}/nunito/Nunito-SemiBoldItalic/Nunito-SemiBoldItalic.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-SemiBoldItalic/Nunito-SemiBoldItalic.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-SemiBoldItalic/Nunito-SemiBoldItalic.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: normal;
   font-weight: 400;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-Regular/Nunito-Regular.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-Regular/Nunito-Regular.eot?#iefix")
+  src: url("#{$global-font-url}/nunito/Nunito-Regular/Nunito-Regular.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-Regular/Nunito-Regular.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Regular/Nunito-Regular.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Regular/Nunito-Regular.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Regular/Nunito-Regular.ttf") format("truetype");
+    url("#{$global-font-url}/nunito/Nunito-Regular/Nunito-Regular.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-Regular/Nunito-Regular.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-Regular/Nunito-Regular.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: italic;
   font-weight: 400;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-Italic/Nunito-Italic.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-Italic/Nunito-Italic.eot?#iefix")
+  src: url("#{$global-font-url}/nunito/Nunito-Italic/Nunito-Italic.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-Italic/Nunito-Italic.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Italic/Nunito-Italic.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Italic/Nunito-Italic.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Italic/Nunito-Italic.ttf") format("truetype");
+    url("#{$global-font-url}/nunito/Nunito-Italic/Nunito-Italic.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-Italic/Nunito-Italic.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-Italic/Nunito-Italic.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: normal;
   font-weight: 300;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-Light/Nunito-Light.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-Light/Nunito-Light.eot?#iefix") format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Light/Nunito-Light.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Light/Nunito-Light.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-Light/Nunito-Light.ttf") format("truetype");
+  src: url("#{$global-font-url}/nunito/Nunito-Light/Nunito-Light.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-Light/Nunito-Light.eot?#iefix") format("embedded-opentype"),
+    url("#{$global-font-url}/nunito/Nunito-Light/Nunito-Light.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-Light/Nunito-Light.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-Light/Nunito-Light.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: italic;
   font-weight: 300;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-LightItalic/Nunito-LightItalic.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-LightItalic/Nunito-LightItalic.eot?#iefix")
+  src: url("#{$global-font-url}/nunito/Nunito-LightItalic/Nunito-LightItalic.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-LightItalic/Nunito-LightItalic.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-LightItalic/Nunito-LightItalic.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-LightItalic/Nunito-LightItalic.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-LightItalic/Nunito-LightItalic.ttf") format("truetype");
+    url("#{$global-font-url}/nunito/Nunito-LightItalic/Nunito-LightItalic.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-LightItalic/Nunito-LightItalic.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-LightItalic/Nunito-LightItalic.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: normal;
   font-weight: 200;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraLight/Nunito-ExtraLight.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraLight/Nunito-ExtraLight.eot?#iefix")
+  src: url("#{$global-font-url}/nunito/Nunito-ExtraLight/Nunito-ExtraLight.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-ExtraLight/Nunito-ExtraLight.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraLight/Nunito-ExtraLight.woff2") format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraLight/Nunito-ExtraLight.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraLight/Nunito-ExtraLight.ttf") format("truetype");
+    url("#{$global-font-url}/nunito/Nunito-ExtraLight/Nunito-ExtraLight.woff2") format("woff2"),
+    url("#{$global-font-url}/nunito/Nunito-ExtraLight/Nunito-ExtraLight.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-ExtraLight/Nunito-ExtraLight.ttf") format("truetype");
 }
 
 @font-face {
   font-family: nunito;
   font-style: italic;
   font-weight: 200;
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraLightItalic/Nunito-ExtraLightItalic.eot");
-  src: url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraLightItalic/Nunito-ExtraLightItalic.eot?#iefix")
+  src: url("#{$global-font-url}/nunito/Nunito-ExtraLightItalic/Nunito-ExtraLightItalic.eot");
+  src: url("#{$global-font-url}/nunito/Nunito-ExtraLightItalic/Nunito-ExtraLightItalic.eot?#iefix")
       format("embedded-opentype"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraLightItalic/Nunito-ExtraLightItalic.woff2")
+    url("#{$global-font-url}/nunito/Nunito-ExtraLightItalic/Nunito-ExtraLightItalic.woff2")
       format("woff2"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraLightItalic/Nunito-ExtraLightItalic.woff") format("woff"),
-    url("#{$global-style-url}_global/fonts/nunito/Nunito-ExtraLightItalic/Nunito-ExtraLightItalic.ttf")
+    url("#{$global-font-url}/nunito/Nunito-ExtraLightItalic/Nunito-ExtraLightItalic.woff") format("woff"),
+    url("#{$global-font-url}/nunito/Nunito-ExtraLightItalic/Nunito-ExtraLightItalic.ttf")
       format("truetype");
 }
 
