@@ -1,4 +1,5 @@
 import React from 'react';
+import { Localization } from '../../../config/localization/localization';
 
 interface InputProps {
     // value?: any;
@@ -75,10 +76,10 @@ class Input extends React.Component<InputProps, InputState> {
         return true;
     }
     invalidFeedback() {
-        let invalidMsg = 'invalid value';
+        let invalidMsg = Localization.invalid_value;
         // if (this.props.required && !this.props.defaultValue) {
         if (this.props.required && (this.inputRef && !this.inputRef.value)) {
-            invalidMsg = 'required field'; // this field is required
+            invalidMsg = Localization.required_field; // this field is required
         } else if (this.props.patternError) {
             invalidMsg = this.props.patternError;
         }

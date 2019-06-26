@@ -39,8 +39,8 @@ export const Setup: ISetup = {
     },
     recordDefaultLoadLength: 10,
     internationalization: {
-        rtl: false,
-        language: 'english',
-        flag: 'en',
+        rtl: true,
+        language: 'فارسی',
+        flag: 'fa',
     }
 };

@@ -12,7 +12,7 @@ import { action_user_logged_in } from '../../redux/action/user';
 import { AppRegex } from '../../config/regex';
 import { NavLink } from 'react-router-dom';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
-import { Localization } from '../../config/localization';
+import { Localization } from '../../config/localization/localization';
 // import LaddaButton, { XL, SLIDE_UP } from 'react-ladda';
 // import * as ladda from 'react-ladda';
 // import * as ladda from module("react-ladda");
@@ -394,7 +394,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
 
     errorNotify() {
         return toast.error('error occurred!', {
-            position: "top-right",
+            position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,

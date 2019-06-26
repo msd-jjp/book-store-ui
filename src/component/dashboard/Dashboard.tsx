@@ -28,7 +28,13 @@ class DashboardComponent extends React.Component<IProps, any> {
                             this.props.logged_in_user &&
                             <div className="btn btn-light" onClick={() => this.logOut()}>log out</div>
                         }
+
+
                     </div>
+
+                    {/* <div className="col-md-8">
+                        <input type="file" className="forncontrol"/>
+                    </div> */}
                 </div>
             </>
         )

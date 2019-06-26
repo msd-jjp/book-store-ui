@@ -13,7 +13,7 @@ import NotFound from '../layout/main/not-found/NotFound';
 import { RouteLayoutMain } from '../layout/main/Main';
 import { RouteLayoutAccount } from '../layout/account/Account';
 import { Setup } from '../../config/setup';
-import { Localization } from '../../config/localization';
+import { Localization } from '../../config/localization/localization';
 
 const appRoutes = (
   <HashRouter>
