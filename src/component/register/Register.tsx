@@ -12,6 +12,8 @@ import { action_user_logged_in } from '../../redux/action/user';
 import { AppRegex } from '../../config/regex';
 import { NavLink } from 'react-router-dom';
 // import LaddaButton, { XL, SLIDE_UP } from 'react-ladda';
+// import * as ladda from 'react-ladda';
+// import * as ladda from module("react-ladda");
 
 enum REGISTER_STEP {
     submit_mobile = 'submit_mobile',
@@ -426,35 +428,35 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
     render() {
         return (
             <>
-                <div className="row">
-                    <div className="col-md-4 offset-md-4">
+                {/* <div className="row"> */}
+                {/* <div className="col-md-4 offset-md-4"> */}
 
-                        {(() => {
-                            switch (this.state.registerStep) {
-                                case REGISTER_STEP.submit_mobile:
-                                    return this.submit_mobile_render();
-                                case REGISTER_STEP.validate_mobile:
-                                    return this.validate_mobile_render();
-                                case REGISTER_STEP.register:
-                                    return this.register_render();
-                                default:
-                                    return undefined;
-                            }
-                        })()}
+                {(() => {
+                    switch (this.state.registerStep) {
+                        case REGISTER_STEP.submit_mobile:
+                            return this.submit_mobile_render();
+                        case REGISTER_STEP.validate_mobile:
+                            return this.validate_mobile_render();
+                        case REGISTER_STEP.register:
+                            return this.register_render();
+                        default:
+                            return undefined;
+                    }
+                })()}
 
-                        {/* <small className="text-info cursor-pointer" onClick={() => this.gotoLogin()}>login</small> */}
+                {/* <small className="text-info cursor-pointer" onClick={() => this.gotoLogin()}>login</small> */}
 
-                        <section>
-                            <p>
-                                Already have bookstore account?&nbsp;
+                <section>
+                    <p>
+                        Already have bookstore account?&nbsp;
                                 <NavLink to="/login">sign in</NavLink>
-                            </p>
-                        </section>
+                    </p>
+                </section>
 
 
-                        <ToastContainer />
+                <ToastContainer />
 
-                        {/* <LaddaButton
+                {/* <LaddaButton
                             loading={true}
                             onClick={this}
                             data-color="#eee"
@@ -467,12 +469,18 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                             Click Here!
                         </LaddaButton> */}
 
-                        {/* <div className="btn btn-info">
+                {/* <div className="btn btn-info">
                             <i className="fa fa-spinner fa-spin"></i>
                             <span>clock to loaf d</span>
                         </div> */}
-                    </div>
-                </div>
+
+                {/* {ladda.LaddaButton}
+                        <ladda.LaddaButton>
+                        Click Here!
+                        </ladda.LaddaButton> */}
+
+                {/* </div> */}
+                {/* </div> */}
             </>
         )
     }

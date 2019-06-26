@@ -19,7 +19,11 @@ class LayoutAccountComponent extends React.Component<any> {
                 <div className="layout-wrapper">
                     <LayoutAccountHeader />
                     <main className="main mx-3">
-                        {this.props.children}
+                        <div className="row">
+                            <div className="col-md-4 offset-md-4">
+                                {this.props.children}
+                            </div>
+                        </div>
                     </main>
                 </div>
             </>

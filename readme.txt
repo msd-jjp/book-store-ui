@@ -23,9 +23,14 @@ craete envirenment
 
 
 
-translate in react??
-
 ====================================================================================
+
+return to edit mobile then sms again --> 403
+sms count down
+loader
+redux add change flag & direction
+translation
+zoom ham ru browser baad baste beshe
 
 
 
