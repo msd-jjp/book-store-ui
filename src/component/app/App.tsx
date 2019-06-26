@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Store } from '../../redux/store';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect, HashRouter } from 'react-router-dom';
 import { Dashboard } from '../dashboard/Dashboard';
 import User from '../user/User';
 import CreateUser from '../user/CreateUser';
@@ -11,25 +11,27 @@ import { Login } from '../login/Login';
 import { Register } from '../register/Register';
 import NotFound from '../layout/main/not-found/NotFound';
 import { RouteLayoutMain } from '../layout/main/Main';
-import {RouteLayoutAccount} from '../layout/account/Account';
+import { RouteLayoutAccount } from '../layout/account/Account';
 import { Setup } from '../../config/setup';
 import { Localization } from '../../config/localization';
 
 const appRoutes = (
-  <Switch>
+  <HashRouter>
+    <Switch>
 
-    <Route exact path="/" component={() => <Redirect to="/dashboard" />} />
-    <RouteLayoutMain exact path="/dashboard" component={Dashboard} />
-    <RouteLayoutMain exact path="/user" component={User} />
-    <RouteLayoutMain path="/user/create" component={CreateUser} />
-    <RouteLayoutMain path="/role" component={Role} />
-    <RouteLayoutMain path="/products" component={Products} />
+      <Route exact path="/" component={() => <Redirect to="/dashboard" />} />
+      <RouteLayoutMain exact path="/dashboard" component={Dashboard} />
+      <RouteLayoutMain exact path="/user" component={User} />
+      <RouteLayoutMain path="/user/create" component={CreateUser} />
+      <RouteLayoutMain path="/role" component={Role} />
+      <RouteLayoutMain path="/products" component={Products} />
 
-    <RouteLayoutAccount path="/login" component={Login} />
-    <RouteLayoutAccount path="/register" component={Register} />
-    <Route component={NotFound} />
+      <RouteLayoutAccount path="/login" component={Login} />
+      <RouteLayoutAccount path="/register" component={Register} />
+      <Route component={NotFound} />
 
-  </Switch>
+    </Switch>
+  </HashRouter>
 );
 
 class App extends React.Component<any, any> {
@@ -37,7 +39,7 @@ class App extends React.Component<any, any> {
     super(props);
 
     document.title = Localization.app_title;
-    
+
     if (Setup.internationalization.rtl) {
       document.body.classList.add('rtl');
     }
