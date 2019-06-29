@@ -16578,6 +16578,48 @@ header div {
   text-justify: inter-word;
 }
 
+.mainlogin form .style-1 {
+  margin: 0;
+  margin-top: 1px;
+  border: 1px solid black;
+  border-bottom: 1px solid gray;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.mainlogin form .style-2 {
+  margin: 0;
+  border: 0;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid gray;
+  border-radius: 0;
+}
+
+.mainlogin form .style-3 {
+  margin: 0;
+  border: 0;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid gray;
+  border-radius: 0;
+}
+
+.mainlogin form .style-4 {
+  margin: 0;
+  border: 0;
+  border: 1px solid black;
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.mainlogin form .gradient-buttons .btn {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f7dfa1), to(#f0c14d));
+  background-image: linear-gradient(to bottom, #f7dfa1, #f0c14d);
+  background-repeat: repeat-x;
+}
+
 .mainlogin form p {
   text-align: justify;
   text-justify: inter-word;
@@ -16643,9 +16685,14 @@ header div {
   text-justify: inter-word;
 }
 
-.footerlogin {
-  background-color: white;
-  height: 10%;
-  border-top: 1px solid #d4d4d4;
+.footer {
+  background: -webkit-gradient(linear, left top, left bottom, from(#f6f6f6), to(white));
+  background: linear-gradient(to bottom, #f6f6f6, white);
+  height: 4rem;
+}
+
+.footer .shadow {
+  height: 3px;
+  background-image: radial-gradient(#dfdfdf, #eaeaea, #f6f6f6);
 }
 /*# sourceMappingURL=main.css.map */

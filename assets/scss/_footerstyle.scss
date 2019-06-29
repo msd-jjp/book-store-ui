@@ -1,5 +1,8 @@
-.footerlogin{
-    background-color: white;
-    height: 10%;
-    border-top: 1px solid rgb(212,212,212);
+.footer{
+    background:linear-gradient(to bottom,$bg-main,white);
+    height: 4rem;
+    .shadow{
+        height: 3px;
+        background-image: radial-gradient(rgb(223,223,223),rgb(234,234,234),rgb(246,246,246));
+    }
 }

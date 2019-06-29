@@ -1,30 +1,66 @@
-.mainlogin{
-    h2{
-        font-weight: bold;
+.mainlogin {
+  h2 {
+    font-weight: bold;
+  }
+  h3 {
+    font-size: 20px;
+  }
+  .register-h2 {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .register-h3 {
+    font-size: 15px;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+  form {
+    .style-1 {
+      margin: 0;
+      margin-top: 1px;
+      border: 1px solid black;
+      border-bottom: 1px solid gray;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
     }
-    h3{
-        font-size: 20px;
+    .style-2 {
+      margin: 0;
+      border: 0;
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+      border-bottom: 1px solid gray;
+      border-radius: 0;
     }
-    .register-h2{
-        font-size: 18px;
-        font-weight: bold;
+    .style-3 {
+      margin: 0;
+      border: 0;
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+      border-bottom: 1px solid gray;
+      border-radius: 0;
     }
-    .register-h3{
-        font-size: 15px;
-        text-align: justify;
-        text-justify: inter-word;
+    .style-4 {
+      margin: 0;
+      border: 0;
+      border: 1px solid black;
+      border-top: none;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
     }
-    form{
-        p{
-            text-align: justify;
-            text-justify: inter-word;
-        }
-        @include checkbox;
+    .gradient-buttons .btn {
+      background-image: linear-gradient(to bottom,rgb(247,223,161),rgb(240,193,77));
+      background-repeat: repeat-x;
     }
-    section{
-        .login{
-            text-align: justify;
-            text-justify: inter-word;   
-        }
+    p {
+      text-align: justify;
+      text-justify: inter-word;
     }
+    @include checkbox;
+  }
+  section {
+    .login {
+      text-align: justify;
+      text-justify: inter-word;
+    }
+  }
 }
