@@ -1,5 +1,5 @@
 @import "./variable";
-header{
+.headerlogin{
     margin: 0;
     padding: 0;
     border: 0;
@@ -12,5 +12,48 @@ header{
         padding-top : .4rem;
         font-size: 2rem;
         font-weight: bold;
+    }
+}
+.headersoft{
+    background-color: rgb(255,255,255);
+    border-bottom: 1px solid rgb(224,224,224);
+    position: fixed;
+    top: 0;
+    left:0;
+    width: 100%;
+    .row{
+        .col-10{
+            .input-group{
+                .input-group-prepend{
+                    .Searchbox1{
+                        background-color: white;
+                        border-right: none;
+                        margin-right: 0;
+                        background-color: rgb(238,238,238);
+                    }
+                }
+                .Searchbox2{
+                    border-left: none;
+                    margin-left:0;
+                    padding-left: 0;
+                    background-color: rgb(238,238,238);
+                }
+                .Searchbox2:focus{
+                    box-shadow: none;
+                    border-color: #ced4da;
+                }
+                .Searchbox2:focus ~ .input-group-text{
+                    border-color: blue;
+                }
+            }
+        }
+        .col-1{
+            .bellcontainer{
+                .bell{
+                    font-size: 1.2rem;
+                    color:rgb(45,45,45);
+                }
+            }
+        }
     }
 }

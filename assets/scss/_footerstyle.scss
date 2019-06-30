@@ -1,8 +1,35 @@
-.footer{
+.footerlogin{
     background:linear-gradient(to bottom,$bg-main,white);
     height: 4rem;
     .shadow{
         height: 3px;
         background-image: radial-gradient(rgb(223,223,223),rgb(234,234,234),rgb(246,246,246));
+    }
+}
+.footersoft{
+    background-color: rgb(255, 255,255);
+    border-top: 1px solid rgb(224, 224,224);
+    height: 4rem;
+    .justify-content-between{
+        .text-center{
+            display: inline;
+            margin: 0;
+            padding: 0;
+            a{
+                font-size: 0.7rem;
+                font-weight: bold;
+                i{
+                    font-size: 1.5rem;
+                    font-weight: 100;
+                }
+            }
+        }
+        .selected-book1{
+            border: 1px solid rgb(224, 224,224);
+            margin-top: -20px;
+            background-color: red;
+            width: 4rem;
+            height: 4.5rem;
+        }
     }
 }

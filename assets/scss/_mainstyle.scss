@@ -47,10 +47,12 @@
       border-top-left-radius: 0;
       border-top-right-radius: 0;
     }
-    .gradient-buttons .btn {
-      background-image: linear-gradient(to bottom,rgb(247,223,161),rgb(240,193,77));
-      background-repeat: repeat-x;
-    }
+    .gradient-buttons{
+      .btn-warning {
+        background-image: linear-gradient(to bottom,rgb(247,223,161),rgb(240,193,77));
+        background-repeat: repeat-x;
+      }
+    } 
     p {
       text-align: justify;
       text-justify: inter-word;
@@ -61,6 +63,79 @@
     .login {
       text-align: justify;
       text-justify: inter-word;
+    }
+  }
+}
+.mainsoft{
+  background: linear-gradient(to bottom ,rgb(244,244,244),rgb(255,255,255));
+  margin-top: 4rem;
+  scrollbar-color: transparent;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { 
+    display: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .slide-container1{
+    height: 12rem;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-top: 0.5rem;
+    scrollbar-width: 0;
+    &::-webkit-scrollbar { 
+      display: none; 
+    }
+    .slide-book{
+      width: 7.5rem;
+      height: 10rem;
+      background-color: yellow;
+      margin: 5px;
+      display: inline-block;
+    }
+  }
+}
+.more-main-menu{
+  scrollbar-color: transparent;
+  scrollbar-width: none;
+  margin-top: 4.2rem;
+  &::-webkit-scrollbar { 
+    display: none;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  a{
+    .row{
+      border-bottom: 1px solid rgb(227,227,227);
+      .col-1{
+        margin-left: 0;
+        padding-left: 0;
+        .icon-container{
+          margin-left: 0;
+          padding-left: 0;
+          i{
+            padding-top: 1.5rem;
+            font-weight: 100;
+            font-size: 1.2rem;
+            color: black;
+          }
+        }
+      }
+      .col-10{
+        .option{
+          font-weight: bold;
+          color: black;
+        }
+        h6{
+          font-weight: bold;
+          margin-top: 1rem;
+          margin-bottom: 1rem;
+          color: black;
+        }
+        .text-muted{
+          font-size: 0.7rem;
+        }
+      }
     }
   }
 }
