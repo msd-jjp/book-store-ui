@@ -1,4 +1,5 @@
-export enum EACTIONS{
-    LOGGED_IN="LOGGED_IN",
-    LOGGED_OUT="LOGGED_OUT", 
+export enum EACTIONS {
+    LOGGED_IN = "LOGGED_IN",
+    LOGGED_OUT = "LOGGED_OUT",
+    CHANGE_APP_FLAG = "CHANGE_APP_FLAG"
 }

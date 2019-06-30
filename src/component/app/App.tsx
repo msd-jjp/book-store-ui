@@ -1,6 +1,4 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { Store } from '../../redux/store';
 import { BrowserRouter as Router, Route, Switch, Redirect, HashRouter } from 'react-router-dom';
 import { Dashboard } from '../dashboard/Dashboard';
 import User from '../user/User';
@@ -44,18 +42,16 @@ class App extends React.Component<any, any> {
       document.body.classList.add('rtl');
     }
   }
-  // const App: React.FC = () => {
+
   render() {
     return (
-      <Provider store={Store}>
-        <div className="app">
-          <Router>
-            {appRoutes}
-          </Router>
-        </div>
-      </Provider>
+      <div className="app">
+        <Router>
+          {appRoutes}
+        </Router>
+      </div>
     );
   }
 }
 
-export /* default */ { App };
+export { App };

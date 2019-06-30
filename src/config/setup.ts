@@ -1,13 +1,21 @@
-interface IInternationalization_fa {
+
+export interface IInternationalization {
+    rtl: boolean;
+    language: string;
+    flag: string;
+}
+interface IInternationalization_fa extends IInternationalization {
     rtl: true;
     language: 'فارسی';
     flag: 'fa';
 }
-interface IInternationalization_en {
+interface IInternationalization_en extends IInternationalization {
     rtl: false;
     language: 'english';
     flag: 'en';
 }
+
+export type TInternationalization = IInternationalization_en | IInternationalization_fa;
 
 interface ISetup {
     endpoint: string;
@@ -22,7 +30,7 @@ interface ISetup {
         };
     };
     recordDefaultLoadLength: 10;
-    internationalization: IInternationalization_en | IInternationalization_fa;
+    internationalization: TInternationalization;
 }
 
 export const Setup: ISetup = {

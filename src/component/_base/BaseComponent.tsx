@@ -137,7 +137,7 @@ export class BaseComponent<P = {}, S = {}, SS = any> extends React.Component<P, 
       };
     } */
 
-    getNotifyConfig() {
+    getNotifyConfig(config?: any) {
         let obj = {
             position: "top-center",
             autoClose: Setup.notify.timeout.error,
@@ -149,6 +149,9 @@ export class BaseComponent<P = {}, S = {}, SS = any> extends React.Component<P, 
             draggable: true,
             pauseOnHover: true,
         }
+        obj = Object.assign(obj, config);
+        
+        return obj;
     }
 
 }

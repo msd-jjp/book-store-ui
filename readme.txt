@@ -21,9 +21,6 @@ craete envirenment
 
 ====================================================================================
 
-return to edit mobile then sms again --> 403
-sms count down
-
 redux add change flag & direction
 
 ====================================================================================
