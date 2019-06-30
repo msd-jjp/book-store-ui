@@ -3,7 +3,7 @@
 
 body.rtl {
   .Toastify__toast {
-    font-family: farsi, sans-serif;
+    font-family: $global-font-farsi;
   }
 }
 /* @import "~ng-snotify/styles/material";

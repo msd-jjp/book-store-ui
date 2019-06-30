@@ -2,7 +2,7 @@ body.rtl/* ,
 [dir="rtl"] */ {
   text-align: right;
   direction: rtl;
-  font-family: farsi, sans-serif;
+  font-family: $global-font-farsi;
 
   .nav {
     padding-right: 0;

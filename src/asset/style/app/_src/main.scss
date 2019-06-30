@@ -1,8 +1,9 @@
 @import "mixins/mixins";
 //
+$global-font-farsi: farsi, sans-serif;
+//
 @import "../../_global/global";
 //
-// $global-style-url: "/static/style/";
 $global-font-url: "/static/fonts";
 //
 @import "z-template/template";

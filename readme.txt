@@ -25,10 +25,6 @@ return to edit mobile then sms again --> 403
 sms count down
 
 redux add change flag & direction
-translation
---zoom ham ru browser baad baste beshe
-
-add $font-farsi & remove "farsi, sans-serif;"
 
 ====================================================================================
 
