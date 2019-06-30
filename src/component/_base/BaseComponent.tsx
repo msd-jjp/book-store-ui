@@ -30,7 +30,9 @@ export class BaseComponent<P = {}, S = {}, SS = any> extends React.Component<P, 
             obj = Object.assign({}, defaults, obj);
 
             const status = obj.error.status;
-            const SnotifyConfig = { timeout: obj.timeout || Setup.notify.timeout.error };
+            // 
+            // const SnotifyConfig = { timeout: obj.timeout || Setup.notify.timeout.error };
+
             let notifyBody; // = this._translateService.instant('msg.UI.msg5');
             // const notifyTitle = obj.title || status; // note: remove status later
             let notifyTitle;

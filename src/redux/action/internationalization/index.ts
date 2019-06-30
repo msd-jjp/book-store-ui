@@ -1,6 +1,6 @@
 import { InternationalizationAction } from "./InternationalizationAction";
 import { EACTIONS } from "../../ActionEnum";
-import { IInternationalization, TInternationalization } from "../../../config/setup";
+import { TInternationalization } from "../../../config/setup";
 
 export function action_change_app_flag(internationalization: TInternationalization): InternationalizationAction {
     return {

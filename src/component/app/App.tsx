@@ -10,8 +10,13 @@ import { Register } from '../register/Register';
 import NotFound from '../layout/main/not-found/NotFound';
 import { RouteLayoutMain } from '../layout/main/Main';
 import { RouteLayoutAccount } from '../layout/account/Account';
-import { Setup } from '../../config/setup';
+import { TInternationalization } from '../../config/setup';
 import { Localization } from '../../config/localization/localization';
+
+import { MapDispatchToProps, connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { redux_state } from '../../redux/app_state';
+import { action_change_app_flag } from '../../redux/action/internationalization';
 
 const appRoutes = (
   <HashRouter>
@@ -32,13 +37,16 @@ const appRoutes = (
   </HashRouter>
 );
 
-class App extends React.Component<any, any> {
+class AppComponent extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
 
     document.title = Localization.app_title;
 
-    if (Setup.internationalization.rtl) {
+    /* if (Setup.internationalization.rtl) {
+      document.body.classList.add('rtl');
+    } */
+    if (props.internationalization.rtl) {
       document.body.classList.add('rtl');
     }
   }
@@ -54,4 +62,17 @@ class App extends React.Component<any, any> {
   }
 }
 
-export { App };
+
+const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
+  return {
+    change_app_flag: (internationalization: TInternationalization) => dispatch(action_change_app_flag(internationalization)),
+  }
+}
+
+const state2props = (state: redux_state) => {
+  return {
+    internationalization: state.internationalization
+  }
+}
+
+export const App = connect(state2props, dispatch2props)(AppComponent);
