@@ -23,7 +23,7 @@ class DashboardComponent extends React.Component<IProps, any> {
 
                 <div className="row">
                     <div className="col-md-3 offset-md-6">
-                        <span>{JSON.stringify(this.props.logged_in_user)}</span>
+                        <pre>{JSON.stringify(this.props.logged_in_user)}</pre>
                         {
                             this.props.logged_in_user &&
                             <div className="btn btn-light" onClick={() => this.logOut()}>log out</div>

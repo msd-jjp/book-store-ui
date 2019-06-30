@@ -5,6 +5,7 @@ import { fa } from './fa';
 import { en } from './en';
 
 interface ILocalization extends LocalizedStringsMethods {
+    [key: string]: any;
     login: string;
     register: String;
     sign_in: string;
@@ -13,9 +14,15 @@ interface ILocalization extends LocalizedStringsMethods {
     sign_in_bookstore_account: string;
     forgot_password: string;
     msg: {
-        msg1: string;
-        msg2: string;
-        msg3: string;
+        ui: {
+            msg1: string;
+            msg2: string;
+            msg3: string;
+        },
+        back: {
+            msg1: string;
+            msg2: string;
+        }
     };
     validation: {
         minLength: string;
@@ -47,6 +54,9 @@ interface ILocalization extends LocalizedStringsMethods {
     verification_code_sended_via_sms_submit_here: string;
     verification_code: string;
     create_an_account: string;
+    send_again: string;
+    in: string;
+    second: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

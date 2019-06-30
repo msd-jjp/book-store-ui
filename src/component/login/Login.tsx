@@ -60,9 +60,10 @@ class LoginComponent extends React.Component<IProps, LoginState> {
             this.setState({ ...this.state, btnLoader: false });
         });
 
-        let user: any; // IUser | void;
+        // let user: any; // IUser | void;
+        let response: any;
         if (tokenObj) {
-            user = await this._loginService.profile(tokenObj.data.id).catch((error) => {
+            response = await this._loginService.profile(tokenObj.data.id).catch((error) => {
                 debugger;
                 this.errorNotify();
                 // this.setState({ ...this.state, btnLoader: false });
@@ -70,8 +71,8 @@ class LoginComponent extends React.Component<IProps, LoginState> {
         }
         this.setState({ ...this.state, btnLoader: false });
 
-        if (user) {
-            this.props.onUserLoggedIn && this.props.onUserLoggedIn(user);
+        if (response) {
+            this.props.onUserLoggedIn && this.props.onUserLoggedIn(response.data);
             this.props.history.push('/dashboard');
         }
     }
@@ -97,7 +98,7 @@ class LoginComponent extends React.Component<IProps, LoginState> {
 
     errorNotify() {
         // return toast("Wow so easy !");
-        return toast.error(Localization.msg.msg2, {
+        return toast.error(Localization.msg.ui.msg2, {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
@@ -167,10 +168,8 @@ class LoginComponent extends React.Component<IProps, LoginState> {
                         {Localization.formatString(
                             Localization.login_agree_msg.a,
                             <span>{Localization.login_agree_msg.b}</span>,
-                            <span>{Localization.login_agree_msg.c}</span>)
-                        }
-                        {/* By tapping "Sign in" you agree to the */}
-                        {/* <span>Bookstore Content</span> <span>and Software Terms of Use</span> */}
+                            <span>{Localization.login_agree_msg.c}</span>
+                        )}
                     </p>
                     <p>
                         {Localization.new_to_Bookstore} &nbsp;

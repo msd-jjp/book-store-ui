@@ -7,9 +7,15 @@ export const en = {
     sign_in_bookstore_account: 'sign in with your bookstore account',
     forgot_password: 'forgot password?',
     msg: {
-        msg1: 'action succeeded',
-        msg2: 'error occurred',
-        msg3: 'registered successfully, we redirect you to login page.',
+        ui: {
+            msg1: 'action succeeded',
+            msg2: 'error occurred',
+            msg3: 'registered successfully, we redirect you to login page.',
+        },
+        back: {
+            msg1: 'sending sms will active for you in {0} second',
+            msg2: 'code is wrong.'
+        }
     },
     validation: {
         minLength: 'min length {value} character',
@@ -41,4 +47,7 @@ export const en = {
     verification_code_sended_via_sms_submit_here: 'verification code sended via sms, submit here.',
     verification_code: 'verification code',
     create_an_account: 'create an account',
+    send_again: 'send again',
+    in: 'in',
+    second: 'second',
 }

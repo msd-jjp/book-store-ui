@@ -34,7 +34,7 @@ class LayoutMainHeaderComponent extends React.Component<any> {
             <>
                 {
                     this.props.logged_in_user &&
-                    <span>{JSON.stringify(this.props.logged_in_user)}</span>
+                    <span>{JSON.stringify(this.props.logged_in_user.username)}</span>
                 }
                 {
                     this.props.logged_in_user &&

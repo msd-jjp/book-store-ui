@@ -47,6 +47,9 @@ interface IState {
     };
     isFormValid: boolean;
     btnLoader: boolean;
+    sendAgain_counter: number;
+    btnSendAgain_loader: boolean;
+    sendAgain_interval: any;
 }
 type TInputType = 'username' | 'password' | 'name' | 'code' | 'mobile' | 'confirmPassword';
 type TInputElType = 'inputElUsername' | 'inputElPassword' |
@@ -57,7 +60,7 @@ interface IProps {
     history: any;
 }
 
-class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<any, IState> */ {
+class RegisterComponent extends BaseComponent<IProps, IState> {
     // props: IProps;
     state: IState = {
         registerStep: REGISTER_STEP.submit_mobile,
@@ -86,7 +89,10 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
             isValid: false,
         },
         isFormValid: false,
-        btnLoader: false
+        btnLoader: false,
+        sendAgain_counter: 0,
+        btnSendAgain_loader: false,
+        sendAgain_interval: undefined
     };
     inputElUsername!: HTMLInputElement;
     inputElPassword!: HTMLInputElement;
@@ -203,29 +209,77 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         if (!this.state.isFormValid) { return; }
         this.setState({ ...this.state, btnLoader: true });
         let res = await this._registerService.sendCode({ cell_no: this.state.mobile.value! })
-            .catch(e => {
+            .catch(error => {
+                debugger;
+                let time = ((error.response || {}).data || {}).time;
+                if (time) {
+                    let msg: any = Localization.formatString(Localization.msg.back.msg1, time);
+                    this.errorNotify(msg);
+
+                } else {
+                    this.errorNotify();
+                }
+            });
+
+        if (!res) {
+            this.setState({ ...this.state, btnLoader: false });
+            return;
+        }
+
+        let time = res.data.time;
+
+        this.setState(
+            {
+                ...this.state,
+                btnLoader: false,
+                registerStep: REGISTER_STEP.validate_mobile,
+                isFormValid: false,
+                sendAgain_counter: time
+            },
+            () => {
+                this.focusOnInput('inputElCode');
+                this.start_sendAgain_counter();
+            }
+        );
+    }
+    async sendAgain() {
+        this.setState({ ...this.state, btnSendAgain_loader: true });
+        let res = await this._registerService.sendCode({ cell_no: this.state.mobile.value! })
+            .catch(error => {
                 debugger;
                 this.errorNotify();
             });
 
-        this.setState({ ...this.state, btnLoader: false });
-        if (!res) return;
+        if (!res) {
+            this.setState({ ...this.state, btnSendAgain_loader: false });
+            return;
+        }
 
-        // let smsCode = res.data.message;
-        // alert(smsCode);
+        let time = res.data.time;
+
         this.setState(
             {
                 ...this.state,
-                registerStep: REGISTER_STEP.validate_mobile,
-                isFormValid: false
+                btnSendAgain_loader: false,
+                sendAgain_counter: time
             },
-            () => this.focusOnInput('inputElCode')
+            () => {
+                this.focusOnInput('inputElCode');
+                this.start_sendAgain_counter();
+            }
         );
     }
-    server_getCode() {
-        // check if counter is 0; 60 --> 0
-        // send again else wait
+
+    start_sendAgain_counter() {
+        this.state.sendAgain_interval = setInterval(() => {
+            if (this.state.sendAgain_counter === 0) {
+                clearInterval(this.state.sendAgain_interval);
+                return;
+            }
+            this.setState({ ...this.state, sendAgain_counter: this.state.sendAgain_counter - 1 });
+        }, 1000);
     }
+
     validate_mobile_render() {
         if (this.state.registerStep === REGISTER_STEP.validate_mobile) {
             return (
@@ -266,8 +320,24 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
                             </BtnLoader>
                         </div>
                     </div>
-                    {/* todo */}
-                    {/* <small><span>send again</span> <span>38</span></small> */}
+
+                    <BtnLoader
+                        btnClassName="btn btn-link btn-sm"
+                        loading={this.state.btnSendAgain_loader}
+                        onClick={() => this.sendAgain()}
+                        disabled={this.state.sendAgain_counter > 0}
+                    >
+                        {Localization.send_again}
+                    </BtnLoader>
+                    {
+                        this.state.sendAgain_counter > 0 &&
+                        <small>
+                            <span>{Localization.in}</span>&nbsp;
+                            <span>{this.state.sendAgain_counter}</span>&nbsp;
+                            <span>{Localization.second}</span>
+                        </small>
+                    }
+
                 </>
             )
         }
@@ -392,8 +462,9 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         this.signUpNotify();
     }
 
-    errorNotify() {
-        return toast.error(Localization.msg.msg2, {
+    errorNotify(msg?: string) {
+        msg = msg || Localization.msg.ui.msg2;
+        return toast.error(msg, {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
@@ -403,7 +474,7 @@ class RegisterComponent extends BaseComponent<IProps, IState>/* React.Component<
         });
     }
     signUpNotify() {
-        return toast.success(Localization.msg.msg3, {
+        return toast.success(Localization.msg.ui.msg3, {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
