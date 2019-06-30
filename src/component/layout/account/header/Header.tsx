@@ -14,5 +14,3 @@ class LayoutAccountHeaderComponent extends React.Component<any>{
 }
 
 export const LayoutAccountHeader = LayoutAccountHeaderComponent;
-
-// export { LayoutAccountHeader };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { LayoutAccountHeader } from './header/Header';
+import { LayoutAccountFooter } from './footer/Footer';
 
 export const RouteLayoutAccount = ({ component: Component, ...rest }: { [key: string]: any }) => {
     return (
@@ -25,6 +26,7 @@ class LayoutAccountComponent extends React.Component<any> {
                             </div>
                         </div>
                     </main>
+                    <LayoutAccountFooter />
                 </div>
             </>
         )

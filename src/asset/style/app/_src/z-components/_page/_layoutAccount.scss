@@ -45,13 +45,24 @@
             margin-top: 0;
             margin: 0px 1px;
             // width: calc(100% - 2px);
-            @include calc(width, '100% - 2px');
+            @include calc(width, "100% - 2px");
           }
         }
         .separator {
           border-top: 1px solid $template-border-color;
         }
       }
+    }
+  }
+
+  .footer {
+    background: -webkit-gradient(linear, left top, left bottom, from(#f6f6f6), to(white));
+    background: linear-gradient(to bottom, #f6f6f6, white);
+    height: 4rem;
+
+    .shadow {
+      height: 3px;
+      background-image: radial-gradient(#dfdfdf, #eaeaea, #f6f6f6);
     }
   }
 }
