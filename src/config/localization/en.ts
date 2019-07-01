@@ -13,8 +13,25 @@ export const en = {
             msg3: 'registered successfully, we redirect you to login page.',
         },
         back: {
-            msg1: 'sending sms will active for you in {0} second',
-            msg2: 'code is wrong.'
+            msg1: 'user already exists',
+            msg2: 'your activation code has expired, please click resend to reseive new one.',
+            msg3: 'activation code is invalid',
+            msg4: 'sending sms will active for you in {0} second',
+            msg5: 'error occuerd while sending sms, please try again.',
+            msg6: 'cell number is required',
+            msg7: 'message sent to cell number successfully',
+            msg8: 'username already exists.please choose another one',
+            msg9: 'Your registration has expired, please start the registration process from the beginning.',
+            msg10: 'Your registration has expired, please start the registration process from the beginning.',
+
+            msg11: 'token invalid',
+            msg12: 'token expired',
+            msg13: 'deleting failed',
+            msg14: 'getting failed',
+            msg15: 'Authentication decoding failed',
+            msg16: 'commiting to database failed',
+            msg17: 'no auth found',
+            msg18: 'username or password is not valid',
         }
     },
     validation: {

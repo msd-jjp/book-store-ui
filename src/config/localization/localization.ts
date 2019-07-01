@@ -22,6 +22,22 @@ interface ILocalization extends LocalizedStringsMethods {
         back: {
             msg1: string;
             msg2: string;
+            msg3: string;
+            msg4: string;
+            msg5: string;
+            msg6: string;
+            msg7: string;
+            msg8: string;
+            msg9: string;
+            msg10: string;
+            msg11: string;
+            msg12: string;
+            msg13: string;
+            msg14: string;
+            msg15: string;
+            msg16: string;
+            msg17: string;
+            msg18: string;
         }
     };
     validation: {

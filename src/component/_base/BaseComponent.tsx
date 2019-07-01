@@ -1,5 +1,5 @@
 import React from 'react';
-import { Setup } from '../../config/setup';
+import { Setup, TInternationalization } from '../../config/setup';
 import { Localization } from '../../config/localization/localization';
 
 interface IHandleError {
@@ -15,7 +15,11 @@ interface IHandleErrorResolve {
     body: string | undefined;
 }
 
-export class BaseComponent<P = {}, S = {}, SS = any> extends React.Component<P, S, SS> {
+interface IBaseProps {
+    internationalization: TInternationalization;
+}
+
+export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> extends React.Component<p, S, SS> {
 
     async handleError(obj: IHandleError): Promise<IHandleErrorResolve> {
         return new Promise<any>(resolve => {
@@ -118,27 +122,6 @@ export class BaseComponent<P = {}, S = {}, SS = any> extends React.Component<P, 
         });
     }
 
-    /* getSnotifyConfig(config?): SnotifyToastConfig {
-      config = config || {};
-      this._snotifyService.setDefaults({
-        global: {
-          newOnTop: this._appSetup.snotifyConfigObj.newTop,
-          maxAtPosition: this._appSetup.snotifyConfigObj.blockMax,
-          maxOnScreen: this._appSetup.snotifyConfigObj.dockMax
-        }
-      });
-      return {
-        bodyMaxLength: this._appSetup.snotifyConfigObj.bodyMaxLength,
-        titleMaxLength: this._appSetup.snotifyConfigObj.titleMaxLength,
-        backdrop: this._appSetup.snotifyConfigObj.backdrop,
-        position: this._appSetup.snotifyConfigObj.position,
-        timeout: config.timeout || this._appSetup.snotifyConfigObj.timeout,
-        showProgressBar: this._appSetup.snotifyConfigObj.progressBar,
-        closeOnClick: this._appSetup.snotifyConfigObj.closeClick,
-        pauseOnHover: this._appSetup.snotifyConfigObj.pauseHover
-      };
-    } */
-
     getNotifyConfig(config?: any) {
         let obj = {
             position: "top-center",
@@ -146,13 +129,13 @@ export class BaseComponent<P = {}, S = {}, SS = any> extends React.Component<P, 
             hideProgressBar: false,
             newestOnTop: true,
             closeOnClick: true,
-            rtl: false,
+            rtl: this.props.internationalization.rtl,
             pauseOnVisibilityChange: true,
             draggable: true,
             pauseOnHover: true,
         }
         obj = Object.assign(obj, config);
-        
+
         return obj;
     }
 

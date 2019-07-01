@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input } from '../form/input/Input';
 import { RegisterService } from '../../service/service.register';
-import { Setup } from '../../config/setup';
+import { Setup, TInternationalization } from '../../config/setup';
 import { BaseComponent } from '../_base/BaseComponent';
 import { ToastContainer, toast } from 'react-toastify';
 import { redux_state } from '../../redux/app_state';
@@ -58,6 +58,7 @@ type TInputElType = 'inputElUsername' | 'inputElPassword' |
 interface IProps {
     onUserLoggedIn?: (user: IUser) => void;
     history: any;
+    internationalization: TInternationalization;
 }
 
 class RegisterComponent extends BaseComponent<IProps, IState> {
@@ -213,7 +214,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                 debugger;
                 let time = ((error.response || {}).data || {}).time;
                 if (time) {
-                    let msg: any = Localization.formatString(Localization.msg.back.msg1, time);
+                    let msg: any = Localization.formatString(Localization.msg.back.msg4, time);
                     this.errorNotify(msg);
 
                 } else {
@@ -519,7 +520,9 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
 }
 
 const state2props = (state: redux_state) => {
-    return {}
+    return {
+        internationalization: state.internationalization
+    }
 }
 
 const dispatch2props = (dispatch: Dispatch) => {

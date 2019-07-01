@@ -10,10 +10,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Localization } from '../../config/localization/localization';
 import { NavLink } from 'react-router-dom';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
+import { BaseComponent } from '../_base/BaseComponent';
+import { TInternationalization } from '../../config/setup';
 
 type inputType = 'username' | 'password';
 
-interface LoginState {
+interface IState {
     username: {
         value: string | undefined;
         isValid: boolean;
@@ -29,10 +31,11 @@ interface LoginState {
 interface IProps {
     onUserLoggedIn?: (user: IUser) => void;
     history: any;
+    internationalization: TInternationalization;
 }
 
-class LoginComponent extends React.Component<IProps, LoginState> {
-    state: LoginState = {
+class LoginComponent extends BaseComponent<IProps, IState> {
+    state: IState = {
         username: { value: undefined, isValid: false },
         password: { value: undefined, isValid: false },
         isFormValid: false,
@@ -187,7 +190,9 @@ class LoginComponent extends React.Component<IProps, LoginState> {
 
 //#region redux
 const state2props = (state: redux_state) => {
-    return {}
+    return {
+        internationalization: state.internationalization
+    }
 }
 
 const dispatch2props = (dispatch: Dispatch) => {
