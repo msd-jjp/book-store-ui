@@ -7,6 +7,7 @@ import { IUser } from '../../model/model.user';
 import { TInternationalization } from '../../config/setup';
 import { action_change_app_flag } from '../../redux/action/internationalization';
 import { Localization } from '../../config/localization/localization';
+import { BaseComponent } from '../_base/BaseComponent';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -16,7 +17,7 @@ export interface IProps {
     internationalization: TInternationalization;
 }
 
-class DashboardComponent extends React.Component<IProps, any> {
+class DashboardComponent extends BaseComponent<IProps, any> {
 
     logOut() {
         debugger;

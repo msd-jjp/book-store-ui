@@ -31,7 +31,8 @@ const appRoutes = (
 
       <RouteLayoutAccount path="/login" component={Login} />
       <RouteLayoutAccount path="/register" component={Register} />
-      <Route component={NotFound} />
+      {/* <Route component={NotFound} /> */}
+      <RouteLayoutMain component={NotFound} />
 
     </Switch>
   </HashRouter>

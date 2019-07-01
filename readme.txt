@@ -3,6 +3,7 @@ npm i axios
 npm i redux react-redux @types/react-redux
 npm i react-toastify
 npm i react-localization
+npm i react-slick
 
 ====================================================================================
 
