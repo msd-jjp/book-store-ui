@@ -154,7 +154,7 @@ class LoginComponent extends React.Component<IProps, LoginState> {
 
                     <div className="form-group">
                         <BtnLoader
-                            btnClassName="btn btn-warning btn-block"
+                            btnClassName="btn btn-warning btn-block btn-account"
                             loading={this.state.btnLoader}
                             onClick={() => this.onLogin()}
                             disabled={!this.state.isFormValid}

@@ -192,7 +192,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                         </div>
                         <div className="form-group">
                             <BtnLoader
-                                btnClassName="btn btn-warning btn-block"
+                                btnClassName="btn btn-warning btn-block btn-account"
                                 loading={this.state.btnLoader}
                                 onClick={() => this.onSubmit_mobile()}
                                 disabled={!this.state.isFormValid}
@@ -311,7 +311,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                         </div>
                         <div className="form-group">
                             <BtnLoader
-                                btnClassName="btn btn-warning btn-block"
+                                btnClassName="btn btn-warning btn-block btn-account"
                                 loading={this.state.btnLoader}
                                 onClick={() => this.onValidate_mobile()}
                                 disabled={!this.state.isFormValid}
@@ -422,7 +422,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
 
                         <div className="form-group">
                             <BtnLoader
-                                btnClassName="btn btn-warning btn-block"
+                                btnClassName="btn btn-warning btn-block btn-account"
                                 loading={this.state.btnLoader}
                                 onClick={() => this.onRegister()}
                                 disabled={!this.state.isFormValid}

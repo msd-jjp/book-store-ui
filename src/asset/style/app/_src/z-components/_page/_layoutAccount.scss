@@ -52,6 +52,11 @@
           border-top: 1px solid $template-border-color;
         }
       }
+      .btn-account {
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#f7dfa1), to(#f0c14d));
+        background-image: linear-gradient(to bottom, #f7dfa1, #f0c14d);
+        background-repeat: repeat-x;
+      }
     }
   }
 
