@@ -212,14 +212,15 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         let res = await this._registerService.sendCode({ cell_no: this.state.mobile.value! })
             .catch(error => {
                 debugger;
-                let time = ((error.response || {}).data || {}).time;
+                this.handleError({ error: error.response });
+                /* let time = ((error.response || {}).data || {}).time;
                 if (time) {
                     let msg: any = Localization.formatString(Localization.msg.back.msg4, time);
                     this.errorNotify(msg);
 
                 } else {
                     this.errorNotify();
-                }
+                } */
             });
 
         if (!res) {
@@ -248,7 +249,8 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         let res = await this._registerService.sendCode({ cell_no: this.state.mobile.value! })
             .catch(error => {
                 debugger;
-                this.errorNotify();
+                // this.errorNotify();
+                this.handleError({ error: error.response });
             });
 
         if (!res) {
@@ -348,9 +350,10 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         this.setState({ ...this.state, btnLoader: true });
         let response = await this._registerService.activateAcount(
             { cell_no: this.state.mobile.value!, activation_code: this.state.code.value! }
-        ).catch(e => {
+        ).catch(error => {
             debugger;
-            this.errorNotify();
+            // this.errorNotify();
+            this.handleError({ error: error.response });
         });
         this.setState({ ...this.state, btnLoader: false });
         if (!response) return;
@@ -453,9 +456,9 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
             // },
             "cell_no": this.state.mobile.value!,
             "signup_token": this.signup_token,
-        }).catch((e: any) => {
+        }).catch((error: any) => {
             debugger;
-            this.errorNotify();
+            this.handleError({ error: error.response });
         });
         this.setState({ ...this.state, btnLoader: false });
 
@@ -463,27 +466,14 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         this.signUpNotify();
     }
 
-    errorNotify(msg?: string) {
-        msg = msg || Localization.msg.ui.msg2;
-        return toast.error(msg, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-        });
-    }
     signUpNotify() {
-        return toast.success(Localization.msg.ui.msg3, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            onClose: this.onSignUpNotifyClosed.bind(this)
-        });
+        return toast.success(
+            Localization.msg.ui.msg3,
+            this.getNotifyConfig({
+                autoClose: Setup.notify.timeout.success,
+                onClose: this.onSignUpNotifyClosed.bind(this)
+            })
+        );
     }
     onSignUpNotifyClosed() {
         this.props.history.push('/login');
@@ -492,7 +482,6 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
     render() {
         return (
             <>
-
                 {(() => {
                     switch (this.state.registerStep) {
                         case REGISTER_STEP.submit_mobile:
@@ -513,7 +502,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                     </p>
                 </section>
 
-                <ToastContainer />
+                <ToastContainer {...this.getNotifyContainerConfig()} />
             </>
         )
     }

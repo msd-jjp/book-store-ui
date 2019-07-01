@@ -5,7 +5,7 @@ import { fa } from './fa';
 import { en } from './en';
 
 interface ILocalization extends LocalizedStringsMethods {
-    [key: string]: any;
+    [key: string]: any; // todo
     login: string;
     register: String;
     sign_in: string;
@@ -15,11 +15,13 @@ interface ILocalization extends LocalizedStringsMethods {
     forgot_password: string;
     msg: {
         ui: {
+            [key: string]: any; // todo
             msg1: string;
             msg2: string;
             msg3: string;
         },
         back: {
+            [key: string]: any; // todo
             msg1: string;
             msg2: string;
             msg3: string;

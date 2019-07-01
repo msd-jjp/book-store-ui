@@ -6,7 +6,7 @@ import { Dispatch } from 'redux';
 import { IUser } from '../../model/model.user';
 import { action_user_logged_in } from '../../redux/action/user';
 import { connect } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { Localization } from '../../config/localization/localization';
 import { NavLink } from 'react-router-dom';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
@@ -59,7 +59,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
             password: this.state.password.value!
         }).catch((error) => {
             debugger;
-            this.errorNotify();
+            this.handleError({error:error.response});
             this.setState({ ...this.state, btnLoader: false });
         });
 
@@ -68,8 +68,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
         if (tokenObj) {
             response = await this._loginService.profile(tokenObj.data.id).catch((error) => {
                 debugger;
-                this.errorNotify();
-                // this.setState({ ...this.state, btnLoader: false });
+                this.handleError({error:error.response});
             });
         }
         this.setState({ ...this.state, btnLoader: false });
@@ -99,7 +98,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    errorNotify() {
+    /* errorNotify() {
         // return toast("Wow so easy !");
         return toast.error(Localization.msg.ui.msg2, {
             position: "top-center",
@@ -109,7 +108,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
             pauseOnHover: true,
             draggable: true,
         });
-    }
+    } */
 
     render() {
         // const handleInputChange = this.handleInputChange.bind(this);
@@ -182,7 +181,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
                     </p>
                 </section>
 
-                <ToastContainer />
+                <ToastContainer {...this.getNotifyContainerConfig()} />
             </>
         )
     }

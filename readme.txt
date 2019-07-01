@@ -29,3 +29,13 @@ valid number:
 Unhandled Rejection (InvalidCharacterError):
     Failed to execute 'btoa' on 'Window':
         The string to be encoded contains characters outside of the Latin1 range.
+
+====================================================================================
+
+cancel request in cmpWillUnmount
+https://github.com/axios/axios#cancellation
+https://github.com/axios/axios/issues/1361
+
+====================================================================================
+
+====================================================================================
