@@ -22,6 +22,8 @@
   }
 
   .main {
+    @include calc(min-height, "100vh - 8rem");
+
     .title {
       font-weight: bold;
     }
