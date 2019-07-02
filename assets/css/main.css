@@ -10993,6 +10993,23 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   display: inline-block;
 }
 
+.mainsoft .selectd-book .row .col-4 .user-book .img {
+  width: 7.5rem;
+  height: 10rem;
+  background-color: yellow;
+  display: inline-block;
+}
+
+.mainsoft .selectd-book .row .col-4 .user-book .down-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #111;
+  opacity: 0.9;
+  margin-top: -8.5rem;
+  display: inline-block;
+}
+
 .more-main-menu {
   scrollbar-color: transparent;
   scrollbar-width: none;
@@ -11061,6 +11078,7 @@ a.text-jamejam:hover, a.text-jamejam:focus {
 
 .footersoft .justify-content-between .text-center {
   display: inline;
+  width: 20%;
   margin: 0;
   padding: 0;
 }
@@ -11068,18 +11086,25 @@ a.text-jamejam:hover, a.text-jamejam:focus {
 .footersoft .justify-content-between .text-center a {
   font-size: 0.7rem;
   font-weight: bold;
+  word-wrap: break-word;
 }
 
 .footersoft .justify-content-between .text-center a i {
   font-size: 1.5rem;
   font-weight: 100;
+  display: block;
 }
 
 .footersoft .justify-content-between .selected-book1 {
   border: 1px solid #e0e0e0;
   margin-top: -20px;
   background-color: red;
-  width: 4rem;
+  width: 3rem;
+  height: 4.5rem;
+}
+
+.footersoft .justify-content-between .selected-book1 .nav-link .selected-book2 {
+  width: 3rem;
   height: 4.5rem;
 }
 /*# sourceMappingURL=main.css.map */

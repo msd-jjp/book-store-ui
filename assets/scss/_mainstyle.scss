@@ -94,6 +94,32 @@
       display: inline-block;
     }
   }
+  .selectd-book{
+    .row{
+      .col-4{
+        .user-book{
+          .up-icon{
+
+          }
+          .img{
+            width: 7.5rem;
+            height: 10rem;
+            background-color: yellow;
+            display: inline-block;
+          }
+          .down-icon{
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background-color: #111;
+            opacity: 0.9;
+            margin-top: -8.5rem;
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
 }
 .more-main-menu{
   scrollbar-color: transparent;

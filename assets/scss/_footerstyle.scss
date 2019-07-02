@@ -13,14 +13,17 @@
     .justify-content-between{
         .text-center{
             display: inline;
+            width: 20%;
             margin: 0;
             padding: 0;
             a{
                 font-size: 0.7rem;
                 font-weight: bold;
+                word-wrap: break-word;
                 i{
                     font-size: 1.5rem;
                     font-weight: 100;
+                    display: block;
                 }
             }
         }
@@ -28,8 +31,14 @@
             border: 1px solid rgb(224, 224,224);
             margin-top: -20px;
             background-color: red;
-            width: 4rem;
+            width: 3rem;
             height: 4.5rem;
+            .nav-link{
+                .selected-book2{
+                    width: 3rem;
+                    height: 4.5rem;
+                }
+            }
         }
     }
 }
