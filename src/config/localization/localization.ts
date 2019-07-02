@@ -81,6 +81,10 @@ interface ILocalization extends LocalizedStringsMethods {
     library: string;
     store: string;
     more: string;
+    recomended_for_you: string;
+    new_release_in_bookstore: string;
+    more_by_writer: string;
+
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

@@ -73,4 +73,7 @@ export const en = {
     library: 'library',
     store: 'store',
     more: 'more',
+    recomended_for_you: 'recomended for you',
+    new_release_in_bookstore: 'new release in bookstore',
+    more_by_writer: 'more by {0}',
 }

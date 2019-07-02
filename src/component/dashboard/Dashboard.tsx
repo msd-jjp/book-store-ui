@@ -8,6 +8,7 @@ import { TInternationalization } from '../../config/setup';
 import { action_change_app_flag } from '../../redux/action/internationalization';
 import { BaseComponent } from '../_base/BaseComponent';
 import Slider from 'react-slick';
+import { Localization } from '../../config/localization/localization';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -31,9 +32,9 @@ class DashboardComponent extends BaseComponent<IProps, any> {
     };
 
     bookListCategory = [
-        'recomended for you',
-        'new release in bookstore',
-        'more by helen hard'
+        'recomended_for_you',
+        'new_release_in_bookstore',
+        'more_by_writer'
     ]
 
     clickk(x: any, i: any) {
@@ -51,7 +52,13 @@ class DashboardComponent extends BaseComponent<IProps, any> {
 
                     {this.bookListCategory.map((category, cat_i) => (
                         <div key={cat_i} className="booklist-wrapper mt-3">
-                            <h6 className="title">{category}</h6>
+                            <h6 className="title">
+                                {
+                                    category === 'more_by_writer' ?
+                                        Localization.formatString(Localization.more_by_writer, 'هلن هارد') :
+                                        Localization[category]
+                                }
+                            </h6>
                             <div className="app-carousel">
                                 <Slider {...this.sliderSetting} >
                                     {aa.map((x, i) => (
