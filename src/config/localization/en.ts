@@ -68,4 +68,9 @@ export const en = {
     send_again_activationCode: 'send again activation code',
     in: 'in',
     second: 'second',
+    search: 'search',
+    home: 'home',
+    library: 'library',
+    store: 'store',
+    more: 'more',
 }

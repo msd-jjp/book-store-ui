@@ -68,4 +68,9 @@ export const fa = {
     send_again_activationCode: 'ارسال مجدد کد فعالسازی',
     in: 'در',
     second: 'ثانیه',
+    search: 'جستجو',
+    home: 'خانه',
+    library: 'کتابخانه',
+    store: 'فروشگاه',
+    more: 'بیشتر',
 }

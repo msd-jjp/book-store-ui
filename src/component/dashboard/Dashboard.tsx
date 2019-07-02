@@ -6,8 +6,8 @@ import { redux_state } from '../../redux/app_state';
 import { IUser } from '../../model/model.user';
 import { TInternationalization } from '../../config/setup';
 import { action_change_app_flag } from '../../redux/action/internationalization';
-import { Localization } from '../../config/localization/localization';
 import { BaseComponent } from '../_base/BaseComponent';
+import Slider from 'react-slick';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -18,58 +18,58 @@ export interface IProps {
 }
 
 class DashboardComponent extends BaseComponent<IProps, any> {
+    sliderSetting = {
+        dots: false,
+        // swipe: false,
+        infinite: false,
+        className: "center2",
+        //centerPadding: "60px",
+        centerPadding: '40px',
+        slidesToShow: 3,
+        swipeToSlide: true,
+        rtl: this.props.internationalization.rtl
+    };
 
-    logOut() {
+    bookListCategory = [
+        'recomended for you',
+        'new release in bookstore',
+        'more by helen hard'
+    ]
+
+    clickk(x: any, i: any) {
         debugger;
-        this.props.do_logout && this.props.do_logout();
-    }
-    change() {
-        debugger;
-        if (this.props.internationalization.rtl) {
-            document.body.classList.remove('rtl');
-            Localization.setLanguage('en');
-            this.props.change_app_flag && this.props.change_app_flag({
-                rtl: false,
-                language: 'english',
-                flag: 'en',
-            });
-        } else {
-            document.body.classList.add('rtl');
-            Localization.setLanguage('fa');
-            this.props.change_app_flag && this.props.change_app_flag({
-                rtl: true,
-                language: 'فارسی',
-                flag: 'fa',
-            });
-        }
     }
     render() {
+
+        let aa: any[] = [];
+        for (let i = 0; i < 20; i++) { aa.push(i); }
+
         return (
             <>
 
-                <div className="row">
-                    <div className="col-md-3 offset-md-6">
-                        <pre>{JSON.stringify(this.props.logged_in_user)}</pre>
-                        {
-                            this.props.logged_in_user &&
-                            <div className="btn btn-light" onClick={() => this.logOut()}>log out</div>
-                        }
+                <div className="booklistCategory-wrapper mt-3">
 
+                    {this.bookListCategory.map((category, cat_i) => (
+                        <div key={cat_i} className="booklist-wrapper mt-3">
+                            <h6 className="title">{category}</h6>
+                            <div className="app-carousel">
+                                <Slider {...this.sliderSetting} >
+                                    {aa.map((x, i) => (
+                                        <div key={i} className="item" onClick={() => this.clickk(x, i)}>
+                                            <img
+                                                src="static/media/img/sample-book.png"
+                                                alt="book"
+                                            />
+                                        </div>
+                                    ))}
+                                </Slider>
+                            </div>
+                        </div>
+                    ))}
 
-                    </div>
-
-                    <div className="col-md-3 offset-md-6">
-                        <pre>rtl: {JSON.stringify(this.props.internationalization.rtl)}</pre>
-                        <pre>language: {this.props.internationalization.language}</pre>
-                        <pre>flag: {this.props.internationalization.flag}</pre>
-                        <br />
-                        <button className="btn btn-info" onClick={() => this.change()}>change</button>
-                    </div>
-
-                    {/* <div className="col-md-8">
-                        <input type="file" className="forncontrol"/>
-                    </div> */}
                 </div>
+
+
             </>
         )
     }

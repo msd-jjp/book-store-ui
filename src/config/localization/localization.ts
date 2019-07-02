@@ -76,6 +76,11 @@ interface ILocalization extends LocalizedStringsMethods {
     send_again_activationCode: string;
     in: string;
     second: string;
+    search: string;
+    home: string;
+    library: string;
+    store: string;
+    more: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
