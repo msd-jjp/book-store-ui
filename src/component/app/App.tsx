@@ -17,6 +17,9 @@ import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../redux/app_state';
 import { action_change_app_flag } from '../../redux/action/internationalization';
+import { DashboardMore } from '../dashboard-more/DashboardMore';
+import { Store } from '../store/Store';
+import { Library } from '../library/Library';
 
 const appRoutes = (
   <HashRouter>
@@ -28,6 +31,9 @@ const appRoutes = (
       <RouteLayoutMain path="/user/create" component={CreateUser} />
       <RouteLayoutMain path="/role" component={Role} />
       <RouteLayoutMain path="/products" component={Products} />
+      <RouteLayoutMain path="/dashboard-more" component={DashboardMore} />
+      <RouteLayoutMain path="/store" component={Store} />
+      <RouteLayoutMain path="/library" component={Library} />
 
       <RouteLayoutAccount path="/login" component={Login} />
       <RouteLayoutAccount path="/register" component={Register} />

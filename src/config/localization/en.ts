@@ -76,4 +76,6 @@ export const en = {
     recomended_for_you: 'recomended for you',
     new_release_in_bookstore: 'new release in bookstore',
     more_by_writer: 'more by {0}',
+    helen_hardet: 'helen hardet',
+    it_will_be_launched_soon: 'it will be launched soon.',
 }

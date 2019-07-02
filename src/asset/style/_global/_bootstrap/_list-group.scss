@@ -1,0 +1,27 @@
+body.rtl {
+  .list-group-horizontal .list-group-item:first-child {
+    border-top-right-radius: 0.25rem;
+    border-top-left-radius: inherit;
+    border-bottom-right-radius: 0.25rem;
+    border-bottom-left-radius: inherit;
+    border-top-left-radius: 0;
+    border-top-right-radius: inherit;
+  }
+
+  .list-group-horizontal .list-group-item {
+    margin-left: -1px;
+    margin-right: inherit;
+    margin-bottom: 0;
+  }
+
+  .list-group-horizontal .list-group-item:last-child {
+    margin-left: 0;
+    margin-right: inherit;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: inherit;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: inherit;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: inherit;
+  }
+}

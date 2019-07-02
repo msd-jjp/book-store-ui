@@ -16,26 +16,26 @@ class LayoutMainFooterComponent extends React.Component<any>{
                             </NavLink>
                         </div>
                         <div className="item text-center">
-                            <NavLink to="/dashboard242" className="nav-link text-dark">
+                            <NavLink to="/library" className="nav-link text-dark">
                                 <i className="fa fa-leanpub"></i>
                                 <div className="clearfix"></div>
                                 <span className="text">{Localization.library}</span>
                             </NavLink>
                         </div>
                         <div className="item text-center selected-book">
-                            <NavLink to="/dashboard33" className="nav-link">
+                            <NavLink to="/dashboard" className="nav-link">
                                 <img src="static/media/img/sample-book.png" alt="selected-book" />
                             </NavLink>
                         </div>
                         <div className="item text-center">
-                            <NavLink to="/dashboard2255" className="nav-link text-dark">
+                            <NavLink to="/store" className="nav-link text-dark">
                                 <i className="fa fa-shopping-cart"></i>
                                 <div className="clearfix"></div>
                                 <span className="text">{Localization.store}</span>
                             </NavLink>
                         </div>
                         <div className="item text-center">
-                            <NavLink to="/dashboard225" className="nav-link text-dark">
+                            <NavLink to="/dashboard-more" className="nav-link text-dark">
                                 <i className="fa fa-list-ul"></i>
                                 <div className="clearfix"></div>
                                 <span className="text">{Localization.more}</span>

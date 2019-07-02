@@ -22,20 +22,20 @@ class DashboardComponent extends BaseComponent<IProps, any> {
     sliderSetting = {
         dots: false,
         // swipe: false,
-        infinite: false,
+        // infinite: false,
         className: "center2",
         //centerPadding: "60px",
         centerPadding: '40px',
         slidesToShow: 3,
         swipeToSlide: true,
-        rtl: this.props.internationalization.rtl
+        rtl: false, // this.props.internationalization.rtl
     };
 
     bookListCategory = [
         'recomended_for_you',
         'new_release_in_bookstore',
         'more_by_writer'
-    ]
+    ];
 
     clickk(x: any, i: any) {
         debugger;
@@ -55,7 +55,7 @@ class DashboardComponent extends BaseComponent<IProps, any> {
                             <h6 className="title">
                                 {
                                     category === 'more_by_writer' ?
-                                        Localization.formatString(Localization.more_by_writer, 'هلن هارد') :
+                                        Localization.formatString(Localization.more_by_writer, Localization.helen_hardet) :
                                         Localization[category]
                                 }
                             </h6>
@@ -67,6 +67,7 @@ class DashboardComponent extends BaseComponent<IProps, any> {
                                                 src="static/media/img/sample-book.png"
                                                 alt="book"
                                             />
+                                            <span className="item-number">{i}</span>
                                         </div>
                                     ))}
                                 </Slider>
