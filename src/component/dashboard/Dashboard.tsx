@@ -7,7 +7,7 @@ import { IUser } from '../../model/model.user';
 import { TInternationalization } from '../../config/setup';
 import { action_change_app_flag } from '../../redux/action/internationalization';
 import { BaseComponent } from '../_base/BaseComponent';
-import Slider from 'react-slick';
+import Slider, { Settings } from 'react-slick';
 import { Localization } from '../../config/localization/localization';
 
 export interface IProps {
@@ -20,7 +20,8 @@ export interface IProps {
 }
 
 class DashboardComponent extends BaseComponent<IProps, any> {
-    sliderSetting = {
+    // dragging!: boolean;
+    sliderSetting: Settings = {
         dots: false,
         accessibility: false,
         // swipe: false,
@@ -38,6 +39,8 @@ class DashboardComponent extends BaseComponent<IProps, any> {
         // useCSS: false
         // useTransform: false
         // initialSlide: 5,
+        // beforeChange: () => this.dragging = true,
+        // afterChange: () => this.dragging = false,
     };
 
     bookListCategory = [
@@ -48,7 +51,8 @@ class DashboardComponent extends BaseComponent<IProps, any> {
 
     clickk(x: any, i: any) {
         // debugger;
-        this.props.history.push('library');
+        // if (this.dragging) return;
+        // this.props.history.push('library');
     }
     getRandomHelenBookUrl(): string {
         let r = Math.floor(Math.random() * 9) + 1;
