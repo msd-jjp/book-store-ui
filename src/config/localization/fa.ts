@@ -76,6 +76,6 @@ export const fa = {
     recomended_for_you: 'پیشنهادی برای شما',
     new_release_in_bookstore: 'نسخه های جدید در کتابفروشی',
     more_by_writer: 'بیشتر از {0}',
-    helen_hardet: 'هلت هاردت',
+    helen_hardet: 'هلن هاردت',
     it_will_be_launched_soon: 'بزودی راه اندازی خواهد شد.',
 }
