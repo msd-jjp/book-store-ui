@@ -16,6 +16,7 @@ export interface IProps {
     do_logout?: () => void;
     change_app_flag?: (internationalization: TInternationalization) => void;
     internationalization: TInternationalization;
+    history: any;
 }
 
 class DashboardComponent extends BaseComponent<IProps, any> {
@@ -30,11 +31,13 @@ class DashboardComponent extends BaseComponent<IProps, any> {
         slidesToShow: 3,
         swipeToSlide: true,
         rtl: false, // this.props.internationalization.rtl
-        adaptiveHeight: true,
+        // adaptiveHeight: true,
         // slidesToScroll: 1,
         speed: 200,
         // touchThreshold: 20,
         // useCSS: false
+        // useTransform: false
+        // initialSlide: 5,
     };
 
     bookListCategory = [
@@ -44,7 +47,8 @@ class DashboardComponent extends BaseComponent<IProps, any> {
     ];
 
     clickk(x: any, i: any) {
-        debugger;
+        // debugger;
+        this.props.history.push('library');
     }
     getRandomHelenBookUrl(): string {
         let r = Math.floor(Math.random() * 9) + 1;

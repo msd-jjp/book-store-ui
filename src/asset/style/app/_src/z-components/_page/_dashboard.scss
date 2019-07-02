@@ -22,6 +22,7 @@
                 top: 20px;
                 right: 20px;
                 background-color: #ffff;
+                display: none;
               }
             }
             //   &.slick-active {
@@ -65,3 +66,12 @@ body {
     }
   }
 }
+
+// .slick-track {
+//   display: flex !important;
+//   align-items: stretch !important;
+//   justify-content: center !important;
+//   .slick-slide {
+//     height: auto !important;
+//   }
+// }
