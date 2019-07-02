@@ -65,6 +65,7 @@ export const fa = {
     verification_code: 'کد تایید',
     create_an_account: 'ساخت حساب کاربری',
     send_again: 'ارسال مجدد',
+    send_again_activationCode: 'ارسال مجدد کد فعالسازی',
     in: 'در',
     second: 'ثانیه',
 }

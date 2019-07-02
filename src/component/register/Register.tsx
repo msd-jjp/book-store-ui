@@ -330,7 +330,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                         onClick={() => this.sendAgain()}
                         disabled={this.state.sendAgain_counter > 0}
                     >
-                        {Localization.send_again}
+                        {Localization.send_again_activationCode}
                     </BtnLoader>
                     {
                         this.state.sendAgain_counter > 0 &&

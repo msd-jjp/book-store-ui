@@ -73,6 +73,7 @@ interface ILocalization extends LocalizedStringsMethods {
     verification_code: string;
     create_an_account: string;
     send_again: string;
+    send_again_activationCode: string;
     in: string;
     second: string;
 }

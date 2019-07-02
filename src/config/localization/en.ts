@@ -65,6 +65,7 @@ export const en = {
     verification_code: 'verification code',
     create_an_account: 'create an account',
     send_again: 'send again',
+    send_again_activationCode: 'send again activation code',
     in: 'in',
     second: 'second',
 }
