@@ -21,14 +21,20 @@ export interface IProps {
 class DashboardComponent extends BaseComponent<IProps, any> {
     sliderSetting = {
         dots: false,
+        accessibility: false,
         // swipe: false,
         // infinite: false,
-        className: "center2",
+        // className: "center2",
         //centerPadding: "60px",
-        centerPadding: '40px',
+        // centerPadding: '40px',
         slidesToShow: 3,
         swipeToSlide: true,
         rtl: false, // this.props.internationalization.rtl
+        adaptiveHeight: true,
+        // slidesToScroll: 1,
+        speed: 200,
+        // touchThreshold: 20,
+        // useCSS: false
     };
 
     bookListCategory = [
@@ -39,6 +45,14 @@ class DashboardComponent extends BaseComponent<IProps, any> {
 
     clickk(x: any, i: any) {
         debugger;
+    }
+    getRandomHelenBookUrl(): string {
+        let r = Math.floor(Math.random() * 9) + 1;
+        return `static/media/img/sample-book/sample-book-h${r}.png`;
+    }
+    getRandomBookUrl(): string {
+        let r = Math.floor(Math.random() * 12) + 1;
+        return `static/media/img/sample-book/sample-book${r}.png`;
     }
     render() {
 
@@ -64,7 +78,7 @@ class DashboardComponent extends BaseComponent<IProps, any> {
                                     {aa.map((x, i) => (
                                         <div key={i} className="item" onClick={() => this.clickk(x, i)}>
                                             <img
-                                                src="static/media/img/sample-book.png"
+                                                src={category === 'more_by_writer' ? this.getRandomHelenBookUrl() : this.getRandomBookUrl()}
                                                 alt="book"
                                             />
                                             <span className="item-number">{i}</span>

@@ -24,7 +24,7 @@ class LayoutMainFooterComponent extends React.Component<any>{
                         </div>
                         <div className="item text-center selected-book">
                             <NavLink to="/dashboard" className="nav-link">
-                                <img src="static/media/img/sample-book.png" alt="selected-book" />
+                                <img src="static/media/img/sample-book/sample-book.png" alt="selected-book" />
                             </NavLink>
                         </div>
                         <div className="item text-center">
