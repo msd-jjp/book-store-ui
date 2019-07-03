@@ -20,7 +20,7 @@ export interface IProps {
 
 class DashboardMoreComponent extends BaseComponent<IProps, any> {
     change(lang: string) {
-        debugger;
+        // debugger;
         if (lang === 'fa') {
             // if (!this.props.internationalization.rtl) {
             document.body.classList.add('rtl');
@@ -59,7 +59,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
                 <br />
                 <br />
 
-                <ul className="list-group list-group-flush__ text-center">
+                <ul className="list-group list-group-flush__ text-center p-0">
                     <NavLink className="list-group-item list-group-item-action" to="/register">{Localization.register}</NavLink>
                     <NavLink className="list-group-item list-group-item-action" to="/login"
                         style={{
@@ -68,7 +68,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
                     >{Localization.login}</NavLink>
                 </ul>
 
-                <ul className="list-group list-group-horizontal list-group-flush__ text-center">
+                <ul className="list-group list-group-horizontal list-group-flush__ text-center  p-0">
                     <button className="list-group-item list-group-item-action" onClick={() => this.change('fa')}>
                         <img src="static/media/img/flag/ir.png" alt="" width="50px" />
                     </button>
@@ -80,6 +80,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
                     </button>
                 </ul>
 
+                
 
             </>
         )
