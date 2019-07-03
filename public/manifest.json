@@ -5,12 +5,12 @@
   "icons": [
     {
       "src": "/favicon.png",
-      "sizes": "64x64",
+      "sizes": "512x512 64x64 32x32 24x24 16x16",
       "type": "image/png"
     }
   ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#fda601",
-  "background_color": "#d801fd"
+  "background_color": "#ffffff"
 }
