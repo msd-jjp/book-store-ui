@@ -5,7 +5,7 @@ npm i redux react-redux @types/react-redux
 npm i react-toastify
 npm i react-localization
 npm i react-slick @types/react-slick
-npm i react-bootstrap
+npm i react-bootstrap @types/react-bootstrap
 
 ====================================================================================
 
@@ -52,5 +52,11 @@ instead of current btn loader
 uncomment // @import "~bootstrap/scss/spinners"; in bts-list
 
 ====================================================================================
+
+notify --> 
+no internet connection
+please check your wi-fi or mobile network connection and try again
+شما به اینترنت دسترسی ندارید
+بروز خطا در انجام عملیات، دسترسی اینترنت خود را بررسی فرمایید
 
 ====================================================================================
