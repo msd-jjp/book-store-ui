@@ -25,9 +25,10 @@ $theme-colors: ();
 
 //todo: uncomment or remove this todo
 // $font-family-base: $font-app;
-@import "~bootstrap/scss/bootstrap";
+
+// @import "~bootstrap/scss/bootstrap";
+// $bootstrap-base-url: "~bootstrap/scss/";
+@import "bts-list";
 $enable-shadows: true;
 
-@import "rtl";
-@import "input";
-@import "list-group";
+@import "_rtl/rtl";
