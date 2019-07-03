@@ -1,8 +1,16 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Localization } from "../../../../config/localization/localization";
+import { redux_state } from "../../../../redux/app_state";
+import { MapDispatchToProps, connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { TInternationalization } from "../../../../config/setup";
 
-class LayoutMainFooterComponent extends React.Component<any>{
+export interface IProps {
+    internationalization: TInternationalization;
+}
+
+class LayoutMainFooterComponent extends React.Component<IProps, any>{
     render() {
         return (
             <>
@@ -48,4 +56,18 @@ class LayoutMainFooterComponent extends React.Component<any>{
     }
 }
 
-export const LayoutMainFooter = LayoutMainFooterComponent;
+// export const LayoutMainFooter = LayoutMainFooterComponent;
+
+
+const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
+    return {
+    }
+}
+
+const state2props = (state: redux_state) => {
+    return {
+        internationalization: state.internationalization
+    }
+}
+
+export const LayoutMainFooter = connect(state2props, dispatch2props)(LayoutMainFooterComponent);
