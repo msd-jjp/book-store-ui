@@ -11,12 +11,35 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      margin-bottom: 0.25rem;
     }
     .writer {
       text-transform: uppercase;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+    .book-btns {
+      .btn-read-now {
+        text-transform: uppercase;
+        border-radius: 0 !important;
+      }
+      .dropdown-toggle {
+        padding-right: 1rem;
+        padding-left: 1rem;
+        background-color: #dae0e5;
+        border-radius: 0 !important;
+
+        i {
+          font-size: 1.7rem;
+          top: 0.35rem;
+          right: 0.8rem;
+          position: absolute;
+        }
+        &:after {
+          display: none;
+        }
+      }
     }
   }
 }

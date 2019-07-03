@@ -10,6 +10,12 @@ import { BaseComponent } from '../_base/BaseComponent';
 import Slider, { Settings } from 'react-slick';
 import { Localization } from '../../config/localization/localization';
 
+import Button from 'react-bootstrap/Button';
+import Dropdown from 'react-bootstrap/Dropdown';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+// import { Dropdown, ButtonGroup } from 'react-bootstrap';
+
+
 export interface IProps {
     logged_in_user?: IUser | null;
 
@@ -62,6 +68,10 @@ class DashboardComponent extends BaseComponent<IProps, any> {
         let r = Math.floor(Math.random() * 12) + 1;
         return `static/media/img/sample-book/sample-book${r}.png`;
     }
+
+    readNow() {
+        debugger;
+    }
     render() {
 
         let aa: any[] = [];
@@ -76,16 +86,32 @@ class DashboardComponent extends BaseComponent<IProps, any> {
                             src="static/media/img/sample-book/sample-book.png"
                             alt="book" />
                     </div>
-                    <div className="col-8 book-detail-wrapper pl-0">
+                    <div className="col-8 book-detail-wrapper p-align-0">
                         <h6 className="title">unchaned blood bond</h6>
                         <h6 className="more">parts 1,2,3</h6>
                         <div className="writer text-muted mb-2 mt-1">
                             <small>helen hardet</small>
                         </div>
-                        <button className="btn btn-dark">read now</button>
+                        {/* <button className="btn btn-dark">read now</button>
                         <button className="btn btn-light">
                             <i className="fa fa-home"></i>
-                        </button>
+                        </button> */}
+
+                        <Dropdown as={ButtonGroup} className="book-btns">
+                            <Button variant="dark" className="btn-read-now" 
+                            onClick={() => this.readNow()}>read now</Button>
+
+                            <Dropdown.Toggle split variant="light" className="ml-2" id="dropdown-split-basic" >
+                                <i className="fa fa-ellipsis-v"></i>
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item href="#/action-1">Activsdvdsvon</Dropdown.Item>
+                                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+
                     </div>
                 </div>
 
