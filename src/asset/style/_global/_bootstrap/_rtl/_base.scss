@@ -245,11 +245,11 @@ body.rtl/* ,
       @each $prop, $abbrev in (margin: m, padding: p) {
         @each $size, $length in $spacers {
           .#{$abbrev}r#{$infix}-#{$size} {
-            #{$prop}-right: $grid-gutter-width/2 !important; // 0
+            #{$prop}-right: 0 !important; // 0, $grid-gutter-width/2
             #{$prop}-left: $length !important;
           }
           .#{$abbrev}l#{$infix}-#{$size} {
-            #{$prop}-left: $grid-gutter-width/2 !important; // 0
+            #{$prop}-left: 0 !important; // 0, $grid-gutter-width/2
             #{$prop}-right: $length !important;
           }
           #{$abbrev}x#{$infix}-#{$size} {

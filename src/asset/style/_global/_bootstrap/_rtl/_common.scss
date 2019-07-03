@@ -1,0 +1,30 @@
+body {
+  &:not(.rtl) {
+    .p-align-0 {
+      padding-left: 0 !important;
+    }
+    .p-align-inverse-0 {
+      padding-right: 0 !important;
+    }
+    .m-align-0 {
+      margin-left: 0 !important;
+    }
+    .m-align-inverse-0 {
+      margin-right: 0 !important;
+    }
+  }
+  &.rtl {
+    .p-align-0 {
+      padding-right: 0 !important;
+    }
+    .p-align-inverse-0 {
+      padding-left: 0 !important;
+    }
+    .m-align-0 {
+      margin-right: 0 !important;
+    }
+    .m-align-inverse-0 {
+      margin-left: 0 !important;
+    }
+  }
+}
