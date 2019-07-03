@@ -1,9 +1,11 @@
 npm i react-router-dom @types/react-router-dom
+npm i bootstrap font-awesome node-sass
 npm i axios
 npm i redux react-redux @types/react-redux
 npm i react-toastify
 npm i react-localization
 npm i react-slick @types/react-slick
+npm i react-bootstrap
 
 ====================================================================================
 
@@ -40,5 +42,13 @@ https://github.com/axios/axios/issues/1361
 ====================================================================================
 
 add to homescreen notify.
+
+====================================================================================
+
+use
+    <div class="spinner-border"></div>
+instead of current btn loader
+
+uncomment // @import "~bootstrap/scss/spinners"; in bts-list
 
 ====================================================================================
