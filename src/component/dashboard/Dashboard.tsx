@@ -70,6 +70,25 @@ class DashboardComponent extends BaseComponent<IProps, any> {
         return (
             <>
 
+                <div className="latestBook-wrapper row mt-3">
+                    <div className="col-4 book-img-wrapper">
+                        <img className=""
+                            src="static/media/img/sample-book/sample-book.png"
+                            alt="book" />
+                    </div>
+                    <div className="col-8 book-detail-wrapper pl-0">
+                        <h6 className="title">unchaned blood bond</h6>
+                        <h6 className="more">parts 1,2,3</h6>
+                        <div className="writer text-muted mb-2 mt-1">
+                            <small>helen hardet</small>
+                        </div>
+                        <button className="btn btn-dark">read now</button>
+                        <button className="btn btn-light">
+                            <i className="fa fa-home"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <div className="booklistCategory-wrapper mt-3">
 
                     {this.bookListCategory.map((category, cat_i) => (

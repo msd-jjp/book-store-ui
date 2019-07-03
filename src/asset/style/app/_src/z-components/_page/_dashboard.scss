@@ -1,3 +1,26 @@
+.latestBook-wrapper {
+  .book-img-wrapper {
+    img {
+      width: 100%;
+    }
+  }
+  .book-detail-wrapper {
+    .title,
+    .more {
+      text-transform: capitalize;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .writer {
+      text-transform: uppercase;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
 .booklistCategory-wrapper {
   .booklist-wrapper {
     .title {
