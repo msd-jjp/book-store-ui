@@ -14,8 +14,13 @@ interface IInternationalization_en extends IInternationalization {
     language: 'english';
     flag: 'en';
 }
+interface IInternationalization_ar extends IInternationalization {
+    rtl: true;
+    language: 'العربیه';
+    flag: 'ar';
+}
 
-export type TInternationalization = IInternationalization_en | IInternationalization_fa;
+export type TInternationalization = IInternationalization_en | IInternationalization_fa | IInternationalization_ar;
 
 interface ISetup {
     endpoint: string;

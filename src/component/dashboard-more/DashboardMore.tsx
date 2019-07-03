@@ -22,25 +22,33 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
     change(lang: string) {
         debugger;
         if (lang === 'fa') {
-            if (!this.props.internationalization.rtl) {
-                document.body.classList.add('rtl');
-                Localization.setLanguage('fa');
-                this.props.change_app_flag && this.props.change_app_flag({
-                    rtl: true,
-                    language: 'فارسی',
-                    flag: 'fa',
-                });
-            }
+            // if (!this.props.internationalization.rtl) {
+            document.body.classList.add('rtl');
+            Localization.setLanguage('fa');
+            this.props.change_app_flag && this.props.change_app_flag({
+                rtl: true,
+                language: 'فارسی',
+                flag: 'fa',
+            });
+            // }
         } else if (lang === 'en') {
-            if (this.props.internationalization.rtl) {
-                document.body.classList.remove('rtl');
-                Localization.setLanguage('en');
-                this.props.change_app_flag && this.props.change_app_flag({
-                    rtl: false,
-                    language: 'english',
-                    flag: 'en',
-                });
-            }
+            // if (this.props.internationalization.rtl) {
+            document.body.classList.remove('rtl');
+            Localization.setLanguage('en');
+            this.props.change_app_flag && this.props.change_app_flag({
+                rtl: false,
+                language: 'english',
+                flag: 'en',
+            });
+            // }
+        } else if (lang === 'ar') {
+            document.body.classList.add('rtl');
+            Localization.setLanguage('ar');
+            this.props.change_app_flag && this.props.change_app_flag({
+                rtl: true,
+                language: 'العربیه',
+                flag: 'ar',
+            });
         }
 
     }
@@ -66,6 +74,9 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
                     </button>
                     <button className="list-group-item list-group-item-action" onClick={() => this.change('en')}>
                         <img src="static/media/img/flag/us.png" alt="" width="50px" />
+                    </button>
+                    <button className="list-group-item list-group-item-action" onClick={() => this.change('ar')}>
+                        <img src="static/media/img/flag/ar.png" alt="" width="50px" />
                     </button>
                 </ul>
 

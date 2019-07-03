@@ -34,10 +34,10 @@ class DashboardComponent extends BaseComponent<IProps, any> {
         rtl: false, // this.props.internationalization.rtl
         // adaptiveHeight: true,
         // slidesToScroll: 1,
-        speed: 200,
-        // touchThreshold: 20,
-        // useCSS: false
-        // useTransform: false
+        speed: 100, // 200, // 200,
+        touchThreshold: 200,
+        // useCSS: false,
+        // useTransform: false,
         // initialSlide: 5,
         // beforeChange: () => this.dragging = true,
         // afterChange: () => this.dragging = false,

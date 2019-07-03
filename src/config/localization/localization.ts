@@ -3,6 +3,7 @@ import LocalizedStrings, { LocalizedStringsMethods } from 'react-localization';
 import { Setup } from '../setup';
 import { fa } from './fa';
 import { en } from './en';
+import { ar } from './ar';
 
 interface ILocalization extends LocalizedStringsMethods {
     [key: string]: any; // todo
@@ -90,7 +91,8 @@ interface ILocalization extends LocalizedStringsMethods {
 
 export let Localization: ILocalization = new LocalizedStrings({
     fa: fa,
-    en: en
+    en: en,
+    ar: ar
 });
 
 Localization.setLanguage(Setup.internationalization.flag);
