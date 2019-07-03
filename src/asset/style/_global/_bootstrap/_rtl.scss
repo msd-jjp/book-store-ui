@@ -57,7 +57,8 @@ body.rtl/* ,
   }
 
   .custom-select {
-    padding: $custom-select-padding-y $custom-select-padding-x $custom-select-padding-y ($custom-select-padding-x + $custom-select-indicator-padding);
+    padding: $custom-select-padding-y $custom-select-padding-x $custom-select-padding-y
+      ($custom-select-padding-x + $custom-select-indicator-padding);
     background: $custom-select-bg $custom-select-indicator no-repeat left $custom-select-padding-x center;
     background-size: $custom-select-bg-size;
   }
@@ -110,7 +111,7 @@ body.rtl/* ,
   .custom-file-label::after {
     right: initial;
     left: -1px;
-    border-radius: .25rem 0 0 .25rem;
+    border-radius: 0.25rem 0 0 0.25rem;
   }
 
   .radio input,
@@ -151,11 +152,11 @@ body.rtl/* ,
 
   .modal-footer {
     > :not(:first-child) {
-      margin-right: .25rem;
+      margin-right: 0.25rem;
     }
 
     > :not(:last-child) {
-      margin-left: .25rem;
+      margin-left: 0.25rem;
     }
 
     > :first-child {
@@ -173,7 +174,7 @@ body.rtl/* ,
   }
 
   .dropdown-toggle::after {
-    margin-right: .255em;
+    margin-right: 0.255em;
     margin-left: 0;
   }
 
@@ -194,7 +195,7 @@ body.rtl/* ,
     padding-left: inherit;
   }
 
-  .pagination{
+  .pagination {
     .page-item {
       &:first-child {
         .page-link {
@@ -223,7 +224,7 @@ body.rtl/* ,
       $infix: breakpoint-infix($breakpoint, $breakpoints);
       @include media-breakpoint-up($breakpoint, $breakpoints) {
         @for $i from 0 through ($columns - 1) {
-          @if not ($infix == "" and $i == 0) {
+          @if not($infix == "" and $i == 0) {
             .offset#{$infix}-#{$i} {
               @include make-col-offset($i, $columns);
             }
@@ -243,13 +244,12 @@ body.rtl/* ,
 
       @each $prop, $abbrev in (margin: m, padding: p) {
         @each $size, $length in $spacers {
-
           .#{$abbrev}r#{$infix}-#{$size} {
-            #{$prop}-right: 0 !important;
+            #{$prop}-right: $grid-gutter-width/2 !important; // 0
             #{$prop}-left: $length !important;
           }
           .#{$abbrev}l#{$infix}-#{$size} {
-            #{$prop}-left: 0 !important;
+            #{$prop}-left: $grid-gutter-width/2 !important; // 0
             #{$prop}-right: $length !important;
           }
           #{$abbrev}x#{$infix}-#{$size} {
