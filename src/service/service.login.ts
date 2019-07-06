@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { IUser } from '../model/model.user';
-import { Setup } from '../config/setup';
+// import { Setup } from '../config/setup';
+import { BaseService } from './service.base';
 
-export class LoginService {
+export class LoginService extends BaseService {
 
     login(data: { username: string, password: string }): Promise<{
         data: {
@@ -17,7 +18,7 @@ export class LoginService {
         let basic = "Basic " + hash;
 
         const instance = axios.create({
-            baseURL: Setup.endpoint,
+            baseURL: this.baseURL,
             headers: { 'Content-Type': 'application/json', 'Authorization': basic }
         });
 
@@ -26,7 +27,7 @@ export class LoginService {
 
     profile_DELETE_ME(token: string/* , data: { username: string, password: string } */): Promise<IUser> {
         const instance = axios.create({
-            baseURL: Setup.endpoint,
+            baseURL: this.baseURL,
             headers: { 'Content-Type': 'application/json', 'authorization': 'Bearer ' + token }
         });
 
@@ -35,7 +36,7 @@ export class LoginService {
 
     profile(token: string): Promise<IUser> {
         const instance = axios.create({
-            baseURL: Setup.endpoint,
+            baseURL: this.baseURL,
             headers: { 'Content-Type': 'application/json', 'authorization': 'Bearer ' + token }
         });
 

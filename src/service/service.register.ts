@@ -1,27 +1,18 @@
 import axios from 'axios';
 // import { IUser } from '../model/model.user';
-import { Setup } from '../config/setup';
+// import { Setup } from '../config/setup';
+import { BaseService } from './service.base';
 
-export class RegisterService {
+export class RegisterService extends BaseService {
 
     sendCode(data: { cell_no: string }): Promise<any> {//{ cell_no: string; message: string; }
-        const instance = axios.create({
-            baseURL: Setup.endpoint,
-            headers: { 'Content-Type': 'application/json' }
-        });
-
-        return instance.post('/register/send-code', data);
+        return this.axiosInstance.post('/register/send-code', data);
     }
     activateAcount(data: {
         "cell_no": string;
         "activation_code": string;
     }): Promise<any> {//IUser
-        const instance = axios.create({
-            baseURL: Setup.endpoint,
-            headers: { 'Content-Type': 'application/json' }
-        });
-
-        return instance.post('/register/activate-acount', data);
+        return this.axiosInstance.post('/register/activate-acount', data);
     }
 
     /* 
@@ -58,7 +49,7 @@ export class RegisterService {
         "signup_token": string;
     }): any {
         const instance = axios.create({
-            baseURL: Setup.endpoint,
+            baseURL: this.baseURL,
             headers: { 'Content-Type': 'multipart/form-data' } // application/json, multipart/form-data
         });
 
