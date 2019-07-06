@@ -12,6 +12,8 @@ import { NavLink } from 'react-router-dom';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { BaseComponent } from '../_base/BaseComponent';
 import { TInternationalization } from '../../config/setup';
+import { IToken } from '../../model/model.token';
+import { action_set_token } from '../../redux/action/token';
 
 type inputType = 'username' | 'password';
 
@@ -32,6 +34,8 @@ interface IProps {
     onUserLoggedIn?: (user: IUser) => void;
     history: any;
     internationalization: TInternationalization;
+    onSetToken?: (token: IToken) => void;
+    token: IToken;
 }
 
 class LoginComponent extends BaseComponent<IProps, IState> {
@@ -59,16 +63,18 @@ class LoginComponent extends BaseComponent<IProps, IState> {
             password: this.state.password.value!
         }).catch((error) => {
             debugger;
-            this.handleError({error:error.response});
+            this.handleError({ error: error.response });
             this.setState({ ...this.state, btnLoader: false });
         });
 
         // let user: any; // IUser | void;
         let response: any;
         if (tokenObj) {
-            response = await this._loginService.profile(tokenObj.data.id).catch((error) => {
+            this.props.onSetToken && this.props.onSetToken(tokenObj.data);
+
+            response = await this._loginService.profile(this.props.token.id).catch((error) => { // tokenObj.data.id
                 debugger;
-                this.handleError({error:error.response});
+                this.handleError({ error: error.response });
             });
         }
         this.setState({ ...this.state, btnLoader: false });
@@ -98,23 +104,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    /* errorNotify() {
-        // return toast("Wow so easy !");
-        return toast.error(Localization.msg.ui.msg2, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-        });
-    } */
-
     render() {
-        // const handleInputChange = this.handleInputChange.bind(this);
-        /* let aaa: any = Localization.formatString(Localization.validation.minLength, {
-            value: '6'
-        }) */
         return (
             <>
                 <h2 className="title mt-4 mb-3">{Localization.sign_in}</h2>
@@ -190,13 +180,15 @@ class LoginComponent extends BaseComponent<IProps, IState> {
 //#region redux
 const state2props = (state: redux_state) => {
     return {
-        internationalization: state.internationalization
+        internationalization: state.internationalization,
+        token: state.token
     }
 }
 
 const dispatch2props = (dispatch: Dispatch) => {
     return {
-        onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user))
+        onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
+        onSetToken: (token: IToken) => dispatch(action_set_token(token))
     }
 }
 

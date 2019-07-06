@@ -109,8 +109,8 @@ class DashboardComponent extends BaseComponent<IProps, any> {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                                <Dropdown.Item href="#/action-1">view in store</Dropdown.Item>
-                                <Dropdown.Item href="#/action-2">add to collection</Dropdown.Item>
+                                <Dropdown.Item >view in store</Dropdown.Item>
+                                <Dropdown.Item >add to collection</Dropdown.Item>
                                 <Dropdown.Item href="#/action-3">mark as read</Dropdown.Item>
                                 <Dropdown.Item href="#/action-3">share progress</Dropdown.Item>
                                 <Dropdown.Item href="#/action-3">recommend this book</Dropdown.Item>
