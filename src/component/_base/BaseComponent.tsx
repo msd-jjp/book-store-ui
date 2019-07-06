@@ -10,7 +10,7 @@ interface IHandleError {
     body?: string;
     timeout?: number;
 }
-interface IHandleErrorResolve {
+export interface IHandleErrorResolve {
     body: string;
 }
 
@@ -20,67 +20,69 @@ interface IBaseProps {
 
 export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> extends React.Component<p, S, SS> {
 
-    async handleError(handleErrorObj: IHandleError): Promise<IHandleErrorResolve> {
-        return new Promise<any>(resolve => {
-            const defaults: IHandleError = {
-                // error: {},
-                notify: true,
-                type: 'ui',
-                // body: '', // Localization.msg.ui.msg2,
-                timeout: Setup.notify.timeout.error
-            };
-            let obj = Object.assign({}, defaults, handleErrorObj);
+    /* async  */
+    handleError(handleErrorObj: IHandleError): IHandleErrorResolve { // Promise<IHandleErrorResolve>
+        // return new Promise<IHandleErrorResolve>(resolve => {
+        const defaults: IHandleError = {
+            // error: {},
+            notify: true,
+            type: 'ui',
+            // body: '', // Localization.msg.ui.msg2,
+            timeout: Setup.notify.timeout.error
+        };
+        let obj = Object.assign({}, defaults, handleErrorObj);
 
-            const status = (obj.error || {}).status;
+        const status = (obj.error || {}).status;
 
-            if (!obj.body) {
-                if (obj.error) {
-                    if (obj.error.data) {
-                        if (obj.error.data.msg) {
-                            obj.body = this.translateErrorMsg(obj.error.data);
-                        } else {
-                            obj.body = Localization.msg.ui.msg2;
-                        }
+        if (!obj.body) {
+            if (obj.error) {
+                if (obj.error.data) {
+                    if (obj.error.data.msg) {
+                        obj.body = this.translateErrorMsg(obj.error.data) || Localization.msg.ui.msg2;
                     } else {
                         obj.body = Localization.msg.ui.msg2;
                     }
                 } else {
                     obj.body = Localization.msg.ui.msg2;
                 }
-            }
-
-
-            if (status === 401) {
-
-            } else if (status === 403) {
-                //
-
-            } else if (status === 406) {
-                //
-
-            } else if (status === 409) {
-                //
-
-            } else if (status === 486) {
-                //
-
-            } else if (status === 502) {
-                //"msg6": "خطا در برقراری ارتباط با سرور رخ داد.",
-
-            } else if (status === 504) {
-
-            } else if (status >= 500) {
-
             } else {
-                //
+                obj.body = Localization.msg.ui.msg2;
             }
+        }
 
-            if (obj.notify) {
-                // toast.configure(this.getNotifyContainerConfig());
-                toast.error(obj.body, this.getNotifyConfig({ autoClose: obj.timeout }));
-            }
-            resolve({ body: obj.body });
-        });
+
+        if (status === 401) {
+
+        } else if (status === 403) {
+            //
+
+        } else if (status === 406) {
+            //
+
+        } else if (status === 409) {
+            //
+
+        } else if (status === 486) {
+            //
+
+        } else if (status === 502) {
+            //"msg6": "خطا در برقراری ارتباط با سرور رخ داد.",
+
+        } else if (status === 504) {
+
+        } else if (status >= 500) {
+
+        } else {
+            //
+        }
+
+        if (obj.notify) {
+            // toast.configure(this.getNotifyContainerConfig());
+            toast.error(obj.body, this.getNotifyConfig({ autoClose: obj.timeout }));
+        }
+        // resolve({ body: obj.body! });
+        return { body: obj.body! };
+        // });
     }
 
     translateErrorMsg(errorData: { [key: string]: any, msg: any }) {

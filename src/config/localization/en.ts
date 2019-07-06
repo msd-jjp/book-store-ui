@@ -30,7 +30,7 @@ export const en = {
             msg14: 'getting failed',
             msg15: 'Authentication decoding failed',
             msg16: 'commiting to database failed',
-            msg17: 'no auth found',
+            msg17: 'you are not logged in',
             msg18: 'username or password is not valid',
         }
     },

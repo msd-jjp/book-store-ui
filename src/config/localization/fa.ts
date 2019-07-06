@@ -30,7 +30,7 @@ export const fa = {
             msg14: 'getting failed',
             msg15: 'Authentication decoding failed',
             msg16: 'commiting to database failed',
-            msg17: 'no auth found',
+            msg17: 'شما وارد نشده اید',
             msg18: 'نام کاربری یا رمز عبور اشتباه است.',
         }
     },

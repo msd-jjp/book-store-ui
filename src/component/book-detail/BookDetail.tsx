@@ -6,6 +6,7 @@ import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { BookService } from '../../service/service.book';
 import { IBook } from '../../model/model.book';
+import { ToastContainer } from 'react-toastify';
 
 interface IProps {
     internationalization: TInternationalization;
@@ -28,7 +29,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
     fetchBook(bookId: string) {
         this._bookService.get(bookId).catch(error => {
-            this.handleError({ error: error });
+            this.handleError({ error: error.response });
         });
     }
 
@@ -37,6 +38,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             <>
                 <div>error occured</div>
                 <div>book name: </div>
+
+
+                <ToastContainer {...this.getNotifyContainerConfig()} />
             </>
         )
     }

@@ -6,7 +6,7 @@ import { redux_state } from '../../redux/app_state';
 import { IUser } from '../../model/model.user';
 import { TInternationalization } from '../../config/setup';
 import { action_change_app_flag } from '../../redux/action/internationalization';
-import { BaseComponent } from '../_base/BaseComponent';
+import { BaseComponent, IHandleErrorResolve } from '../_base/BaseComponent';
 import Slider, { Settings } from 'react-slick';
 import { Localization } from '../../config/localization/localization';
 
@@ -16,18 +16,27 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 // import { Dropdown, ButtonGroup } from 'react-bootstrap';
 
 import { History } from 'history';
+import { IBook } from '../../model/model.book';
+import { BookService } from '../../service/service.book';
+import { IToken } from '../../model/model.token';
+import { ToastContainer } from 'react-toastify';
 
 
-export interface IProps {
+interface IProps {
     logged_in_user?: IUser | null;
-
     do_logout?: () => void;
     change_app_flag?: (internationalization: TInternationalization) => void;
     internationalization: TInternationalization;
     history: History;
+    token: IToken
 }
 
-class DashboardComponent extends BaseComponent<IProps, any> {
+interface IState {
+
+}
+
+class DashboardComponent extends BaseComponent<IProps, IState> {
+    private _bookService = new BookService();
     // dragging!: boolean;
     sliderSetting: Settings = {
         dots: false,
@@ -60,11 +69,18 @@ class DashboardComponent extends BaseComponent<IProps, any> {
         'more_by_writer'
     ];
 
-    clickk(x: any, i: any) {
+    componentDidMount() {
+        debugger;
+        this._bookService.setToken(this.props.token);
+        // this.fetchRecomendedBook();
+        this.fetchBookByWriter();
+    }
+
+    gotoBookDetail(bookId: string) {
         // debugger;
         // if (this.dragging) return;
         // this.props.history.push('library');
-        this.props.history.push('book-detail/5');
+        this.props.history.push(`book-detail/${bookId}`);
     }
     getRandomHelenBookUrl(): string {
         let r = Math.floor(Math.random() * 9) + 1;
@@ -78,6 +94,64 @@ class DashboardComponent extends BaseComponent<IProps, any> {
     readNow() {
         debugger;
     }
+
+    async fetchRecomendedBook() {
+        await this._bookService.recomended().catch(error => {
+            this.handleError({ error: error.response });
+        });
+        debugger;
+    }
+
+    async fetchNewestBook() {
+        await this._bookService.newest().catch(error => {
+            this.handleError({ error: error.response });
+        });
+    }
+
+    async fetchBookByWriter() {
+        let vfdbf = this.props.logged_in_user;
+        let bfdd = await this._bookService.bookByWriter({
+            person_id: '',
+            book_id: ''
+        }).catch(error => {
+            this.handleError({ error: error.response });
+        });
+        debugger;
+    }
+
+    carousel_render(bookList?: IBook[], tryAgain?: { errorText: string, retry: () => void }) {
+        if (bookList && bookList.length) {
+            return (
+                <>
+                    <div className="app-carousel" >
+                        <Slider {...this.sliderSetting} >
+                            {bookList.map((book: IBook, bookIndex) => (
+                                <div key={bookIndex} className="item" onClick={() => this.gotoBookDetail(book.id)}>
+                                    <img
+                                        src={this.getRandomBookUrl()}
+                                        alt="book"
+                                    />
+                                    <span className="item-number">{bookIndex}</span>
+                                </div>
+                            ))}
+                        </Slider>
+                    </div>
+                </>
+            )
+        } else if (tryAgain) {
+            // let ErrorResolve: IHandleErrorResolve = this.handleError({ error: error.response, notify: false });
+            return (
+                <>
+                    {/* <div>{ErrorResolve.body}</div> */}
+                    <div>{tryAgain.errorText}</div>
+                    <div onClick={() => tryAgain.retry()}>retry</div>
+                </>
+            )
+        } else {
+
+        }
+    }
+
     render() {
 
         let aa: any[] = [];
@@ -98,10 +172,6 @@ class DashboardComponent extends BaseComponent<IProps, any> {
                         <div className="writer text-muted mb-2 mt-1">
                             <small>helen hardet</small>
                         </div>
-                        {/* <button className="btn btn-dark">read now</button>
-                        <button className="btn btn-light">
-                            <i className="fa fa-home"></i>
-                        </button> */}
 
                         <Dropdown as={ButtonGroup} className="book-btns">
                             <Button variant="dark" className="btn-read-now"
@@ -126,6 +196,14 @@ class DashboardComponent extends BaseComponent<IProps, any> {
                 </div>
 
                 <div className="booklistCategory-wrapper mt-3">
+                    <div className="booklist-wrapper mt-3">
+                        <h6 className="title">{Localization.recomended_for_you}</h6>
+                        {this.carousel_render(aa)}
+                    </div>
+
+
+
+
 
                     {this.bookListCategory.map((category, cat_i) => (
                         <div key={cat_i} className="booklist-wrapper mt-3">
@@ -140,7 +218,7 @@ class DashboardComponent extends BaseComponent<IProps, any> {
                             <div className="app-carousel" >
                                 <Slider {...this.sliderSetting} >
                                     {aa.map((x, i) => (
-                                        <div key={i} className="item" onClick={() => this.clickk(x, i)}>
+                                        <div key={i} className="item" >
                                             <img
                                                 src={category === 'more_by_writer' ? this.getRandomHelenBookUrl() : this.getRandomBookUrl()}
                                                 alt="book"
@@ -156,6 +234,7 @@ class DashboardComponent extends BaseComponent<IProps, any> {
                 </div>
 
 
+                <ToastContainer {...this.getNotifyContainerConfig()} />
             </>
         )
     }
@@ -171,7 +250,8 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
-        internationalization: state.internationalization
+        internationalization: state.internationalization,
+        token: state.token
     }
 }
 
