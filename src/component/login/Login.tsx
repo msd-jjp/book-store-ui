@@ -15,6 +15,8 @@ import { TInternationalization } from '../../config/setup';
 import { IToken } from '../../model/model.token';
 import { action_set_token } from '../../redux/action/token';
 
+import { History } from 'history';
+
 type inputType = 'username' | 'password';
 
 interface IState {
@@ -32,7 +34,7 @@ interface IState {
 }
 interface IProps {
     onUserLoggedIn?: (user: IUser) => void;
-    history: any;
+    history: History;
     internationalization: TInternationalization;
     onSetToken?: (token: IToken) => void;
     token: IToken;

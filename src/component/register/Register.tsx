@@ -14,6 +14,8 @@ import { NavLink } from 'react-router-dom';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { Localization } from '../../config/localization/localization';
 
+import { History } from 'history';
+
 enum REGISTER_STEP {
     submit_mobile = 'submit_mobile',
     validate_mobile = 'validate_mobile',
@@ -57,7 +59,7 @@ type TInputElType = 'inputElUsername' | 'inputElPassword' |
 
 interface IProps {
     onUserLoggedIn?: (user: IUser) => void;
-    history: any;
+    history: History;
     internationalization: TInternationalization;
 }
 

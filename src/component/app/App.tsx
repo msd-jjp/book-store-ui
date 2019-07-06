@@ -20,6 +20,7 @@ import { action_change_app_flag } from '../../redux/action/internationalization'
 import { DashboardMore } from '../dashboard-more/DashboardMore';
 import { Store } from '../store/Store';
 import { Library } from '../library/Library';
+import { BookDetail } from '../book-detail/BookDetail';
 
 const appRoutes = (
   <HashRouter>
@@ -34,6 +35,7 @@ const appRoutes = (
       <RouteLayoutMain path="/dashboard-more" component={DashboardMore} />
       <RouteLayoutMain path="/store" component={Store} />
       <RouteLayoutMain path="/library" component={Library} />
+      <RouteLayoutMain path="/book-detail/:bookId" component={BookDetail} />
 
       <RouteLayoutAccount path="/login" component={Login} />
       <RouteLayoutAccount path="/register" component={Register} />

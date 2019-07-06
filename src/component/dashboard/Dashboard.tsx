@@ -15,6 +15,8 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 // import { Dropdown, ButtonGroup } from 'react-bootstrap';
 
+import { History } from 'history';
+
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -22,7 +24,7 @@ export interface IProps {
     do_logout?: () => void;
     change_app_flag?: (internationalization: TInternationalization) => void;
     internationalization: TInternationalization;
-    history: any;
+    history: History;
 }
 
 class DashboardComponent extends BaseComponent<IProps, any> {
@@ -62,6 +64,7 @@ class DashboardComponent extends BaseComponent<IProps, any> {
         // debugger;
         // if (this.dragging) return;
         // this.props.history.push('library');
+        this.props.history.push('book-detail/5');
     }
     getRandomHelenBookUrl(): string {
         let r = Math.floor(Math.random() * 9) + 1;
