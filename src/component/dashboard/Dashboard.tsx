@@ -37,13 +37,16 @@ class DashboardComponent extends BaseComponent<IProps, any> {
         // centerPadding: '40px',
         slidesToShow: 3,
         swipeToSlide: true,
-        rtl: false, // this.props.internationalization.rtl
+        rtl: false, // this.props.internationalization.rtl,
         // adaptiveHeight: true,
         // slidesToScroll: 1,
+
         speed: 100, // 200, // 200,
-        touchThreshold: 200,
+        // touchThreshold: 100000000,
         // useCSS: false,
         // useTransform: false,
+
+        // swipe: false,
         // initialSlide: 5,
         // beforeChange: () => this.dragging = true,
         // afterChange: () => this.dragging = false,
@@ -98,17 +101,21 @@ class DashboardComponent extends BaseComponent<IProps, any> {
                         </button> */}
 
                         <Dropdown as={ButtonGroup} className="book-btns">
-                            <Button variant="dark" className="btn-read-now" 
-                            onClick={() => this.readNow()}>read now</Button>
+                            <Button variant="dark" className="btn-read-now"
+                                onClick={() => this.readNow()}>read now</Button>
 
                             <Dropdown.Toggle split variant="light" className="ml-2" id="dropdown-split-basic" >
                                 <i className="fa fa-ellipsis-v"></i>
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                                <Dropdown.Item href="#/action-1">Activsdvdsvon</Dropdown.Item>
-                                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                                <Dropdown.Item href="#/action-1">view in store</Dropdown.Item>
+                                <Dropdown.Item href="#/action-2">add to collection</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">mark as read</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">share progress</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">recommend this book</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">remove from device</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">remove from home</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
 
@@ -126,7 +133,8 @@ class DashboardComponent extends BaseComponent<IProps, any> {
                                         Localization[category]
                                 }
                             </h6>
-                            <div className="app-carousel">
+                            {/* style={{direction: "rtl"}} */}
+                            <div className="app-carousel" >
                                 <Slider {...this.sliderSetting} >
                                     {aa.map((x, i) => (
                                         <div key={i} className="item" onClick={() => this.clickk(x, i)}>
