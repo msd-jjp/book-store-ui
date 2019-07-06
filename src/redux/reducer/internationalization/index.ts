@@ -1,8 +1,8 @@
 import { EACTIONS } from "../../ActionEnum";
-import { InternationalizationAction } from "../../action/internationalization/InternationalizationAction";
+import { IInternationalizationAction } from "../../action/internationalization/InternationalizationAction";
 import { Setup, TInternationalization } from "../../../config/setup";
 
-export function reducer(state: TInternationalization, action: InternationalizationAction): TInternationalization {
+export function reducer(state: TInternationalization, action: IInternationalizationAction): TInternationalization {
     switch (action.type) {
         case EACTIONS.CHANGE_APP_FLAG:
             return action.payload;

@@ -1,7 +1,7 @@
 import { Action } from "redux";
 import { EACTIONS } from "../../ActionEnum";
-import { IInternationalization, TInternationalization } from "../../../config/setup";
+import { TInternationalization } from "../../../config/setup";
 
-export interface InternationalizationAction extends Action<EACTIONS> {
+export interface IInternationalizationAction extends Action<EACTIONS> {
     payload: TInternationalization;
 }
