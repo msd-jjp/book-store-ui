@@ -17,33 +17,33 @@ class LayoutMainFooterComponent extends React.Component<IProps, any>{
                 <footer className="footer fixed-bottom">
                     <div className="footer-menu d-flex justify-content-between mx-2">
                         <div className="item text-center">
-                            <NavLink to="/dashboard" className="nav-link text-dark">
+                            <NavLink to="/dashboard" className="nav-link text-dark" activeClassName="active pointer-events-none">
                                 <i className="fa fa-home"></i>
                                 <div className="clearfix"></div>
                                 <span className="text">{Localization.home}</span>
                             </NavLink>
                         </div>
                         <div className="item text-center">
-                            <NavLink to="/library" className="nav-link text-dark">
+                            <NavLink to="/library" className="nav-link text-dark" activeClassName="active pointer-events-none">
                                 <i className="fa fa-leanpub"></i>
                                 <div className="clearfix"></div>
                                 <span className="text">{Localization.library}</span>
                             </NavLink>
                         </div>
                         <div className="item text-center selected-book">
-                            <NavLink to="/dashboard" className="nav-link">
+                            <NavLink to="/dashboard" className="nav-link" activeClassName="active pointer-events-none">
                                 <img src="static/media/img/sample-book/sample-book.png" alt="selected-book" />
                             </NavLink>
                         </div>
                         <div className="item text-center">
-                            <NavLink to="/store" className="nav-link text-dark">
+                            <NavLink to="/store" className="nav-link text-dark" activeClassName="active pointer-events-none">
                                 <i className="fa fa-shopping-cart"></i>
                                 <div className="clearfix"></div>
                                 <span className="text">{Localization.store}</span>
                             </NavLink>
                         </div>
                         <div className="item text-center">
-                            <NavLink to="/dashboard-more" className="nav-link text-dark">
+                            <NavLink to="/dashboard-more" className="nav-link text-dark" activeClassName="active pointer-events-none">
                                 <i className="fa fa-list-ul"></i>
                                 <div className="clearfix"></div>
                                 <span className="text">{Localization.more}</span>
@@ -55,9 +55,6 @@ class LayoutMainFooterComponent extends React.Component<IProps, any>{
         )
     }
 }
-
-// export const LayoutMainFooter = LayoutMainFooterComponent;
-
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
