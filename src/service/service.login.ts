@@ -14,8 +14,8 @@ export class LoginService extends BaseService {
         };
         [key: string]: any
     }> {
-        var token = data.username + ":" + data.password;
-        var hash = btoa(token);
+        let username_password_str = data.username + ":" + data.password;
+        let hash = btoa(unescape(encodeURIComponent(username_password_str))); // btoa(token);
         let basic = "Basic " + hash;
 
         const instance = axios.create({
