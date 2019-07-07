@@ -82,4 +82,13 @@ export const ar = {
     more_by_writer: 'بیشتر از {0}',
     helen_hardet: 'هلن هاردت',
     it_will_be_launched_soon: 'بزودی راه اندازی خواهد شد.',
+
+    read_now: 'الان بخوان',
+    view_in_store: 'نمایش در فروشگاه',
+    add_to_collection: 'اضافه کردن به کلکسیون',
+    mark_as_read: 'به عنوان خوانده شده علامت بزن',
+    share_progress: 'اشتراک گذاری پیشرفت',
+    recommend_this_book: 'پیشنهاد دادن کتاب',
+    remove_from_device: 'حذف از دستگاه',
+    remove_from_home: 'حذف از خانه',
 }

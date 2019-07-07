@@ -185,6 +185,69 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         }
     }
 
+    currentBook_render() {
+
+        let aa: any = this.props.logged_in_user;
+        if (!this.props.logged_in_user) { return; }
+
+        let current_book: IBook = aa.current_book;
+
+        if (!current_book) { return; }
+
+        let current_book_img =
+            (current_book.images && current_book.images.length && current_book.images[0])
+            || 'static/media/img/icon/default-book.png';
+        let writerList = current_book.roles
+            .filter(r => r.role === BOOK_ROLES.Writer);
+
+        let name = writerList && writerList.length && writerList[0].person.name;
+        let last_name = writerList && writerList.length && writerList[0].person.last_name;
+        let writerName = name + '' + last_name;
+        return (
+            <>
+                <div className="latestBook-wrapper row mt-3">
+                    <div className="col-4 book-img-wrapper">
+                        <img className=""
+                            src={current_book_img}
+                            alt="book" />
+                    </div>
+                    <div className="col-8 book-detail-wrapper p-align-0">
+                        <h6 className="title">{current_book.title}</h6>
+                        {/* <h6 className="more">parts 1,2,3</h6> */}
+                        <div className="writer text-muted mb-2 mt-1">
+                            <small>{writerName}</small>
+                        </div>
+
+                        <Dropdown as={ButtonGroup} className="book-btns">
+                            <Button variant="dark" className="btn-read-now"
+                                onClick={() => this.readNow()}>{Localization.read_now}</Button>
+
+                            <Dropdown.Toggle split variant="light" className="ml-2" id="dropdown-split-basic" >
+                                <i className="fa fa-ellipsis-v"></i>
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item >{Localization.view_in_store}</Dropdown.Item>
+                                <Dropdown.Item >{Localization.add_to_collection}</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">{Localization.mark_as_read}</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">{Localization.share_progress}</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">{Localization.recommend_this_book}</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">{Localization.remove_from_device}</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">{Localization.remove_from_home}</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+
+                    </div>
+                </div>
+
+                <div className="latestBook-divider">
+                    <hr />
+                    <div className="slash">//</div>
+                </div>
+            </>
+        )
+    }
+
     render() {
 
         let aa: any[] = [];
@@ -193,40 +256,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         return (
             <>
 
-                <div className="latestBook-wrapper row mt-3">
-                    <div className="col-4 book-img-wrapper">
-                        <img className=""
-                            src="static/media/img/sample-book/sample-book.png"
-                            alt="book" />
-                    </div>
-                    <div className="col-8 book-detail-wrapper p-align-0">
-                        <h6 className="title">unchaned blood bond</h6>
-                        <h6 className="more">parts 1,2,3</h6>
-                        <div className="writer text-muted mb-2 mt-1">
-                            <small>helen hardet</small>
-                        </div>
-
-                        <Dropdown as={ButtonGroup} className="book-btns">
-                            <Button variant="dark" className="btn-read-now"
-                                onClick={() => this.readNow()}>read now</Button>
-
-                            <Dropdown.Toggle split variant="light" className="ml-2" id="dropdown-split-basic" >
-                                <i className="fa fa-ellipsis-v"></i>
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                                <Dropdown.Item >view in store</Dropdown.Item>
-                                <Dropdown.Item >add to collection</Dropdown.Item>
-                                <Dropdown.Item href="#/action-3">mark as read</Dropdown.Item>
-                                <Dropdown.Item href="#/action-3">share progress</Dropdown.Item>
-                                <Dropdown.Item href="#/action-3">recommend this book</Dropdown.Item>
-                                <Dropdown.Item href="#/action-3">remove from device</Dropdown.Item>
-                                <Dropdown.Item href="#/action-3">remove from home</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-
-                    </div>
-                </div>
+                {this.currentBook_render()}
 
                 <div className="booklistCategory-wrapper mt-3">
                     <div className="booklist-wrapper mt-3">

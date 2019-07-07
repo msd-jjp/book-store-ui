@@ -91,6 +91,15 @@ interface ILocalization extends LocalizedStringsMethods {
     more_by_writer: string;
     helen_hardet: string;
     it_will_be_launched_soon: string;
+
+    read_now: string;
+    view_in_store: string;
+    add_to_collection: string;
+    mark_as_read: string;
+    share_progress: string;
+    recommend_this_book: string;
+    remove_from_device: string;
+    remove_from_home: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

@@ -84,4 +84,13 @@ export const en = {
     more_by_writer: 'more by {0}',
     helen_hardet: 'helen hardet',
     it_will_be_launched_soon: 'it will be launched soon.',
+
+    read_now: 'read now',
+    view_in_store: 'view in store',
+    add_to_collection: 'add to collection',
+    mark_as_read: 'mark as read',
+    share_progress: 'share progress',
+    recommend_this_book: 'recommend this book',
+    remove_from_device: 'remove from device',
+    remove_from_home: 'remove from home',
 }
