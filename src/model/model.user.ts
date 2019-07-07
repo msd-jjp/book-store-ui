@@ -6,6 +6,6 @@ export interface IUser extends BaseModel {
     avatar?: string;
     username: string;
     password: string;
-    person_id: string;
+    // person_id: string;
     person?: IPerson;
 }

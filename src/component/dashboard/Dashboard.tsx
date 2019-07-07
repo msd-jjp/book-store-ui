@@ -20,6 +20,8 @@ import { IBook } from '../../model/model.book';
 import { BookService } from '../../service/service.book';
 import { IToken } from '../../model/model.token';
 import { ToastContainer } from 'react-toastify';
+import { BOOK_ROLES } from '../../enum/Book';
+import { IPerson } from '../../model/model.person';
 
 
 interface IProps {
@@ -70,11 +72,41 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     ];
 
     componentDidMount() {
-        debugger;
         this._bookService.setToken(this.props.token);
-        // this.fetchRecomendedBook();
-        this.fetchBookByWriter();
+        this.fetchAllData();
     }
+
+    fetchAllData() {
+        this.fetchNewestBook();
+
+        if (this.props.logged_in_user) {
+            this.fetchRecomendedBook();
+
+            let dcvds: any = this.props.logged_in_user;
+            let vsdv: IPerson = dcvds;
+            /* if (this.props.logged_in_user.person
+                && this.props.logged_in_user.person.current_book
+                && this.props.logged_in_user.person.current_book.roles
+                && this.props.logged_in_user.person.current_book.roles.length
+            ) { */
+            if (
+                vsdv.current_book
+                && vsdv.current_book.roles
+                && vsdv.current_book.roles.length
+            ) {
+                // let writerList = this.props.logged_in_user.person.current_book.roles
+                let writerList = vsdv.current_book.roles
+                    .filter(r => r.role === BOOK_ROLES.Writer);
+                if (writerList.length) {
+                    const writerId = writerList[0].person.id;
+                    // const current_book_id = this.props.logged_in_user.person.current_book.id;
+                    const current_book_id = vsdv.current_book.id;
+                    this.fetchBookByWriter(writerId, current_book_id);
+                }
+            }
+        }
+    }
+
 
     gotoBookDetail(bookId: string) {
         // debugger;
@@ -96,23 +128,24 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
 
     async fetchRecomendedBook() {
-        await this._bookService.recomended().catch(error => {
+        let bfdd = await this._bookService.recomended().catch(error => {
             this.handleError({ error: error.response });
         });
         debugger;
     }
 
     async fetchNewestBook() {
-        await this._bookService.newest().catch(error => {
+        let bfdd = await this._bookService.newest().catch(error => {
             this.handleError({ error: error.response });
         });
+        debugger;
     }
 
-    async fetchBookByWriter() {
-        let vfdbf = this.props.logged_in_user;
+    async fetchBookByWriter(person_id: string, book_id: string) {
+        // let vfdbf = this.props.logged_in_user;
         let bfdd = await this._bookService.bookByWriter({
-            person_id: '',
-            book_id: ''
+            person_id: person_id,
+            book_id: book_id
         }).catch(error => {
             this.handleError({ error: error.response });
         });

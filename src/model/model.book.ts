@@ -12,9 +12,12 @@ export interface IBook extends BaseModel {
     rate: number;
     title: string;
     type: BOOK_TYPES[]
-
     roles: {
+        role: BOOK_ROLES;
+        person: IPerson;
+    }[];
+    /* {
         [key in BOOK_ROLES]: IPerson['id'];
-    };
+    }; */
     files: string[]; // file-url
 }

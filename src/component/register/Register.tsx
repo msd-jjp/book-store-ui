@@ -327,7 +327,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                     </div>
 
                     <BtnLoader
-                        btnClassName="btn btn-link btn-sm"
+                        btnClassName="btn btn-link btn-sm p-align-0"
                         loading={this.state.btnSendAgain_loader}
                         onClick={() => this.sendAgain()}
                         disabled={this.state.sendAgain_counter > 0}

@@ -1,4 +1,4 @@
-import axios from 'axios';
+// import axios from 'axios';
 // import { IUser } from '../model/model.user';
 // import { Setup } from '../config/setup';
 import { BaseService } from './service.base';
@@ -48,14 +48,12 @@ export class RegisterService extends BaseService {
         "cell_no": string;
         "signup_token": string;
     }): any {
-        const instance = axios.create({
+        /* const instance = axios.create({
             baseURL: this.baseURL,
             headers: { 'Content-Type': 'multipart/form-data' } // application/json, multipart/form-data
         });
 
         let bodyFormData = new FormData();
-        // bodyFormData.set('userName', 'Fred');
-        // bodyFormData.append('image', imageFile); 
 
         bodyFormData.set('password', data.password);
         bodyFormData.set('username', data.username);
@@ -65,12 +63,9 @@ export class RegisterService extends BaseService {
         bodyFormData.set('name', data.name);
         data.phone && bodyFormData.set('phone', data.phone);
         bodyFormData.set('cell_no', data.cell_no);
-        bodyFormData.set('signup_token', data.signup_token);
-        /* Object.keys(data).forEach((dd: string) => {
-            let val = data[dd];
-            bodyFormData.set(dd, val);
-        }); */
+        bodyFormData.set('signup_token', data.signup_token); */
+        
 
-        return instance.post('/sign-up', bodyFormData);
+        return this.axiosInstance.post('/sign-up', data);
     }
 }
