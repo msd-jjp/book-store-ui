@@ -34,10 +34,15 @@ interface IProps {
 }
 
 interface IState {
-
+    recomendedBookList:IBook[];
+    recomendedBookError:string|undefined;
 }
 
 class DashboardComponent extends BaseComponent<IProps, IState> {
+    state={
+        recomendedBookList:[],
+        recomendedBookError:undefined,
+    }
     private _bookService = new BookService();
     // dragging!: boolean;
     sliderSetting: Settings = {
@@ -128,10 +133,17 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
 
     async fetchRecomendedBook() {
-        let bfdd = await this._bookService.recomended().catch(error => {
-            this.handleError({ error: error.response });
+        let res = await this._bookService.recomended().catch(error => {
+            let errorMsg = this.handleError({ error: error.response, notify:false });
+            this.setState({ ...this.state, recomendedBookError: errorMsg.body });
         });
-        debugger;
+        // debugger;
+        if(res)
+        {
+            if(res.data.result && res.data.result.length){
+            this.setState({ ...this.state, recomendedBookList: res.data.result });
+            }
+        }
     }
 
     async fetchNewestBook() {
@@ -152,7 +164,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         debugger;
     }
 
-    carousel_render(bookList?: IBook[], tryAgain?: { errorText: string, retry: () => void }) {
+    carousel_render(bookList: IBook[]) {
         if (bookList && bookList.length) {
             return (
                 <>
@@ -171,18 +183,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                     </div>
                 </>
             )
-        } else if (tryAgain) {
-            // let ErrorResolve: IHandleErrorResolve = this.handleError({ error: error.response, notify: false });
-            return (
-                <>
-                    {/* <div>{ErrorResolve.body}</div> */}
-                    <div>{tryAgain.errorText}</div>
-                    <div onClick={() => tryAgain.retry()}>retry</div>
-                </>
-            )
-        } else {
-
-        }
+        } 
     }
 
     currentBook_render() {
@@ -248,6 +249,40 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         )
     }
 
+    recomendedBook_render(){
+        if(this.state.recomendedBookList && this.state.recomendedBookList.length){
+        return(
+            <>
+            <div className="booklist-wrapper mt-3">
+                        <h6 className="title">{Localization.recomended_for_you}</h6>
+                        {this.carousel_render(this.state.recomendedBookList)}
+                    </div>
+            </>
+        )
+        }else if(this.state.recomendedBookError){
+            return(
+                <>
+                <div className="booklist-wrapper mt-3">
+                        <h6 className="title">{Localization.recomended_for_you}</h6>
+                        <div>{this.state.recomendedBookError}</div>
+                        <div>retry</div>
+                    </div>
+                
+                </>
+            )
+        }else{
+            return(
+                <>
+                <div className="booklist-wrapper mt-3">
+                        <h6 className="title">{Localization.recomended_for_you}</h6>
+                        <div>loading</div>
+                    </div>
+                
+                </>
+            )
+        }
+    }
+
     render() {
 
         let aa: any[] = [];
@@ -259,6 +294,10 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 {this.currentBook_render()}
 
                 <div className="booklistCategory-wrapper mt-3">
+                    
+                    {this.recomendedBook_render()}
+
+
                     <div className="booklist-wrapper mt-3">
                         <h6 className="title">{Localization.recomended_for_you}</h6>
                         {this.carousel_render(aa)}
