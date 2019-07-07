@@ -96,27 +96,66 @@
   }
   .selectd-book{
     .row{
+      margin :0;
+      padding: 0;
+      border: 0;
       .col-4{
+        margin :0;
+        padding: 0;
+        border: 0;
         .user-book{
-          .up-icon{
-
-          }
-          .img{
+          margin :0;
+          padding: 0;
+          border: 0;
+          position: relative;
+          .slide-book{
             width: 7.5rem;
             height: 10rem;
             background-color: yellow;
+            margin: 5px;
             display: inline-block;
-          }
-          .down-icon{
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-            background-color: #111;
-            opacity: 0.9;
-            margin-top: -8.5rem;
-            display: inline-block;
+            .base{
+              position: relative;
+              top: 0;
+              right: -5rem;
+              .base1{
+                width: 1.6rem;
+                height: 1.2rem;
+                background-color: rgba(0,0,0,0.6);
+                font-size: 0.7rem;
+                color: white;
+                text-align: center;
+              }
+              .base2{
+                width: 0;
+                height: 0;
+                border-left: 0.8rem solid transparent;
+                border-right: 0.8rem solid transparent;
+                border-top: 0.6rem solid rgba(0,0,0,0.6);
+              }
+            }
+            .check{
+              position: relative;
+              bottom: -6rem;
+              right: -5rem;
+              i{
+                width: 1.5rem;
+                height: 1.5rem;
+                background-color: rgba(0,0,0,0.6);
+                border-radius: 50%;
+                color: white;
+                text-align: center;
+                padding-top: 0.2rem;
+              }
+            }
           }
         }
+      }
+      .col-8{
+        margin :0;
+        padding: 0;
+        border: 0;
+
       }
     }
   }

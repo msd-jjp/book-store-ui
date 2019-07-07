@@ -10993,21 +10993,76 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   display: inline-block;
 }
 
-.mainsoft .selectd-book .row .col-4 .user-book .img {
+.mainsoft .selectd-book .row {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mainsoft .selectd-book .row .col-4 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mainsoft .selectd-book .row .col-4 .user-book {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  position: relative;
+}
+
+.mainsoft .selectd-book .row .col-4 .user-book .slide-book {
   width: 7.5rem;
   height: 10rem;
   background-color: yellow;
+  margin: 5px;
   display: inline-block;
 }
 
-.mainsoft .selectd-book .row .col-4 .user-book .down-icon {
-  width: 2rem;
-  height: 2rem;
+.mainsoft .selectd-book .row .col-4 .user-book .slide-book .base {
+  position: relative;
+  top: 0;
+  right: -5rem;
+}
+
+.mainsoft .selectd-book .row .col-4 .user-book .slide-book .base .base1 {
+  width: 1.6rem;
+  height: 1.2rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  font-size: 0.7rem;
+  color: white;
+  text-align: center;
+}
+
+.mainsoft .selectd-book .row .col-4 .user-book .slide-book .base .base2 {
+  width: 0;
+  height: 0;
+  border-left: 0.8rem solid transparent;
+  border-right: 0.8rem solid transparent;
+  border-top: 0.6rem solid rgba(0, 0, 0, 0.6);
+}
+
+.mainsoft .selectd-book .row .col-4 .user-book .slide-book .check {
+  position: relative;
+  bottom: -6rem;
+  right: -5rem;
+}
+
+.mainsoft .selectd-book .row .col-4 .user-book .slide-book .check i {
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: rgba(0, 0, 0, 0.6);
   border-radius: 50%;
-  background-color: #111;
-  opacity: 0.9;
-  margin-top: -8.5rem;
-  display: inline-block;
+  color: white;
+  text-align: center;
+  padding-top: 0.2rem;
+}
+
+.mainsoft .selectd-book .row .col-8 {
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 .more-main-menu {
@@ -11087,6 +11142,9 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   font-size: 0.7rem;
   font-weight: bold;
   word-wrap: break-word;
+  margin: 0;
+  padding: 0;
+  margin-top: 0.6rem;
 }
 
 .footersoft .justify-content-between .text-center a i {
