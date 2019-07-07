@@ -11065,6 +11065,74 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   border: 0;
 }
 
+.mainsoft .library-menu {
+  background: white;
+  height: 3rem;
+  border-bottom: 1px solid #d4d4d4;
+  top: 4.45rem;
+}
+
+.mainsoft .library-menu .row .text-right a i {
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+
+.mainsoft .library-menu .row .col-2 a, .mainsoft .library-menu .row .col-4 a {
+  text-decoration: none;
+  border-bottom: 1px solid blue;
+  padding-bottom: 1rem;
+}
+
+.mainsoft .library-grid {
+  margin-top: 7.45rem;
+}
+
+.mainsoft .library-grid .row .col-show {
+  height: 10rem;
+  width: 31%;
+  background: yellow;
+}
+
+.mainsoft .library-list {
+  margin-top: 7.45rem;
+  height: 5.5rem;
+}
+
+.mainsoft .library-list .row {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.mainsoft .library-list .row .col-2 a .slide-book {
+  width: 2.5rem;
+  height: 4rem;
+  background-color: yellow;
+}
+
+.mainsoft .library-list .row .col-2 i {
+  font-size: 1.5rem;
+}
+
+.mainsoft .library-list .row .col-8 h5 {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.mainsoft .library-list .row .col-8 h6 {
+  font-size: 0.6rem;
+}
+
+.mainsoft .library-gallery {
+  margin-top: 7.45rem;
+}
+
+.mainsoft .library-gallery .row .col-show {
+  height: 5rem;
+  width: 5rem;
+  border-radius: 0.6rem;
+  background: white;
+  border: 1px solid #e0e0e0;
+}
+
 .more-main-menu {
   scrollbar-color: transparent;
   scrollbar-width: none;
