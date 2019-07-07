@@ -32,6 +32,10 @@ export const ar = {
             msg16: 'commiting to database failed',
             msg17: 'no auth found',
             msg18: 'نام کاربری یا رمز عبور اشتباه است.',
+            msg19: 'enum is not correct  type',
+            msg20: 'entity not found',
+            invalid_persons: 'there is invalid person id in list',
+            addition_error: 'adding model to database failed',
         }
     },
     validation: {

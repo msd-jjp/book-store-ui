@@ -41,6 +41,10 @@ interface ILocalization extends LocalizedStringsMethods {
             msg16: string;
             msg17: string;
             msg18: string;
+            msg19: string;
+            msg20: string;
+            invalid_persons: string;
+            addition_error: string;
         }
     };
     validation: {

@@ -32,6 +32,12 @@ export const en = {
             msg16: 'commiting to database failed',
             msg17: 'you are not logged in',
             msg18: 'username or password is not valid',
+
+            msg19: 'enum is not correct  type',
+            msg20: 'entity not found',
+            invalid_persons: 'there is invalid person id in list',
+            addition_error: 'adding model to database failed',
+
         }
     },
     validation: {
