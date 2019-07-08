@@ -37,6 +37,9 @@ export const fa = {
             msg20: 'entity not found',
             invalid_persons: 'there is invalid person id in list',
             addition_error: 'adding model to database failed',
+
+            username_cellno_required: 'برای دریافت رمز عبور نام کاربری یا شماره موبایل را وارد کنید',
+            invalid_user: "با اطلاعات وارد شده کاربری وجود ندارد",
         }
     },
     validation: {
@@ -92,4 +95,7 @@ export const fa = {
     recommend_this_book: 'پیشنهاد دادن کتاب',
     remove_from_device: 'حذف از دستگاه',
     remove_from_home: 'حذف از خانه',
+    loading_with_dots: 'درحال بارگزاری...',
+    retry: 'تلاش مجدد',
+    title:'عنوان',
 }

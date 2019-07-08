@@ -7,8 +7,8 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.post('/book/_search', data);
     }
 
-    get(bookId: string): Promise<{ data: { result: IBook } }> {
-        return this.axiosTokenInstance.post(`/book/${bookId}`);
+    get(bookId: string): Promise<{ data: IBook }> {
+        return this.axiosTokenInstance.get(`/books/${bookId}`);
     }
 
     bookByWriter(data: { book_id: string, person_id: string }): Promise<{ data: { result: IBook[] } }> {

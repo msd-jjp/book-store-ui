@@ -45,6 +45,8 @@ interface ILocalization extends LocalizedStringsMethods {
             msg20: string;
             invalid_persons: string;
             addition_error: string;
+            username_cellno_required: string;
+            invalid_user: string;
         }
     };
     validation: {
@@ -100,6 +102,9 @@ interface ILocalization extends LocalizedStringsMethods {
     recommend_this_book: string;
     remove_from_device: string;
     remove_from_home: string;
+    loading_with_dots: string;
+    retry: string;
+    title: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
