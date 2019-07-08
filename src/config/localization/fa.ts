@@ -97,5 +97,7 @@ export const fa = {
     remove_from_home: 'حذف از خانه',
     loading_with_dots: 'درحال بارگزاری...',
     retry: 'تلاش مجدد',
-    title:'عنوان',
+    title: 'عنوان',
+    return: 'بازگشت',
+    insert_username_or_mobile: 'نام کاربری یا شماره تلفن همراه خود را وارد کنید',
 }

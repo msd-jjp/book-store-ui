@@ -73,8 +73,9 @@ class LoginComponent extends BaseComponent<IProps, IState> {
         let response: any;
         if (tokenObj) {
             this.props.onSetToken && this.props.onSetToken(tokenObj.data);
+            this._loginService.setToken(this.props.token);
 
-            response = await this._loginService.profile(this.props.token.id).catch((error) => { // tokenObj.data.id
+            response = await this._loginService.profile().catch((error) => { // tokenObj.data.id
                 debugger;
                 this.handleError({ error: error.response });
             });
@@ -112,7 +113,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
                 <h2 className="title mt-4 mb-3">{Localization.sign_in}</h2>
                 <h3 className="desc">{Localization.sign_in_bookstore_account}</h3>
                 <div className="forgot-password text-right mb-3">
-                    <NavLink activeClassName="active__" to="/login">
+                    <NavLink activeClassName="active__" to="/forgot-password">
                         {Localization.forgot_password}
                     </NavLink>
                 </div>

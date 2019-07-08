@@ -98,5 +98,7 @@ export const en = {
     remove_from_home: 'remove from home',
     loading_with_dots: 'loading...',
     retry: 'retry',
-    title:'title',
+    title: 'title',
+    return: 'return',
+    insert_username_or_mobile: 'insert your username or mobile number',
 }

@@ -21,6 +21,7 @@ import { DashboardMore } from '../dashboard-more/DashboardMore';
 import { Store } from '../store/Store';
 import { Library } from '../library/Library';
 import { BookDetail } from '../book-detail/BookDetail';
+import { ForgotPassword } from '../forgot-password/ForgotPassword';
 
 const appRoutes = (
   <HashRouter>
@@ -39,6 +40,7 @@ const appRoutes = (
 
       <RouteLayoutAccount path="/login" component={Login} />
       <RouteLayoutAccount path="/register" component={Register} />
+      <RouteLayoutAccount path="/forgot-password" component={ForgotPassword} />
       {/* <Route component={NotFound} /> */}
       <RouteLayoutMain component={NotFound} />
 

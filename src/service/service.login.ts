@@ -2,7 +2,7 @@ import axios from 'axios';
 import { IUser } from '../model/model.user';
 // import { Setup } from '../config/setup';
 import { BaseService } from './service.base';
-import { IToken } from '../model/model.token';
+// import { IToken } from '../model/model.token';
 
 export class LoginService extends BaseService {
 
@@ -26,21 +26,17 @@ export class LoginService extends BaseService {
         return instance.post('/tokens', {});
     }
 
-    profile_DELETE_ME(token: string/* , data: { username: string, password: string } */): Promise<IUser> {
-        const instance = axios.create({
-            baseURL: this.baseURL,
-            headers: { 'Content-Type': 'application/json', 'authorization': 'Bearer ' + token }
-        });
 
-        return instance.post('/profile', {});
-    }
-
-    profile(tokenId: IToken['id']): Promise<IUser> {
-        const instance = axios.create({
+    profile(/* tokenId: IToken['id'] */): Promise<IUser> {
+        /* const instance = axios.create({
             baseURL: this.baseURL,
             headers: { 'Content-Type': 'application/json', 'authorization': 'Bearer ' + tokenId }
-        });
+        }); */
 
-        return instance.get('users/profile');
+        return this.axiosTokenInstance.get('users/profile');
+    }
+    forgotPassword(usernameOrMobile: {'username': string} | {'cell_no': string}): Promise<string> {
+
+        return this.axiosInstance.post('/users/forget-password', usernameOrMobile);
     }
 }

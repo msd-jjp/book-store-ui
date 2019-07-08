@@ -105,6 +105,9 @@ interface ILocalization extends LocalizedStringsMethods {
     loading_with_dots: string;
     retry: string;
     title: string;
+    return: string;
+
+    insert_username_or_mobile: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
