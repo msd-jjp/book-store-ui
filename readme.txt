@@ -8,6 +8,11 @@ npm i react-slick @types/react-slick
 npm i react-bootstrap @types/react-bootstrap
 
 ====================================================================================
+????????????????????????????????????????????????????????????????????????????????????
+
+npm i react-rating
+
+====================================================================================
 
 npm run build
 npm install -g serve
@@ -29,9 +34,6 @@ valid number:
 
 ====================================================================================
 
-Unhandled Rejection (InvalidCharacterError):
-    Failed to execute 'btoa' on 'Window':
-        The string to be encoded contains characters outside of the Latin1 range.
 
 ====================================================================================
 
@@ -60,12 +62,12 @@ please check your wi-fi or mobile network connection and try again
 بروز خطا در انجام عملیات، دسترسی اینترنت خود را بررسی فرمایید
 
 ====================================================================================
+
 image before load show empty img logo
 
 ====================================================================================
 
 route
-    history type
     match type
 
 ====================================================================================
