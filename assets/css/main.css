@@ -11279,7 +11279,6 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   width: 7.5rem;
   height: 10rem;
   background-color: yellow;
-  margin: 5px;
   display: inline-block;
 }
 
@@ -11385,6 +11384,163 @@ a.text-jamejam:hover, a.text-jamejam:focus {
 
 .datail-main .this-item .text-container-2 h6 span {
   font-weight: 500;
+}
+
+.datail-main .author .author-info {
+  border: 1px solid #d2d2d2;
+}
+
+.datail-main .author .author-info .txt {
+  border-bottom: 1px solid #d2d2d2;
+}
+
+.datail-main .author .author-info .txt p {
+  font-weight: 500;
+}
+
+.datail-main .author .author-info .author-profile .img div {
+  height: 5.2rem;
+  width: 5.2rem;
+  border-radius: 50%;
+  background-color: gray;
+}
+
+.datail-main .author .author-info .author-profile .col-6 div h6 {
+  color: #05709c;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.datail-main .author .author-info .author-profile .col-6 div button {
+  background-color: lightgrey;
+  border-radius: 0;
+}
+
+.datail-main .Separator-border {
+  border-bottom: 1px solid #d2d2d2;
+}
+
+.datail-main .customer-reviews .row .col-10 .rate-customer {
+  display: inline-block;
+}
+
+.datail-main .customer-reviews .row .col-10 .rate-customer span {
+  color: gray;
+}
+
+.datail-main .customer-reviews .row .col-10 .rate-customer .checked {
+  color: orange;
+}
+
+.datail-main .customer-reviews .row .col-1 a i {
+  font-size: 1.4rem;
+}
+
+.datail-main .read-reviews {
+  border-top: 1px solid #d2d2d2;
+}
+
+.datail-main .read-reviews .row .col-5 .row a .btn {
+  background-color: #d7e8ea;
+  margin: 0.3rem;
+  border-radius: 0;
+  font-weight: 500;
+}
+
+.datail-main .read-reviews h5 {
+  font-weight: bold;
+}
+
+.datail-main .read-reviews .see-more {
+  color: black;
+}
+
+.datail-main .read-reviews .see-more .fa {
+  font-size: 1.2rem;
+}
+
+.datail-main .read-reviews .see-more span {
+  color: #05709c;
+  font-size: 1.1rem;
+}
+
+.datail-main .comments {
+  border-top: 1px solid #d2d2d2;
+}
+
+.datail-main .comments h5 {
+  font-weight: bold;
+}
+
+.datail-main .comments h6 {
+  font-weight: bold;
+}
+
+.datail-main .comments .user-comment-box .col-1 .img {
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 50%;
+  background-color: gray;
+}
+
+.datail-main .comments .user-comment-box .rate-comment {
+  display: inline-block;
+}
+
+.datail-main .comments .user-comment-box .rate-comment span {
+  color: gray;
+}
+
+.datail-main .comments .user-comment-box .rate-comment .checked {
+  color: orange;
+}
+
+.datail-main .comments .user-comment-box .Verified-star {
+  color: orange;
+  font-weight: bold;
+}
+
+.datail-main .comments .user-comment-box .txt {
+  font-weight: 450;
+}
+
+.datail-main .comments .user-comment-box .helpful .col-5 .btn {
+  border-radius: 0;
+  background-color: #e6e6e6;
+  font-weight: 500;
+}
+
+.datail-main .comments .user-comment-box .helpful .col-2 {
+  font-weight: 500;
+}
+
+.datail-main .all-review h6 {
+  font-weight: bold;
+}
+
+.datail-main .all-review .fa {
+  font-size: 1.4rem;
+}
+
+.datail-main .write-review .write-box {
+  background-color: #e6e6e6;
+}
+
+.datail-main .search-box {
+  margin-bottom: 7rem;
+}
+
+.datail-main .search-box .row input {
+  border-top: 1px solid #a6a6a6;
+  border-right: 1px solid #a6a6a6;
+  border-left: 1px solid #a6a6a6;
+  border-bottom: 1px solid #d2d2d2;
+  border-radius: 0;
+}
+
+.datail-main .search-box .row button {
+  background-color: #e6e6e6;
+  border-radius: 0;
 }
 
 .footerlogin {
