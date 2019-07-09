@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { IUser } from '../model/model.user';
-// import { Setup } from '../config/setup';
 import { BaseService } from './service.base';
-// import { IToken } from '../model/model.token';
 
 export class LoginService extends BaseService {
 
@@ -26,17 +24,21 @@ export class LoginService extends BaseService {
         return instance.post('/tokens', {});
     }
 
-
-    profile(/* tokenId: IToken['id'] */): Promise<IUser> {
-        /* const instance = axios.create({
-            baseURL: this.baseURL,
-            headers: { 'Content-Type': 'application/json', 'authorization': 'Bearer ' + tokenId }
-        }); */
-
+    profile(): Promise<IUser> {
         return this.axiosTokenInstance.get('users/profile');
     }
-    forgotPassword(usernameOrMobile: {'username': string} | {'cell_no': string}): Promise<string> {
 
-        return this.axiosInstance.post('/users/forget-password', usernameOrMobile);
+    forgotPassword(mobile: { username: string } | { cell_no: string }): Promise<string> {
+        return this.axiosInstance.post('/forget-password', mobile);
     }
+
+    resetPassword(data: {
+        cell_no: string;
+        code: string;
+        password: string;
+    }): Promise<string> {
+
+        return this.axiosInstance.post('/users/reset-password', data);
+    }
+
 }
