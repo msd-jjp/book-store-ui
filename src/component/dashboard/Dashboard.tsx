@@ -240,6 +240,15 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         <div className="latestBook-wrapper row mt-3">
           <div className="col-4 book-img-wrapper">
             <img className="" src={current_book_img} alt="book" />
+            <div className="book-progress-state">
+              <div className="bp-state-number">
+                <div className="text">7%</div>
+              </div>
+              <div className="bp-state-arrow" />
+            </div>
+            <div className="book-download">
+              <i className="fa fa-check" />
+            </div>
           </div>
           <div className="col-8 book-detail-wrapper p-align-0">
             <h6 className="title">{current_book.title}</h6>

@@ -3,6 +3,55 @@
     img {
       width: 100%;
     }
+    .book-progress-state {
+      position: absolute;
+      top: 0rem;
+      body:not(.rtl) & {
+        right: 1.5rem;
+      }
+      body.rtl & {
+        left: 1.5rem;
+      }
+
+      .bp-state-number {
+        width: 1.6rem;
+        height: 1.2rem;
+        background-color: rgba(0, 0, 0, 0.6);
+        font-size: 0.6rem;
+        color: white;
+        text-align: center;
+        .text {
+          @extend .center-el-in-box;
+          top: 40%;
+        }
+      }
+      .bp-state-arrow {
+        width: 0;
+        height: 0;
+        border-left: 0.8rem solid transparent;
+        border-right: 0.8rem solid transparent;
+        border-top: 0.6rem solid rgba(0, 0, 0, 0.6);
+      }
+    }
+    .book-download {
+      position: absolute;
+      bottom: 0.5rem;
+      body:not(.rtl) & {
+        right: 1.5rem;
+      }
+      body.rtl & {
+        left: 1.5rem;
+      }
+      i {
+        width: 1.5rem;
+        height: 1.5rem;
+        background-color: rgba(0, 0, 0, 0.6);
+        border-radius: 50%;
+        color: white;
+        text-align: center;
+        padding-top: 0.2rem;
+      }
+    }
   }
   .book-detail-wrapper {
     .title,
