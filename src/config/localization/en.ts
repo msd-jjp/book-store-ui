@@ -11,6 +11,7 @@ export const en = {
             msg1: 'action succeeded',
             msg2: 'error occurred',
             msg3: 'registered successfully, we redirect you to login page.',
+            msg4: 'password changed successfully, we redirect you to login page.',
         },
         back: {
             msg1: 'user already exists',

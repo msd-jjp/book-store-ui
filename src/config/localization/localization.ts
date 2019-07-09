@@ -20,6 +20,7 @@ interface ILocalization extends LocalizedStringsMethods {
             msg1: string;
             msg2: string;
             msg3: string;
+            msg4: string;
         },
         back: {
             [key: string]: any; // todo
