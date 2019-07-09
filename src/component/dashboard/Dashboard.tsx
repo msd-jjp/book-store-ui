@@ -436,11 +436,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   render() {
-    let aa: any[] = [];
-    for (let i = 0; i < 20; i++) {
-      aa.push(i);
-    }
-
     return (
       <>
         {this.currentBook_render()}
