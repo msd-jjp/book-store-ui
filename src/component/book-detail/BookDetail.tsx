@@ -86,6 +86,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               <span className="number pl-2">(127)</span>
               <div className="pointer-container mt-2 pl-2">
                 <div className="pointer mr-1 mt-0 pt-0 px-1">#1 Best Seller</div>
+                <div className="clearfiix"></div>
                 <span>in <a href="">Kindle Store</a></span>
               </div>
             </div>
