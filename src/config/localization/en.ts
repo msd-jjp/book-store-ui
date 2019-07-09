@@ -42,6 +42,8 @@ export const en = {
             username_cellno_required: 'for retrieving password username or cell number must send',
             invalid_user: "the user by this data doesn't exist",
 
+            invalid_code: 'the code is invalid',
+
         }
     },
     validation: {
@@ -102,4 +104,5 @@ export const en = {
     title: 'title',
     return: 'return',
     insert_username_or_mobile: 'insert your username or mobile number',
+    reset_password: 'reset password',
 }

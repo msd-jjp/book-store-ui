@@ -102,8 +102,8 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
 
     this.setState({ ...this.state, btnLoader: false });
 
-        if (!res) return;
-        this.signUpNotify();
+    if (!res) return;
+    this.signUpNotify();
 
     /* if (res) {
       this.setState({
@@ -114,16 +114,16 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
   }
   signUpNotify() {
     return toast.success(
-        Localization.msg.ui.msg4,
-        this.getNotifyConfig({
-            autoClose: Setup.notify.timeout.success,
-            onClose: this.onSignUpNotifyClosed.bind(this)
-        })
+      Localization.msg.ui.msg4,
+      this.getNotifyConfig({
+        autoClose: Setup.notify.timeout.success,
+        onClose: this.onSignUpNotifyClosed.bind(this)
+      })
     );
-}
-onSignUpNotifyClosed() {
-  this.props.history.push('/login');
-}
+  }
+  onSignUpNotifyClosed() {
+    this.props.history.push('/login');
+  }
   handleInputChange(val: any, isValid: boolean, inputType: TInputType) {
     const isFormValid = this.validateForm(val, isValid, inputType);
     this.setState({ ...this.state, [inputType]: { value: val, isValid }, isFormValid });
@@ -210,12 +210,12 @@ onSignUpNotifyClosed() {
       return (
         <>
           <h3 className="desc mt-4 mb-3">
-            {/* {Localization.insert_username_or_mobile} */}
-            new pass
+            {Localization.reset_password}
           </h3>
           <div className="account-form">
             <div className="input-wrapper">
               <Input
+                key={'forgot-password_code'}
                 defaultValue={this.state.code.value}
                 onChange={(val, isValid) => {
                   this.handleInputChange(val, isValid, "code");

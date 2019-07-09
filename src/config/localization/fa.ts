@@ -41,6 +41,8 @@ export const fa = {
 
             username_cellno_required: 'برای دریافت رمز عبور نام کاربری یا شماره موبایل را وارد کنید',
             invalid_user: "با اطلاعات وارد شده کاربری وجود ندارد",
+
+            invalid_code: 'کد تایید اشتباه است.',
         }
     },
     validation: {
@@ -101,4 +103,5 @@ export const fa = {
     title: 'عنوان',
     return: 'بازگشت',
     insert_username_or_mobile: 'نام کاربری یا شماره تلفن همراه خود را وارد کنید',
+    reset_password: 'تغییر رمز عبور',
 }

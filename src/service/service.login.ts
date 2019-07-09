@@ -29,7 +29,7 @@ export class LoginService extends BaseService {
     }
 
     forgotPassword(mobile: { username: string } | { cell_no: string }): Promise<string> {
-        return this.axiosInstance.post('/forget-password', mobile);
+        return this.axiosInstance.post('/forget-password/send-code', mobile);
     }
 
     resetPassword(data: {

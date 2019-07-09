@@ -55,5 +55,8 @@ export const Setup: ISetup = {
         rtl: true,
         language: 'فارسی',
         flag: 'fa',
+        /* rtl: false,
+    language: 'english',
+    flag: 'en', */
     }
 };
