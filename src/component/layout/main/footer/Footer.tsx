@@ -5,12 +5,39 @@ import { redux_state } from "../../../../redux/app_state";
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { TInternationalization } from "../../../../config/setup";
+import { IUser } from "../../../../model/model.user";
+import { BOOK_ROLES } from "../../../../enum/Book";
 
 export interface IProps {
     internationalization: TInternationalization;
+    logged_in_user?: IUser | null;
 }
 
 class LayoutMainFooterComponent extends React.Component<IProps, any>{
+
+    currentBook_render() {
+        if (
+            this.props.logged_in_user &&
+            this.props.logged_in_user.person &&
+            this.props.logged_in_user.person.current_book
+        ) {
+            let current_book = this.props.logged_in_user.person.current_book;
+            let current_book_img = (current_book.images && current_book.images.length && current_book.images[0]) ||
+                "static/media/img/icon/default-book.png";
+
+            return (
+                <>
+                    <div className="item text-center selected-book">
+                        <NavLink to="/dashboard" className="nav-link" activeClassName="active pointer-events-none">
+                            <img src={current_book_img} alt="selected-book" />
+                        </NavLink>
+                    </div>
+                </>
+            )
+        }
+
+    }
+
     render() {
         return (
             <>
@@ -30,11 +57,7 @@ class LayoutMainFooterComponent extends React.Component<IProps, any>{
                                 <span className="text">{Localization.library}</span>
                             </NavLink>
                         </div>
-                        <div className="item text-center selected-book">
-                            <NavLink to="/dashboard" className="nav-link" activeClassName="active pointer-events-none">
-                                <img src="static/media/img/sample-book/sample-book.png" alt="selected-book" />
-                            </NavLink>
-                        </div>
+                        {this.currentBook_render()}
                         <div className="item text-center">
                             <NavLink to="/store" className="nav-link text-dark" activeClassName="active pointer-events-none">
                                 <i className="fa fa-shopping-cart"></i>
@@ -63,7 +86,8 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 
 const state2props = (state: redux_state) => {
     return {
-        internationalization: state.internationalization
+        internationalization: state.internationalization,
+        logged_in_user: state.logged_in_user,
     }
 }
 
