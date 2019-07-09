@@ -10774,9 +10774,32 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   border-color: blue;
 }
 
+.headersoft .row .col-1 .arrowcontainer a .arrow {
+  font-size: 1.2rem;
+}
+
+.headersoft .row .col-1 .bincontainer a .bin {
+  font-size: 1.2rem;
+}
+
 .headersoft .row .col-1 .bellcontainer .bell {
   font-size: 1.2rem;
   color: #2d2d2d;
+}
+
+.text-page-header {
+  background-color: white;
+  height: 1rem;
+}
+
+.detail-header {
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+  height: 4rem;
+}
+
+.detail-header div a i {
+  font-size: 1.2rem;
 }
 
 .bodylogin {
@@ -11065,6 +11088,19 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   border: 0;
 }
 
+.mainsoft .selectd-book .row .col-8 .row {
+  margin-left: 1.5rem;
+}
+
+.mainsoft .selectd-book .row .col-8 .row h5 {
+  font-size: 1.2rem;
+}
+
+.mainsoft .selectd-book .row .col-8 .row a .read {
+  font-size: 1.2rem;
+  border-radius: 0;
+}
+
 .mainsoft .library-menu {
   background: white;
   height: 3rem;
@@ -11072,9 +11108,19 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   top: 4.45rem;
 }
 
+.mainsoft .library-menu .row .col-3 a .rot {
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+
 .mainsoft .library-menu .row .text-right a i {
   -webkit-transform: rotate(90deg);
           transform: rotate(90deg);
+}
+
+.mainsoft .library-menu .row .text-right a .unrot {
+  -webkit-transform: rotate(0deg) !important;
+          transform: rotate(0deg) !important;
 }
 
 .mainsoft .library-menu .row .col-2 a, .mainsoft .library-menu .row .col-4 a {
@@ -11182,6 +11228,165 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   font-size: 0.7rem;
 }
 
+.text-page-main {
+  margin-top: 2rem;
+  scrollbar-color: transparent;
+  scrollbar-width: none;
+}
+
+.text-page-main::-webkit-scrollbar {
+  display: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.notification-main {
+  margin-top: 4rem;
+  scrollbar-color: transparent;
+  scrollbar-width: none;
+}
+
+.notification-main::-webkit-scrollbar {
+  display: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.datail-main {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+  scrollbar-color: transparent;
+  scrollbar-width: none;
+}
+
+.datail-main::-webkit-scrollbar {
+  display: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.datail-main .book-detail {
+  margin-top: 4.5rem;
+}
+
+.datail-main .book-detail .row .col-4 .user-book {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.datail-main .book-detail .row .col-4 .user-book .slide-book {
+  width: 7.5rem;
+  height: 10rem;
+  background-color: yellow;
+  margin: 5px;
+  display: inline-block;
+}
+
+.datail-main .book-detail .row .col-7 .rate-book {
+  display: inline-block;
+}
+
+.datail-main .book-detail .row .col-7 .rate-book span {
+  color: gray;
+}
+
+.datail-main .book-detail .row .col-7 .rate-book .checked {
+  color: orange;
+}
+
+.datail-main .book-detail .row .col-7 h6 {
+  color: #05709c;
+}
+
+.datail-main .book-detail .row .col-7 .number {
+  color: #05709c;
+}
+
+.datail-main .book-detail .row .col-7 .pointer-container .pointer {
+  width: 6rem;
+  height: 1.2rem;
+  position: relative;
+  background: orange;
+  display: inline-block;
+  color: white;
+  font-size: 0.8rem;
+  border: 0;
+}
+
+.datail-main .book-detail .row .col-7 .pointer-container .pointer:before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-right: 0.6rem solid white;
+  border-top: 0.6rem solid transparent;
+  border-bottom: 0.6rem solid transparent;
+}
+
+.datail-main .book-detail .row .col-7 .pointer-container span a {
+  color: #05709c;
+}
+
+.datail-main .book-detail .add-link a {
+  color: #05709c !important;
+}
+
+.datail-main .about div {
+  border: 1px solid #d2d2d2;
+}
+
+.datail-main .about div ul li {
+  font-weight: 600;
+}
+
+.datail-main .editor .text-container {
+  border: 1px solid #d2d2d2;
+}
+
+.datail-main .editor .text-container .row .col-10 p {
+  font-weight: 500;
+}
+
+.datail-main .editor .text-container .row div a i {
+  font-size: 1.4rem;
+}
+
+.datail-main .this-item .text-container-1 {
+  border: 1px solid #d2d2d2;
+}
+
+.datail-main .this-item .text-container-1 h5 {
+  font-weight: bold;
+}
+
+.datail-main .this-item .text-container-1 .bold {
+  font-weight: bold;
+}
+
+.datail-main .this-item .text-container-1 .normal-txt {
+  font-weight: 500;
+}
+
+.datail-main .this-item .text-container-2 {
+  border: 1px solid #d2d2d2;
+  border-top: none;
+}
+
+.datail-main .this-item .text-container-2 h5 {
+  font-weight: bold;
+}
+
+.datail-main .this-item .text-container-2 h6 {
+  font-weight: bold;
+}
+
+.datail-main .this-item .text-container-2 h6 span {
+  font-weight: 500;
+}
+
 .footerlogin {
   background: -webkit-gradient(linear, left top, left bottom, from(#f6f6f6), to(white));
   background: linear-gradient(to bottom, #f6f6f6, white);
@@ -11232,5 +11437,15 @@ a.text-jamejam:hover, a.text-jamejam:focus {
 .footersoft .justify-content-between .selected-book1 .nav-link .selected-book2 {
   width: 3rem;
   height: 4.5rem;
+}
+
+.text-page-footer {
+  background-color: white;
+  height: 2rem;
+}
+
+.notification-footer {
+  background-color: white;
+  height: 2rem;
 }
 /*# sourceMappingURL=main.css.map */

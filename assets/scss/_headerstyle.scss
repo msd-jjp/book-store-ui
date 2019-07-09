@@ -48,11 +48,43 @@
             }
         }
         .col-1{
+            .arrowcontainer{
+                a{
+                    .arrow{
+                        font-size: 1.2rem;
+                    }
+                }
+            }
+            .bincontainer{
+                a{
+                    .bin{
+                        font-size: 1.2rem;
+                    }
+                }
+            }
+        }
+        .col-1{
             .bellcontainer{
                 .bell{
                     font-size: 1.2rem;
                     color:rgb(45,45,45);
                 }
+            }
+        }
+    }
+}
+.text-page-header{
+    background-color: rgb(255, 255,255);
+    height: 1rem;
+}
+.detail-header{
+    background-color: rgb(255, 255,255);
+    border-bottom: 1px solid rgb(224,224,224);
+    height: 4rem;
+    div{
+        a{
+            i{
+                font-size: 1.2rem;
             }
         }
     }
