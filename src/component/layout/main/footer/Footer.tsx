@@ -6,7 +6,6 @@ import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { TInternationalization } from "../../../../config/setup";
 import { IUser } from "../../../../model/model.user";
-import { BOOK_ROLES } from "../../../../enum/Book";
 
 export interface IProps {
     internationalization: TInternationalization;
