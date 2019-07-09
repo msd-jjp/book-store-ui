@@ -22,7 +22,7 @@ enum FORGOT_PASSWORD_STEP {
 }
 
 interface IState {
-//   forgotPasswordStep: FORGOT_PASSWORD_STEP;
+  //   forgotPasswordStep: FORGOT_PASSWORD_STEP;
   username: {
     value: string | undefined;
     isValid: boolean;
