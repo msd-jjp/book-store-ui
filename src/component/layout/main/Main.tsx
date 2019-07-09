@@ -32,10 +32,38 @@ class LayoutMainComponent extends React.Component<IProps> {
     /* componentDidMount(){
         debugger;
     } */
-    render() {
+    /* componentWillUpdate() {
+        debugger;
+    } */
+    componentWillMount() {
         // debugger;
         if (!this.props.logged_in_user) {
             this.props.history.push("/login");
+        }
+    }
+    /* componentDidUpdate() {
+        debugger;
+    }
+    componentDidMount(){
+        debugger;
+    } */
+    shouldComponentUpdate(){
+        // debugger;
+        if (!this.props.logged_in_user) {
+            this.props.history.push("/login");
+            return false;
+        }
+        return true;
+    }
+    render() {
+        // debugger;
+        /* if (!this.props.logged_in_user) {
+            this.props.history.push("/login");
+            return (
+                <div></div>
+            );
+        } */
+        if (!this.props.logged_in_user) {
             return (
                 <div></div>
             );
