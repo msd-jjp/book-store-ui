@@ -22,37 +22,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       <>
         <div className="book-detail-wrapper mt-3">
 
-          {/* <!-- book-detail --> */}
-          <section className="book-detail mx-3">
-            <div className="row">
-              <div className="col-4 mr-1">
-                <div className="user-book">
-                  <div className="slide-book">
-                  </div>
-                </div>
-              </div>
-              <div className="col-7 pr-0 pl-4">
-                <h5 className="pl-2">What You Did</h5>
-                <h6 className="pl-2">Claire McGowan</h6>
-                <div className="rate-book pl-2">
-                  <span className="fa fa-star checked"></span>
-                  <span className="fa fa-star checked"></span>
-                  <span className="fa fa-star checked"></span>
-                  <span className="fa fa-star checked"></span>
-                  <span className="fa fa-star"></span>
-                </div>
-                <span className="number pl-2">(127)</span>
-                <div className="pointer-container mt-2 pl-2">
-                  <div className="pointer mr-1 mt-0 pt-0 px-1">#1 Best Seller</div>
-                  <span>in <a href="">Kindle Store</a></span>
-                </div>
-              </div>
-            </div>
-            <div className="row mx-2 my-2 add-link">
-              <a href="">ADD TO LIST</a>
-            </div>
-          </section>
-          
           {/* <!-- about the kindle --> */}
           <section className="about mx-3">
             <h4 className="my-1 mx-2">ABOUT THE KINDLE EDITION</h4>
@@ -66,6 +35,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               </ul>
             </div>
           </section>
+
+          
           {/* <!-- from the editor --> */}
           <section className="editor mx-3">
             <h4 className="my-1 mx-2">FROM THE EDITOR</h4>

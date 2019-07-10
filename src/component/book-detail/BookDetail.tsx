@@ -69,7 +69,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             <div className="col-5">
               <div className="book-image-wrapper">
                 {/* <div className="slide-book"> */}
-                  <img src={book_image} alt="book" />
+                <img src={book_image} alt="book" />
                 {/* </div> */}
               </div>
             </div>
@@ -87,10 +87,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 onChange={(newRate) => this.bookRateChange(newRate)}
               />
               <span className="book-total-rate pl-2">({book_totalRate})</span>
-              <div className="pointer-container mt-2">
-                <div className="pointer mr-1 mt-0 pt-0 px-1">#1 Best Seller</div>
+              <div className="book-selled-info-container mt-2">
+                <div className="book-selled-info">#1 Best Seller</div>
                 <div className="clearfix"></div>
-                <span>{Localization.in} {Localization.brand_name}</span>
+                <span className="from-store">{Localization.in} {Localization.brand_name}</span>
               </div>
             </div>
             <div className="col-12">
@@ -100,10 +100,22 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
         </section>
 
+        <section className="about mx-3">
+          <h4 className="my-1 mx-2">ABOUT THE KINDLE EDITION</h4>
+          <div className="px-0 py-2 mx-1 my-3">
+            <ul className="my-2">
+              <li className="px-2">Length: 282 pages</li>
+              <li className="px-2">Word Wise: Enabled</li>
+              <li className="px-2">Screen Reader: Supported</li>
+              <li className="px-2">Enhanced Typesetting: Enabled</li>
+              <li className="px-2">Page Flip: Enabled</li>
+            </ul>
+          </div>
+        </section>
       </>
     )
   }
-  bookRateChange(newRate:number) {
+  bookRateChange(newRate: number) {
     debugger;
     //todo: request to update this book's overAllrate & overallRate count: with this user's rate
   }

@@ -1,62 +1,69 @@
 .book-detail-wrapper {
   margin-bottom: 4rem;
-  
+
   .book-detail {
     .book-image-wrapper {
-      // .slide-book {
-        img {
-          width: 100%;
-          max-height: 100%;
-        }
-      // }
+      img {
+        width: 100%;
+        max-height: 100%;
+      }
     }
 
-    .book-info-wrapper{
+    .book-info-wrapper {
       .book-writer {
         color: rgb(5, 112, 156);
       }
       .book-total-rate {
         color: rgb(5, 112, 156);
+        font-size: 0.9rem;
       }
-      .pointer-container {
-        .pointer {
-          width: 6rem;
-          height: 1.2rem;
+      .book-selled-info-container {
+        .book-selled-info {
+          // width: 6rem;
+          // height: 1.2rem;
           position: relative;
           background: orange;
           display: inline-block;
           color: white;
           font-size: 0.8rem;
-          border: 0;
-        }
-        .pointer:before {
-          content: "";
-          position: absolute;
+          // border: 0;
 
-          bottom: 0;
-          width: 0;
-          height: 0;
-
-          border-top: 0.6rem solid transparent;
-          border-bottom: 0.6rem solid transparent;
           body:not(.rtl) & {
-            right: 0;
-            border-right: 0.6rem solid #f7f7f7;
+            padding-left: 0.25rem;
+            padding-right: 0.75rem;
           }
           body.rtl & {
-            left: 0;
-            border-left: 0.6rem solid #f7f7f7;
+            padding-right: 0.25rem;
+            padding-left: 0.75rem;
+          }
+
+          &:before {
+            content: "";
+            position: absolute;
+            // bottom: 0;
+            // width: 0;
+            // height: 0;
+            border-top: 0.6rem solid transparent;
+            border-bottom: 0.6rem solid transparent;
+            body:not(.rtl) & {
+              right: 0;
+              border-right: 0.6rem solid #f7f7f7;
+            }
+            body.rtl & {
+              left: 0;
+              border-left: 0.6rem solid #f7f7f7;
+            }
           }
         }
-        span {
-          a {
-            color: rgb(5, 112, 156);
-          }
+        .from-store {
+          // a {
+          color: rgb(5, 112, 156);
+          // }
         }
       }
     }
 
-    .add-to-list{
+    .add-to-list {
       color: rgb(5, 112, 156); // !important;
     }
     /* .add-link {
