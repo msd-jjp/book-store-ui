@@ -84,7 +84,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 // fractions={2}
                 direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
                 initialRating={book_rate}
-                onChange={(val) => this.bookRateChange(val)}
+                onChange={(newRate) => this.bookRateChange(newRate)}
               />
               <span className="book-total-rate pl-2">({book_totalRate})</span>
               <div className="pointer-container mt-2">
@@ -103,8 +103,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       </>
     )
   }
-  bookRateChange(val:any) {
+  bookRateChange(newRate:number) {
     debugger;
+    //todo: request to update this book's overAllrate & overallRate count: with this user's rate
   }
   book_render() {
     if (this.state.book) {

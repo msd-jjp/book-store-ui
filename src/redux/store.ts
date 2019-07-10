@@ -1,4 +1,4 @@
-import { combineReducers, createStore, ReducersMapObject, AnyAction/* , Action */ } from 'redux';
+import { combineReducers, createStore, ReducersMapObject, AnyAction/* , Action */, applyMiddleware } from 'redux';
 import { redux_state } from './app_state';
 import { reducer as UserReducer } from './reducer/user';
 import { reducer as InternationalizationReducer } from './reducer/internationalization';
@@ -7,6 +7,7 @@ import { Reducer } from 'redux';
 import { TInternationalization } from '../config/setup';
 import { IToken } from '../model/model.token';
 import { reducer as TokenReducer } from './reducer/token';
+import logger from 'redux-logger'
 
 const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
     logged_in_user: UserReducer as Reducer<IUser | null, AnyAction>,
@@ -16,4 +17,4 @@ const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
 
 const main_reducer = combineReducers(reducers);
 
-export const Store = createStore(main_reducer);
+export const Store = createStore(main_reducer,applyMiddleware(logger));
