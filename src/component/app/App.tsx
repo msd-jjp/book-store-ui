@@ -16,7 +16,7 @@ import { Localization } from '../../config/localization/localization';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../redux/app_state';
-import { action_change_app_flag } from '../../redux/action/internationalization';
+// import { action_change_app_flag } from '../../redux/action/internationalization';
 import { DashboardMore } from '../dashboard-more/DashboardMore';
 import { Store } from '../store/Store';
 import { Library } from '../library/Library';
@@ -50,10 +50,15 @@ const appRoutes = (
   </HashRouter>
 );
 
-class AppComponent extends React.Component<any, any> {
+interface IProps {
+  internationalization: TInternationalization;
+}
+
+class AppComponent extends React.Component<IProps, any> {
   constructor(props: any) {
     super(props);
 
+    Localization.setLanguage(props.internationalization.flag);
     document.title = Localization.app_title;
 
     /* if (Setup.internationalization.rtl) {
@@ -62,6 +67,7 @@ class AppComponent extends React.Component<any, any> {
     if (props.internationalization.rtl) {
       document.body.classList.add('rtl');
     }
+    
   }
 
   render() {
@@ -78,7 +84,7 @@ class AppComponent extends React.Component<any, any> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
   return {
-    change_app_flag: (internationalization: TInternationalization) => dispatch(action_change_app_flag(internationalization)),
+    // change_app_flag: (internationalization: TInternationalization) => dispatch(action_change_app_flag(internationalization)),
   }
 }
 

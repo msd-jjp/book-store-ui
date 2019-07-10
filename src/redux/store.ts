@@ -8,13 +8,33 @@ import { TInternationalization } from '../config/setup';
 import { IToken } from '../model/model.token';
 import { reducer as TokenReducer } from './reducer/token';
 import logger from 'redux-logger'
+//
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 
 const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
-    logged_in_user: UserReducer as Reducer<IUser | null, AnyAction>,
-    internationalization: InternationalizationReducer as Reducer<TInternationalization, AnyAction>,
-    token: TokenReducer as Reducer<IToken, AnyAction>,
+  logged_in_user: UserReducer as Reducer<IUser | null, AnyAction>,
+  internationalization: InternationalizationReducer as Reducer<TInternationalization, AnyAction>,
+  token: TokenReducer as Reducer<IToken, AnyAction>,
 }
 
 const main_reducer = combineReducers(reducers);
 
-export const Store = createStore(main_reducer,applyMiddleware(logger));
+export const Store = createStore(main_reducer, applyMiddleware(logger));
+
+//////////////////////////////////////////////////
+
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+
+const persistedReducer = persistReducer(persistConfig, main_reducer)
+
+/* export default () => {
+  let store = createStore(persistedReducer)
+  let persistor = persistStore(store)
+  return { store, persistor }
+} */
+export const Store2 = createStore(persistedReducer, applyMiddleware(logger));
+export const persistor = persistStore(Store2);

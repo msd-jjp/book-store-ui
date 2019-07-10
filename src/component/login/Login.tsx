@@ -73,7 +73,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
         let response: any;
         if (tokenObj) {
             this.props.onSetToken && this.props.onSetToken(tokenObj.data);
-            localStorage.setItem('token', JSON.stringify(tokenObj.data)); // todo _DELETE_ME
+            // localStorage.setItem('token', JSON.stringify(tokenObj.data)); // todo _DELETE_ME
             debugger;
             this._loginService.setToken(this.props.token);
 
@@ -86,7 +86,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
 
         if (response) {
             this.props.onUserLoggedIn && this.props.onUserLoggedIn(response.data);
-            localStorage.setItem('user', JSON.stringify(response.data)); // todo _DELETE_ME
+            // localStorage.setItem('user', JSON.stringify(response.data)); // todo _DELETE_ME
             this.props.history.push('/dashboard');
         }
     }

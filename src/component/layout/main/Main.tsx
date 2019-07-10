@@ -39,14 +39,15 @@ class LayoutMainComponent extends React.Component<IProps> {
     componentWillMount() {
         // debugger;
         if (!this.props.logged_in_user) {
-            this.setFromLocalStorage();
-            if (!this.props.logged_in_user) {
+            this.props.history.push("/login");
+            // this.setFromLocalStorage();
+            /* if (!this.props.logged_in_user) {
                 this.props.history.push("/login");
-            }
+            } */
         }
     }
 
-    setFromLocalStorage() {
+    /* setFromLocalStorage() {
         // todo: _DELETE_ME
         let user = localStorage.getItem('user');
         let token = localStorage.getItem('token');
@@ -57,7 +58,7 @@ class LayoutMainComponent extends React.Component<IProps> {
         if (token) {
             this.props.onSetToken && this.props.onSetToken(JSON.parse(token));
         }
-    }
+    } */
 
     shouldComponentUpdate() {
         // debugger;
@@ -68,7 +69,7 @@ class LayoutMainComponent extends React.Component<IProps> {
         return true;
     }
     render() {
-
+        // debugger;
         if (!this.props.logged_in_user) {
             return (
                 <div></div>
@@ -100,6 +101,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 }
 
 const state2props = (state: redux_state) => {
+    // debugger;
     return {
         logged_in_user: state.logged_in_user,
         token: state.token
