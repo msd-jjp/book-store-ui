@@ -74,8 +74,8 @@ class LoginComponent extends BaseComponent<IProps, IState> {
         if (tokenObj) {
             this.props.onSetToken && this.props.onSetToken(tokenObj.data);
             // localStorage.setItem('token', JSON.stringify(tokenObj.data)); // todo _DELETE_ME
-            debugger;
-            this._loginService.setToken(this.props.token);
+            // debugger;
+            this._loginService.setToken(tokenObj.data); // note: "this.props.token" works too.
 
             response = await this._loginService.profile().catch((error) => { // tokenObj.data.id
                 debugger;

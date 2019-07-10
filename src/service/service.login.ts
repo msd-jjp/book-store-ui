@@ -1,17 +1,11 @@
 import axios from 'axios';
 import { IUser } from '../model/model.user';
-import { BaseService } from './service.base';
+import { BaseService, IAPI_Response } from './service.base';
+import { IToken } from '../model/model.token';
 
 export class LoginService extends BaseService {
 
-    login(data: { username: string, password: string }): Promise<{
-        data: {
-            expiration_date: number;
-            id: string;
-            username: string;
-        };
-        [key: string]: any
-    }> {
+    login(data: { username: string, password: string }): Promise<IAPI_Response<IToken>> {
         let username_password_str = data.username + ":" + data.password;
         let hash = btoa(unescape(encodeURIComponent(username_password_str))); // btoa(token);
         let basic = "Basic " + hash;
