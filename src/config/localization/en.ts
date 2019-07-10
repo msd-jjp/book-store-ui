@@ -4,6 +4,7 @@ export const en = {
     sign_in: 'sign in',
     app_title: 'book store',
     app_logo: 'bookstore',
+    brand_name: 'bookstore',
     sign_in_bookstore_account: 'sign in with your bookstore account',
     forgot_password: 'forgot password?',
     msg: {
@@ -105,4 +106,5 @@ export const en = {
     return: 'return',
     insert_username_or_mobile: 'insert your username or mobile number',
     reset_password: 'reset password',
+    add_to_list:'add to list'
 }

@@ -4,6 +4,7 @@ export const fa = {
     sign_in: 'ورود',
     app_title: 'فروشگاه کتاب',
     app_logo: 'فروشگاه کتاب',
+    brand_name: 'فروشگاه کتاب',
     sign_in_bookstore_account: 'با حساب فروشگاه کتاب خود داخل شوید',
     forgot_password: 'رمز عبورتان را فراموش کردید؟',
     msg: {
@@ -104,4 +105,5 @@ export const fa = {
     return: 'بازگشت',
     insert_username_or_mobile: 'نام کاربری یا شماره تلفن همراه خود را وارد کنید',
     reset_password: 'تغییر رمز عبور',
+    add_to_list:'به لیست اضافه کن',
 }

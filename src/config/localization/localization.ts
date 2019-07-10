@@ -12,6 +12,7 @@ interface ILocalization extends LocalizedStringsMethods {
     sign_in: string;
     app_title: string;
     app_logo: string;
+    brand_name: string;
     sign_in_bookstore_account: string;
     forgot_password: string;
     msg: {
@@ -111,6 +112,7 @@ interface ILocalization extends LocalizedStringsMethods {
 
     insert_username_or_mobile: string;
     reset_password: string;
+    add_to_list: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
