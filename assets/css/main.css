@@ -10792,16 +10792,6 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   height: 1rem;
 }
 
-.detail-header {
-  background-color: white;
-  border-bottom: 1px solid #e0e0e0;
-  height: 4rem;
-}
-
-.detail-header div a i {
-  font-size: 1.2rem;
-}
-
 .bodylogin {
   margin: 0;
   padding: 0;
@@ -11250,6 +11240,16 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   display: none;
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.detail-header {
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+  height: 4rem;
+}
+
+.detail-header div a i {
+  font-size: 1.2rem;
 }
 
 .datail-main {
