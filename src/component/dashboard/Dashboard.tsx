@@ -292,7 +292,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
 
         <div className="latestBook-divider">
           <hr />
-          <div className="slash">//</div>
+          <div className="slash">{'//'}</div>
         </div>
       </>
     );
