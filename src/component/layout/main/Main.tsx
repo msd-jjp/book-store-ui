@@ -8,6 +8,9 @@ import { Dispatch } from 'redux';
 import { redux_state } from '../../../redux/app_state';
 import { IUser } from '../../../model/model.user';
 import { History } from "history";
+import { IToken } from '../../../model/model.token';
+import { action_set_token } from '../../../redux/action/token';
+import { action_user_logged_in } from '../../../redux/action/user';
 
 export const RouteLayoutMain = ({ component: Component, ...rest }: { [key: string]: any }) => {
     // console.log("RouteLayout");
@@ -26,28 +29,37 @@ export const RouteLayoutMain = ({ component: Component, ...rest }: { [key: strin
 interface IProps {
     logged_in_user?: IUser | null;
     history: History;
+    onUserLoggedIn?: (user: IUser) => void;
+    onSetToken?: (token: IToken) => void;
+    token: IToken;
 }
 
 class LayoutMainComponent extends React.Component<IProps> {
-    /* componentDidMount(){
-        debugger;
-    } */
-    /* componentWillUpdate() {
-        debugger;
-    } */
+
     componentWillMount() {
         // debugger;
         if (!this.props.logged_in_user) {
-            this.props.history.push("/login");
+            this.setFromLocalStorage();
+            if (!this.props.logged_in_user) {
+                this.props.history.push("/login");
+            }
         }
     }
-    /* componentDidUpdate() {
-        debugger;
+
+    setFromLocalStorage() {
+        // todo: _DELETE_ME
+        let user = localStorage.getItem('user');
+        let token = localStorage.getItem('token');
+
+        if (user) {
+            this.props.onUserLoggedIn && this.props.onUserLoggedIn(JSON.parse(user));
+        }
+        if (token) {
+            this.props.onSetToken && this.props.onSetToken(JSON.parse(token));
+        }
     }
-    componentDidMount(){
-        debugger;
-    } */
-    shouldComponentUpdate(){
+
+    shouldComponentUpdate() {
         // debugger;
         if (!this.props.logged_in_user) {
             this.props.history.push("/login");
@@ -56,13 +68,7 @@ class LayoutMainComponent extends React.Component<IProps> {
         return true;
     }
     render() {
-        // debugger;
-        /* if (!this.props.logged_in_user) {
-            this.props.history.push("/login");
-            return (
-                <div></div>
-            );
-        } */
+
         if (!this.props.logged_in_user) {
             return (
                 <div></div>
@@ -88,12 +94,15 @@ class LayoutMainComponent extends React.Component<IProps> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
+        onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
+        onSetToken: (token: IToken) => dispatch(action_set_token(token))
     }
 }
 
 const state2props = (state: redux_state) => {
     return {
-        logged_in_user: state.logged_in_user
+        logged_in_user: state.logged_in_user,
+        token: state.token
     }
 }
 
