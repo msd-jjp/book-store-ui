@@ -26,10 +26,10 @@
         }
         .col-7{
           .rate-book{
+            display: inline-block;
             span{
               color: gray;
             }
-            display: inline-block;
             .checked{
               color: orange;
             }
