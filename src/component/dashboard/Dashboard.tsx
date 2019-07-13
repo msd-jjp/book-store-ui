@@ -76,7 +76,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     // afterChange: () => this.dragging = false,
   };
 
-  bookListCategory = ["more_by_writer"];
+  fetchBookByWriter_writerId!: string;
+  fetchBookByWriter_current_book_id!: string;
 
   componentDidMount() {
     this._bookService.setToken(this.props.token);
@@ -100,8 +101,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         );
         if (writerList.length) {
           const writerId = writerList[0].person.id;
-          const current_book_id = this.props.logged_in_user.person.current_book
-            .id;
+          this.fetchBookByWriter_writerId = writerId;
+
+          const current_book_id = this.props.logged_in_user.person.current_book.id;
+          this.fetchBookByWriter_current_book_id = current_book_id;
+
           this.fetchBookByWriter(writerId, current_book_id);
         }
       }
@@ -351,7 +355,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
           <div className="booklist-wrapper mt-3">
             <h6 className="title">{Localization.new_release_in_bookstore}</h6>
             <div>{this.state.newReleaseBookError}</div>
-            <div>{Localization.retry}</div>
+            <div onClick={() => this.fetchNewestBook()}>{Localization.retry}</div>
           </div>
         </>
       );
@@ -414,7 +418,10 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
               )}
             </h6>
             <div>{this.state.byWriterBookError}</div>
-            <div>{Localization.retry}</div>
+            <div onClick={() =>
+              this.fetchBookByWriter(
+                this.fetchBookByWriter_writerId,
+                this.fetchBookByWriter_current_book_id)}>{Localization.retry}</div>
           </div>
         </>
       );
