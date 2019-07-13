@@ -84,8 +84,14 @@
         i {
           font-size: 1.5rem;
           top: 0.25rem;
-          right: 0.85rem;
+          // right: 0.85rem;
           position: absolute;
+          body.rtl & {
+            right: 0.85rem;
+          }
+          body:not(.rtl) & {
+            left: 0.85rem;
+          }
         }
         &:after {
           display: none;
@@ -121,10 +127,17 @@
     display: inline;
     position: absolute;
     background-color: #f7f7f7;
-    top: -8px;
+    top: -11px; // -8px;
     color: #e7e8ec;
-    // right: calc(50% - 14px);
-    @include calc(right, "50% - 14px");
+    // @include calc(right, "50% - 14px");
+    font-family: none;
+
+    body.rtl & {
+      @include calc(right, "50% - 14px");
+    }
+    body:not(.rtl) & {
+      @include calc(left, "50% - 14px");
+    }
   }
 }
 
