@@ -1,5 +1,7 @@
+$book-detail-border: 1px solid rgb(210, 210, 210);
+
 .book-detail-wrapper {
-  margin-bottom: 4rem;
+  // margin-bottom: 4rem;
 
   .book-detail {
     .book-image-wrapper {
@@ -66,165 +68,73 @@
     .add-to-list {
       color: rgb(5, 112, 156); // !important;
     }
-    /* .add-link {
-      a {
-        color: rgb(5, 112, 156) !important;
-      }
-    } */
   }
-  .about {
-    div {
-      border: 1px solid rgb(210, 210, 210);
-      ul {
-        li {
-          font-weight: 600;
-        }
-      }
-    }
-  }
-  .editor {
-    .text-container {
-      border: 1px solid rgb(210, 210, 210);
-      .row {
-        .col-10 {
-          p {
-            font-weight: 500;
-          }
-        }
-        div {
-          a {
-            i {
-              font-size: 1.4rem;
-            }
-          }
-        }
-      }
-    }
-  }
-  .this-item {
-    .text-container-1 {
-      border: 1px solid rgb(210, 210, 210);
-      h5 {
-        font-weight: bold;
-      }
-      .bold {
-        font-weight: bold;
-      }
-      .normal-txt {
-        font-weight: 500;
-      }
-    }
-    .text-container-2 {
-      border: 1px solid rgb(210, 210, 210);
-      border-top: none;
-      h5 {
-        font-weight: bold;
-      }
-      h6 {
-        font-weight: bold;
-        span {
-          font-weight: 500;
-        }
-      }
-    }
-  }
+
   .author {
     .author-info {
-      border: 1px solid rgb(210, 210, 210);
-      .txt {
-        border-bottom: 1px solid rgb(210, 210, 210);
+      // border: 1px solid rgb(210, 210, 210);
+      .author-about {
+        border-bottom: $book-detail-border;
         p {
           font-weight: 500;
         }
       }
       .author-profile {
-        .img {
-          div {
-            height: 5.2rem;
-            width: 5.2rem;
-            border-radius: 50%;
-            background-color: gray;
-          }
+        img {
+          // height: 5.2rem;
+          // width: 5.2rem;
+          max-height: 100%;
+          width: 100%;
+          border-radius: 50%;
+          background-color: gray;
         }
-        .col-6 {
-          div {
-            h6 {
-              color: rgb(5, 112, 156);
-              font-weight: 500;
-              font-size: 1.1rem;
-            }
-            button {
-              background-color: lightgrey;
-              border-radius: 0;
-            }
-          }
+
+        .author-name {
+          color: rgb(5, 112, 156);
+          font-weight: 500;
+          font-size: 1.1rem;
         }
-      }
-    }
-  }
-  .Separator-border {
-    border-bottom: 1px solid rgb(210, 210, 210);
-  }
-  .customer-reviews {
-    .row {
-      .col-10 {
-        .rate-customer {
-          display: inline-block;
-          span {
-            color: gray;
-          }
-          .checked {
-            color: orange;
-          }
-        }
-      }
-      .col-1 {
-        a {
-          i {
-            font-size: 1.4rem;
-          }
+        .author-follow {
+          background-color: lightgrey;
+          border-radius: 0;
+          @include calc(width, "100% - 1rem");
+          text-transform: capitalize;
         }
       }
     }
   }
+
+  .section-separator {
+    border-bottom: $book-detail-border;
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+
   .read-reviews {
-    border-top: 1px solid rgb(210, 210, 210);
-    .row {
-      .col-5 {
-        .row {
-          a {
-            .btn {
-              background-color: rgb(215, 232, 234);
-              margin: 0.3rem;
-              border-radius: 0;
-              font-weight: 500;
-            }
-          }
-        }
-      }
+    border-top: $book-detail-border;
+    .read-reviews-title {
+      text-transform: uppercase;
     }
-    h5 {
-      font-weight: bold;
-    }
+
     .see-more {
       color: black;
-      .fa {
-        font-size: 1.2rem;
-      }
-      span {
+
+      .text {
         color: rgb(5, 112, 156);
-        font-size: 1.1rem;
       }
     }
   }
+
+  //////////////////////////////////////////////
+  // should correct from here down to bottom. //
+  //////////////////////////////////////////////
+
   .comments {
-    border-top: 1px solid rgb(210, 210, 210);
-    h5 {
+    border-top: $book-detail-border;
+
+    /* h6 {
       font-weight: bold;
-    }
-    h6 {
-      font-weight: bold;
-    }
+    } */
     .user-comment-box {
       .col-1 {
         .img {
@@ -232,9 +142,14 @@
           width: 2.5rem;
           border-radius: 50%;
           background-color: gray;
+          img {
+            width: 100%;
+            max-height: 100%;
+            border-radius: 50%;
+          }
         }
       }
-      .rate-comment {
+      /* .rate-comment {
         display: inline-block;
         span {
           color: gray;
@@ -242,7 +157,7 @@
         .checked {
           color: orange;
         }
-      }
+      } */
       .Verified-star {
         color: orange;
         font-weight: bold;
@@ -264,33 +179,17 @@
       }
     }
   }
-  .all-review {
-    h6 {
-      font-weight: bold;
-    }
-    .fa {
-      font-size: 1.4rem;
-    }
-  }
+  
   .write-review {
-    .write-box {
-      background-color: rgb(230, 230, 230);
-    }
+    background-color: rgb(230, 230, 230);
   }
-  .search-box {
-    margin-bottom: 7rem;
-    .row {
-      input {
-        border-top: 1px solid rgb(166, 166, 166);
-        border-right: 1px solid rgb(166, 166, 166);
-        border-left: 1px solid rgb(166, 166, 166);
-        border-bottom: 1px solid rgb(210, 210, 210);
-        border-radius: 0;
-      }
-      button {
-        background-color: rgb(230, 230, 230);
-        border-radius: 0;
-      }
-    }
-  }
+  
+}
+
+.book-detail-bordered-box {
+  border: $book-detail-border;
+}
+.book-detail-bordered-box-icon {
+  @include calc(top, "50% - 16px");
+  position: absolute;
 }

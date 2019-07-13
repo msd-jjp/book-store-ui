@@ -50,6 +50,11 @@
       content: "\F104";
     }
   }
+  body.rtl & {
+    &:before {
+      content: "\F104";
+    }
+  }
 }
 
 .fa-angle-left-app {

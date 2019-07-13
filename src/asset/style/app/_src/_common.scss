@@ -82,6 +82,14 @@ hr {
   pointer-events: none;
 }
 
+.position-relative {
+  position: relative;
+}
+
+.vsdv {
+  text-transform: uppercase;
+}
+
 /*
 select, textarea.form-control {
   &:not(:focus) {

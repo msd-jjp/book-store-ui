@@ -100,18 +100,236 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
         </section>
 
-        <section className="about mx-3">
-          <h4 className="my-1 mx-2">ABOUT THE KINDLE EDITION</h4>
-          <div className="px-0 py-2 mx-1 my-3">
-            <ul className="my-2">
-              <li className="px-2">Length: 282 pages</li>
-              <li className="px-2">Word Wise: Enabled</li>
-              <li className="px-2">Screen Reader: Supported</li>
-              <li className="px-2">Enhanced Typesetting: Enabled</li>
-              <li className="px-2">Page Flip: Enabled</li>
-            </ul>
+        <section>
+          <h5>ABOUT THE KINDLE EDITION</h5>
+          <div className="book-detail-bordered-box py-2 mb-3">
+            <div className="row">
+              <div className="col-10">
+                <ul className="my-2">
+                  <li className="px-2">Length: 282 pages</li>
+                  <li className="px-2">Word Wise: Enabled</li>
+                  <li className="px-2">Screen Reader: Supported</li>
+                  <li className="px-2">Enhanced Typesetting: Enabled</li>
+                  <li className="px-2">Page Flip: Enabled</li>
+                </ul>
+              </div>
+              <div className="col-2">
+                <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
+              </div>
+            </div>
+
           </div>
         </section>
+
+        <section>
+          <h5>FROM THE EDITOR</h5>
+          <div className="book-detail-bordered-box py-2 mb-3">
+            <div className="row">
+              <div className="col-10">
+                <p className="mb-3 pl-3">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut repellendus eos earum optio?</p>
+                <p className="pl-3">Lorem ipsum dolor sit amet consectetur.</p>
+              </div>
+              <div className="col-2">
+                <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section >
+          <h5>ABOUT THIS ITEM</h5>
+          <div className="book-detail-bordered-box py-2 px-3">
+            <h5 className="font-weight-bold">DESCRIPTION</h5>
+            <h5 className="font-weight-bold">PRODUCT DESCRIPTION</h5>
+            <p className="font-weight-bold">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil beatae accusantium ipsum hic sapiente placeat neque, ducimus delectus aspernatur!</p>
+            <p className="font-weight-bold">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt, maiores eum praesentium.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore corporis numquam sint ex molestias quis! Aut quasi voluptas, unde sit, voluptatibus eveniet cupiditate deserunt facilis nesciunt, sequi asperiores. Temporibus, qui incidunt ipsum consequatur perspiciatis error.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa, ullam, quos incidunt explicabo asperiores aut optio iure blanditiis, at possimus tempora quam ea laborum neque. Earum optio molestias libero, exercitationem in laboriosam unde aperiam sint.</p>
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi soluta illum quaerat nam esse ab animi dignissimos dolores nesciunt non!</p>
+            <h5 className="my-2">REVIEW</h5>
+            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab</p>
+            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
+            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
+            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab Lorem ipsum dolor sit amet consectetur adipisicing elit Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, consequatur.</p>
+            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
+            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
+            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
+            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
+            <p className="mt-2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto dolorem quam omnis aut inventore nostrum, explicabo, saepe magnam officia ipsum maiores eaque eum? Quaerat, optio? Vel ea quaerat corporis cum, reprehenderit voluptates earum facere vitae! Lorem, ipsum.</p>
+            <h5 className="my-2">ABOUT THE AUTHOR</h5>
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni, ullam libero autem eius natus optio nostrum fugiat hic sapiente placeat velit veniam animi culpa, voluptatum officia id! Ullam tempora nesciunt eligendi saepe esse, iste quisquam molestiae enim quae perspiciatis vel.</p>
+          </div>
+          <div className="book-detail-bordered-box border-top-0 pb-2 pt-4 px-3 mb-3">
+            <h5 className="font-weight-bold">FEATURES & DETAILS</h5>
+            <h5 className="font-weight-bold">PRODUCT DETAILS</h5>
+            <h6 className="font-weight-bold">
+              Publication date:
+                    <span> August 1, 2019</span>
+            </h6>
+            <h6 className="font-weight-bold">
+              Publisher:
+                    <span> Thomas & Mercer</span>
+            </h6>
+            <h6 className="font-weight-bold">
+              Language:
+                    <span> English</span>
+            </h6>
+            <h6 className="font-weight-bold">
+              ASIN:
+                    <span> B07KPFLD6Q</span>
+            </h6>
+            <h6 className="font-weight-bold">
+              Amazon.com Sales Rank:
+                    <span> 1</span>
+            </h6>
+          </div>
+        </section>
+
+        <section className="author">
+          <h5>ABOUT THE AUTHOR</h5>
+          <div className="author-info mb-3 book-detail-bordered-box">
+            <div className="author-about p-3">
+              <p className="mb-0">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusantium, cupiditate?</p>
+            </div>
+            <div className="row author-profile py-4">
+              <div className="col-4 img__my-4__mx-2__">
+                {/* <div className="mx-2__ my-2__"> */}
+                <div className="ml-3">
+                  <img className="" src="static/media/img/icon/avatar.png" alt="avatar" />
+                </div>
+                {/* </div> */}
+              </div>
+              <div className="col-8 p-align-0">
+                {/* <div className="my-2__mr-0__pr-0"> */}
+                <h6 className="author-name mr-3">Claire McGowan</h6>
+                <button className="btn btn-block author-follow mr-3__">+ follow</button>
+                {/* </div> */}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="section-separator my-2"></div>
+
+        <section className="customer-reviews mt-3 mb-4">
+          <div className="row">
+            <div className="col-10">
+              <div className="ml-1">
+                <h5 className="mt-4__ mb-2">127 CUSTOMER REVIEWS</h5>
+                <Rating
+                  className="rating-star"
+                  emptySymbol="fa fa-star rating-empty"
+                  fullSymbol="fa fa-star rating-full"
+                  // fractions={2}
+                  direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
+                  initialRating={4.3}
+                // onChange={(newRate) => this.bookRateChange(newRate)}
+                />
+                <span className="ml-2">4.3 out of 5 stars</span>
+              </div>
+            </div>
+            <div className="col-2">
+              <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
+            </div>
+          </div>
+        </section>
+
+        <section className="read-reviews px-1">
+          <div className="read-reviews-title mt-3 mb-2 font-weight-bold">read reviews that mention</div>
+          <div className="row">
+            <div className="col-12">
+              <button className="btn btn-light mr-3 mb-2">well written</button>
+              <button className="btn btn-light mr-3 mb-2">page turner</button>
+              <button className="btn btn-light mr-3 mb-2">main character</button>
+              <button className="btn btn-light mr-3 mb-2">twists and turns</button>
+              <button className="btn btn-light mr-3 mb-2">claire mcgowan</button>
+              <button className="btn btn-light mr-3 mb-2">kept me guessing</button>
+            </div>
+          </div>
+          <a href="#" className="see-more">
+            <i className="fa fa-angle-down my-3"></i>
+            <span className="text ml-1">see more</span>
+          </a>
+        </section>
+
+        <section className="comments pb-3 px-1">
+          <h5 className="mt-3 text-uppercase font-weight-bold">top reviews</h5>
+          {[1, 2].map(() => (
+            <div className="mb-4 mt-3 user-comment-box">
+              <div className="row">
+                <div className="col-1 mr-3">
+                  <div className="img">
+                    <img src="static/media/img/icon/avatar.png" alt="" />
+                  </div>
+                </div>
+                <span className="pt-2 ml-3 mr-1">Rose</span>
+                <span className="pt-2 mx-2">.</span>
+                <span className="pt-2 ">July 1, 2019</span>
+              </div>
+
+              <Rating
+                className="rating-star"
+                emptySymbol="fa fa-star rating-empty"
+                fullSymbol="fa fa-star rating-full"
+                // fractions={2}
+                direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
+                initialRating={2.5}
+              // onChange={(newRate) => this.bookRateChange(newRate)}
+              />
+              <span className="ml-2 Verified-star">Verified Purchase</span>
+              <div className="row ml-1 my-1">
+                <span className="text-muted">Format:</span>
+                <span className="text-muted pl-1">Kindle Edition</span>
+              </div>
+              <h6 className="my-2 ml-1 font-weight-bold">What You Did</h6>
+              <p className="txt mx-1 my-0 pb-2">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio repellendus nam corporis! Ducimus minima veniam officia repudiandae libero sed culpa quis amet deserunt necessitatibus, consectetur, mollitia assumenda vitae alias aliquid quo dolores fuga doloribus id laborum, cupiditate vel nostrum ullam?
+                    <a href="">See more</a>
+              </p>
+              <span className="text-muted mx-1">9 people found this helpful</span>
+              <div className="helpful row mt-1 pt-1">
+                <div className="col-5">
+                  <a href=""><button className="btn btn-block text-uppercase">helpful</button></a>
+                </div>
+                <div className="col-2 pt-2">
+                  <a href="" className="text-muted text-capitalize">report</a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <div className="section-separator my-2"></div>
+
+        <div className="all-review mx-3_ my-3 px-1 ">
+          <div className="row">
+            <div className="col-10">
+              <h6 className="font-weight-bold text-capitalize">see all 127 reviews</h6>
+            </div>
+            <div className="col-2">
+              <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <div className="section-separator my-2"></div>
+
+        <div className="write-review my-3 mx-1">
+          <div className="p-3 p-align-inverse-0">
+            <div className="row">
+              <div className="col-10">
+                <h6 className="text-uppercase">write a review</h6>
+              </div>
+              <div className="col-2">
+                <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
+              </div>
+            </div>
+          </div>
+        </div>
       </>
     )
   }
