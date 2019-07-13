@@ -109,13 +109,10 @@ interface ILocalization extends LocalizedStringsMethods {
     retry: string;
     title: string;
     return: string;
-
     insert_username_or_mobile: string;
     reset_password: string;
     add_to_list: string;
     log_out: string;
-
-
     sync: string;
     read_listen_with_audible: string;
     book_update: string;
@@ -123,6 +120,34 @@ interface ILocalization extends LocalizedStringsMethods {
     settings: string;
     info: string;
     help_feedback: string;
+    about_bookstore_edition: string;
+    Length: string;
+    pages: string;
+    from_the_editor: string;
+    about_this_item: string;
+
+    description: string;
+    product_description: string;
+    review: string;
+    about_the_author: string;
+    features_details: string;
+    product_details: string;
+    publication_date: string;
+    language:string;
+    bookstore_sales_rank:string;
+    follow:string;
+    customer_review:string;
+    read_reviews_that_mention:string;
+    see_more:string;
+    top_reviews:string;
+    verified_purchase:string;
+    format:string;
+    bookstore_edition:string;
+    people_found_this_helpful:string;
+    helpful:string;
+    report:string;
+    see_all_n_reviews:string;
+    write_a_review:string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
