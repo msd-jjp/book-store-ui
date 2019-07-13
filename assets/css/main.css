@@ -11307,6 +11307,11 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   border-bottom: 0.6rem solid transparent;
 }
 
+.datail-main .book-detail .row .col-7 .pointer-container .pointer.change-color {
+  width: 6.5rem;
+  background: #148bdd;
+}
+
 .datail-main .book-detail .row .col-7 .pointer-container span a {
   color: #05709c;
 }
