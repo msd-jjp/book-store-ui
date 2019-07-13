@@ -205,11 +205,21 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
       )
     }
   }
+
   submit_newPassword_render() {
     if (this.state.forgotPasswordStep === FORGOT_PASSWORD_STEP.submit_newPassword) {
       return (
         <>
-          <h3 className="desc mt-4 mb-3">
+          <div className="mt-4 mb-3 text-muted">
+            {Localization.mobile}: {this.state.mobile.value}
+            <small
+              className="text-info"
+              onClick={() => this.from_new_password_to_Submit_mobile()}
+            >
+              <i className="fa fa-edit"></i>
+            </small>
+          </div>
+          <h3 className="desc mt-4__ mb-3">
             {Localization.reset_password}
           </h3>
           <div className="account-form">
@@ -220,6 +230,7 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
                 onChange={(val, isValid) => {
                   this.handleInputChange(val, isValid, "code");
                 }}
+                required
                 placeholder={Localization.verification_code}
               />
               <div className="separator" />
@@ -258,6 +269,18 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
         </>
       )
     }
+  }
+  from_new_password_to_Submit_mobile() {
+    this.setState(
+      {
+        ...this.state,
+        forgotPasswordStep: FORGOT_PASSWORD_STEP.submit_mobile,
+        isFormValid: true, // note: we go back to last step and isFormValid is true there.
+        code: { value: undefined, isValid: false },
+        password: { value: undefined, isValid: false },
+        confirmPassword: { value: undefined, isValid: false }
+      }
+    );
   }
   render() {
     return (
