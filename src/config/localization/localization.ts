@@ -113,6 +113,7 @@ interface ILocalization extends LocalizedStringsMethods {
     insert_username_or_mobile: string;
     reset_password: string;
     add_to_list: string;
+    log_out: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

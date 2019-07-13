@@ -103,5 +103,6 @@ export const ar = {
     return: 'بازگشت',
     insert_username_or_mobile: 'نام کاربری یا تلفن همراه خود را وارد کنید',
     reset_password: 'تغییر رمز عبور',
-    add_to_list:'به لیست اضافه کن',
+    add_to_list: 'به لیست اضافه کن',
+    log_out: 'خروج',
 }

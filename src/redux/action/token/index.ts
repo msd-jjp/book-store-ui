@@ -11,7 +11,7 @@ export function action_set_token(token: IToken): ITokenAction {
 
 export function action_remove_token(): ITokenAction {
     return {
-        type: EACTIONS.LOGGED_OUT,
+        type: EACTIONS.REMOVE_TOKEN,
         payload: null
     }
 }
