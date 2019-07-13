@@ -71,25 +71,25 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
                         <li className="more-item list-group-item p-align-0 d-flex align-items-center">
                             <i className="icon fa fa-refresh mr-3"></i>
                             <div className="wrapper d-inline">
-                                <span className="text">sync</span>
+                                <span className="text">{Localization.sync}</span>
                                 <span className="sub-text d-block text-muted">Last synced on 06/12/2019, 11:25 AM</span>
                             </div>
                         </li>
                         <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-headphones mr-3"></i>
-                            <span className="text text-capitalize">read & listen with audible</span>
+                            <span className="text text-capitalize">{Localization.read_listen_with_audible}</span>
                         </li>
                         <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-leanpub mr-3"></i>
-                            <span className="text text-capitalize">book update</span>
+                            <span className="text text-capitalize">{Localization.book_update}</span>
                         </li>
                         <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-free-code-camp mr-3"></i>
-                            <span className="text text-capitalize">reading insights</span>
+                            <span className="text text-capitalize">{Localization.reading_insights}</span>
                         </li>
                         <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-cog mr-3"></i>
-                            <span className="text text-capitalize">settings</span>
+                            <span className="text text-capitalize">{Localization.settings}</span>
                         </li>
 
 
@@ -118,11 +118,11 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
 
                         <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-info-circle mr-3"></i>
-                            <span className="text text-capitalize">info</span>
+                            <span className="text text-capitalize">{Localization.info}</span>
                         </li>
                         <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-twitch mr-3"></i>
-                            <span className="text text-capitalize">help and feedback</span>
+                            <span className="text text-capitalize">{Localization.help_feedback}</span>
                         </li>
                     </ul>
                 </div>

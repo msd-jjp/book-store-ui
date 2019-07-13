@@ -105,4 +105,12 @@ export const ar = {
     reset_password: 'تغییر رمز عبور',
     add_to_list: 'به لیست اضافه کن',
     log_out: 'خروج',
+    
+    sync: 'همگام سازی',
+    read_listen_with_audible: 'خواندن و گوش دادن با صدا',
+    book_update: 'بروزرسانی کتاب',
+    reading_insights: 'خواندن عمیق',
+    settings: 'تنظیمات',
+    info: 'اطلاعات',
+    help_feedback: 'کمک و بازخورد',
 }

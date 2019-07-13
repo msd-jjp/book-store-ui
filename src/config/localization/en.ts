@@ -106,6 +106,14 @@ export const en = {
     return: 'return',
     insert_username_or_mobile: 'insert your username or mobile number',
     reset_password: 'reset password',
-    add_to_list:'add to list',
-    log_out:'log out',
+    add_to_list: 'add to list',
+    log_out: 'log out',
+
+    sync: 'sync',
+    read_listen_with_audible: 'read & listen with audible',
+    book_update: 'book update',
+    reading_insights: 'reading insights',
+    settings: 'settings',
+    info: 'info',
+    help_feedback: 'help and feedback',
 }

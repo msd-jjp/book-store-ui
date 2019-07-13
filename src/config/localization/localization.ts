@@ -114,6 +114,15 @@ interface ILocalization extends LocalizedStringsMethods {
     reset_password: string;
     add_to_list: string;
     log_out: string;
+
+
+    sync: string;
+    read_listen_with_audible: string;
+    book_update: string;
+    reading_insights: string;
+    settings: string;
+    info: string;
+    help_feedback: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
