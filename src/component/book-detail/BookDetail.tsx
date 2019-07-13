@@ -30,6 +30,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   bookId!: string;
 
   componentDidMount() {
+    this.gotoTop();
     this.bookId = this.props.match.params.bookId;
     this.fetchBook(this.bookId);
   }

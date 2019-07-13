@@ -125,4 +125,8 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         return Object.assign(defaults, config);
     }
 
+    gotoTop() {
+        window.scrollTo(0, 0);
+    }
+
 }
