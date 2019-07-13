@@ -139,7 +139,7 @@ body.rtl/* ,
 
   .list-group {
     padding-right: 0;
-    padding-left: 40px;
+    padding-left: inherit; // 40px;
   }
 
   .close {
