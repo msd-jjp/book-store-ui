@@ -201,8 +201,8 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         return (
             <>
                 <div className="slide-container mb-3">
-                    {bookList.map(book => (
-                        <div className="book-detail">
+                    {bookList.map((book, bookIndex) => (
+                        <div className="book-detail" key={bookIndex}>
                             <div className="slide-book" onClick={() => this.gotoBookDetail(book.id)}>
                                 <img src="static/media/img/icon/default-book.png" alt="book" />
                             </div>
