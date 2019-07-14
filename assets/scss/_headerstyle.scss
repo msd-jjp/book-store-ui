@@ -21,6 +21,9 @@
     top: 0;
     left:0;
     width: 100%;
+    &.border-remover{
+        border-bottom: 0;
+    }
     .row{
         .col-10{
             .input-group{

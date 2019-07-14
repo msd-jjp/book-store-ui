@@ -1,0 +1,77 @@
+.mainsoft{
+    background: linear-gradient(to bottom ,rgb(244,244,244),rgb(255,255,255));
+    margin-top: 4rem;
+    scrollbar-color: transparent;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { 
+      display: none;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .library-menu{
+        background: white;
+        height: 3rem;
+        border-bottom: 1px solid rgb(212,212,212);
+        top: 4.45rem;
+        .menu-bar{
+            .border-bottom-blue{
+                .blue-link{
+                    text-decoration: none;
+                    border-bottom: 1px solid blue;
+                    padding-bottom: 1rem;
+                }
+            }
+            .rot{
+                .icon-link{
+                    .icon{
+                        transform: rotate(90deg) !important;
+                    }
+                }
+            }   
+        }
+    }
+    .library-list{
+        margin-top: 7.45rem;
+        height: 5.5rem;
+        width: 100%;
+        .book-menu{
+            background-color: transparent;
+            .book-menu-item{
+                background-color: transparent;
+                .left-side{
+                    .img-container{
+                        display: inline-block;
+                        width: 3rem;
+                        height: auto;
+                        .book-img{
+                            width: 100%;
+                            height: auto;
+                        }
+                    }
+                    .txt{
+                        .book-title{
+                            text-transform: capitalize;
+                            font-size: 1.2rem;
+                            font-weight: 500;
+                            display:inline-block;
+                        }
+                        .book-writer{
+                            text-transform: uppercase;
+                            display:block;
+                            font-size: 0.8rem;
+                        }
+                    }
+                }
+                .is-downloaded-wrapper{
+                    display:block;
+                    .fa.is-downloaded{
+                        font-size: 1.4rem;
+                    }
+                }
+            }
+            .last-item{
+                border-bottom: 1px solid rgb(210,210,210);
+            }
+        }
+    }
+}

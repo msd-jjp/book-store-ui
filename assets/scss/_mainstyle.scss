@@ -171,76 +171,7 @@
       }
     }
   }
-  .library-menu{
-    background: white;
-    height: 3rem;
-    border-bottom: 1px solid rgb(212,212,212);
-    top: 4.45rem;
-    .row{
-      .col-3{
-        a{
-          .rot{
-            transform: rotate(90deg);
-          }
-        }
-      }
-      .text-right{
-        a{
-          i{
-            transform: rotate(90deg);
-          }
-          .unrot{
-            transform: rotate(0deg) !important;
-          }
-        }
-      }
-      .col-2,.col-4{
-        a{
-          text-decoration: none;
-          border-bottom: 1px solid blue;
-          padding-bottom: 1rem;
-        }
-      }
-    }
-  }
-  .library-grid{
-    margin-top: 7.45rem;
-    .row{
-      .col-show{
-        height: 10rem;
-        width: 31%;
-        background:yellow;
-      }
-    }
-  }
-  .library-list{
-    margin-top: 7.45rem;
-    height: 5.5rem;
-    .row{
-      border-bottom: 1px solid rgb(224,224,224);
-      .col-2{
-        a{
-          .slide-book{
-            width: 2.5rem;
-            height: 4rem;
-            background-color:yellow;
-          }
-        }
-        i{
-          font-size: 1.5rem;
-        }
-      }
-      .col-8{
-        h5{
-          font-size: 0.8rem;
-          font-weight: bold;
-        }
-        h6{
-          font-size: 0.6rem;
-        }
-      }
-    }
-  }
+
   .library-gallery{
     margin-top: 7.45rem;
     .row{

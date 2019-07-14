@@ -10750,6 +10750,10 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   width: 100%;
 }
 
+.headersoft.border-remover {
+  border-bottom: 0;
+}
+
 .headersoft .row .col-10 .input-group .input-group-prepend .Searchbox1 {
   background-color: white;
   border-right: none;
@@ -11089,72 +11093,6 @@ a.text-jamejam:hover, a.text-jamejam:focus {
 .mainsoft .selectd-book .row .col-8 .row a .read {
   font-size: 1.2rem;
   border-radius: 0;
-}
-
-.mainsoft .library-menu {
-  background: white;
-  height: 3rem;
-  border-bottom: 1px solid #d4d4d4;
-  top: 4.45rem;
-}
-
-.mainsoft .library-menu .row .col-3 a .rot {
-  -webkit-transform: rotate(90deg);
-          transform: rotate(90deg);
-}
-
-.mainsoft .library-menu .row .text-right a i {
-  -webkit-transform: rotate(90deg);
-          transform: rotate(90deg);
-}
-
-.mainsoft .library-menu .row .text-right a .unrot {
-  -webkit-transform: rotate(0deg) !important;
-          transform: rotate(0deg) !important;
-}
-
-.mainsoft .library-menu .row .col-2 a, .mainsoft .library-menu .row .col-4 a {
-  text-decoration: none;
-  border-bottom: 1px solid blue;
-  padding-bottom: 1rem;
-}
-
-.mainsoft .library-grid {
-  margin-top: 7.45rem;
-}
-
-.mainsoft .library-grid .row .col-show {
-  height: 10rem;
-  width: 31%;
-  background: yellow;
-}
-
-.mainsoft .library-list {
-  margin-top: 7.45rem;
-  height: 5.5rem;
-}
-
-.mainsoft .library-list .row {
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.mainsoft .library-list .row .col-2 a .slide-book {
-  width: 2.5rem;
-  height: 4rem;
-  background-color: yellow;
-}
-
-.mainsoft .library-list .row .col-2 i {
-  font-size: 1.5rem;
-}
-
-.mainsoft .library-list .row .col-8 h5 {
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-
-.mainsoft .library-list .row .col-8 h6 {
-  font-size: 0.6rem;
 }
 
 .mainsoft .library-gallery {
@@ -11590,6 +11528,113 @@ a.text-jamejam:hover, a.text-jamejam:focus {
 .notification-footer {
   background-color: white;
   height: 2rem;
+}
+
+.mainsoft {
+  background: -webkit-gradient(linear, left top, left bottom, from(#f4f4f4), to(white));
+  background: linear-gradient(to bottom, #f4f4f4, white);
+  margin-top: 4rem;
+  scrollbar-color: transparent;
+  scrollbar-width: none;
+}
+
+.mainsoft::-webkit-scrollbar {
+  display: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.mainsoft .library-menu {
+  background: white;
+  height: 3rem;
+  border-bottom: 1px solid #d4d4d4;
+  top: 4.45rem;
+}
+
+.mainsoft .library-menu .menu-bar .border-bottom-blue .blue-link {
+  text-decoration: none;
+  border-bottom: 1px solid blue;
+  padding-bottom: 1rem;
+}
+
+.mainsoft .library-menu .menu-bar .rot .icon-link .icon {
+  -webkit-transform: rotate(90deg) !important;
+          transform: rotate(90deg) !important;
+}
+
+.mainsoft .library-list {
+  margin-top: 7.45rem;
+  height: 5.5rem;
+  width: 100%;
+}
+
+.mainsoft .library-list .book-menu {
+  background-color: transparent;
+}
+
+.mainsoft .library-list .book-menu .book-menu-item {
+  background-color: transparent;
+}
+
+.mainsoft .library-list .book-menu .book-menu-item .left-side .img-container {
+  display: inline-block;
+  width: 3rem;
+  height: auto;
+}
+
+.mainsoft .library-list .book-menu .book-menu-item .left-side .img-container .book-img {
+  width: 100%;
+  height: auto;
+}
+
+.mainsoft .library-list .book-menu .book-menu-item .left-side .txt .book-title {
+  text-transform: capitalize;
+  font-size: 1.2rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.mainsoft .library-list .book-menu .book-menu-item .left-side .txt .book-writer {
+  text-transform: uppercase;
+  display: block;
+  font-size: 0.8rem;
+}
+
+.mainsoft .library-list .book-menu .book-menu-item .is-downloaded-wrapper {
+  display: block;
+}
+
+.mainsoft .library-list .book-menu .book-menu-item .is-downloaded-wrapper .fa.is-downloaded {
+  font-size: 1.4rem;
+}
+
+.mainsoft .library-list .book-menu .last-item {
+  border-bottom: 1px solid #d2d2d2;
+}
+
+.mainsoft .library-menu {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 4.4rem;
+}
+
+.mainsoft .library-menu .menu-wrapper .filter-option .filter-link {
+  text-decoration: none;
+  border-bottom: 1px solid blue;
+  padding-bottom: 0.97rem;
+}
+
+.mainsoft .row-wrapper .library-grid-wrapper {
+  width: 100%;
+}
+
+.mainsoft .row-wrapper .library-grid-wrapper .item-wrapper {
+  width: 100%;
+  height: auto;
+  text-align: center;
+}
+
+.mainsoft .row-wrapper .library-grid-wrapper .item-wrapper .library-grid-book-show {
+  max-width: 100%;
 }
 
 .store-father-header-wrapper {
