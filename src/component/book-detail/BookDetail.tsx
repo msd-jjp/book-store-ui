@@ -243,16 +243,16 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               <button className="btn btn-light mr-3 mb-2">kept me guessing</button>
             </div>
           </div>
-          <a href="#" className="see-more">
-            <i className="fa fa-angle-down my-3"></i>
+          <button className="see-more btn btn-link p-align-0">
+            <i className="fa fa-angle-down my-3__"></i>
             <span className="text ml-1">{Localization.see_more}</span>
-          </a>
+          </button>
         </section>
 
         <section className="comments pb-3 px-1">
           <h5 className="mt-3 text-uppercase font-weight-bold">{Localization.top_reviews}</h5>
-          {[1, 2].map(() => (
-            <div className="mb-4 mt-3 user-comment-box">
+          {[1, 2].map((item, index) => (
+            <div className="mb-4 mt-3 user-comment-box" key={index}>
               <div className="row">
                 <div className="col-1 mr-3">
                   <div className="img">
@@ -281,15 +281,15 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               <h6 className="my-2 ml-1 font-weight-bold">What You Did</h6>
               <p className="txt mx-1 my-0 pb-2">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio repellendus nam corporis! Ducimus minima veniam officia repudiandae libero sed culpa quis amet deserunt necessitatibus, consectetur, mollitia assumenda vitae alias aliquid quo dolores fuga doloribus id laborum, cupiditate vel nostrum ullam?
-                    <a href="">{Localization.see_more}</a>
+                    <button className="btn btn-link p-0">{Localization.see_more}</button>
               </p>
               <span className="text-muted mx-1">9 {Localization.people_found_this_helpful}</span>
               <div className="helpful row mt-1 pt-1">
                 <div className="col-5">
-                  <a href=""><button className="btn btn-block text-uppercase">{Localization.helpful}</button></a>
+                  <button className="btn btn-block text-uppercase">{Localization.helpful}</button>
                 </div>
                 <div className="col-2 pt-2">
-                  <a href="" className="text-muted text-capitalize">{Localization.report}</a>
+                  <button className="text-muted text-capitalize btn btn-link p-0">{Localization.report}</button>
                 </div>
               </div>
             </div>
