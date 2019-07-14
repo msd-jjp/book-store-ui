@@ -57,8 +57,8 @@
       color: rgb(6, 112, 156);
     }
   } */
-  .slider-header {
-    margin-top: 0.7rem;
+  .category-wrapper {
+    // margin-top: 0.7rem;
     // margin-bottom: 0.5rem;
     .category-title {
       //   font-size: 1.3rem;
@@ -74,20 +74,23 @@
       }
     } */
   }
-  .slide-container {
+  .carousel-wrapper {
     height: auto;
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
-    padding-top: 0.5rem;
+    // padding-top: 0.5rem;
     scrollbar-width: 0;
     &::-webkit-scrollbar {
       display: none;
     }
-    .book-detail {
-      margin: 5px;
+    .carousel-item {
+      // margin: 5px;
+      margin-left: 5px;
+      margin-right: 5px;
       display: inline-block;
-      .slide-book {
+
+      .img-wrapper {
         width: 7.5rem;
         height: 11rem;
         // background-color: yellow;

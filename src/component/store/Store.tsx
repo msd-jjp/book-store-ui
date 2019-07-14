@@ -182,17 +182,13 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-
     carousel_header_render(category: string) {
         return (
             <>
-                <div className="slider-header d-flex justify-content-between"
+                <div className="category-wrapper d-flex justify-content-between mb-2"
                     onClick={() => this.gotoSearch_by_category('category_id')}>
                     <h6 className="category-title text-capitalize">{category}</h6>
                     <i className="category-icon fa fa-angle-right-app text-muted"></i>
-                    {/* <a href="" className="slide-angle">
-                        <i className="angle fa fa-angle-right-app text-muted"></i>
-                    </a> */}
                 </div>
             </>
         )
@@ -200,10 +196,10 @@ class StoreComponent extends BaseComponent<IProps, IState> {
     carousel_render(bookList: any[]/* IBook[] */) {
         return (
             <>
-                <div className="slide-container mb-3">
+                <div className="carousel-wrapper mb-4">
                     {bookList.map((book, bookIndex) => (
-                        <div className="book-detail" key={bookIndex}>
-                            <div className="slide-book" onClick={() => this.gotoBookDetail(book.id)}>
+                        <div className="carousel-item" key={bookIndex}>
+                            <div className="img-wrapper" onClick={() => this.gotoBookDetail(book.id)}>
                                 <img src="static/media/img/icon/default-book.png" alt="book" />
                             </div>
                             <span className="writer-name">Claire McGowan</span>
