@@ -1,0 +1,157 @@
+.store-wrapper {
+  // scrollbar-color: transparent;
+  // scrollbar-width: none;
+  // margin-top: 4rem;
+  // &::-webkit-scrollbar {
+  //   display: none;
+  //   -ms-overflow-style: none;
+  //    scrollbar-width: none;
+  // }
+
+  /* .sherch-box-wrapper {
+    .icon-wrapper {
+      .icon-link {
+        .icon {
+          color: rgb(102, 102, 102);
+          font-size: 2rem;
+        }
+      }
+    }
+    .search-wrapper {
+      .search-group {
+        .search-box {
+          background-color: rgb(242, 242, 242);
+          width: 85%;
+          height: 2.5rem;
+          border: none;
+          border-radius: 0;
+        }
+        .search-btn {
+          background-color: rgb(85, 85, 85);
+          width: 15%;
+          border: none;
+          border-radius: 0;
+          .icon {
+            color: white;
+            text-align: center;
+          }
+        }
+      }
+    }
+  } */
+
+  .store-search-box {
+    .open-menu-icon {
+      .input-group-text {
+        padding: 0;
+        background-color: transparent;
+        color: #555555;
+        font-size: 2rem;
+        margin-right: 1rem;
+        border: 0;
+      }
+    }
+    .search-input {
+      background-color: #f2f2f2;
+      border: none;
+    }
+    .search-icon {
+      .input-group-text {
+        background-color: #555555;
+        border: none;
+        border-radius: 0;
+        color: #fff;
+      }
+    }
+  }
+
+  .more-to-explore {
+    button {
+      background-color: transparent;
+      //   .text {
+      //   }
+      //   .icon {
+      .icon {
+        @include calc(top, "50% - 16px");
+        position: absolute;
+        right: 1rem;
+      }
+      //   }
+    }
+  }
+
+  .link-group {
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+    font-size: 0.9rem;
+    .book-group-link {
+      text-decoration: underline;
+      color: rgb(6, 112, 156);
+    }
+  }
+  .slider-header {
+    margin-top: 0.7rem;
+    margin-bottom: 0.5rem;
+    .slide-txt {
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+    .slide-angle {
+      .angle {
+        font-size: 1.5rem;
+      }
+    }
+  }
+  .slide-container1 {
+    height: auto;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-top: 0.5rem;
+    scrollbar-width: 0;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    .book-detail {
+      margin: 5px;
+      display: inline-block;
+      .slide-book {
+        width: 7.5rem;
+        height: 11rem;
+        background-color: yellow;
+      }
+      .writer-name {
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+      .rate-book {
+        display: block;
+        span {
+          color: gray;
+          font-size: 0.7rem;
+        }
+        .checked {
+          color: orange;
+        }
+        .star-counter {
+          display: inline;
+          font-size: 0.8rem;
+          color: rgb(5, 112, 156);
+        }
+      }
+    }
+    .first-slide {
+      margin-left: 1rem;
+    }
+  }
+
+  /* .store-main-menu-link {
+    // margin-bottom: 5.4rem;
+    border-bottom: 1px solid rgb(224, 224, 224);
+    .link-box {
+      border-top: 1px solid rgb(224, 224, 224);
+      border-right: 1px solid rgb(224, 224, 224);
+      border-left: 1px solid rgb(224, 224, 224);
+    }
+  } */
+}
