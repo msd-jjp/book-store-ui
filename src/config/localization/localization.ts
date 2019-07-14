@@ -133,22 +133,25 @@ interface ILocalization extends LocalizedStringsMethods {
     features_details: string;
     product_details: string;
     publication_date: string;
-    language:string;
-    bookstore_sales_rank:string;
-    follow:string;
-    customer_review:string;
-    read_reviews_that_mention:string;
-    see_more:string;
-    top_reviews:string;
-    verified_purchase:string;
-    format:string;
-    bookstore_edition:string;
-    people_found_this_helpful:string;
-    helpful:string;
-    report:string;
-    see_all_n_reviews:string;
-    write_a_review:string;
-    n_out_of_m_stars:string;
+    language: string;
+    bookstore_sales_rank: string;
+    follow: string;
+    customer_review: string;
+    read_reviews_that_mention: string;
+    see_more: string;
+    top_reviews: string;
+    verified_purchase: string;
+    format: string;
+    bookstore_edition: string;
+    people_found_this_helpful: string;
+    helpful: string;
+    report: string;
+    see_all_n_reviews: string;
+    write_a_review: string;
+    n_out_of_m_stars: string;
+    bookstore_books: string;
+    best_seller: string;
+    more_to_explore: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

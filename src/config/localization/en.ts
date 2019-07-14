@@ -145,4 +145,7 @@ export const en = {
     see_all_n_reviews: 'see all {0} reviews',
     write_a_review: 'write a review',
     n_out_of_m_stars: '{0} out of {1} stars',
+    bookstore_books: 'bookstore books',
+    best_seller: 'best seller',
+    more_to_explore: 'more to explore',
 }

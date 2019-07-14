@@ -89,7 +89,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         if (this.state.recomendedBookList && this.state.recomendedBookList.length) {
             return (
                 <>
-                    {this.carousel_header_render('recommended for you')}
+                    {this.carousel_header_render(Localization.recomended_for_you)}
                     {this.carousel_render(this.state.recomendedBookList)}
                 </>
             )
@@ -97,7 +97,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         } else if (this.state.recomendedBookError) {
             return (
                 <>
-                    {this.carousel_header_render('recommended for you')}
+                    {this.carousel_header_render(Localization.recomended_for_you)}
 
                     <div>{this.state.recomendedBookError}</div>
                     <div onClick={() => this.fetchRecomendedBook()}>
@@ -108,7 +108,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         } else {
             return (
                 <>
-                    {this.carousel_header_render('recommended for you')}
+                    {this.carousel_header_render(Localization.recomended_for_you)}
 
                     <div>{Localization.loading_with_dots}</div>
                 </>
@@ -134,12 +134,12 @@ class StoreComponent extends BaseComponent<IProps, IState> {
     best_seller_render() {
         return (
             <>
-                {this.carousel_header_render('best seller')}
+                {this.carousel_header_render(Localization.best_seller)}
                 {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
             </>
         )
     }
-    new_releases_render() {
+    new_releases_render__() {
         return (
             <>
                 {this.carousel_header_render('new releases for you')}
@@ -147,6 +147,41 @@ class StoreComponent extends BaseComponent<IProps, IState> {
             </>
         )
     }
+    new_releases_render() {
+        if (!this.props.logged_in_user) {
+            return;
+        }
+        if (this.state.newReleaseBookList && this.state.newReleaseBookList.length) {
+            return (
+                <>
+                    {this.carousel_header_render(Localization.new_release_in_bookstore)}
+                    {this.carousel_render(this.state.newReleaseBookList)}
+                </>
+            )
+
+        } else if (this.state.newReleaseBookError) {
+            return (
+                <>
+                    {this.carousel_header_render(Localization.new_release_in_bookstore)}
+
+                    <div>{this.state.newReleaseBookError}</div>
+                    <div onClick={() => this.fetchNewestBook()}>
+                        {Localization.retry}
+                    </div>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    {this.carousel_header_render(Localization.new_release_in_bookstore)}
+
+                    <div>{Localization.loading_with_dots}</div>
+                </>
+            );
+        }
+    }
+
+
     carousel_header_render(category: string) {
         return (
             <>
@@ -192,7 +227,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
 
                 <div className="store-wrapper">
 
-                    <div className="input-group mb-3 mt-2 store-search-box" >
+                    {/* <div className="input-group mb-3 mt-2 store-search-box" >
                         <div className="input-group-prepend open-menu-icon">
                             <span className="input-group-text">
                                 <i className="fa fa-bars"></i>
@@ -225,7 +260,8 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                         <a href="" className="book-group-link mx-0">Kindle Newsstand</a>
                         <span> | </span>
                         <a href="" className="book-group-link mx-0">Deals</a>
-                    </div>
+                    </div> */}
+                    <h4 className="mt-3 mb-4">{Localization.bookstore_books}:</h4>
 
                     {this.top_picks_render()}
                     {this.recommended_render()}
@@ -234,7 +270,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                     {this.best_seller_render()}
                     {this.new_releases_render()}
 
-                    <h6 className="slide-txt___mx-3-- mb-3 text-capitalize">More to Explore</h6>
+                    <h6 className="mb-3 text-capitalize">{Localization.more_to_explore}</h6>
                     <div className="list-group more-to-explore">
                         <button type="button" className="list-group-item list-group-item-action">
                             <span className="text-capitalize">Kindle Singles</span>
@@ -272,10 +308,10 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                             <span className="text-capitalize">History</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
-                        <button type="button" className="list-group-item list-group-item-action">
+                        {/* <button type="button" className="list-group-item list-group-item-action">
                             <span className="text-capitalize">More Categorise</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
-                        </button>
+                        </button> */}
                     </div>
 
                 </div>
