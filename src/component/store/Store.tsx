@@ -186,11 +186,13 @@ class StoreComponent extends BaseComponent<IProps, IState> {
     carousel_header_render(category: string) {
         return (
             <>
-                <div className="slider-header d-flex justify-content-between">
+                <div className="slider-header d-flex justify-content-between"
+                    onClick={() => this.gotoSearch_by_category('category_id')}>
                     <h6 className="category-title text-capitalize">{category}</h6>
-                    <a href="" className="slide-angle">
+                    <i className="category-icon fa fa-angle-right-app text-muted"></i>
+                    {/* <a href="" className="slide-angle">
                         <i className="angle fa fa-angle-right-app text-muted"></i>
-                    </a>
+                    </a> */}
                 </div>
             </>
         )
@@ -220,6 +222,9 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 </div>
             </>
         )
+    }
+    gotoSearch_by_category(category: string) {
+        debugger;
     }
     gotoBookDetail(bookId: string) {
         this.props.history.push(`book-detail/${bookId}`);
