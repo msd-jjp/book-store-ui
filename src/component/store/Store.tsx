@@ -10,6 +10,8 @@ import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
 import Rating from 'react-rating';
 import { IBook } from '../../model/model.book';
+import { BookService } from '../../service/service.book';
+import { IToken } from '../../model/model.token';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -17,29 +19,135 @@ export interface IProps {
     do_logout?: () => void;
     change_app_flag?: (internationalization: TInternationalization) => void;
     internationalization: TInternationalization;
+    token: IToken;
 }
 
-class StoreComponent extends BaseComponent<IProps, any> {
+interface IState {
+    recomendedBookList: IBook[];
+    recomendedBookError: string | undefined;
+    newReleaseBookList: IBook[];
+    newReleaseBookError: string | undefined;
+}
+
+class StoreComponent extends BaseComponent<IProps, IState> {
+    state = {
+        recomendedBookList: [],
+        recomendedBookError: undefined,
+        newReleaseBookList: [],
+        newReleaseBookError: undefined,
+    };
+    private _bookService = new BookService();
+
+    componentDidMount() {
+        this._bookService.setToken(this.props.token);
+        this.fetchAllData();
+    }
+
+    fetchAllData() {
+        this.fetchNewestBook();
+        this.fetchRecomendedBook();
+    }
+    async fetchRecomendedBook() {
+        this.setState({ ...this.state, recomendedBookError: undefined });
+
+        let res = await this._bookService.recomended().catch(error => {
+            let errorMsg = this.handleError({ error: error.response, notify: false });
+            this.setState({ ...this.state, recomendedBookError: errorMsg.body });
+        });
+        if (res) {
+            if (res.data.result && res.data.result.length) {
+                this.setState({ ...this.state, recomendedBookList: res.data.result });
+            }
+        }
+    }
+    async fetchNewestBook() {
+        this.setState({ ...this.state, newReleaseBookError: undefined });
+
+        let res = await this._bookService.newest().catch(error => {
+            let errorMsg = this.handleError({ error: error.response, notify: false });
+            this.setState({ ...this.state, newReleaseBookError: errorMsg.body });
+        });
+        if (res) {
+            if (res.data.result && res.data.result.length) {
+                this.setState({ ...this.state, newReleaseBookList: res.data.result });
+            }
+        }
+    }
 
     top_picks_render() {
-        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'top picks for you');
+        return (
+            <>
+                {this.carousel_header_render('top picks for you')}
+                {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
+            </>
+        )
     }
     recommended_render() {
-        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'recommended for you');
+        if (!this.props.logged_in_user) {
+            return;
+        }
+        if (this.state.recomendedBookList && this.state.recomendedBookList.length) {
+            return (
+                <>
+                    {this.carousel_header_render('recommended for you')}
+                    {this.carousel_render(this.state.recomendedBookList)}
+                </>
+            )
+
+        } else if (this.state.recomendedBookError) {
+            return (
+                <>
+                    {this.carousel_header_render('recommended for you')}
+
+                    <div>{this.state.recomendedBookError}</div>
+                    <div onClick={() => this.fetchRecomendedBook()}>
+                        {Localization.retry}
+                    </div>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    {this.carousel_header_render('recommended for you')}
+
+                    <div>{Localization.loading_with_dots}</div>
+                </>
+            );
+        }
     }
     browsing_history_render() {
-        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'inspired by your browsing history');
+        return (
+            <>
+                {this.carousel_header_render('inspired by your browsing history')}
+                {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
+            </>
+        )
     }
     wishlist_render() {
-        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'inspired by your wishlist');
+        return (
+            <>
+                {this.carousel_header_render('inspired by your wishlist')}
+                {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
+            </>
+        )
     }
     best_seller_render() {
-        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'best seller');
+        return (
+            <>
+                {this.carousel_header_render('best seller')}
+                {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
+            </>
+        )
     }
     new_releases_render() {
-        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'new releases for you');
+        return (
+            <>
+                {this.carousel_header_render('new releases for you')}
+                {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
+            </>
+        )
     }
-    carousel_render(bookList: any[]/* IBook[] */, category: string) {
+    carousel_header_render(category: string) {
         return (
             <>
                 <div className="slider-header d-flex justify-content-between">
@@ -48,6 +156,12 @@ class StoreComponent extends BaseComponent<IProps, any> {
                         <i className="angle fa fa-angle-right-app text-muted"></i>
                     </a>
                 </div>
+            </>
+        )
+    }
+    carousel_render(bookList: any[]/* IBook[] */) {
+        return (
+            <>
                 <div className="slide-container mb-3">
                     {bookList.map(book => (
                         <div className="book-detail">
@@ -181,7 +295,8 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
-        internationalization: state.internationalization
+        internationalization: state.internationalization,
+        token: state.token
     }
 }
 
