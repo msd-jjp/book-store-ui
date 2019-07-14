@@ -8,6 +8,8 @@ import { TInternationalization } from '../../config/setup';
 import { action_change_app_flag } from '../../redux/action/internationalization';
 import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
+import Rating from 'react-rating';
+import { IBook } from '../../model/model.book';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -19,27 +21,62 @@ export interface IProps {
 
 class StoreComponent extends BaseComponent<IProps, any> {
 
+    top_picks_render() {
+        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'top picks for you');
+    }
+    recommended_render() {
+        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'recommended for you');
+    }
+    browsing_history_render() {
+        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'inspired by your browsing history');
+    }
+    wishlist_render() {
+        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'inspired by your wishlist');
+    }
+    best_seller_render() {
+        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'best seller');
+    }
+    new_releases_render() {
+        return this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}], 'new releases for you');
+    }
+    carousel_render(bookList: any[]/* IBook[] */, category: string) {
+        return (
+            <>
+                <div className="slider-header d-flex justify-content-between">
+                    <h6 className="category-title text-capitalize">{category}</h6>
+                    <a href="" className="slide-angle">
+                        <i className="angle fa fa-angle-right-app text-muted"></i>
+                    </a>
+                </div>
+                <div className="slide-container mb-3">
+                    {bookList.map(book => (
+                        <div className="book-detail">
+                            <div className="slide-book ">
+                                <img src="static/media/img/icon/default-book.png" alt="book" />
+                            </div>
+                            <span className="writer-name">Claire McGowan</span>
+                            <div className="clearfix"></div>
+                            <Rating
+                                className="rating-star"
+                                emptySymbol="fa fa-star rating-empty"
+                                fullSymbol="fa fa-star rating-full"
+                                direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
+                                initialRating={2.5}
+                                readonly
+                            />
+                            <span className="rate-count ml-2">(243)</span>
+                        </div>
+                    ))}
+                </div>
+            </>
+        )
+    }
     render() {
 
         return (
             <>
 
                 <div className="store-wrapper">
-                    {/* <div className="sherch-box-wrapper row mx-1 py-2 mr-0">
-                        <div className="icon-wrapper col-1 mr-0 pr-0">
-                            <a className="icon-link" href="">
-                                <i className="icon fa fa-bars"></i>
-                            </a>
-                        </div>
-                        <div className="search-wrapper col-11">
-                            <div className="search-group input-group ml-2">
-                                <input className="search-box btn" type="text" name="" id="" placeholder="Search in Kindle Store" />
-                                <button className="search-btn" type="submit">
-                                    <i className="icon fa fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div> */}
 
                     <div className="input-group mb-3 mt-2 store-search-box" >
                         <div className="input-group-prepend open-menu-icon">
@@ -56,9 +93,9 @@ class StoreComponent extends BaseComponent<IProps, any> {
                         </div>
                     </div>
 
-                    <h3 className="heading-main pt-4 mx-3--">Kindle eBooks</h3>
+                    <h5 className="heading-main pt-4 mx-3--">bookstore eBooks</h5>
                     <div className="link-group px-0 mx-3--">
-                        <span className="txt text-muted">Browse</span>
+                        <span className="text-muted ml-2 text-capitalize">Browse</span>
                         <a href="" className="book-group-link mx-0">Book Categories</a>
                         <span> | </span>
                         <a href="" className="book-group-link mx-0">Kindle Unlimited</a>
@@ -75,201 +112,15 @@ class StoreComponent extends BaseComponent<IProps, any> {
                         <span> | </span>
                         <a href="" className="book-group-link mx-0">Deals</a>
                     </div>
-                    <div className="slider-header d-flex justify-content-between mx-3--">
-                        <h4 className="slide-txt">Best Sellers</h4>
-                        <a href="" className="slide-angle">
-                            <i className="angle fa fa-angle-right text-muted"></i>
-                        </a>
-                    </div>
-                    <div className="slide-container1 pb-3">
-                        <div className="book-detail first-slide">
-                            <div className="slide-book "></div>
-                            <span className="writer-name">Claire McGowan</span>
-                            <div className="rate-book">
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star"></span>
-                                <span className="star-counter">(243)</span>
-                            </div>
-                        </div>
-                        <div className="book-detail">
-                            <div className="slide-book"></div>
-                            <span className="writer-name">Claire McGowan</span>
-                            <div className="rate-book">
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star"></span>
-                                <span className="star-counter">(243)</span>
-                            </div>
-                        </div>
-                        <div className="book-detail">
-                            <div className="slide-book"></div>
-                            <span className="writer-name">Claire McGowan</span>
-                            <div className="rate-book">
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star"></span>
-                                <span className="star-counter">(243)</span>
-                            </div>
-                        </div>
-                        <div className="book-detail">
-                            <div className="slide-book"></div>
-                            <span className="writer-name">Claire McGowan</span>
-                            <div className="rate-book">
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star"></span>
-                                <span className="star-counter">(243)</span>
-                            </div>
-                        </div>
-                        <div className="book-detail">
-                            <div className="slide-book"></div>
-                            <span className="writer-name">Claire McGowan</span>
-                            <div className="rate-book">
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star"></span>
-                                <span className="star-counter">(243)</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="slider-header d-flex justify-content-between mx-3--">
-                        <h4 className="slide-txt">Best Sellers</h4>
-                        <a href="" className="slide-angle">
-                            <i className="angle fa fa-angle-right text-muted"></i>
-                        </a>
-                    </div>
-                    <div className="slide-container1 pb-3">
-                        <div className="book-detail first-slide">
-                            <div className="slide-book"></div>
-                            <span className="writer-name">Claire McGowan</span>
-                            <div className="rate-book">
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star"></span>
-                                <span className="star-counter">(243)</span>
-                            </div>
-                        </div>
-                        <div className="book-detail">
-                            <div className="slide-book"></div>
-                            <span className="writer-name">Claire McGowan</span>
-                            <div className="rate-book">
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star"></span>
-                                <span className="star-counter">(243)</span>
-                            </div>
-                        </div>
-                        <div className="book-detail">
-                            <div className="slide-book"></div>
-                            <span className="writer-name">Claire McGowan</span>
-                            <div className="rate-book">
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star"></span>
-                                <span className="star-counter">(243)</span>
-                            </div>
-                        </div>
-                        <div className="book-detail">
-                            <div className="slide-book"></div>
-                            <span className="writer-name">Claire McGowan</span>
-                            <div className="rate-book">
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star"></span>
-                                <span className="star-counter">(243)</span>
-                            </div>
-                        </div>
-                        <div className="book-detail">
-                            <div className="slide-book"></div>
-                            <span className="writer-name">Claire McGowan</span>
-                            <div className="rate-book">
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star checked"></span>
-                                <span className="fa fa-star"></span>
-                                <span className="star-counter">(243)</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <h5 className="slide-txt___mx-3-- mb-3 text-capitalize">More to Explore</h5>
-                    {/* <div className="store-main-menu-link mx-3--">
-                        <div className="link-box d-flex justify-content-between py-3">
-                            <span className="ml-4">Kindle Singles</span>
-                            <a href="" className="slide-angle mr-4">
-                                <i className="angle fa fa-angle-right text-muted"></i>
-                            </a>
-                        </div>
-                        <div className="link-box d-flex justify-content-between py-3">
-                            <span className="ml-4">Amazom Charts</span>
-                            <a href="" className="slide-angle mr-4">
-                                <i className="angle fa fa-angle-right text-muted"></i>
-                            </a>
-                        </div>
-                        <div className="link-box d-flex justify-content-between py-3">
-                            <span className="ml-4">Literature & Fiction</span>
-                            <a href="" className="slide-angle mr-4">
-                                <i className="angle fa fa-angle-right text-muted"></i>
-                            </a>
-                        </div>
-                        <div className="link-box d-flex justify-content-between py-3">
-                            <span className="ml-4">Mystery, Thiller & Suspense</span>
-                            <a href="" className="slide-angle mr-4">
-                                <i className="angle fa fa-angle-right text-muted"></i>
-                            </a>
-                        </div>
-                        <div className="link-box d-flex justify-content-between py-3">
-                            <span className="ml-4">Romance</span>
-                            <a href="" className="slide-angle mr-4">
-                                <i className="angle fa fa-angle-right text-muted"></i>
-                            </a>
-                        </div>
-                        <div className="link-box d-flex justify-content-between py-3">
-                            <span className="ml-4">Science Fiction & Fantasy</span>
-                            <a href="" className="slide-angle mr-4">
-                                <i className="angle fa fa-angle-right text-muted"></i>
-                            </a>
-                        </div>
-                        <div className="link-box d-flex justify-content-between py-3">
-                            <span className="ml-4">Biographies & Memoirs</span>
-                            <a href="" className="slide-angle mr-4">
-                                <i className="angle fa fa-angle-right text-muted"></i>
-                            </a>
-                        </div>
-                        <div className="link-box d-flex justify-content-between py-3">
-                            <span className="ml-4">History</span>
-                            <a href="" className="slide-angle mr-4">
-                                <i className="angle fa fa-angle-right text-muted"></i>
-                            </a>
-                        </div>
-                        <div className="link-box d-flex justify-content-between py-3">
-                            <span className="ml-4">More Categorise</span>
-                            <a href="" className="slide-angle mr-4">
-                                <i className="angle fa fa-angle-right text-muted"></i>
-                            </a>
-                        </div>
-                    </div> */}
+                    {this.top_picks_render()}
+                    {this.recommended_render()}
+                    {this.browsing_history_render()}
+                    {this.wishlist_render()}
+                    {this.best_seller_render()}
+                    {this.new_releases_render()}
 
+                    <h6 className="slide-txt___mx-3-- mb-3 text-capitalize">More to Explore</h6>
                     <div className="list-group more-to-explore">
                         <button type="button" className="list-group-item list-group-item-action">
                             <span className="text-capitalize">Kindle Singles</span>
@@ -288,7 +139,7 @@ class StoreComponent extends BaseComponent<IProps, any> {
                             <span className="text-capitalize">Mystery, Thiller & Suspense</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
-                        
+
                         <button type="button" className="list-group-item list-group-item-action">
                             <span className="text-capitalize">Romance</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>

@@ -47,8 +47,14 @@
         background-color: transparent;
         color: #555555;
         font-size: 2rem;
-        margin-right: 1rem;
+
         border: 0;
+        body:not(.rtl) & {
+          margin-right: 1rem;
+        }
+        body.rtl & {
+          margin-left: 1rem;
+        }
       }
     }
     .search-input {
@@ -59,7 +65,7 @@
       .input-group-text {
         background-color: #555555;
         border: none;
-        border-radius: 0;
+        border-radius: 0 !important;
         color: #fff;
       }
     }
@@ -68,15 +74,18 @@
   .more-to-explore {
     button {
       background-color: transparent;
-      //   .text {
-      //   }
-      //   .icon {
+      border-radius: 0;
+
       .icon {
         @include calc(top, "50% - 16px");
         position: absolute;
-        right: 1rem;
+        body:not(.rtl) & {
+          right: 1rem;
+        }
+        body.rtl & {
+          left: 1rem;
+        }
       }
-      //   }
     }
   }
 
@@ -91,9 +100,9 @@
   }
   .slider-header {
     margin-top: 0.7rem;
-    margin-bottom: 0.5rem;
-    .slide-txt {
-      font-size: 1.3rem;
+    // margin-bottom: 0.5rem;
+    .category-title {
+    //   font-size: 1.3rem;
       font-weight: bold;
     }
     .slide-angle {
@@ -102,7 +111,7 @@
       }
     }
   }
-  .slide-container1 {
+  .slide-container {
     height: auto;
     overflow-x: scroll;
     overflow-y: hidden;
@@ -118,13 +127,25 @@
       .slide-book {
         width: 7.5rem;
         height: 11rem;
-        background-color: yellow;
+        // background-color: yellow;
+        overflow: hidden;
+        img {
+          max-width: 100%;
+        }
       }
       .writer-name {
         font-size: 0.9rem;
         font-weight: 500;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+        max-width: 7.5rem;
+        margin-top: 0.25rem;
       }
-      .rate-book {
+
+      /* .rate-book {
         display: block;
         span {
           color: gray;
@@ -138,11 +159,26 @@
           font-size: 0.8rem;
           color: rgb(5, 112, 156);
         }
+      } */
+
+      .rating-star {
+        font-size: 0.7rem;
+      }
+      .rate-count {
+        font-size: 0.7rem;
+        color: rgb(5, 112, 156);
+
+        /* body:not(.rtl) & {
+          margin-left: 0.5rem;
+        }
+        body.rtl & {
+          margin-right: 0.5rem;
+        } */
       }
     }
-    .first-slide {
+    /* .first-slide {
       margin-left: 1rem;
-    }
+    } */
   }
 
   /* .store-main-menu-link {
