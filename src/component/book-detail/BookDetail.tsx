@@ -221,7 +221,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   initialRating={4.3}
                 // onChange={(newRate) => this.bookRateChange(newRate)}
                 />
-                <span className="ml-2">4.3 out of 5 stars</span>
+                {/* <span className="ml-2">4.3 out of 5 stars</span> */}
+                <span className="ml-2">{Localization.formatString(Localization.n_out_of_m_stars, 4.3, 5)}</span>
               </div>
             </div>
             <div className="col-2">

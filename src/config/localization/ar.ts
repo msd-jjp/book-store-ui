@@ -141,4 +141,5 @@ export const ar = {
     report:'گزارش',
     see_all_n_reviews:'دیدن همه {0} نظر',
     write_a_review:'یک نظر بگذارید',
+    n_out_of_m_stars: '{0} از {1} ستاره',
 }

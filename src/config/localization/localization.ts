@@ -148,6 +148,7 @@ interface ILocalization extends LocalizedStringsMethods {
     report:string;
     see_all_n_reviews:string;
     write_a_review:string;
+    n_out_of_m_stars:string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
