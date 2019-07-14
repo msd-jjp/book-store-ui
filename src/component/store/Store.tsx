@@ -12,14 +12,15 @@ import Rating from 'react-rating';
 import { IBook } from '../../model/model.book';
 import { BookService } from '../../service/service.book';
 import { IToken } from '../../model/model.token';
+import { History } from "history";
 
 export interface IProps {
     logged_in_user?: IUser | null;
-
     do_logout?: () => void;
     change_app_flag?: (internationalization: TInternationalization) => void;
     internationalization: TInternationalization;
     token: IToken;
+    history: History;
 }
 
 interface IState {
@@ -200,7 +201,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 <div className="slide-container mb-3">
                     {bookList.map(book => (
                         <div className="book-detail">
-                            <div className="slide-book ">
+                            <div className="slide-book" onClick={() => this.gotoBookDetail(book.id)}>
                                 <img src="static/media/img/icon/default-book.png" alt="book" />
                             </div>
                             <span className="writer-name">Claire McGowan</span>
@@ -220,8 +221,11 @@ class StoreComponent extends BaseComponent<IProps, IState> {
             </>
         )
     }
-    render() {
+    gotoBookDetail(bookId: string) {
+        this.props.history.push(`book-detail/${bookId}`);
+    }
 
+    render() {
         return (
             <>
 
