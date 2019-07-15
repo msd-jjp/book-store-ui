@@ -283,6 +283,14 @@ body.rtl/* ,
       .text#{$infix}-left {
         text-align: right !important;
       }
+
+      //note ?? $infix ??
+      .float#{$infix}-right {
+        float: left !important;
+      }
+      .float#{$infix}-left {
+        float: right !important;
+      }
     }
   }
 }

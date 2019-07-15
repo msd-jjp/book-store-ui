@@ -153,4 +153,5 @@ export const en = {
     more_reviews: 'more reviews',
     thank_you_for_your_feedback: 'thank you for your feedback',
     inspired_by_your_wishlist: 'inspired by your wishlist',
+    uncollected: 'uncollected',
 }
