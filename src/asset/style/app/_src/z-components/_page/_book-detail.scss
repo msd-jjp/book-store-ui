@@ -165,17 +165,17 @@ $book-detail-border: 1px solid rgb(210, 210, 210);
       .txt {
         font-weight: 450;
       }
-      .helpful {
-        .col-5 {
-          .btn {
+      .comment-feedback {
+        // .col-5 {
+          .btn-helpful {
             border-radius: 0;
             background-color: rgb(230, 230, 230);
             font-weight: 500;
           }
-        }
-        .col-2 {
-          font-weight: 500;
-        }
+        // }
+        // .col-2 {
+        //   font-weight: 500;
+        // }
       }
     }
   }

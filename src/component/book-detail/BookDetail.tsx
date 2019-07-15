@@ -90,8 +90,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               <span className="book-total-rate pl-2">({book_totalRate})</span>
               <div className="book-selled-info-container mt-2">
                 <div className="book-selled-info">#1 Best Seller</div>
-                <div className="clearfix"></div>
-                <span className="from-store">{Localization.in} {Localization.brand_name}</span>
+                {/* <div className="clearfix"></div> */}
+                {/* <span className="from-store">{Localization.in} {Localization.brand_name}</span> */}
               </div>
             </div>
             <div className="col-12">
@@ -105,7 +105,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <h5 className="text-uppercase">{Localization.about_bookstore_edition}</h5>
           <div className="book-detail-bordered-box py-2 mb-3">
             <div className="row">
-              <div className="col-10">
+              <div className="col-12">
                 <ul className="my-2">
                   <li className="px-2">{Localization.Length}: 282 {Localization.pages}</li>
                   <li className="px-2">Word Wise: Enabled</li>
@@ -114,9 +114,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   <li className="px-2">Page Flip: Enabled</li>
                 </ul>
               </div>
-              <div className="col-2">
+              {/* <div className="col-2">
                 <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
-              </div>
+              </div> */}
             </div>
 
           </div>
@@ -126,13 +126,13 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <h5 className="text-uppercase">{Localization.from_the_editor}</h5>
           <div className="book-detail-bordered-box py-2 mb-3">
             <div className="row">
-              <div className="col-10">
+              <div className="col-12">
                 <p className="mb-3 pl-3">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut repellendus eos earum optio?</p>
                 <p className="pl-3">Lorem ipsum dolor sit amet consectetur.</p>
               </div>
-              <div className="col-2">
+              {/* <div className="col-2">
                 <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
-              </div>
+              </div> */}
             </div>
           </div>
         </section>
@@ -209,7 +209,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
         <section className="customer-reviews mt-3 mb-4">
           <div className="row">
-            <div className="col-10">
+            <div className="col-12">
               <div className="ml-1">
                 <h5 className="mb-2 text-uppercase">127 {Localization.customer_review}</h5>
                 <Rating
@@ -219,19 +219,20 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   // fractions={2}
                   direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
                   initialRating={4.3}
-                // onChange={(newRate) => this.bookRateChange(newRate)}
+                  // onChange={(newRate) => this.bookRateChange(newRate)}
+                  readonly
                 />
                 {/* <span className="ml-2">4.3 out of 5 stars</span> */}
                 <span className="ml-2">{Localization.formatString(Localization.n_out_of_m_stars, 4.3, 5)}</span>
               </div>
             </div>
-            <div className="col-2">
+            {/* <div className="col-2">
               <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
-            </div>
+            </div> */}
           </div>
         </section>
 
-        <section className="read-reviews px-1">
+        {/* <section className="read-reviews px-1">
           <div className="text-uppercase mt-3 mb-2 font-weight-bold">{Localization.read_reviews_that_mention}</div>
           <div className="row">
             <div className="col-12">
@@ -247,7 +248,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             <i className="fa fa-angle-down my-3__"></i>
             <span className="text ml-1">{Localization.see_more}</span>
           </button>
-        </section>
+        </section> */}
 
         <section className="comments pb-3 px-1">
           <h5 className="mt-3 text-uppercase font-weight-bold">{Localization.top_reviews}</h5>
@@ -268,29 +269,29 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 className="rating-star"
                 emptySymbol="fa fa-star rating-empty"
                 fullSymbol="fa fa-star rating-full"
-                // fractions={2}
                 direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
                 initialRating={2.5}
-              // onChange={(newRate) => this.bookRateChange(newRate)}
+                readonly
               />
-              <span className="ml-2 purchase-state text-capitalize">{Localization.verified_purchase}</span>
-              <div className="row ml-1 my-1">
+              {/* <span className="ml-2 purchase-state text-capitalize">{Localization.verified_purchase}</span> */}
+              {/* <div className="row ml-1 my-1">
                 <span className="text-muted text-capitalize">{Localization.format}:</span>
                 <span className="text-muted pl-1 text-capitalize">{Localization.bookstore_edition}</span>
-              </div>
+              </div> */}
               <h6 className="my-2 ml-1 font-weight-bold">What You Did</h6>
               <p className="txt mx-1 my-0 pb-2">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio repellendus nam corporis! Ducimus minima veniam officia repudiandae libero sed culpa quis amet deserunt necessitatibus, consectetur, mollitia assumenda vitae alias aliquid quo dolores fuga doloribus id laborum, cupiditate vel nostrum ullam?
                     <button className="btn btn-link p-0">{Localization.see_more}</button>
               </p>
-              <span className="text-muted mx-1">9 {Localization.people_found_this_helpful}</span>
-              <div className="helpful row mt-1 pt-1">
-                <div className="col-5">
-                  <button className="btn btn-block text-uppercase">{Localization.helpful}</button>
-                </div>
-                <div className="col-2 pt-2">
-                  <button className="text-muted text-capitalize btn btn-link p-0">{Localization.report}</button>
-                </div>
+              {/* <span className="text-muted mx-1 small">9 {Localization.people_found_this_helpful}</span> */}
+              <div className="comment-feedback row__ mt-1 pt-1">
+                {/* <div className="col-5"> */}
+                <button className="btn btn-block__ btn-helpful text-uppercase">{Localization.helpful}</button>
+                <button className="text-success btn btn-link p-0">{Localization.thank_you_for_your_feedback}</button>
+                {/* </div> */}
+                {/* <div className="col-2 pt-2"> */}
+                <button className="text-muted text-capitalize btn btn-link p-0 ml-3">{Localization.report}</button>
+                {/* </div> */}
               </div>
             </div>
           ))}
@@ -302,11 +303,12 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <div className="row">
             <div className="col-10">
               <h6 className="font-weight-bold text-capitalize">
-                {Localization.formatString(Localization.see_all_n_reviews, 127)}
+                {/* {Localization.formatString(Localization.see_all_n_reviews, 127)} */}
+                {Localization.more_reviews}
               </h6>
             </div>
             <div className="col-2">
-              <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
+              <i className="fa fa-angle-down fa-2x book-detail-bordered-box-icon"></i>
             </div>
           </div>
         </div>
@@ -320,7 +322,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 <h6 className="text-uppercase">{Localization.write_a_review}</h6>
               </div>
               <div className="col-2">
-                <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
+                <i className="fa fa-angle-down fa-2x book-detail-bordered-box-icon"></i>
               </div>
             </div>
           </div>
