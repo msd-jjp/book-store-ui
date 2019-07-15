@@ -32,21 +32,21 @@ interface IProps {
 }
 
 interface IState {
-  recomendedBookList: IBook[];
+  recomendedBookList: IBook[] | undefined;
   recomendedBookError: string | undefined;
-  newReleaseBookList: IBook[];
+  newReleaseBookList: IBook[] | undefined;
   newReleaseBookError: string | undefined;
-  byWriterBookList: IBook[];
+  byWriterBookList: IBook[] | undefined;
   byWriterBookError: string | undefined;
 }
 
 class DashboardComponent extends BaseComponent<IProps, IState> {
   state = {
-    recomendedBookList: [],
+    recomendedBookList: undefined,
     recomendedBookError: undefined,
-    newReleaseBookList: [],
+    newReleaseBookList: undefined,
     newReleaseBookError: undefined,
-    byWriterBookList: [],
+    byWriterBookList: undefined,
     byWriterBookError: undefined
   };
   private _bookService = new BookService();
@@ -137,7 +137,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     });
     // debugger;
     if (res) {
-      if (res.data.result && res.data.result.length) {
+      if (res.data.result /* && res.data.result.length */) {
         this.setState({ ...this.state, recomendedBookList: res.data.result });
       }
     }
@@ -154,7 +154,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     });
     // debugger;
     if (res) {
-      if (res.data.result && res.data.result.length) {
+      if (res.data.result /* && res.data.result.length */) {
         this.setState({ ...this.state, newReleaseBookList: res.data.result });
       }
     }
@@ -164,7 +164,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, byWriterBookError: undefined });
 
     let res = await this._bookService
-      .bookByWriter({ person_id: person_id, book_id: book_id })
+      .bookByWriter({ writer: person_id, book_id: book_id })
       .catch(error => {
         // this.handleError({ error: error.response });
         let errorMsg = this.handleError({
@@ -175,7 +175,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       });
     // debugger;
     if (res) {
-      if (res.data.result && res.data.result.length) {
+      if (res.data.result /* && res.data.result.length */) {
         this.setState({ ...this.state, byWriterBookList: res.data.result });
       }
     }
@@ -306,15 +306,18 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     if (!this.props.logged_in_user) {
       return;
     }
-    if (this.state.recomendedBookList && this.state.recomendedBookList.length) {
+    if (this.state.recomendedBookList && (this.state.recomendedBookList! || []).length) {
       return (
         <>
           <div className="booklist-wrapper mt-3">
             <h6 className="title">{Localization.recomended_for_you}</h6>
-            {this.carousel_render(this.state.recomendedBookList)}
+            {this.carousel_render(this.state.recomendedBookList!)}
           </div>
         </>
       );
+    } else if (this.state.recomendedBookList && !(this.state.recomendedBookList! || []).length) {
+      return;
+
     } else if (this.state.recomendedBookError) {
       return (
         <>
@@ -340,15 +343,18 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   newReleaseBook_render() {
-    if (this.state.newReleaseBookList && this.state.newReleaseBookList.length) {
+    if (this.state.newReleaseBookList && (this.state.newReleaseBookList! || []).length) {
       return (
         <>
           <div className="booklist-wrapper mt-3">
             <h6 className="title">{Localization.new_release_in_bookstore}</h6>
-            {this.carousel_render(this.state.newReleaseBookList)}
+            {this.carousel_render(this.state.newReleaseBookList!)}
           </div>
         </>
       );
+    } else if (this.state.newReleaseBookList && !(this.state.newReleaseBookList! || []).length) {
+      return;
+
     } else if (this.state.newReleaseBookError) {
       return (
         <>
@@ -393,7 +399,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     let writerFullName =
       writerList[0].person.name + " " + writerList[0].person.last_name;
 
-    if (this.state.byWriterBookList && this.state.byWriterBookList.length) {
+    if (this.state.byWriterBookList && (this.state.byWriterBookList! || []).length) {
       return (
         <>
           <div className="booklist-wrapper mt-3">
@@ -403,10 +409,13 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 writerFullName
               )}
             </h6>
-            {this.carousel_render(this.state.byWriterBookList)}
+            {this.carousel_render(this.state.byWriterBookList!)}
           </div>
         </>
       );
+    } else if (this.state.byWriterBookList && !(this.state.byWriterBookList! || []).length) {
+      return;
+
     } else if (this.state.byWriterBookError) {
       return (
         <>

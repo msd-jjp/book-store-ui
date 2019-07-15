@@ -24,17 +24,17 @@ export interface IProps {
 }
 
 interface IState {
-    recomendedBookList: IBook[];
+    recomendedBookList: IBook[] | undefined;
     recomendedBookError: string | undefined;
-    newReleaseBookList: IBook[];
+    newReleaseBookList: IBook[] | undefined;
     newReleaseBookError: string | undefined;
 }
 
 class StoreComponent extends BaseComponent<IProps, IState> {
     state = {
-        recomendedBookList: [],
+        recomendedBookList: undefined,
         recomendedBookError: undefined,
-        newReleaseBookList: [],
+        newReleaseBookList: undefined,
         newReleaseBookError: undefined,
     };
     private _bookService = new BookService();
@@ -56,7 +56,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
             this.setState({ ...this.state, recomendedBookError: errorMsg.body });
         });
         if (res) {
-            if (res.data.result && res.data.result.length) {
+            if (res.data.result /* && res.data.result.length */) {
                 this.setState({ ...this.state, recomendedBookList: res.data.result });
             }
         }
@@ -69,7 +69,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
             this.setState({ ...this.state, newReleaseBookError: errorMsg.body });
         });
         if (res) {
-            if (res.data.result && res.data.result.length) {
+            if (res.data.result/*  && res.data.result.length */) {
                 this.setState({ ...this.state, newReleaseBookList: res.data.result });
             }
         }
@@ -87,13 +87,16 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         if (!this.props.logged_in_user) {
             return;
         }
-        if (this.state.recomendedBookList && this.state.recomendedBookList.length) {
+        if (this.state.recomendedBookList && (this.state.recomendedBookList! || []).length) {
             return (
                 <>
                     {this.carousel_header_render(Localization.recomended_for_you)}
-                    {this.carousel_render(this.state.recomendedBookList)}
+                    {this.carousel_render(this.state.recomendedBookList!)}
                 </>
             )
+
+        } else if (this.state.recomendedBookList && !(this.state.recomendedBookList! || []).length) {
+            return;
 
         } else if (this.state.recomendedBookError) {
             return (
@@ -127,7 +130,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
     wishlist_render() {
         return (
             <>
-                {this.carousel_header_render('inspired by your wishlist')}
+                {this.carousel_header_render(Localization.inspired_by_your_wishlist)}
                 {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
             </>
         )
@@ -140,25 +143,21 @@ class StoreComponent extends BaseComponent<IProps, IState> {
             </>
         )
     }
-    new_releases_render__() {
-        return (
-            <>
-                {this.carousel_header_render('new releases for you')}
-                {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
-            </>
-        )
-    }
+
     new_releases_render() {
         if (!this.props.logged_in_user) {
             return;
         }
-        if (this.state.newReleaseBookList && this.state.newReleaseBookList.length) {
+        if (this.state.newReleaseBookList && (this.state.newReleaseBookList! || []).length) {
             return (
                 <>
                     {this.carousel_header_render(Localization.new_release_in_bookstore)}
-                    {this.carousel_render(this.state.newReleaseBookList)}
+                    {this.carousel_render(this.state.newReleaseBookList!)}
                 </>
             )
+
+        } else if (this.state.newReleaseBookList && !(this.state.newReleaseBookList! || []).length) {
+            return;
 
         } else if (this.state.newReleaseBookError) {
             return (
@@ -268,9 +267,9 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                     </div> */}
                     <h4 className="mt-3 mb-4">{Localization.bookstore_books}:</h4>
 
-                    {this.top_picks_render()}
+                    {/* {this.top_picks_render()} */}
                     {this.recommended_render()}
-                    {this.browsing_history_render()}
+                    {/* {this.browsing_history_render()} */}
                     {this.wishlist_render()}
                     {this.best_seller_render()}
                     {this.new_releases_render()}
