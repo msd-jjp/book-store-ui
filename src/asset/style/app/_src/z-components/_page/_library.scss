@@ -11,16 +11,29 @@
     padding-right: 1rem;
     padding-left: 1rem;
 
-    .menu-wrapper {
-      .filter-option {
-        .filter-link {
-          text-decoration: none;
+    .filter-library {
+      line-height: 3rem;
+    }
+    .view-library {
+      line-height: 3rem;
+    }
+
+    // .menu-wrapper {
+    .filter-option {
+      .filter-link {
+        text-decoration: none;
+        // padding-bottom: 0.97rem;
+        // margin: 0 .5rem;
+        line-height: 3rem;
+        display: inline-block;
+
+        &.active {
           border-bottom: 1px solid blue;
-          padding-bottom: 0.97rem;
-          margin: 0 1rem;
+          color: blue;
         }
       }
     }
+    // }
   }
   .row-wrapper {
     .library-grid-wrapper {

@@ -17,58 +17,91 @@ export interface IProps {
     internationalization: TInternationalization;
 }
 
-class LibraryComponent extends BaseComponent<IProps, any> {
+enum LIBRARY_VIEW {
+    grid = 'grid', list = 'list', collections = 'collections'
+}
 
+interface IState {
+    library_view: LIBRARY_VIEW;
+}
+
+class LibraryComponent extends BaseComponent<IProps, IState> {
+    state = {
+        library_view: LIBRARY_VIEW.grid
+    }
+    view_grid_render() {
+        return (
+            <>
+                <div className="row-wrapper mr-3 mt-3">
+                    <div className="row library-grid-wrapper">
+                        {
+                            [1, 1, 1, 1, 1, 2, 1, 1, 3, 3, 4, 5, 2, 2, 2, 1, 2].map((item, index) => (
+                                <div className="col-4 p-align-inverse-0 mb-3" key={index}>
+                                    <div className="item-wrapper">
+                                        <img src="static/media/img/icon/default-book.png"
+                                            alt=""
+                                            className="library-grid-book-show" />
+
+                                        <div className="book-progress-state">
+                                            <div className="bp-state-number">
+                                                <div className="text">7%</div>
+                                            </div>
+                                            <div className="bp-state-arrow" />
+                                        </div>
+                                        <div className="book-download">
+                                            <i className="fa fa-check" />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+            </>
+        )
+    }
+    view_list_render() {
+        return (
+            <>
+            </>
+        )
+    }
+    view_collection_render() {
+        return (
+            <>
+            </>
+        )
+    }
     render() {
-
         return (
             <>
                 <div className="library-wrapper">
-                    <div className="container-fluid__ library-menu pt-2">
-                        <div className="row menu-wrapper">
+                    <div className="library-menu pt-2__">
+                        <div className="row menu-wrapper__">
                             <div className="col-3">
-                                <div className="pl-2"><i className="fa fa-sliders text-dark"></i></div>
+                                <div className="filter-library pl-2"><i className="fa fa-filter text-dark"></i></div>
                             </div>
-                            {/* <div className="col-2 filter-option">
-                                <a href="" className="filter-link"><span className="">ALL</span></a>
-                            </div>
-                            <div className="col-4 filter-option">
-                                <a href="" className="filter-link"><span className="">DOWNLOADED</span></a>
-                            </div> */}
                             <div className="col-6 filter-option text-center">
-                                <span className="filter-link text-uppercase">{Localization.all}</span>
-                                <span className="filter-link text-uppercase">{Localization.downloaded}</span>
+                                <span className="filter-link text-uppercase mr-3 active">{Localization.all}</span>
+                                <span className="filter-link text-uppercase ">{Localization.downloaded}</span>
                             </div>
                             <div className="col-3 text-right">
-                                <div className="pr-2"><i className="fa fa-filter text-dark"></i></div>
+                                <div className="view-library pr-2"><i className="fa fa-sliders text-dark"></i></div>
                             </div>
                         </div>
                     </div>
-                    <div className="row-wrapper p-3__ mr-3 mt-3">
-                        <div className="row library-grid-wrapper">
-                            {
-                                [1, 1, 1, 1, 1, 2, 1, 1, 3, 3, 4, 5, 2, 2, 2, 1, 2].map((item, index) => (
-                                    <div className="col-4 m-0__ p-align-inverse-0 mb-3" key={index}>
-                                        <div className="item-wrapper p-1__">
-                                            <img src="static/media/img/icon/default-book.png"
-                                                alt=""
-                                                className="library-grid-book-show" />
-
-                                            <div className="book-progress-state">
-                                                <div className="bp-state-number">
-                                                    <div className="text">7%</div>
-                                                </div>
-                                                <div className="bp-state-arrow" />
-                                            </div>
-                                            <div className="book-download">
-                                                <i className="fa fa-check" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    </div>
+                    {(() => {
+                        switch (this.state.library_view) {
+                            case LIBRARY_VIEW.grid:
+                                return this.view_grid_render();
+                            case LIBRARY_VIEW.list:
+                                return this.view_list_render();
+                            case LIBRARY_VIEW.collections:
+                                return this.view_collection_render();
+                            default:
+                                return undefined;
+                        }
+                    })()}
                 </div>
             </>
         )
