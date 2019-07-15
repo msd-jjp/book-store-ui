@@ -39,7 +39,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                 <div className="col-4 p-align-inverse-0 mb-3" key={index}>
                                     <div className="item-wrapper">
                                         <img src="static/media/img/icon/default-book.png"
-                                            alt=""
+                                            alt="book"
                                             className="library-grid-book-show" />
 
                                         <div className="book-progress-state">
@@ -63,6 +63,28 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     view_list_render() {
         return (
             <>
+                <div className="list-wrapper container-fluid__ mt-3">
+                    {[1, 1, 1, 1, 1, 2, 1, 1, 3, 3, 4, 5, 2, 2, 2, 1, 2].map((item, index) => (
+                        <div className="spliter mx-2__ py-2" key={index}>
+                            <div className="list-row row">
+                                <div className="img-wrapper col-4">
+                                    <div className="img-container mt-2">
+                                        <img src="static/media/img/icon/default-book.png" className="img" alt="book" />
+                                    </div>
+                                </div>
+                                <div className="col-6 detail-wrapper">
+                                    <div className="book-title">book title is every thing</div>
+                                    <span className="book-writer text-muted py-2 small">book writer is every one</span>
+                                    <span className="book-progress mr-2 small">7%</span>
+                                    <span className="book-volume small">789.3 kb</span>
+                                </div>
+                                <div className="col-2 text-right is-downloaded pt-1">
+                                    <i className="fa fa-check-circle downloaded-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </>
         )
     }
@@ -72,6 +94,14 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             </>
         )
     }
+    change_library_view_test() {
+        if (this.state.library_view === LIBRARY_VIEW.grid) {
+            this.setState({ ...this.state, library_view: LIBRARY_VIEW.list });
+        } else {
+            this.setState({ ...this.state, library_view: LIBRARY_VIEW.grid });
+        }
+
+    }
     render() {
         return (
             <>
@@ -79,14 +109,18 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                     <div className="library-menu pt-2__">
                         <div className="row menu-wrapper__">
                             <div className="col-3">
-                                <div className="filter-library pl-2"><i className="fa fa-filter text-dark"></i></div>
+                                <div className="filter-library pl-2__">
+                                    <i className="fa fa-filter text-dark p-2"></i>
+                                </div>
                             </div>
                             <div className="col-6 filter-option text-center">
                                 <span className="filter-link text-uppercase mr-3 active">{Localization.all}</span>
                                 <span className="filter-link text-uppercase ">{Localization.downloaded}</span>
                             </div>
                             <div className="col-3 text-right">
-                                <div className="view-library pr-2"><i className="fa fa-sliders text-dark"></i></div>
+                                <div className="view-library pr-2__">
+                                    <i className="fa fa-sliders text-dark p-2" onClick={() => this.change_library_view_test()}></i>
+                                </div>
                             </div>
                         </div>
                     </div>
