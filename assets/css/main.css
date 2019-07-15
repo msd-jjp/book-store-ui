@@ -11530,86 +11530,43 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   height: 2rem;
 }
 
-.mainsoft {
-  background: -webkit-gradient(linear, left top, left bottom, from(#f4f4f4), to(white));
-  background: linear-gradient(to bottom, #f4f4f4, white);
-  margin-top: 4rem;
-  scrollbar-color: transparent;
-  scrollbar-width: none;
-}
-
-.mainsoft::-webkit-scrollbar {
-  display: none;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
 .mainsoft .library-menu {
-  background: white;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 4.4rem;
+  background-color: white;
   height: 3rem;
-  border-bottom: 1px solid #d4d4d4;
-  top: 4.45rem;
+  -webkit-box-shadow: 0px 3px 0px 0px #eaeaea;
+          box-shadow: 0px 3px 0px 0px #eaeaea;
 }
 
-.mainsoft .library-menu .menu-bar .border-bottom-blue .blue-link {
+.mainsoft .library-menu .menu-wrapper .filter-option .filter-link {
   text-decoration: none;
   border-bottom: 1px solid blue;
-  padding-bottom: 1rem;
+  padding-bottom: 0.97rem;
 }
 
-.mainsoft .library-menu .menu-bar .rot .icon-link .icon {
-  -webkit-transform: rotate(90deg) !important;
-          transform: rotate(90deg) !important;
+.mainsoft .list-wrapper .spliter {
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.mainsoft .library-list {
-  margin-top: 7.45rem;
-  height: 5.5rem;
-  width: 100%;
+.mainsoft .list-wrapper .spliter .list-row .img-wrapper .img-container .img {
+  max-width: 100%;
 }
 
-.mainsoft .library-list .book-menu {
-  background-color: transparent;
-}
-
-.mainsoft .library-list .book-menu .book-menu-item {
-  background-color: transparent;
-}
-
-.mainsoft .library-list .book-menu .book-menu-item .left-side .img-container {
-  display: inline-block;
-  width: 3rem;
-  height: auto;
-}
-
-.mainsoft .library-list .book-menu .book-menu-item .left-side .img-container .book-img {
-  width: 100%;
-  height: auto;
-}
-
-.mainsoft .library-list .book-menu .book-menu-item .left-side .txt .book-title {
+.mainsoft .list-wrapper .spliter .list-row .detail-wrapper .book-title {
+  font-weight: bold;
+  text-overflow: ellipsis;
   text-transform: capitalize;
-  font-size: 1.2rem;
-  font-weight: 500;
-  display: inline-block;
 }
 
-.mainsoft .library-list .book-menu .book-menu-item .left-side .txt .book-writer {
+.mainsoft .list-wrapper .spliter .list-row .detail-wrapper .book-writer {
+  word-break: break-all;
   text-transform: uppercase;
   display: block;
-  font-size: 0.8rem;
 }
 
-.mainsoft .library-list .book-menu .book-menu-item .is-downloaded-wrapper {
-  display: block;
-}
-
-.mainsoft .library-list .book-menu .book-menu-item .is-downloaded-wrapper .fa.is-downloaded {
-  font-size: 1.4rem;
-}
-
-.mainsoft .library-list .book-menu .last-item {
-  border-bottom: 1px solid #d2d2d2;
+.mainsoft .list-wrapper .spliter .list-row .is-downloaded .downloaded-icon {
+  font-size: 1.5rem;
 }
 
 .mainsoft .library-menu {
