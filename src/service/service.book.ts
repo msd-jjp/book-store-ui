@@ -11,16 +11,30 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.get(`/books/${bookId}`);
     }
 
-    bookByWriter(data: { book_id: string, person_id: string }): Promise<IAPI_ResponseList<IBook>> {
+    /* bookByWriter(data: { book_id: string, person_id: string }): Promise<IAPI_ResponseList<IBook>> {
         return this.axiosTokenInstance.post(`/books/recommended`, data);
+    } */
+    
+    bookByWriter(data: { book_id: string, writer: string }): Promise<IAPI_ResponseList<IBook>> {
+        return this.search({ limit: 10, offset: 0, filter: data });
     }
 
-    recomended(data: { search_key: string } = { search_key: "Drama" }): Promise<IAPI_ResponseList<IBook>> {
+    /* recomended(data: { search_key: string } = { search_key: "Drama" }): Promise<IAPI_ResponseList<IBook>> {
         return this.axiosTokenInstance.post(`/books/_search`, data);
+    } */
+    recomended(): Promise<IAPI_ResponseList<IBook>> {
+        return this.search({ limit: 10, offset: 0, filter: { genre: 'Romance' } });
     }
 
-    newest(): Promise<IAPI_ResponseList<IBook>> {
+    /* newest__(): Promise<IAPI_ResponseList<IBook>> {
         return this.axiosTokenInstance.get(`/books/newest`);
+    } */
+    newest(): Promise<IAPI_ResponseList<IBook>> {
+        return this.search({ limit: 10, offset: 0, filter: { tag: 'new' } });
+    }
+
+    search(data: { limit: number, offset: number, filter: Object }): Promise<IAPI_ResponseList<IBook>> {
+        return this.axiosTokenInstance.post('/books/_search', data);
     }
 
 }
