@@ -145,4 +145,6 @@ export const ar = {
     bookstore_books: 'کتاب های کتابفروشی',
     best_seller: 'پرفروش ها',
     more_to_explore: 'بیشتر برای کاوش',
+    all: 'همه',
+    downloaded: 'دانلود شده',
 }

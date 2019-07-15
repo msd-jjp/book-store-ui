@@ -148,4 +148,6 @@ export const en = {
     bookstore_books: 'bookstore books',
     best_seller: 'best seller',
     more_to_explore: 'more to explore',
+    all: 'all',
+    downloaded: 'downloaded',
 }
