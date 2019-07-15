@@ -154,6 +154,9 @@ interface ILocalization extends LocalizedStringsMethods {
     more_to_explore: string;
     all: string;
     downloaded: string;
+    more_reviews: string;
+    thank_you_for_your_feedback: string;
+    inspired_by_your_wishlist: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

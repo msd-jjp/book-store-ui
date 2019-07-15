@@ -147,4 +147,7 @@ export const ar = {
     more_to_explore: 'بیشتر برای کاوش',
     all: 'همه',
     downloaded: 'دانلود شده',
+    more_reviews: 'نظرات بیشتر',
+    thank_you_for_your_feedback: 'با تشکر از بازخورد شما',
+    inspired_by_your_wishlist: 'با توجه به لیست علاقه مندی ها شما',
 }
