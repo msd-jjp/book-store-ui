@@ -32,8 +32,8 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     view_grid_render() {
         return (
             <>
-                <div className="row-wrapper mr-3 mt-3">
-                    <div className="row library-grid-wrapper">
+                <div className="library-view-grid-wrapper mr-3 mt-3">
+                    <div className="row">
                         {
                             [1, 1, 1, 1, 1, 2, 1, 1, 3, 3, 4, 5, 2, 2, 2, 1, 2].map((item, index) => (
                                 <div className="col-4 p-align-inverse-0 mb-3" key={index}>
@@ -63,24 +63,25 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     view_list_render() {
         return (
             <>
-                <div className="list-wrapper container-fluid__ mt-3">
+                <div className="library-view-list-wrapper mt-3">
                     {[1, 1, 1, 1, 1, 2, 1, 1, 3, 3, 4, 5, 2, 2, 2, 1, 2].map((item, index) => (
-                        <div className="spliter mx-2__ py-2" key={index}>
-                            <div className="list-row row">
+                        <div className="view-list-item py-2__ pb-2 mb-2" key={index}>
+                            <div className="list-row__ row">
                                 <div className="img-wrapper col-4">
-                                    <div className="img-container mt-2">
-                                        <img src="static/media/img/icon/default-book.png" className="img" alt="book" />
+                                    <div className="img-container__ mt-2__">
+                                        <img src="static/media/img/icon/default-book.png" alt="book" />
                                     </div>
                                 </div>
-                                <div className="col-6 detail-wrapper">
+                                <div className="detail-wrapper col-8 p-align-0">
                                     <div className="book-title">book title is every thing</div>
                                     <span className="book-writer text-muted py-2 small">book writer is every one</span>
                                     <span className="book-progress mr-2 small">7%</span>
                                     <span className="book-volume small">789.3 kb</span>
-                                </div>
-                                <div className="col-2 text-right is-downloaded pt-1">
                                     <i className="fa fa-check-circle downloaded-icon"></i>
                                 </div>
+                                {/* <div className="col-2 text-right is-downloaded pt-1">
+                                    
+                                </div> */}
                             </div>
                         </div>
                     ))}
