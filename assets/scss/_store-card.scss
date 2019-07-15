@@ -1,31 +1,254 @@
-.store-father-header-wrapper{
-    background-color: rgb(255,255,255);
-    position: fixed;
-    top: 0;
-    left:0;
-    width: 100%;
-    border-bottom: 1px solid rgb(224,224,224);
-    z-index: 1030;
-    .header-wrapper{
-        .txt-wrapper{
-            .txt{
-               font-weight:400 ;
-               color: black;
-            }
-        }
-        .icon-wrapper{
-            .icon-link{
-                .icon{
-                   font-size: 1.1rem;
-                }
-            }
-        }
+.store-main-father-wrapper {
+  .store-barnd {
+    box-shadow: 0px 2px 10px 0px rgb(244, 244, 244);
+    border-bottom: 1px solid rgb(234, 234, 234);
+    .brand-name {
+      font-weight: bold;
+      font-size: 2.5rem;
+      text-transform: capitalize;
     }
-    .store-barnd{
-        box-shadow: 0px 3px 0px 0px rgb(234,234,234);
-        .brand-name{
-            font-weight: bold;
-            font-size: 20rem;
+    .page-count {
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+  }
+  .cards-wrapper{
+    .card-pattern{
+      margin-top: 0.5rem;
+      width: 100%;
+      max-width: 90%;
+      display: block;
+      float: none;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      padding-bottom: 60px;
+      min-height: 520px;
+      margin-bottom: 1rem;
+      background: #fff;
+      box-shadow: 0rem 0.1rem 0.3rem #C1BBBB;
+      .kc-rank-card-section-one {
+        height: 15rem;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+        .kc-rank-card-rank-section {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100px;
+          vertical-align: top;
+          display: inline-block;
+          text-align: center;
+          align-self: flex-start;
+          .kc-rank-card-rank {
+            font-family: "Bree Serif",serif;
+            font-size: 5rem;
+            line-height: 1.2;
+          }
+  
         }
-    } 
+        .kc-book-title-img-section{
+        margin: 0 auto;
+        display: inline-block;
+        .kc-book-title-img {
+          height: 210px;
+          img {
+          box-shadow: 0 0 4px 1px #ccc;
+          max-width: 100%;
+          max-height: 100%;
+          border: 0;
+          }
+        }
+        }
+      }
+      .kc-rank-card-metadata {
+        width: 100%;
+        text-align: center;
+        padding: 0 20px 20px;
+        box-sizing: border-box;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        -webkit-justify-content: space-between;
+        justify-content: space-between;
+        -webkit-align-items: center;
+        align-items: center;
+        height: calc(100% - 240px);
+        .metadata-card{
+          .kc-wol {
+            color: #1EAFF0;
+            font-size: .7rem;
+            line-height: 1rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+    
+          }
+          .kc-rank-card-title {
+            font-family: "Bree Serif",serif;
+            font-size: 1.5rem;
+            line-height: 1.5rem;
+            vertical-align: middle;
+            margin-bottom: .4rem;
+          }
+          .kc-rank-card-author {
+            font-size: .9rem;
+            margin-bottom: .8rem;
+            text-transform: uppercase;
+          }
+          .kc-rank-card-agent {
+            font-size: .7rem;
+            line-height: 1rem;
+            color: #9EA9AA;
+            text-transform: uppercase;
+            font-size: .7rem;
+            line-height: 1rem;
+            color: #9EA9AA;
+            text-transform: uppercase;
+            font-size: .7rem;
+            line-height: 1rem;
+            color: #9EA9AA;
+            text-transform: uppercase;
+          }
+          .kc-rank-card-badge {
+            margin-top: 1rem;
+          }
+        }
+        .icons{
+        display: -webkit-inline-box;
+        display: -ms-inline-flexbox;
+        display: -webkit-inline-flex;
+        display: inline-flex;
+        text-align: center;
+        margin: 1rem auto 0;  
+        .circle-icon {
+          width: 45px;
+          height: 45px;
+          display: block;
+          margin: 0 .3rem;
+          background-size: 45px 45px;
+          &.read {
+            background-image: url(https://d1qk1dikeufk31.cloudfront.net/images/icons/icon-read.svg);
+          }
+          &.audible-sample {
+            background-image: url(https://d1qk1dikeufk31.cloudfront.net/images/icons/audible/play.svg);
+          }
+          &.share {
+            background-image: url(https://d1qk1dikeufk31.cloudfront.net/images/icons/icon-share.svg);
+          }
+          } 
+        }
+        
+      }
+      .kc-rank-card-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 10;
+        height: 100%;
+        width: 100%;
+        max-height: 60px;
+        transition: all 0.3s;
+        cursor: pointer;
+        .kc-data-story-content {
+          background: #222;
+          color: #fff;
+          font-size: .8rem;
+          height: 100%;
+          transition: all .2s;
+          .kc-data-story-mini-content {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-align-items: center;
+            align-items: center;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+            height: 100%;
+            padding: 0 0.7rem;
+            background: #222;
+            color: #fff;
+            font-size: .8rem;
+            height: 100%;
+            .kc-mini-data-story-heading-container {
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: -webkit-flex;
+              display: flex;
+              -webkit-align-items: center;
+              align-items: center;
+              width: 100%;
+              background: #222;
+              color: #fff;
+              font-size: .8rem;
+              height: 100%;
+              .data-story-mini-icon {
+                width: 40px;
+                height: 40px;
+                display: inline-block;
+                vertical-align: middle;
+                background-size: 40px 40px;
+              }
+              .kc-rank-card-bar-heading {
+                margin-left: 0.1rem;
+                font-weight: 700;
+                text-transform: uppercase;
+              }
+            }
+            .star-rating {
+              display: inline-block;
+              text-align: center;
+              -webkit-box-flex: 0 0 auto;
+              -webkit-flex: 0 0 auto;
+              -ms-flex: 0 0 auto;
+              flex: 0 0 auto;
+              .small-stars {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -webkit-justify-content: center;
+                justify-content: center;
+                margin-bottom: 3px;
+                .full-star {
+                  color: orange;
+                  margin-left: 0.15rem;
+                }
+              }
+            }
+          }
+        }
+      }
+      small {
+        font-size: 80%;
+      }
+    }
+  }  
 }
+// arange
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
