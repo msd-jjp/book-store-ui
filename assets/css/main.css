@@ -11095,18 +11095,6 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   border-radius: 0;
 }
 
-.mainsoft .library-gallery {
-  margin-top: 7.45rem;
-}
-
-.mainsoft .library-gallery .row .col-show {
-  height: 5rem;
-  width: 5rem;
-  border-radius: 0.6rem;
-  background: white;
-  border: 1px solid #e0e0e0;
-}
-
 .more-main-menu {
   margin-top: 4.5rem;
 }
@@ -11545,6 +11533,50 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   padding-bottom: 0.97rem;
 }
 
+.mainsoft .library-menu {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 4.4rem;
+  background-color: white;
+  height: 3rem;
+  -webkit-box-shadow: 0px 3px 0px 0px #eaeaea;
+          box-shadow: 0px 3px 0px 0px #eaeaea;
+}
+
+.mainsoft .library-menu .menu-wrapper .filter-option .filter-link {
+  text-decoration: none;
+  border-bottom: 1px solid blue;
+  padding-bottom: 0.97rem;
+}
+
+.mainsoft .row-wrapper .library-grid-wrapper {
+  width: 100%;
+}
+
+.mainsoft .row-wrapper .library-grid-wrapper .item-wrapper {
+  width: 100%;
+  height: auto;
+  text-align: center;
+}
+
+.mainsoft .row-wrapper .library-grid-wrapper .item-wrapper .library-grid-book-show {
+  max-width: 100%;
+}
+
+.mainsoft .library-menu {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 4.4rem;
+  background-color: white;
+  height: 3rem;
+  -webkit-box-shadow: 0px 3px 0px 0px #eaeaea;
+          box-shadow: 0px 3px 0px 0px #eaeaea;
+}
+
+.mainsoft .library-menu .menu-wrapper .filter-option .filter-link {
+  text-decoration: none;
+  border-bottom: 1px solid blue;
+  padding-bottom: 0.97rem;
+}
+
 .mainsoft .list-wrapper .spliter {
   border-bottom: 1px solid #e0e0e0;
 }
@@ -11567,31 +11599,6 @@ a.text-jamejam:hover, a.text-jamejam:focus {
 
 .mainsoft .list-wrapper .spliter .list-row .is-downloaded .downloaded-icon {
   font-size: 1.5rem;
-}
-
-.mainsoft .library-menu {
-  border-top: 1px solid #e0e0e0;
-  margin-top: 4.4rem;
-}
-
-.mainsoft .library-menu .menu-wrapper .filter-option .filter-link {
-  text-decoration: none;
-  border-bottom: 1px solid blue;
-  padding-bottom: 0.97rem;
-}
-
-.mainsoft .row-wrapper .library-grid-wrapper {
-  width: 100%;
-}
-
-.mainsoft .row-wrapper .library-grid-wrapper .item-wrapper {
-  width: 100%;
-  height: auto;
-  text-align: center;
-}
-
-.mainsoft .row-wrapper .library-grid-wrapper .item-wrapper .library-grid-book-show {
-  max-width: 100%;
 }
 
 .store-father-header-wrapper {
@@ -11736,5 +11743,34 @@ a.text-jamejam:hover, a.text-jamejam:focus {
   border-top: 1px solid #e0e0e0;
   border-right: 1px solid #e0e0e0;
   border-left: 1px solid #e0e0e0;
+}
+
+.store-father-header-wrapper {
+  background-color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid #e0e0e0;
+  z-index: 1030;
+}
+
+.store-father-header-wrapper .header-wrapper .txt-wrapper .txt {
+  font-weight: 400;
+  color: black;
+}
+
+.store-father-header-wrapper .header-wrapper .icon-wrapper .icon-link .icon {
+  font-size: 1.1rem;
+}
+
+.store-father-header-wrapper .store-barnd {
+  -webkit-box-shadow: 0px 3px 0px 0px #eaeaea;
+          box-shadow: 0px 3px 0px 0px #eaeaea;
+}
+
+.store-father-header-wrapper .store-barnd .brand-name {
+  font-weight: bold;
+  font-size: 20rem;
 }
 /*# sourceMappingURL=main.css.map */
