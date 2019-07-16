@@ -1,24 +1,21 @@
 import React from 'react';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { action_user_logged_out } from '../../redux/action/user';
 import { redux_state } from '../../redux/app_state';
 import { IUser } from '../../model/model.user';
 import { TInternationalization } from '../../config/setup';
-import { action_change_app_flag } from '../../redux/action/internationalization';
 import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
 
 export interface IProps {
     logged_in_user?: IUser | null;
-
-    do_logout?: () => void;
-    change_app_flag?: (internationalization: TInternationalization) => void;
     internationalization: TInternationalization;
 }
 
 enum LIBRARY_VIEW {
-    grid = 'grid', list = 'list', collections = 'collections'
+    grid = 'grid',
+    list = 'list',
+    collections = 'collections'
 }
 
 interface IState {
@@ -98,7 +95,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                             <div className="col-4 p-align-inverse-0 mb-3" key={collection_index}>
                                 <div className="item-wrapper">
                                     <img src="static/media/img/icon/default-book.png"
-                                        className="item-size" />
+                                        className="item-size" alt="" />
 
                                     <div className="collection-detail p-2">
                                         <div className="collection-detail-inner">
@@ -106,7 +103,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                 <div className="row pr-3">
                                                     {[1, 2, 1, 2].map((sampleBook, sampleBook_index) => (
                                                         <div className="col-6 book p-align-inverse-0 mb-2" key={sampleBook_index}>
-                                                            <img src="static/media/img/icon/default-book.png" />
+                                                            <img src="static/media/img/icon/default-book.png" alt="book" />
                                                         </div>
                                                     ))}
                                                 </div>
@@ -121,11 +118,11 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                         <div className="col-4 p-align-inverse-0 mb-3">
                             <div className="item-wrapper uncollected">
                                 <img src="static/media/img/icon/default-book.png"
-                                    className="item-size" />
+                                    className="item-size" alt="" />
 
                                 <div className="collection-detail p-2">
                                     <div className="collection-detail-inner">
-                                        <div className="collection-book-count">9</div>
+                                        <div className="collection-book-count">14</div>
                                         <div className="collection-name small text-muted text-capitalize">
                                             {Localization.uncollected}
                                         </div>
@@ -190,8 +187,6 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
-        do_logout: () => dispatch(action_user_logged_out()),
-        change_app_flag: (internationalization: TInternationalization) => dispatch(action_change_app_flag(internationalization)),
     }
 }
 
