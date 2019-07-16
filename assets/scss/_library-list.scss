@@ -6,6 +6,42 @@
         height: 3rem;
         box-shadow: 0px 3px 0px 0px rgb(234,234,234);
         .menu-wrapper{
+            .modal-container{
+                .left-modal{
+                    border-radius: 0;
+                    .modal-slide{
+                        width: 100%;
+                        max-width: 100%;
+                        position: fixed;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        transform: translate3d(0, 0, 0);
+                        .modal-slide-content{
+                            border-radius: 0;
+                            .slide-menu-container{
+                                .slide-modal-header{
+                                    font-weight: 500;
+                                    font-size: 1.3rem;
+                                }
+                                .slide-modal-main{
+                                    border-top: 1px solid rgb(224,224,224);
+                                    border-bottom: 1px solid rgb(224,224,224);
+                                    .slide-modal-main-item{
+                                        list-style-type: none;
+                                        font-size: 1.1rem;
+                                        font-weight: 500;
+                                    }
+                                }
+                                .slide-modal-footer{
+                                    font-size: 1.1rem;
+                                    font-weight: 500;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             .filter-option{
                 .filter-link{
                     text-decoration: none;

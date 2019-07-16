@@ -11571,6 +11571,46 @@ a.text-jamejam:hover, a.text-jamejam:focus {
           box-shadow: 0px 3px 0px 0px #eaeaea;
 }
 
+.mainsoft .library-menu .menu-wrapper .modal-container .left-modal {
+  border-radius: 0;
+}
+
+.mainsoft .library-menu .menu-wrapper .modal-container .left-modal .modal-slide {
+  width: 100%;
+  max-width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  -webkit-transform: translate3d(0, 0, 0);
+          transform: translate3d(0, 0, 0);
+}
+
+.mainsoft .library-menu .menu-wrapper .modal-container .left-modal .modal-slide .modal-slide-content {
+  border-radius: 0;
+}
+
+.mainsoft .library-menu .menu-wrapper .modal-container .left-modal .modal-slide .modal-slide-content .slide-menu-container .slide-modal-header {
+  font-weight: 500;
+  font-size: 1.3rem;
+}
+
+.mainsoft .library-menu .menu-wrapper .modal-container .left-modal .modal-slide .modal-slide-content .slide-menu-container .slide-modal-main {
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.mainsoft .library-menu .menu-wrapper .modal-container .left-modal .modal-slide .modal-slide-content .slide-menu-container .slide-modal-main .slide-modal-main-item {
+  list-style-type: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.mainsoft .library-menu .menu-wrapper .modal-container .left-modal .modal-slide .modal-slide-content .slide-menu-container .slide-modal-footer {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
 .mainsoft .library-menu .menu-wrapper .filter-option .filter-link {
   text-decoration: none;
   border-bottom: 1px solid blue;

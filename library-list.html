@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="./font/font-awesome/css/font-awesome.css">
     <title>Main-home</title>
 </head>
+
 <body class="bodysoft">
     <header class="headersoft border-remover fixed-top">
         <div class="row my-3 mx-2 align-items-center">
@@ -31,8 +33,29 @@
     <main class="mainsoft">
         <div class="container-fluid library-menu pt-2">
             <div class="row menu-wrapper">
-                <div class="col-3">
-                    <a href="" class="pl-2"><i class="fa fa-sliders text-dark"></i></a>
+                <div class="modal-container col-3">
+                    <i class="fa fa-sliders text-dark pl-2" data-toggle="modal" data-target=".bd-example-modal-lg"></i>
+                    <div class="left-modal modal fade bd-example-modal-lg  mx-0 px-0" tabindex="-1" role="dialog"
+                        aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-slide modal-dialog modal-lg mx-0 px-0 mb-0 pb-0" >
+                            <div class="modal-slide-content modal-content">
+                                <div class="slide-menu-container my-4">
+                                    <div class="slide-modal-header px-4 mb-3">Filter</div>
+                                    <ul class="slide-modal-main px-4">
+                                        <li class="slide-modal-main-item my-3">
+                                            Read<span class="text-muted"> (0)</span>
+                                        </li>
+                                        <li class="slide-modal-main-item  my-3">
+                                            Unread<span class="text-muted"> (1)</span>
+                                        </li>
+                                    </ul>
+                                    <div class="slide-modal-footer px-4 mt-2">
+                                        Books<span> (1)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-2 filter-option">
                     <a href="" class="filter-link"><span class="">ALL</span></a>
@@ -41,7 +64,7 @@
                     <a href="" class="filter-link"><span class="">DOWNLOADED</span></a>
                 </div>
                 <div class="col-3 text-right">
-                        <a href="" class="pr-2"><i class="fa fa-filter text-dark"></i></a>
+                    <a href="" class="pr-2"><i class="fa fa-filter text-dark"></i></a>
                 </div>
             </div>
         </div>
@@ -63,24 +86,6 @@
                         <i class="fa fa-check-circle downloaded-icon"></i>
                     </div>
                 </div>
-            </div> 
-            <div class="spliter mx-2 py-2">
-                <div class="list-row row">
-                    <div class="img-wrapper col-4">
-                        <div class="img-container mt-2">
-                            <img src="./default-book.png" class="img" alt="book">
-                        </div>
-                    </div>
-                    <div class="col-6 detail-wrapper">
-                        <div class="book-title">book title is every thing</div>
-                        <span class="book-writer text-muted py-2 small">book writer is every one</span>
-                        <span class="mr-1">#7%</span>
-                        <span class="volume">789.3 kb</span>
-                    </div>
-                    <div class="col-2 text-right is-downloaded pt-1">
-                        <i class="fa fa-check-circle downloaded-icon"></i>
-                    </div>
-                </div>
             </div>
             <div class="spliter mx-2 py-2">
                 <div class="list-row row">
@@ -153,9 +158,42 @@
                         <i class="fa fa-check-circle downloaded-icon"></i>
                     </div>
                 </div>
-            </div>  
-        </div>   
+            </div>
+            <div class="spliter mx-2 py-2">
+                <div class="list-row row">
+                    <div class="img-wrapper col-4">
+                        <div class="img-container mt-2">
+                            <img src="./default-book.png" class="img" alt="book">
+                        </div>
+                    </div>
+                    <div class="col-6 detail-wrapper">
+                        <div class="book-title">book title is every thing</div>
+                        <span class="book-writer text-muted py-2 small">book writer is every one</span>
+                        <span class="mr-1">#7%</span>
+                        <span class="volume">789.3 kb</span>
+                    </div>
+                    <div class="col-2 text-right is-downloaded pt-1">
+                        <i class="fa fa-check-circle downloaded-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
+    <!-- start of footer modal -->
+    <!-- <div class="a-sheet-lightbox a-sheet-show" style="transition-duration: 0.3s;"></div>
+    <div class="a-declarative a-focus-hidden a-sheet-show a-sheet-web" tabindex="0"
+        style="height: 397px; transition-duration: 0.3s;">
+        <div id="swf-sheet-content" class="a-box" style="display: block;">
+            <div class="a-box-inner">
+                <div class="a-row a-size-base a-color-base swf-sheet-title a-ws-row" style="height:47px;">
+                    <span>Filter</span>
+                </div>
+            </div>
+        </div>
+    </div>
+     -->
+    <!-- end of footer modal -->
+    <!-- end of lorem -->
     <footer class="footersoft fixed-bottom">
         <div class="d-flex justify-content-between mx-2">
             <div class="text-center">
@@ -177,5 +215,8 @@
             </div>
         </div>
     </footer>
+    <script src="./node_modules/jquery/dist/jquery.js"></script>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.js"></script>
 </body>
+
 </html>
