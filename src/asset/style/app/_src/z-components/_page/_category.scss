@@ -96,6 +96,7 @@
         align-items: center;
         height: calc(100% - 240px);
         .metadata-card {
+          width: 100%;
           .kc-wol {
             color: #1eaff0;
             font-size: 0.7rem;
@@ -213,7 +214,8 @@
                 height: 40px;
                 display: inline-block;
                 vertical-align: middle;
-                background-size: 40px 40px;
+                // background-size: 40px 40px;
+                background: url("/static/media/img/icon/icon-top-rated.svg") 0% 0% / 40px 40px;
               }
               .kc-rank-card-bar-heading {
                 // margin-left: 0.1rem;
