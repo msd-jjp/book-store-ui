@@ -50,7 +50,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
   book_detail_template(book: IBook) {
     let writer_fullName = '';
-    const book_image = (book.images && book.images.length && book.images[0]) ||
+    const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
       "static/media/img/icon/default-book.png";
     // const book_title = '';
     const book_rate = 4;

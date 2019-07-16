@@ -19,6 +19,7 @@ interface IBaseProps {
 }
 
 export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> extends React.Component<p, S, SS> {
+    image_pre_url = '/api/serve-files';
 
     /* async  */
     handleError(handleErrorObj: IHandleError): IHandleErrorResolve { // Promise<IHandleErrorResolve>
@@ -127,6 +128,10 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
 
     gotoTop() {
         window.scrollTo(0, 0);
+    }
+
+    getImageUrl(imageId: string): string {
+        return this.image_pre_url + '/' + imageId;
     }
 
 }
