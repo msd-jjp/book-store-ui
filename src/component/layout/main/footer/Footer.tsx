@@ -22,7 +22,7 @@ class LayoutMainFooterComponent extends React.Component<IProps, any>{
         ) {
             let current_book = this.props.logged_in_user.person.current_book;
             let current_book_img = (current_book.images && current_book.images.length && current_book.images[0]) ||
-                "static/media/img/icon/default-book.png";
+                "/static/media/img/icon/default-book.png";
 
             return (
                 <>
