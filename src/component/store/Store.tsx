@@ -72,14 +72,14 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    top_picks_render() {
+    /* top_picks_render() {
         return (
             <>
                 {this.carousel_header_render('top picks for you')}
                 {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
             </>
         )
-    }
+    } */
     recommended_render() {
         if (!this.props.logged_in_user) {
             return;
@@ -87,7 +87,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         if (this.state.recomendedBookList && (this.state.recomendedBookList! || []).length) {
             return (
                 <>
-                    {this.carousel_header_render(Localization.recomended_for_you)}
+                    {this.carousel_header_render(Localization.recomended_for_you, 'tag', 'recommended')}
                     {this.carousel_render(this.state.recomendedBookList!)}
                 </>
             )
@@ -98,7 +98,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         } else if (this.state.recomendedBookError) {
             return (
                 <>
-                    {this.carousel_header_render(Localization.recomended_for_you)}
+                    {this.carousel_header_render(Localization.recomended_for_you, 'tag', 'recommended')}
 
                     <div>{this.state.recomendedBookError}</div>
                     <div onClick={() => this.fetchRecomendedBook()}>
@@ -109,25 +109,25 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         } else {
             return (
                 <>
-                    {this.carousel_header_render(Localization.recomended_for_you)}
+                    {this.carousel_header_render(Localization.recomended_for_you, 'tag', 'recommended')}
 
                     <div>{Localization.loading_with_dots}</div>
                 </>
             );
         }
     }
-    browsing_history_render() {
+    /* browsing_history_render() {
         return (
             <>
                 {this.carousel_header_render('inspired by your browsing history')}
                 {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
             </>
         )
-    }
+    } */
     wishlist_render() {
         return (
             <>
-                {this.carousel_header_render(Localization.inspired_by_your_wishlist)}
+                {this.carousel_header_render(Localization.inspired_by_your_wishlist, 'tag', 'wishlist')}
                 {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
             </>
         )
@@ -135,7 +135,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
     best_seller_render() {
         return (
             <>
-                {this.carousel_header_render(Localization.best_seller)}
+                {this.carousel_header_render(Localization.best_seller, 'tag', 'best_seller')}
                 {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
             </>
         )
@@ -148,7 +148,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         if (this.state.newReleaseBookList && (this.state.newReleaseBookList! || []).length) {
             return (
                 <>
-                    {this.carousel_header_render(Localization.new_release_in_bookstore)}
+                    {this.carousel_header_render(Localization.new_release_in_bookstore, 'tag', 'new')}
                     {this.carousel_render(this.state.newReleaseBookList!)}
                 </>
             )
@@ -159,7 +159,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         } else if (this.state.newReleaseBookError) {
             return (
                 <>
-                    {this.carousel_header_render(Localization.new_release_in_bookstore)}
+                    {this.carousel_header_render(Localization.new_release_in_bookstore, 'tag', 'new')}
 
                     <div>{this.state.newReleaseBookError}</div>
                     <div onClick={() => this.fetchNewestBook()}>
@@ -170,7 +170,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         } else {
             return (
                 <>
-                    {this.carousel_header_render(Localization.new_release_in_bookstore)}
+                    {this.carousel_header_render(Localization.new_release_in_bookstore, 'tag', 'new')}
 
                     <div>{Localization.loading_with_dots}</div>
                 </>
@@ -178,12 +178,12 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    carousel_header_render(category: string) {
+    carousel_header_render(headerTitle: string, categoryType: 'tag' | 'genre', categoryTitle: string) {
         return (
             <>
                 <div className="category-wrapper d-flex justify-content-between mb-2"
-                    onClick={() => this.gotoSearch_by_category('category_id')}>
-                    <h6 className="category-title text-capitalize">{category}</h6>
+                    onClick={() => this.gotoCategory(categoryType, categoryTitle)}>
+                    <h6 className="category-title text-capitalize">{headerTitle}</h6>
                     <i className="category-icon fa fa-angle-right-app text-muted"></i>
                 </div>
             </>
@@ -229,11 +229,8 @@ class StoreComponent extends BaseComponent<IProps, IState> {
     render() {
         return (
             <>
-
                 <div className="store-wrapper">
-
                     <h4 className="mt-3 mb-4">{Localization.bookstore_books}:</h4>
-
                     {/* {this.top_picks_render()} */}
                     {this.recommended_render()}
                     {/* {this.browsing_history_render()} */}
@@ -245,46 +242,46 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                     <div className="list-group more-to-explore">
                         <button type="button" className="list-group-item list-group-item-action"
                             onClick={() => this.gotoCategory('genre', BOOK_GENRE.Classic)}>
-                            <span className="text-capitalize">classic</span>
+                            <span className="text-capitalize">{Localization.category.classic}</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
-                        <button type="button" className="list-group-item list-group-item-action">
-                            <span className="text-capitalize">Amazom Charts</span>
+                        <button type="button" className="list-group-item list-group-item-action"
+                            onClick={() => this.gotoCategory('genre', BOOK_GENRE.Comedy)}>
+                            <span className="text-capitalize">{Localization.category.comedy}</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
-
-                        <button type="button" className="list-group-item list-group-item-action">
-                            <span className="text-capitalize">Literature & Fiction</span>
+                        <button type="button" className="list-group-item list-group-item-action"
+                            onClick={() => this.gotoCategory('genre', BOOK_GENRE.Drama)}>
+                            <span className="text-capitalize">{Localization.category.drama}</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
-                        <button type="button" className="list-group-item list-group-item-action">
-                            <span className="text-capitalize">Mystery, Thiller & Suspense</span>
+                        <button type="button" className="list-group-item list-group-item-action"
+                            onClick={() => this.gotoCategory('genre', BOOK_GENRE.Historical)}>
+                            <span className="text-capitalize">{Localization.category.historical}</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
-
-                        <button type="button" className="list-group-item list-group-item-action">
-                            <span className="text-capitalize">Romance</span>
+                        <button type="button" className="list-group-item list-group-item-action"
+                            onClick={() => this.gotoCategory('genre', BOOK_GENRE.Religious)}>
+                            <span className="text-capitalize">{Localization.category.religious}</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
-
-                        <button type="button" className="list-group-item list-group-item-action">
-                            <span className="text-capitalize">Science Fiction & Fantasy</span>
+                        <button type="button" className="list-group-item list-group-item-action"
+                            onClick={() => this.gotoCategory('genre', BOOK_GENRE.Romance)}>
+                            <span className="text-capitalize">{Localization.category.romance}</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
-
-                        <button type="button" className="list-group-item list-group-item-action">
-                            <span className="text-capitalize">Biographies & Memoirs</span>
+                        <button type="button" className="list-group-item list-group-item-action"
+                            onClick={() => this.gotoCategory('genre', BOOK_GENRE.Science)}>
+                            <span className="text-capitalize">{Localization.category.science}</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
-                        <button type="button" className="list-group-item list-group-item-action">
-                            <span className="text-capitalize">History</span>
+                        <button type="button" className="list-group-item list-group-item-action"
+                            onClick={() => this.gotoCategory('genre', BOOK_GENRE.Social)}>
+                            <span className="text-capitalize">{Localization.category.social}</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
-
                     </div>
-
                 </div>
-
             </>
         )
     }

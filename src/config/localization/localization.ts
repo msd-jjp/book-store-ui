@@ -129,10 +129,13 @@ interface ILocalization extends LocalizedStringsMethods {
     description: string;
     product_description: string;
     review: string;
+    reviews: string;
+    review_s: string;
     about_the_author: string;
     features_details: string;
     product_details: string;
     publication_date: string;
+    publisher: string;
     language: string;
     bookstore_sales_rank: string;
     follow: string;
@@ -158,6 +161,27 @@ interface ILocalization extends LocalizedStringsMethods {
     thank_you_for_your_feedback: string;
     inspired_by_your_wishlist: string;
     uncollected: string;
+    from: string;
+    to: string;
+    customer_reviews: string;
+    by_writerName: string;
+    agent: string;
+    previous: string;
+    next: string;
+    no_item_found: string;
+    category: {
+        [key: string]: any; // todo
+        category: string;
+        new: string;
+        romance: string;
+        classic: string;
+        comedy: string;
+        drama: string;
+        historical: string;
+        religious: string;
+        science: string;
+        social: string;
+    };
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
