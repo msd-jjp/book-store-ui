@@ -173,6 +173,10 @@ interface ILocalization extends LocalizedStringsMethods {
         [key: string]: any; // todo
         category: string;
         new: string;
+        best_seller: string;
+        recommended: string;
+        wishlist: string;
+
         romance: string;
         classic: string;
         comedy: string;

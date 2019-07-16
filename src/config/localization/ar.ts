@@ -164,6 +164,10 @@ export const ar = {
     category: {
         category: 'گروه',
         new: 'نسخه ها جدید',
+        best_seller: 'پرفروش ها',
+        recommended: 'پیشنهادی برای شما',
+        wishlist: 'لیست علاقه مندی ها',
+        
         romance: 'عاشقانه',
         classic: 'کلاسیک',
         comedy: 'کمدی',

@@ -167,6 +167,10 @@ export const en = {
     category: {
         category: 'category',
         new: 'new release',
+        best_seller: 'best seller',
+        recommended: 'recommended',
+        wishlist: 'wishlist',
+
         romance: 'romance',
         classic: 'classic',
         comedy: 'comedy',
