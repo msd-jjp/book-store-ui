@@ -5,4 +5,15 @@
   .rating-full {
     color: orange;
   }
+
+  &.rating-star-m-15 {
+    & > span {
+      body:not(.rtl) & {
+        margin-left: 0.15rem;
+      }
+      body.rtl & {
+        margin-right: 0.15rem;
+      }
+    }
+  }
 }
