@@ -11,11 +11,10 @@ import { IBook } from '../../model/model.book';
 import { BookService } from '../../service/service.book';
 import { IToken } from '../../model/model.token';
 import { History } from "history";
+import { BOOK_GENRE } from '../../enum/Book';
 
 export interface IProps {
     logged_in_user?: IUser | null;
-    // do_logout?: () => void;
-    // change_app_flag?: (internationalization: TInternationalization) => void;
     internationalization: TInternationalization;
     token: IToken;
     history: History;
@@ -223,46 +222,16 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         this.props.history.push(`book-detail/${bookId}`);
     }
 
+    gotoCategory(searchType: 'tag' | 'genre', searchValue: string) {
+        this.props.history.push(`category/${searchType}/${searchValue}`);
+    }
+
     render() {
         return (
             <>
 
                 <div className="store-wrapper">
 
-                    {/* <div className="input-group mb-3 mt-2 store-search-box" >
-                        <div className="input-group-prepend open-menu-icon">
-                            <span className="input-group-text">
-                                <i className="fa fa-bars"></i>
-                            </span>
-                        </div>
-                        <input type="text" className="form-control search-input"
-                            placeholder="search in book store" />
-                        <div className="input-group-append search-icon">
-                            <span className="input-group-text">
-                                <i className="fa fa-search"></i>
-                            </span>
-                        </div>
-                    </div>
-
-                    <h5 className="heading-main pt-4 mx-3--">bookstore eBooks</h5>
-                    <div className="link-group px-0 mx-3--">
-                        <span className="text-muted ml-2 text-capitalize">Browse</span>
-                        <a href="" className="book-group-link mx-0">Book Categories</a>
-                        <span> | </span>
-                        <a href="" className="book-group-link mx-0">Kindle Unlimited</a>
-                        <span> | </span>
-                        <a href="" className="book-group-link mx-0">Prime Reading</a>
-                        <span> | </span>
-                        <a href="" className="book-group-link mx-0">Amazon Charts</a>
-                        <span> | </span>
-                        <a href="" className="book-group-link mx-0">Editors' Picks</a>
-                        <span> | </span>
-                        <a href="" className="book-group-link mx-0">Books with Audible Narration</a>
-                        <span> | </span>
-                        <a href="" className="book-group-link mx-0">Kindle Newsstand</a>
-                        <span> | </span>
-                        <a href="" className="book-group-link mx-0">Deals</a>
-                    </div> */}
                     <h4 className="mt-3 mb-4">{Localization.bookstore_books}:</h4>
 
                     {/* {this.top_picks_render()} */}
@@ -274,8 +243,9 @@ class StoreComponent extends BaseComponent<IProps, IState> {
 
                     <h6 className="mb-3 text-capitalize">{Localization.more_to_explore}</h6>
                     <div className="list-group more-to-explore">
-                        <button type="button" className="list-group-item list-group-item-action">
-                            <span className="text-capitalize">Kindle Singles</span>
+                        <button type="button" className="list-group-item list-group-item-action"
+                            onClick={() => this.gotoCategory('genre', BOOK_GENRE.Classic)}>
+                            <span className="text-capitalize">classic</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
                         <button type="button" className="list-group-item list-group-item-action">
@@ -310,10 +280,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                             <span className="text-capitalize">History</span>
                             <i className="icon fa fa-angle-right-app fa-2x"></i>
                         </button>
-                        {/* <button type="button" className="list-group-item list-group-item-action">
-                            <span className="text-capitalize">More Categorise</span>
-                            <i className="icon fa fa-angle-right-app fa-2x"></i>
-                        </button> */}
+
                     </div>
 
                 </div>
@@ -325,8 +292,6 @@ class StoreComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
-        // do_logout: () => dispatch(action_user_logged_out()),
-        // change_app_flag: (internationalization: TInternationalization) => dispatch(action_change_app_flag(internationalization)),
     }
 }
 

@@ -22,6 +22,7 @@ import { Store } from '../store/Store';
 import { Library } from '../library/Library';
 import { BookDetail } from '../book-detail/BookDetail';
 import { ForgotPassword } from '../forgot-password/ForgotPassword';
+import { Category } from '../category/Category';
 
 const appRoutes = (
   <HashRouter>
@@ -37,6 +38,7 @@ const appRoutes = (
       <RouteLayoutMain path="/store" component={Store} />
       <RouteLayoutMain path="/library" component={Library} />
       <RouteLayoutMain path="/book-detail/:bookId" component={BookDetail} />
+      <RouteLayoutMain path="/category/:searchType/:searchValue" component={Category} />
 
       <RouteLayoutAccount path="/login" component={Login} />
       <RouteLayoutAccount path="/register" component={Register} />
