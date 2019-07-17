@@ -79,7 +79,7 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
         let book_img =
             (book.images && book.images.length && this.getImageUrl(book.images[0]))
             ||
-            "static/media/img/icon/default-book.png";
+            "/static/media/img/icon/default-book.png";
         let writerList = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
         let name = writerList && writerList.length && writerList[0].person.name;
         let last_name = writerList && writerList.length && writerList[0].person.last_name;
