@@ -53,7 +53,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
       "/static/media/img/icon/default-book.png";
     // const book_title = '';
-    const book_rate = 4;
+    // const book_rate = 4;
     const book_totalRate = 127;
 
     let writerList = book.roles.filter(
@@ -84,12 +84,17 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 fullSymbol="fa fa-star rating-full"
                 // fractions={2}
                 direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
-                initialRating={book_rate}
+                initialRating={book.rate}
                 onChange={(newRate) => this.bookRateChange(newRate)}
               />
               <span className="book-total-rate pl-2">({book_totalRate})</span>
               <div className="book-selled-info-container mt-2">
-                <div className="book-selled-info">#1 Best Seller</div>
+                {/* <div className="book-selled-info">#1 Best Seller</div> */}
+                {
+                  (book.tags || []).map(book_tag => (
+                    <div className="book-selled-info">{book_tag}</div>
+                  ))
+                }
                 {/* <div className="clearfix"></div> */}
                 {/* <span className="from-store">{Localization.in} {Localization.brand_name}</span> */}
               </div>
@@ -174,7 +179,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               {Localization.publisher}: <span> Thomas & Mercer</span>
             </h6>
             <h6 className="font-weight-bold">
-              {Localization.language}: <span> English</span>
+              {Localization.language}: <span className="text-capitalize"> {book.language}</span>
             </h6>
             <h6 className="font-weight-bold">
               ASIN: <span> B07KPFLD6Q</span>
