@@ -97,7 +97,7 @@ export const ar = {
     recommend_this_book: 'پیشنهاد دادن کتاب',
     remove_from_device: 'حذف از دستگاه',
     remove_from_home: 'حذف از خانه',
-    loading_with_dots: 'درحال بارگزاری...',
+    loading_with_dots: 'درحال بارگذاری...',
     retry: 'تلاش مجدد',
     title: 'عنوان',
     return: 'بازگشت',
