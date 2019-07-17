@@ -1,0 +1,47 @@
+.search-wrapper {
+  .book-list-wrapper {
+    .book-list-item {
+      border-bottom: 1px solid rgb(224, 224, 224);
+      .img-wrapper {
+        img {
+          max-width: 100%;
+        }
+      }
+      .detail-wrapper {
+        .book-title {
+          font-weight: 500;
+          text-overflow: ellipsis;
+          text-transform: capitalize;
+        }
+        .book-writer {
+          word-break: break-all;
+          text-transform: uppercase;
+          display: block;
+        }
+        .book-progress {
+          font-weight: 500;
+        }
+        .book-volume {
+          font-weight: 500;
+          direction: ltr;
+          display: inline-block;
+        }
+        .downloaded-icon {
+          position: absolute;
+          top: 0;
+          font-size: 1.5rem;
+          body:not(.rtl) & {
+            right: 1rem;
+          }
+          body.rtl & {
+            left: 1rem;
+          }
+        }
+      }
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+  }
+}

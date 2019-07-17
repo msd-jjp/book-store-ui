@@ -1,10 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect, HashRouter } from 'react-router-dom';
 import { Dashboard } from '../dashboard/Dashboard';
-import User from '../user/User';
-import CreateUser from '../user/CreateUser';
-import Role from '../role/Role';
-import Products from '../products/Products';
 import { Login } from '../login/Login';
 import { Register } from '../register/Register';
 import NotFound from '../layout/main/not-found/NotFound';
@@ -16,13 +12,13 @@ import { Localization } from '../../config/localization/localization';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../redux/app_state';
-// import { action_change_app_flag } from '../../redux/action/internationalization';
 import { DashboardMore } from '../dashboard-more/DashboardMore';
 import { Store } from '../store/Store';
 import { Library } from '../library/Library';
 import { BookDetail } from '../book-detail/BookDetail';
 import { ForgotPassword } from '../forgot-password/ForgotPassword';
 import { Category } from '../category/Category';
+import { Search } from '../search/Search';
 
 const appRoutes = (
   <HashRouter>
@@ -30,20 +26,16 @@ const appRoutes = (
 
       <Route exact path="/" component={() => <Redirect to="/dashboard" />} />
       <RouteLayoutMain exact path="/dashboard" component={Dashboard} />
-      <RouteLayoutMain exact path="/user" component={User} />
-      <RouteLayoutMain path="/user/create" component={CreateUser} />
-      <RouteLayoutMain path="/role" component={Role} />
-      <RouteLayoutMain path="/products" component={Products} />
       <RouteLayoutMain path="/dashboard-more" component={DashboardMore} />
       <RouteLayoutMain path="/store" component={Store} />
       <RouteLayoutMain path="/library" component={Library} />
       <RouteLayoutMain path="/book-detail/:bookId" component={BookDetail} />
       <RouteLayoutMain path="/category/:searchType/:searchValue" component={Category} />
+      <RouteLayoutMain path="/search/:query" component={Search} />
 
       <RouteLayoutAccount path="/login" component={Login} />
       <RouteLayoutAccount path="/register" component={Register} />
       <RouteLayoutAccount path="/forgot-password" component={ForgotPassword} />
-      {/* <Route component={NotFound} /> */}
       <RouteLayoutMain component={NotFound} />
 
     </Switch>
@@ -84,7 +76,6 @@ class AppComponent extends React.Component<IProps, any> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
   return {
-    // change_app_flag: (internationalization: TInternationalization) => dispatch(action_change_app_flag(internationalization)),
   }
 }
 
