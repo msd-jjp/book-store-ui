@@ -35,7 +35,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                             [1, 1, 1, 1, 1, 2, 1, 1, 3, 3, 4, 5, 2, 2, 2, 1, 2].map((item, index) => (
                                 <div className="col-4 p-align-inverse-0 mb-3" key={index}>
                                     <div className="item-wrapper">
-                                        <img src="static/media/img/icon/default-book.png"
+                                        <img src="/static/media/img/icon/default-book.png"
                                             alt="book"
                                             className="library-grid-book-show" />
 
@@ -66,7 +66,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                             <div className="list-row__ row">
                                 <div className="img-wrapper col-4">
                                     <div className="img-container__ mt-2__">
-                                        <img src="static/media/img/icon/default-book.png" alt="book" />
+                                        <img src="/static/media/img/icon/default-book.png" alt="book" />
                                     </div>
                                 </div>
                                 <div className="detail-wrapper col-8 p-align-0">
@@ -94,7 +94,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                         {[1, 1, 2, 2, 2, 1, 2].map((collection, collection_index) => (
                             <div className="col-4 p-align-inverse-0 mb-3" key={collection_index}>
                                 <div className="item-wrapper">
-                                    <img src="static/media/img/icon/default-book.png"
+                                    <img src="/static/media/img/icon/default-book.png"
                                         className="item-size" alt="" />
 
                                     <div className="collection-detail p-2">
@@ -103,7 +103,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                 <div className="row pr-3">
                                                     {[1, 2, 1, 2].map((sampleBook, sampleBook_index) => (
                                                         <div className="col-6 book p-align-inverse-0 mb-2" key={sampleBook_index}>
-                                                            <img src="static/media/img/icon/default-book.png" alt="book" />
+                                                            <img src="/static/media/img/icon/default-book.png" alt="book" />
                                                         </div>
                                                     ))}
                                                 </div>
@@ -117,7 +117,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                         ))}
                         <div className="col-4 p-align-inverse-0 mb-3">
                             <div className="item-wrapper uncollected">
-                                <img src="static/media/img/icon/default-book.png"
+                                <img src="/static/media/img/icon/default-book.png"
                                     className="item-size" alt="" />
 
                                 <div className="collection-detail p-2">

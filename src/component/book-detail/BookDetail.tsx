@@ -51,7 +51,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   book_detail_template(book: IBook) {
     let writer_fullName = '';
     const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
-      "static/media/img/icon/default-book.png";
+      "/static/media/img/icon/default-book.png";
     // const book_title = '';
     const book_rate = 4;
     const book_totalRate = 127;
@@ -194,7 +194,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             <div className="row author-profile py-4">
               <div className="col-4">
                 <div className="ml-3">
-                  <img src="static/media/img/icon/avatar.png" alt="avatar" />
+                  <img src="/static/media/img/icon/avatar.png" alt="avatar" />
                 </div>
               </div>
               <div className="col-8 p-align-0">
@@ -257,7 +257,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               <div className="row">
                 <div className="col-1 mr-3">
                   <div className="img">
-                    <img src="static/media/img/icon/avatar.png" alt="avatar" />
+                    <img src="/static/media/img/icon/avatar.png" alt="avatar" />
                   </div>
                 </div>
                 <span className="pt-2 ml-3 mr-1">Rose</span>

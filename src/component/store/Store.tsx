@@ -196,7 +196,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                     {bookList.map((book, bookIndex) => (
                         <div className="carousel-item" key={bookIndex}>
                             <div className="img-wrapper" onClick={() => this.gotoBookDetail(book.id)}>
-                                <img src="static/media/img/icon/default-book.png" alt="book" />
+                                <img src="/static/media/img/icon/default-book.png" alt="book" />
                             </div>
                             <span className="writer-name">Claire McGowan</span>
                             <div className="clearfix"></div>
