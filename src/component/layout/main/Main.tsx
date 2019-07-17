@@ -82,7 +82,8 @@ class LayoutMainComponent extends React.Component<IProps> {
                     <LayoutMainHeader history={this.props.history} match={this.props.match} />
                     <main className="main mx-3">
                         <div className="row">
-                            <div className="col-md-4 offset-md-4">
+                            {/* <div className="col-md-4 offset-md-4"> */}
+                            <div className="col-lg-4 offset-lg-4 col-md-8 offset-md-2">
                                 {this.props.children}
                             </div>
                         </div>
