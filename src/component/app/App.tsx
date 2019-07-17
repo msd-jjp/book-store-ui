@@ -31,7 +31,7 @@ const appRoutes = (
       <RouteLayoutMain path="/library" component={Library} />
       <RouteLayoutMain path="/book-detail/:bookId" component={BookDetail} />
       <RouteLayoutMain path="/category/:searchType/:searchValue" component={Category} />
-      <RouteLayoutMain path="/search/:query" component={Search} />
+      <RouteLayoutMain path="/search/:searchQuery" component={Search} />
 
       <RouteLayoutAccount path="/login" component={Login} />
       <RouteLayoutAccount path="/register" component={Register} />

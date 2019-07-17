@@ -7,11 +7,38 @@ import { redux_state } from '../../../../redux/app_state';
 import { Localization } from '../../../../config/localization/localization';
 import { History } from "history";
 
-interface IProps{
+interface IProps {
     history: History;
+    match: any;
 }
-class LayoutMainHeaderComponent extends React.Component<IProps> {
+interface IState {
+    search_query: string | undefined;
+}
+class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
+    state = {
+        search_query: undefined
+    }
     search_query!: string;
+    componentDidMount() {
+        // debugger;
+        if (this.props.match.path === "/search/:searchQuery"
+            && this.props.match.params.searchQuery
+            && this.props.match.params.searchQuery.trim()) {
+
+            this.search_query = this.props.match.params.searchQuery.trim();
+            this.setState({ ...this.state, search_query: this.search_query });
+        }
+    }
+    /* componentWillReceiveProps(nextProps: IProps) {
+        debugger;
+        if (this.props.match.params.searchQuery !== nextProps.match.params.searchQuery) {
+            debugger;
+        }
+    } */
+    updateSearchQuery_with_url() {
+
+    }
+
     handleSearchKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.key === 'Enter') {
             if (this.validate_searchQuery()) {
@@ -31,7 +58,7 @@ class LayoutMainHeaderComponent extends React.Component<IProps> {
         }
     }
     gotoSearch() {
-        this.props.history.push(`search/${this.search_query.trim()}`);
+        this.props.history.push(`/search/${this.search_query.trim()}`);
     }
     handleSearchChange(event: React.ChangeEvent<HTMLInputElement>) {
         this.search_query = event.target.value;
@@ -49,7 +76,10 @@ class LayoutMainHeaderComponent extends React.Component<IProps> {
                                         <i className="fa fa-search"></i>
                                     </span>
                                 </div>
-                                <input className="form-control search-input" type="text"
+                                <input
+                                    className="form-control search-input"
+                                    type="text"
+                                    defaultValue={this.state.search_query}
                                     placeholder={Localization.search}
                                     onKeyUp={(e) => this.handleSearchKeyUp(e)}
                                     onChange={e => this.handleSearchChange(e)}

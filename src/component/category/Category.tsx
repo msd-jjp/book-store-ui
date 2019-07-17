@@ -35,7 +35,7 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
         categoryBookList: undefined,
         categoryBookError: undefined,
         pager_offset: 0,
-        pager_limit: 5
+        pager_limit: 10
     };
     private _bookService = new BookService();
     // searchType!: 'tag' | 'genre';

@@ -32,6 +32,7 @@ interface IProps {
     onUserLoggedIn?: (user: IUser) => void;
     onSetToken?: (token: IToken) => void;
     token: IToken;
+    match: any;
 }
 
 class LayoutMainComponent extends React.Component<IProps> {
@@ -78,7 +79,7 @@ class LayoutMainComponent extends React.Component<IProps> {
         return (
             <>
                 <div className="layout-main-wrapper">
-                    <LayoutMainHeader history={this.props.history} />
+                    <LayoutMainHeader history={this.props.history} match={this.props.match} />
                     <main className="main mx-3">
                         <div className="row">
                             <div className="col-md-4 offset-md-4">

@@ -186,6 +186,7 @@ interface ILocalization extends LocalizedStringsMethods {
         science: string;
         social: string;
     };
+    load_more: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

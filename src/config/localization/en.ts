@@ -179,5 +179,6 @@ export const en = {
         religious: 'religious',
         science: 'science',
         social: 'social',
-    }
+    },
+    load_more: 'load more',
 }

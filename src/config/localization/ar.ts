@@ -167,7 +167,7 @@ export const ar = {
         best_seller: 'پرفروش ها',
         recommended: 'پیشنهادی برای شما',
         wishlist: 'لیست علاقه مندی ها',
-        
+
         romance: 'عاشقانه',
         classic: 'کلاسیک',
         comedy: 'کمدی',
@@ -176,5 +176,6 @@ export const ar = {
         religious: 'مذهبی',
         science: 'علمی',
         social: 'اجتماعی',
-    }
+    },
+    load_more: 'بارگذاری بیشتر',
 }

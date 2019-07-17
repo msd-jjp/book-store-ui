@@ -181,5 +181,6 @@ export const fa = {
         religious: 'مذهبی',
         science: 'علمی',
         social: 'اجتماعی',
-    }
+    },
+    load_more: 'بارگذاری بیشتر',
 }
