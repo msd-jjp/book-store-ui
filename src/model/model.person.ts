@@ -11,4 +11,5 @@ export interface IPerson extends BaseModel {
     cell_no?: string;
     // current_book_id?: string;
     current_book?: IBook;
+    bio?: string;
 }

@@ -49,18 +49,17 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     }
   }
   book_detail_template(book: IBook) {
-    let writer_fullName = '';
     const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
       "/static/media/img/icon/default-book.png";
-    // const book_title = '';
-    // const book_rate = 4;
+
     const book_totalRate = 127;
 
     let writerList = book.roles.filter(
       r => r.role === BOOK_ROLES.Writer
     );
+    let first_writer_fullName = '';
     if (writerList.length) {
-      writer_fullName = writerList[0].person.name + ' ' + writerList[0].person.last_name;
+      first_writer_fullName = writerList[0].person.name + ' ' + writerList[0].person.last_name;
     }
 
     return (
@@ -76,7 +75,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             </div>
             <div className="book-info-wrapper col-7 p-align-0">
               <h5>{book.title}</h5>
-              <h6 className="book-writer">{writer_fullName}</h6>
+              <h6 className="book-writer">{first_writer_fullName}</h6>
 
               <Rating
                 className="rating-star"
@@ -190,25 +189,45 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           </div>
         </section>
 
-        <section className="author">
-          <h5 className="text-uppercase">{Localization.about_the_author}</h5>
-          <div className="author-info mb-3 book-detail-bordered-box">
-            <div className="author-about p-3">
-              <p className="mb-0">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusantium, cupiditate?</p>
-            </div>
-            <div className="row author-profile py-4">
-              <div className="col-4">
-                <div className="ml-3">
-                  <img src="/static/media/img/icon/avatar.png" alt="avatar" />
-                </div>
-              </div>
-              <div className="col-8 p-align-0">
-                <h6 className="author-name mr-3">Claire McGowan</h6>
-                <button className="btn btn-block author-follow mr-3__">+ {Localization.follow}</button>
-              </div>
-            </div>
-          </div>
-        </section>
+        {
+          writerList && writerList.length &&
+
+          <section className="author">
+            <h5 className="text-uppercase">{Localization.about_the_author}</h5>
+            {
+              writerList.map((ab_writer, ab_writerIndex) => {
+
+                let ab_writer_fullName = ab_writer.person.name + ' ' + ab_writer.person.last_name;
+                let ab_writer_image = ab_writer.person.image ? this.getImageUrl(ab_writer.person.image) :
+                  "/static/media/img/icon/avatar.png";
+
+                return (
+                  <>
+                    <div className="author-info mb-3 book-detail-bordered-box" key={ab_writerIndex}>
+                      {
+                        ab_writer.person.bio &&
+                        <div className="author-about p-3">
+                          <p className="mb-0">{ab_writer.person.bio}</p>
+                        </div>
+                      }
+                      <div className="row author-profile py-4">
+                        <div className="col-4">
+                          <div className="ml-3">
+                            <img src={ab_writer_image} alt="avatar" />
+                          </div>
+                        </div>
+                        <div className="col-8 p-align-0">
+                          <h6 className="author-name mr-3 text-capitalize">{ab_writer_fullName}</h6>
+                          <button className="btn btn-block author-follow mr-3__">+ {Localization.follow}</button>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )
+              })
+            }
+          </section>
+        }
 
         <div className="section-separator my-2"></div>
 
