@@ -78,7 +78,7 @@ class LayoutMainComponent extends React.Component<IProps> {
         return (
             <>
                 <div className="layout-main-wrapper">
-                    <LayoutMainHeader />
+                    <LayoutMainHeader history={this.props.history} />
                     <main className="main mx-3">
                         <div className="row">
                             <div className="col-md-4 offset-md-4">
