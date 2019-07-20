@@ -180,4 +180,5 @@ export const ar = {
     },
     load_more: 'بارگذاری بیشتر',
     book_isben: 'شابک',
+    your_comment: 'نظر شما',
 }

@@ -189,6 +189,7 @@ interface ILocalization extends LocalizedStringsMethods {
     };
     load_more: string;
     book_isben: string;
+    your_comment: string;
     
 }
 

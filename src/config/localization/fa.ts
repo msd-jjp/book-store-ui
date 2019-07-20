@@ -185,4 +185,5 @@ export const fa = {
     },
     load_more: 'بارگذاری بیشتر',
     book_isben: 'شابک',
+    your_comment: 'نظر شما',
 }

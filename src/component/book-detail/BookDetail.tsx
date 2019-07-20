@@ -29,6 +29,7 @@ interface IState {
   pageLoader: boolean;
   errorText: string | undefined;
   followWriter_loaderObj: { [key: string]: boolean };
+  is_writeCommentBox_open: boolean;
 }
 class BookDetailComponent extends BaseComponent<IProps, IState> {
   state = {
@@ -36,6 +37,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     pageLoader: false,
     errorText: undefined,
     followWriter_loaderObj: {},
+    is_writeCommentBox_open: false,
   };
   private _bookService = new BookService();
   bookId!: string;
@@ -405,7 +407,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
         <div className="section-separator my-2"></div>
 
-        <div className="all-review mx-3_ my-3 px-1 ">
+        <div className="all-review mx-3_ my-3__ py-2 px-1 ">
           <div className="row">
             <div className="col-10">
               <h6 className="font-weight-bold text-capitalize">
@@ -421,21 +423,42 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
         <div className="section-separator my-2"></div>
 
-        <div className="write-review my-3 mx-1">
-          <div className="p-3 p-align-inverse-0">
-            <div className="row">
-              <div className="col-10">
-                <h6 className="text-uppercase">{Localization.write_a_review}</h6>
-              </div>
-              <div className="col-2">
-                <i className="fa fa-angle-down fa-2x book-detail-bordered-box-icon"></i>
+        <div className="my-3">
+          <div className="write-review my-3__ py-2__ mx-1" onClick={() => this.toggleWriteComment()}>
+            <div className="p-3 p-align-inverse-0">
+              <div className="row">
+                <div className="col-10">
+                  <h6 className="text-uppercase">{Localization.write_a_review}</h6>
+                </div>
+                <div className="col-2">
+                  <i className={
+                    "fa fa-angle-down__ fa-2x book-detail-bordered-box-icon " +
+                    (this.state.is_writeCommentBox_open ? 'fa-angle-up' : 'fa-angle-down')
+                  }></i>
+                </div>
               </div>
             </div>
           </div>
+          <div className={"write-comment-box mx-1 mt-1 " + (!this.state.is_writeCommentBox_open ? 'd-none' : '')} >
+            <textarea className="form-control" rows={4} placeholder={Localization.your_comment}></textarea>
+            <BtnLoader
+              btnClassName="btn btn-light btn-block mt-1"
+              loading={false}
+              onClick={() => { }}
+            >
+              {Localization.submit}
+            </BtnLoader>
+          </div>
         </div>
+
       </>
     )
   }
+
+  toggleWriteComment() {
+    this.setState({ ...this.state, is_writeCommentBox_open: !this.state.is_writeCommentBox_open });
+  }
+
   async bookRateChange(newRate: number, book_id: string) {
     await this._rateService.add(book_id, newRate).catch(error => {
       this.handleError({ error: error.response });

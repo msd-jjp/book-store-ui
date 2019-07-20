@@ -183,4 +183,5 @@ export const en = {
     },
     load_more: 'load more',
     book_isben: 'asin',
+    your_comment: 'your comment',
 }
