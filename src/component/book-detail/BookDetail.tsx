@@ -16,6 +16,7 @@ import { BtnLoader } from "../form/btn-loader/BtnLoader";
 import { RateService } from "../../service/service.rate";
 import { IUser } from "../../model/model.user";
 import { action_user_logged_in } from "../../redux/action/user";
+import { CommentService } from "../../service/service.comment";
 
 interface IProps {
   internationalization: TInternationalization;
@@ -43,14 +44,17 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   bookId!: string;
   private _followService = new FollowService();
   private _rateService = new RateService();
+  private _commentService = new CommentService();
 
   componentDidMount() {
     this.gotoTop();
     this._followService.setToken(this.props.token);
     this._rateService.setToken(this.props.token);
+    this._commentService.setToken(this.props.token);
 
     this.bookId = this.props.match.params.bookId;
     this.fetchBook(this.bookId);
+    this.fetchBook_comments(this.bookId);
   }
 
   async fetchBook(bookId: IBook["id"]) {
@@ -66,6 +70,23 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       this.setState({ ...this.state, book: res.data, pageLoader: false, errorText: undefined });
     }
   }
+
+  async fetchBook_comments(bookId: IBook["id"]) {
+    debugger;
+    // this.setState({ ...this.state, commentLoader: true });
+
+    let res = await this._commentService.book_comments(bookId).catch(error => {
+      const { body: commentErrorText } = this.handleError({ error: error.response });
+
+      // this.setState({ ...this.state, commentLoader: false, commentErrorText });
+    });
+
+    if (res) {
+      debugger;
+      // this.setState({ ...this.state, book_comments: res.data, commentLoader: false, commentErrorText: undefined });
+    }
+  }
+
   book_detail_template(book: IBook) {
     const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
       "/static/media/img/icon/default-book.png";
