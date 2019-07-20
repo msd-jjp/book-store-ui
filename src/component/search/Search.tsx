@@ -180,13 +180,6 @@ class SearchComponent extends BaseComponent<IProps, IState> {
         ) {
             return (
                 <>
-                    {/* <div
-                        className="btn btn-light btn-block text-capitalize mt-4"
-                        onClick={() => this.loadMoreBook()}
-                    >
-                        {Localization.load_more}
-                    </div> */}
-
                     <BtnLoader
                         btnClassName="btn btn-light btn-block text-capitalize mt-4"
                         loading={this.state.loadMoreBtnLoader}

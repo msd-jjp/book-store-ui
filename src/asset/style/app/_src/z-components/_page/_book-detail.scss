@@ -33,12 +33,12 @@ $book-detail-border: 1px solid rgb(210, 210, 210);
           body:not(.rtl) & {
             padding-left: 0.25rem;
             padding-right: 0.75rem;
-            margin-right: .5rem;
+            margin-right: 0.5rem;
           }
           body.rtl & {
             padding-right: 0.25rem;
             padding-left: 0.75rem;
-            margin-left: .5rem;
+            margin-left: 0.5rem;
           }
 
           &:before {
@@ -102,6 +102,10 @@ $book-detail-border: 1px solid rgb(210, 210, 210);
           @include calc(width, "100% - 1rem");
           text-transform: capitalize;
         }
+      }
+
+      &:last-child {
+        margin-bottom: 1rem;
       }
     }
   }
@@ -169,11 +173,11 @@ $book-detail-border: 1px solid rgb(210, 210, 210);
       }
       .comment-feedback {
         // .col-5 {
-          .btn-helpful {
-            border-radius: 0;
-            background-color: rgb(230, 230, 230);
-            font-weight: 500;
-          }
+        .btn-helpful {
+          border-radius: 0;
+          background-color: rgb(230, 230, 230);
+          font-weight: 500;
+        }
         // }
         // .col-2 {
         //   font-weight: 500;
@@ -181,11 +185,10 @@ $book-detail-border: 1px solid rgb(210, 210, 210);
       }
     }
   }
-  
+
   .write-review {
     background-color: rgb(230, 230, 230);
   }
-  
 }
 
 .book-detail-bordered-box {

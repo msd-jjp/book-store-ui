@@ -90,8 +90,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               <div className="book-selled-info-container mt-2">
                 {/* <div className="book-selled-info">#1 Best Seller</div> */}
                 {
-                  (book.tags || []).map(book_tag => (
-                    <div className="book-selled-info">{book_tag}</div>
+                  (book.tags || []).map((book_tag, book_tag_index) => (
+                    <div className="book-selled-info" key={book_tag_index}>{book_tag}</div>
                   ))
                 }
                 {/* <div className="clearfix"></div> */}
@@ -202,8 +202,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   "/static/media/img/icon/avatar.png";
 
                 return (
-                  <>
-                    <div className="author-info mb-3 book-detail-bordered-box" key={ab_writerIndex}>
+                  // <>
+                    <div className="author-info mb-3__ book-detail-bordered-box" key={ab_writerIndex}>
                       {
                         ab_writer.person.bio &&
                         <div className="author-about p-3">
@@ -222,7 +222,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                         </div>
                       </div>
                     </div>
-                  </>
+                  // </>
                 )
               })
             }
