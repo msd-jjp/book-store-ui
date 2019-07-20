@@ -134,6 +134,7 @@ export const en = {
     language: 'language',
     bookstore_sales_rank: 'bookstore sales rank',
     follow: 'follow',
+    unfollow: 'unfollow',
     customer_review: 'customer review',
     read_reviews_that_mention: 'read reviews that mention',
     see_more: 'see more',
@@ -181,4 +182,5 @@ export const en = {
         social: 'social',
     },
     load_more: 'load more',
+    book_isben: 'asin',
 }

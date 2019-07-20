@@ -139,6 +139,7 @@ interface ILocalization extends LocalizedStringsMethods {
     language: string;
     bookstore_sales_rank: string;
     follow: string;
+    unfollow: string;
     customer_review: string;
     read_reviews_that_mention: string;
     see_more: string;
@@ -187,6 +188,8 @@ interface ILocalization extends LocalizedStringsMethods {
         social: string;
     };
     load_more: string;
+    book_isben: string;
+    
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

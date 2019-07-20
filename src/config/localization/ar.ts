@@ -131,6 +131,7 @@ export const ar = {
     language: 'زبان',
     bookstore_sales_rank: 'رتبه فروش در کتابفروشی',
     follow: 'دنبال کردن',
+    unfollow: 'دنبال نکردن',
     customer_review: 'نظر مشتری ها',
     read_reviews_that_mention: 'خواندن نظر های ذکر شده',
     see_more: 'بیشتر ببینید',
@@ -178,4 +179,5 @@ export const ar = {
         social: 'اجتماعی',
     },
     load_more: 'بارگذاری بیشتر',
+    book_isben: 'شابک',
 }

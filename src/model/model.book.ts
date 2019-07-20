@@ -10,14 +10,17 @@ export interface IBook extends BaseModel {
     language: string;
     pub_year: string;
     rate: number;
+    rate_no: number;
     title: string;
-    type: BOOK_TYPES[]
+    type: BOOK_TYPES[] | BOOK_TYPES;
     roles: {
         role: BOOK_ROLES;
         person: IPerson;
     }[];
-    /* {
-        [key in BOOK_ROLES]: IPerson['id'];
-    }; */
     files: string[]; // file-url
+    description: string;
+    isben: string;
+    pages: string;
+    duration: string;
+    from_editor: string;
 }

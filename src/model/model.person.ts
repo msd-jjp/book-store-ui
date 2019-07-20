@@ -12,4 +12,5 @@ export interface IPerson extends BaseModel {
     // current_book_id?: string;
     current_book?: IBook;
     bio?: string;
+    following_list?: string[];
 }
