@@ -6,13 +6,14 @@ import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { TInternationalization } from "../../../../config/setup";
 import { IUser } from "../../../../model/model.user";
+import { BaseComponent } from "../../../_base/BaseComponent";
 
 export interface IProps {
     internationalization: TInternationalization;
     logged_in_user?: IUser | null;
 }
 
-class LayoutMainFooterComponent extends React.Component<IProps, any>{
+class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
 
     currentBook_render() {
         if (
@@ -21,7 +22,8 @@ class LayoutMainFooterComponent extends React.Component<IProps, any>{
             this.props.logged_in_user.person.current_book
         ) {
             let current_book = this.props.logged_in_user.person.current_book;
-            let current_book_img = (current_book.images && current_book.images.length && current_book.images[0]) ||
+            let current_book_img = (current_book.images && current_book.images.length && this.getImageUrl(current_book.images[0]))
+                ||
                 "/static/media/img/icon/default-book.png";
 
             return (
