@@ -1,0 +1,116 @@
+.divider {
+    border-bottom: 1px solid #ddd;
+    margin: 10px;
+  }
+  .divider-dashed {
+    border-top: 1px dashed #e7eaec;
+    background-color: #ffffff;
+    height: 1px;
+    margin: 10px 0;
+  }
+  ul.messages {
+    padding: 0;
+    list-style: none;
+  }
+  ul.messages li, .tasks li {
+    border-bottom: 1px dotted #e6e6e6;
+    padding: 8px 0;
+  }
+  ul.messages li img.avatar, img.avatar {
+    height: 32px;
+    width: 32px;
+    float: left;
+    display: inline-block;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    padding: 2px;
+    background: #f7f7f7;
+    border: 1px solid #e6e6e6;
+  }
+  ul.messages li .message_date {
+    float: right;
+    text-align: right;
+  }
+  ul.messages li .message_wrapper {
+    margin-left: 50px;
+    margin-right: 40px;
+  }
+  ul.messages li .message_wrapper h4.heading {
+    font-weight: 600;
+    margin: 0;
+    cursor: pointer;
+    margin-bottom: 10px;
+    line-height: 100%;
+  }
+  ul.messages li .message_wrapper blockquote {
+    padding: 0px 10px;
+    margin: 0;
+    border-left: 5px solid #eee;
+  }
+  ul.user_data li {
+    margin-bottom: 6px;
+  }
+  ul.user_data li p {
+    margin-bottom: 0;
+  }
+  ul.user_data li .progress {
+    width: 90%;
+  }
+  .project_progress .progress {
+    margin-bottom: 3px !important;
+    margin-top: 5px;
+  }
+  .projects .list-inline {
+    margin: 0;
+  }
+  .profile_title {
+    background: #F5F7FA;
+    border: 0;
+    padding: 7px 0;
+    display: flex;
+  }
+  ul.stats-overview {
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  ul.stats-overview li {
+    display: inline-block;
+    text-align: center;
+    padding: 0 15px;
+    width: 30%;
+    font-size: 14px;
+    border-right: 1px solid #e8e8e8;
+  }
+  ul.stats-overview li:last-child {
+    border-right: 0;
+  }
+  ul.stats-overview li .name {
+    font-size: 12px;
+  }
+  ul.stats-overview li .value {
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+  }
+  ul.stats-overview li:first-child {
+    padding-left: 0;
+  }
+  ul.project_files li {
+    margin-bottom: 5px;
+  }
+  ul.project_files li a i {
+    width: 20px;
+  }
+  .project_detail p {
+    margin-bottom: 10px;
+  }
+  .project_detail p.title {
+    font-weight: bold;
+    margin-bottom: 0
+  }
+  .avatar img {
+    border-radius: 50%;
+    max-width: 45px;
+  }
