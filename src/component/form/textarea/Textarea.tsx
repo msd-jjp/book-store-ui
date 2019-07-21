@@ -2,39 +2,27 @@ import React from 'react';
 import { Localization } from '../../../config/localization/localization';
 
 interface InputProps {
+    // value?: any;
     defaultValue?: any;
     onChange: (value: any, isValid: boolean) => void;
     elRef?: (elName: HTMLInputElement | HTMLTextAreaElement) => void;
     pattern?: RegExp;
     patternName?: 'password' | 'number' | 'email';
     patternError?: string;
-
+    type?: 'text' | 'password';
     label?: string;
     required?: boolean;
     validationFunc?: (value: any) => boolean;
     placeholder?: string;
-
-    type?: 'text' | 'password';
     is_textarea?: boolean;
     textarea_rows?: number;
 }
-/* interface IProps_input extends InputProps {
-    type?: 'text' | 'password';
-    elRef?: (elName: HTMLInputElement) => void;
-}
-interface IProps_textarea extends InputProps {
-    is_textarea?: boolean;
-    textarea_rows?: number;
-    elRef?: (elName: HTMLTextAreaElement) => void;
-}
-type IProps = IProps_input | IProps_textarea; */
-
 interface InputState {
     invalid?: boolean;
     touched?: boolean;
 }
 
-class Input extends React.Component<InputProps, InputState> {
+class Textarea extends React.Component<InputProps, InputState> {
     state = {
         invalid: false,
         touched: false
@@ -154,4 +142,4 @@ class Input extends React.Component<InputProps, InputState> {
     }
 }
 
-export { Input };
+export { Textarea };

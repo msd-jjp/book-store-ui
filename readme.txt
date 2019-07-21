@@ -65,6 +65,8 @@ please check your wi-fi or mobile network connection and try again
 ====================================================================================
 
 image before load show empty img logo
+&&
+404 image or icon (fill empty page)
 
 ====================================================================================
 
@@ -81,13 +83,13 @@ store carousel --> desktop mode arrow left row
 
 ====================================================================================
 
-change
-static/media/img/icon/default-book.png
-to
-/static/media/img/icon/default-book.png
+comments --> parent: show quote from parent
 
 ====================================================================================
 
+fix input cmp bug:
+if regex mobile & not require --> error
+if no default value & require --> error
 
 ====================================================================================
 
