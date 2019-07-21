@@ -12,7 +12,7 @@ export class CommentService extends BaseService {
         return this.axiosTokenInstance.delete(`/comment-actions/like/${comment_id}`);
     }
 
-    report(comment_id: string, report: COMMENT_REPORT): Promise<any> {
+    report(comment_id: string, report: COMMENT_REPORT = COMMENT_REPORT.Personal): Promise<any> {
         return this.axiosTokenInstance.post(`/comment-actions/report/${comment_id}`, { report });
     }
 
