@@ -174,7 +174,7 @@ $book-detail-border: 1px solid rgb(210, 210, 210);
         overflow: hidden;
 
         &.comment-compress {
-          height: 50px;
+          max-height: 50px;
         }
       }
       .comment-feedback {

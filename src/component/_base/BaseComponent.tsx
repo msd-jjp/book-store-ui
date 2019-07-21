@@ -94,8 +94,11 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         }
     }
 
-    apiSuccessNotify() {
-
+    apiSuccessNotify(
+        notifyBody: string = Localization.msg.ui.msg1,
+        config: ToastOptions = { autoClose: Setup.notify.timeout.success },
+    ) {
+        toast.success(notifyBody, this.getNotifyConfig(config));
     }
 
     waitOnMe(timer: number = 500): Promise<boolean> {

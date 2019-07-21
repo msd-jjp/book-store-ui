@@ -13,6 +13,8 @@ export const en = {
             msg2: 'error occurred',
             msg3: 'registered successfully, we redirect you to login page.',
             msg4: 'password changed successfully, we redirect you to login page.',
+            your_rate_submited: 'your rate submited',
+            your_comment_submited: 'your comment submited',
         },
         back: {
             msg1: 'user already exists',

@@ -424,7 +424,15 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     });
     if (res) {
       this.commentTextarea.value = '';
-      this.setState({ ...this.state, newComment: { isValid: false, loader: false, value: undefined } });
+      res.data.person = this.props.logged_in_user!.person!;
+      let new_book_comments: IComment[] = this.state.book_comments || [];
+      new_book_comments.unshift(res.data);
+      this.setState({
+        ...this.state,
+        newComment: { isValid: false, loader: false, value: undefined },
+        book_comments: new_book_comments
+      });
+      this.apiSuccessNotify(Localization.msg.ui.your_comment_submited);
     }
   }
 
@@ -435,7 +443,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         <>
           {(this.state.book_comments! || []).map((bk_cmt: IComment, index) => {
 
-            let cmt_person_fullName = bk_cmt.person.name + ' ' + bk_cmt.person.last_name;
+            let cmt_person_fullName = (bk_cmt.person.name || '') + ' ' + (bk_cmt.person.last_name || '');
             let cmt_person_image = bk_cmt.person.image ? this.getImageUrl(bk_cmt.person.image) :
               "/static/media/img/icon/avatar.png";
             let like_loader_obj: any = { ...this.state.comment_actions.like_loader_obj };
@@ -480,12 +488,12 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   <button className="btn btn-link p-0" onClick={() => this.toggleCommentCompress(bk_cmt.id)}>
                     {
                       !comment_compress_obj[bk_cmt.id]
-                      ?
-                      Localization.see_more
-                      :
-                      Localization.see_less
+                        ?
+                        Localization.see_more
+                        :
+                        Localization.see_less
                     }
-                    
+
                   </button>
                   <div className="clearfix"></div>
 
@@ -775,9 +783,12 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
 
   async bookRateChange(newRate: number, book_id: string) {
-    await this._rateService.add(book_id, newRate).catch(error => {
+    let res = await this._rateService.add(book_id, newRate).catch(error => {
       this.handleError({ error: error.response });
     });
+    if (res) {
+      this.apiSuccessNotify(Localization.msg.ui.your_rate_submited);
+    }
   }
 
   async follow_writer(writer_id: string) {
