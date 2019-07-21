@@ -97,12 +97,12 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         btnSendAgain_loader: false,
         sendAgain_interval: undefined
     };
-    inputElUsername!: HTMLInputElement;
-    inputElPassword!: HTMLInputElement;
-    inputElName!: HTMLInputElement;
-    inputElCode!: HTMLInputElement;
-    inputElMobile!: HTMLInputElement;
-    inputElConfirmPassword!: HTMLInputElement;
+    inputElUsername!: HTMLInputElement | HTMLTextAreaElement;
+    inputElPassword!: HTMLInputElement | HTMLTextAreaElement;
+    inputElName!: HTMLInputElement | HTMLTextAreaElement;
+    inputElCode!: HTMLInputElement | HTMLTextAreaElement;
+    inputElMobile!: HTMLInputElement | HTMLTextAreaElement;
+    inputElConfirmPassword!: HTMLInputElement | HTMLTextAreaElement;
     // inputElConfirmPassword_wrapper!: Input | null;
     private _registerService = new RegisterService();
     signup_token!: string;

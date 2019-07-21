@@ -49,7 +49,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
         btnLoader: false
     };
     private _loginService = new LoginService();
-    inputUsername!: HTMLInputElement;
+    inputUsername!: HTMLInputElement | HTMLTextAreaElement;
     showPasswordCheckBoxId = 'input_' + Math.random();
 
     componentDidMount() {
