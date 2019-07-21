@@ -1,4 +1,6 @@
-import { BaseService } from './service.base';
+import { BaseService, IAPI_ResponseList } from './service.base';
+import { COMMENT_REPORT } from '../enum/Comment';
+import { IComment } from '../model/model.comment';
 
 export class CommentService extends BaseService {
 
@@ -10,8 +12,28 @@ export class CommentService extends BaseService {
         return this.axiosTokenInstance.delete(`/comment-actions/like/${comment_id}`);
     }
 
-    book_comments(book_id: string): Promise<any> { // todo: comment_model
+    report(comment_id: string, report: COMMENT_REPORT): Promise<any> {
+        return this.axiosTokenInstance.post(`/comment-actions/report/${comment_id}`, { report });
+    }
+
+    unreport(comment_id: string): Promise<any> {
+        return this.axiosTokenInstance.delete(`/comment-actions/report/${comment_id}`);
+    }
+
+    book_comments(book_id: string): Promise<IAPI_ResponseList<IComment>> {
         return this.axiosTokenInstance.get(`/comments/book/${book_id}`);
+    }
+
+    add(body: string, book_id: string) {
+        return this.axiosTokenInstance.post(`/comments`, { body, book_id });
+    }
+
+    remove(comment_id: string) {
+        return this.axiosTokenInstance.delete(`/comments/${comment_id}`);
+    }
+
+    update(comment_id: string, body: string) {
+        return this.axiosTokenInstance.put(`/comments/${comment_id}`, { body });
     }
 
 }

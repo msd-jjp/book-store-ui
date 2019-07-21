@@ -57,7 +57,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
 
     }
     logout() {
-        debugger;
+        // debugger;
         this.props.do_logout();
         this.props.remove_token();
         this.props.history.push('/login');
