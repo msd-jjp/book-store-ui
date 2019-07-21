@@ -17,6 +17,8 @@ import { RateService } from "../../service/service.rate";
 import { IUser } from "../../model/model.user";
 import { action_user_logged_in } from "../../redux/action/user";
 import { CommentService } from "../../service/service.comment";
+import { IComment } from "../../model/model.comment";
+import { Input } from "../form/input/Input";
 
 interface IProps {
   internationalization: TInternationalization;
@@ -31,6 +33,18 @@ interface IState {
   errorText: string | undefined;
   followWriter_loaderObj: { [key: string]: boolean };
   is_writeCommentBox_open: boolean;
+  commentLoader: boolean;
+  commentErrorText: string | undefined;
+  book_comments: IComment[] | undefined;
+  newComment: {
+    value: string | undefined;
+    isValid: boolean;
+    loader: boolean;
+  };
+  comment_actions: {
+    like_loader_obj: { [key: string]: boolean };
+    unlike_loader_obj: { [key: string]: boolean };
+  };
 }
 class BookDetailComponent extends BaseComponent<IProps, IState> {
   state = {
@@ -39,12 +53,25 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     errorText: undefined,
     followWriter_loaderObj: {},
     is_writeCommentBox_open: false,
+    commentLoader: false,
+    commentErrorText: undefined,
+    book_comments: undefined,
+    newComment: {
+      value: undefined,
+      isValid: false,
+      loader: false,
+    },
+    comment_actions: {
+      like_loader_obj: {},
+      unlike_loader_obj: {},
+    },
   };
   private _bookService = new BookService();
   bookId!: string;
   private _followService = new FollowService();
   private _rateService = new RateService();
   private _commentService = new CommentService();
+  commentTextarea!: HTMLInputElement | HTMLTextAreaElement;
 
   componentDidMount() {
     this.gotoTop();
@@ -72,18 +99,19 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
 
   async fetchBook_comments(bookId: IBook["id"]) {
-    debugger;
-    // this.setState({ ...this.state, commentLoader: true });
+    // debugger;
+    this.setState({ ...this.state, commentLoader: true, commentErrorText: undefined });
 
     let res = await this._commentService.book_comments(bookId).catch(error => {
       const { body: commentErrorText } = this.handleError({ error: error.response });
 
-      // this.setState({ ...this.state, commentLoader: false, commentErrorText });
+      this.setState({ ...this.state, commentLoader: false, commentErrorText });
     });
 
     if (res) {
-      debugger;
-      // this.setState({ ...this.state, book_comments: res.data, commentLoader: false, commentErrorText: undefined });
+      if (res.data.result) {
+        this.setState({ ...this.state, book_comments: res.data.result, commentLoader: false, commentErrorText: undefined });
+      }
     }
   }
 
@@ -146,29 +174,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
         </section>
 
-        {/* <section>
-          <h5 className="text-uppercase">{Localization.about_bookstore_edition}</h5>
-          <div className="book-detail-bordered-box py-2 mb-3">
-            <div className="row">
-              <div className="col-12">
-                <ul className="my-2">
-                  {
-                    (book.pages || book.duration) &&
-                    <li className="px-2">{Localization.Length}:&nbsp;
-                      {book.pages && <span>{book.pages} {Localization.pages}</span>}
-                      {(book.pages && book.duration) && <span>,&nbsp;</span>}
-                      {book.duration && <span>{book.duration} {Localization.second}</span>}
-                    </li>
-                  }
-                  
-                </ul>
-              </div>
-              
-            </div>
-
-          </div>
-        </section> */}
-
         {
           book.from_editor &&
           <section>
@@ -177,11 +182,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               <div className="row">
                 <div className="col-12">
                   <p className="mb-3__ px-3">{book.from_editor}</p>
-                  {/* <p className="pl-3">Lorem ipsum dolor sit amet consectetur.</p> */}
                 </div>
-                {/* <div className="col-2">
-                <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
-              </div> */}
               </div>
             </div>
           </section>
@@ -193,25 +194,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             {/* <h5 className="font-weight-bold text-uppercase">{Localization.description}</h5> */}
             <h5 className="font-weight-bold text-uppercase">{Localization.product_description}</h5>
             <p className="font-weight-bold">{book.description}</p>
-            {/* <p className="font-weight-bold">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt, maiores eum praesentium.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore corporis numquam sint ex molestias quis! Aut quasi voluptas, unde sit, voluptatibus eveniet cupiditate deserunt facilis nesciunt, sequi asperiores. Temporibus, qui incidunt ipsum consequatur perspiciatis error.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa, ullam, quos incidunt explicabo asperiores aut optio iure blanditiis, at possimus tempora quam ea laborum neque. Earum optio molestias libero, exercitationem in laboriosam unde aperiam sint.</p>
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi soluta illum quaerat nam esse ab animi dignissimos dolores nesciunt non!</p>
-            <h5 className="my-2 text-uppercase">{Localization.review}</h5>
-            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab</p>
-            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
-            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
-            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab Lorem ipsum dolor sit amet consectetur adipisicing elit Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, consequatur.</p>
-            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
-            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
-            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
-            <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Excepturi ab Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-            <p className="font-weight-bold mt-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Magni alias quae deserunt</p>
-            <p className="mt-2">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto dolorem quam omnis aut inventore nostrum, explicabo, saepe magnam officia ipsum maiores eaque eum? Quaerat, optio? Vel ea quaerat corporis cum, reprehenderit voluptates earum facere vitae! Lorem, ipsum.</p>
-             */}
+
             {
               writerList && writerList.length && writerList[0].person.bio &&
               <>
@@ -294,10 +277,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                       </div>
                       <div className="col-8 p-align-0">
                         <h6 className="author-name mr-3 text-capitalize">{ab_writer_fullName}</h6>
-                        {/* <button
-                          className="btn btn-block author-follow mr-3__"
-                          onClick={() => this.follow_writer(ab_writer.person.id)}
-                        >+ {Localization.follow}</button> */}
 
                         {
                           this.props.logged_in_user &&
@@ -309,7 +288,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                               btnClassName="btn btn-block author-follow mr-3__"
                               loading={!!followWriter_loaderObj[ab_writer.person.id]}
                               onClick={() => this.unfollow_writer(ab_writer.person.id)}
-                            // disabled={!this.state.isFormValid}
                             >
                               - {Localization.unfollow}
                             </BtnLoader>
@@ -318,7 +296,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                               btnClassName="btn btn-block author-follow mr-3__"
                               loading={!!followWriter_loaderObj[ab_writer.person.id]}
                               onClick={() => this.follow_writer(ab_writer.person.id)}
-                            // disabled={!this.state.isFormValid}
                             >
                               + {Localization.follow}
                             </BtnLoader>
@@ -336,6 +313,15 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
         <div className="section-separator my-2"></div>
 
+        {this.comment_sections_render(book)}
+
+      </>
+    )
+  }
+
+  comment_sections_render(book: IBook) {
+    return (
+      <>
         <section className="customer-reviews mt-3 mb-4">
           <div className="row">
             <div className="col-12">
@@ -345,85 +331,21 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   className="rating-star"
                   emptySymbol="fa fa-star rating-empty"
                   fullSymbol="fa fa-star rating-full"
-                  // fractions={2}
                   direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
                   initialRating={book.rate}
-                  // onChange={(newRate) => this.bookRateChange(newRate)}
                   readonly
                 />
-                {/* <span className="ml-2">4.3 out of 5 stars</span> */}
                 <span className="ml-2">{Localization.formatString(Localization.n_out_of_m_stars, book.rate, 5)}</span>
               </div>
             </div>
-            {/* <div className="col-2">
-              <i className="fa fa-angle-right-app fa-2x book-detail-bordered-box-icon"></i>
-            </div> */}
+
           </div>
         </section>
 
-        {/* <section className="read-reviews px-1">
-          <div className="text-uppercase mt-3 mb-2 font-weight-bold">{Localization.read_reviews_that_mention}</div>
-          <div className="row">
-            <div className="col-12">
-              <button className="btn btn-light mr-3 mb-2">well written</button>
-              <button className="btn btn-light mr-3 mb-2">page turner</button>
-              <button className="btn btn-light mr-3 mb-2">main character</button>
-              <button className="btn btn-light mr-3 mb-2">twists and turns</button>
-              <button className="btn btn-light mr-3 mb-2">claire mcgowan</button>
-              <button className="btn btn-light mr-3 mb-2">kept me guessing</button>
-            </div>
-          </div>
-          <button className="see-more btn btn-link p-align-0">
-            <i className="fa fa-angle-down my-3__"></i>
-            <span className="text ml-1">{Localization.see_more}</span>
-          </button>
-        </section> */}
-
         <section className="comments pb-3 px-1">
           <h5 className="mt-3 text-uppercase font-weight-bold">{Localization.top_reviews}</h5>
-          {[1, 2].map((item, index) => (
-            <div className="mb-4 mt-3 user-comment-box" key={index}>
-              <div className="row">
-                <div className="col-1 mr-3">
-                  <div className="img">
-                    <img src="/static/media/img/icon/avatar.png" alt="avatar" />
-                  </div>
-                </div>
-                <span className="pt-2 ml-3 mr-1">Rose</span>
-                <span className="pt-2 mx-2">.</span>
-                <span className="pt-2 ">July 1, 2019</span>
-              </div>
+          {this.book_commentList_render()}
 
-              <Rating
-                className="rating-star"
-                emptySymbol="fa fa-star rating-empty"
-                fullSymbol="fa fa-star rating-full"
-                direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
-                initialRating={2.5}
-                readonly
-              />
-              {/* <span className="ml-2 purchase-state text-capitalize">{Localization.verified_purchase}</span> */}
-              {/* <div className="row ml-1 my-1">
-                <span className="text-muted text-capitalize">{Localization.format}:</span>
-                <span className="text-muted pl-1 text-capitalize">{Localization.bookstore_edition}</span>
-              </div> */}
-              <h6 className="my-2 ml-1 font-weight-bold">What You Did</h6>
-              <p className="txt mx-1 my-0 pb-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio repellendus nam corporis! Ducimus minima veniam officia repudiandae libero sed culpa quis amet deserunt necessitatibus, consectetur, mollitia assumenda vitae alias aliquid quo dolores fuga doloribus id laborum, cupiditate vel nostrum ullam?
-                    <button className="btn btn-link p-0">{Localization.see_more}</button>
-              </p>
-              <span className="text-muted mx-1 small">9 {Localization.people_found_this_helpful}</span>
-              <div className="comment-feedback row__ mt-1 pt-1">
-                {/* <div className="col-5"> */}
-                <button className="btn btn-block__ btn-helpful text-uppercase">{Localization.helpful}</button>
-                <button className="text-success btn btn-link p-0">{Localization.thank_you_for_your_feedback}</button>
-                {/* </div> */}
-                {/* <div className="col-2 pt-2"> */}
-                <button className="text-muted text-capitalize btn btn-link p-0 ml-3">{Localization.report}</button>
-                {/* </div> */}
-              </div>
-            </div>
-          ))}
         </section>
 
         <div className="section-separator my-2"></div>
@@ -449,7 +371,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             <div className="p-3 p-align-inverse-0">
               <div className="row">
                 <div className="col-10">
-                  <h6 className="text-uppercase">{Localization.write_a_review}</h6>
+                  <h6 className="text-uppercase mb-0">{Localization.write_a_review}</h6>
                 </div>
                 <div className="col-2">
                   <i className={
@@ -461,19 +383,235 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             </div>
           </div>
           <div className={"write-comment-box mx-1 mt-1 " + (!this.state.is_writeCommentBox_open ? 'd-none' : '')} >
-            <textarea className="form-control" rows={4} placeholder={Localization.your_comment}></textarea>
+            <Input
+              defaultValue={this.state.newComment.value}
+              onChange={(val, isValid) => { this.handleCommentInputChange(val, isValid) }}
+              required
+              placeholder={Localization.your_comment}
+              is_textarea
+              textarea_rows={4}
+              elRef={txtarea => { this.commentTextarea = txtarea; }}
+            />
             <BtnLoader
-              btnClassName="btn btn-light btn-block mt-1"
-              loading={false}
-              onClick={() => { }}
+              btnClassName="btn btn-light btn-block mt-1__"
+              loading={this.state.newComment.loader}
+              disabled={!this.state.newComment.isValid}
+              onClick={() => { this.addComment() }}
             >
               {Localization.submit}
             </BtnLoader>
           </div>
         </div>
-
       </>
     )
+  }
+  handleCommentInputChange(value: any, isValid: boolean) {
+    this.setState({ ...this.state, newComment: { ...this.state.newComment, isValid, value } });
+  }
+
+  async addComment() {
+    this.setState({ ...this.state, newComment: { ...this.state.newComment, loader: true } });
+    let res = await this._commentService.add(this.state.newComment.value!, this.bookId).catch(error => {
+      this.handleError({ error: error.response });
+      this.setState({ ...this.state, newComment: { ...this.state.newComment, loader: false } });
+    });
+    if (res) {
+      this.commentTextarea.value = '';
+      this.setState({ ...this.state, newComment: { isValid: false, loader: false, value: undefined } });
+    }
+  }
+
+  book_commentList_render() {
+
+    if (this.state.book_comments && (this.state.book_comments! || []).length) {
+      return (
+        <>
+          {(this.state.book_comments! || []).map((bk_cmt: IComment, index) => {
+
+            let cmt_person_fullName = bk_cmt.person.name + ' ' + bk_cmt.person.last_name;
+            let cmt_person_image = bk_cmt.person.image ? this.getImageUrl(bk_cmt.person.image) :
+              "/static/media/img/icon/avatar.png";
+            let like_loader_obj: any = { ...this.state.comment_actions.like_loader_obj };
+            let unlike_loader_obj: any = { ...this.state.comment_actions.unlike_loader_obj };
+
+            return (
+              <Fragment key={index}>
+                <div className="mb-4 mt-3 user-comment-box">
+                  <div className="row">
+                    <div className="col-1 mr-3">
+                      <div className="img">
+                        <img src={cmt_person_image} alt="avatar" />
+                      </div>
+                    </div>
+                    <span className="pt-2 ml-3 mr-1">{cmt_person_fullName}</span>
+                    <span className="pt-2 mx-2">.</span>
+                    <span className="pt-2 ">{bk_cmt.creation_date}</span>
+                  </div>
+
+                  <Rating
+                    className="rating-star"
+                    emptySymbol="fa fa-star rating-empty"
+                    fullSymbol="fa fa-star rating-full"
+                    direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
+                    initialRating={2.5}
+                    readonly
+                  />
+
+                  {/* <h6 className="my-2 ml-1 font-weight-bold">What You Did</h6> */}
+                  <p className="txt mx-1 my-0 pb-2">
+                    {bk_cmt.body}
+                    {/* <button className="btn btn-link p-0">{Localization.see_more}</button> */}
+                  </p>
+                  {
+                    (bk_cmt.likes && bk_cmt.likes > 0) ?
+                      <span className="text-muted mx-1 small">
+                        {
+                          bk_cmt.likes === 1
+                            ?
+                            <>{bk_cmt.likes} {Localization.people_found_this_helpful_1}</>
+                            :
+                            <>{bk_cmt.likes} {Localization.people_found_this_helpful}</>
+                        }
+                        {/* {bk_cmt.likes} {Localization.people_found_this_helpful} */}
+                      </span>
+                      : ''
+                  }
+                  <div className="comment-feedback row__ mt-1 pt-1">
+                    {
+                      bk_cmt.liked_by_user
+                        ?
+                        <BtnLoader
+                          btnClassName="text-success btn btn-link p-0"
+                          loading={unlike_loader_obj[bk_cmt.id]}
+                          onClick={() => { this.unlikeComment(bk_cmt.id) }}
+                        >
+                          {Localization.thank_you_for_your_feedback}&nbsp;
+                          <span className="small">({Localization.remove})</span>
+                        </BtnLoader>
+                        :
+                        <BtnLoader
+                          btnClassName="btn btn-block__ btn-helpful text-uppercase"
+                          loading={like_loader_obj[bk_cmt.id]}
+                          onClick={() => { this.likeComment(bk_cmt.id) }}
+                        >
+                          {Localization.helpful}
+                        </BtnLoader>
+                    }
+
+
+                    <button className="text-muted text-capitalize btn btn-link p-0 ml-3">{Localization.report}</button>
+                  </div>
+                </div>
+              </Fragment>
+            )
+
+          })}
+        </>
+      );
+    } else if (this.state.book_comments && !(this.state.book_comments! || []).length) {
+      return (
+        <>
+          <div>{Localization.no_item_found}</div>
+        </>
+      );
+
+    } else if (this.state.commentErrorText) {
+      return (
+        <>
+          <div>{this.state.commentErrorText}</div>
+          <div onClick={() => this.fetchBook_comments(this.bookId)}>
+            {Localization.retry}
+          </div>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <div>{Localization.loading_with_dots}</div>
+        </>
+      );
+    }
+  }
+
+  async likeComment(comment_id: string) {
+    this.setState({
+      ...this.state,
+      comment_actions: {
+        ...this.state.comment_actions, like_loader_obj: {
+          ...this.state.comment_actions.like_loader_obj, [comment_id]: true
+        }
+      }
+    });
+    let res = await this._commentService.like(comment_id).catch(error => {
+      this.handleError({ error: error.response });
+    });
+
+    if (res) {
+      let commentIndex = (this.state.book_comments || []).findIndex((cmt: IComment) => cmt.id === comment_id);
+      let newBook_comments: IComment[] = [...this.state.book_comments || []];
+      newBook_comments[commentIndex].liked_by_user = true;
+      newBook_comments[commentIndex].likes = ++newBook_comments[commentIndex].likes;
+
+      this.setState({
+        ...this.state,
+        comment_actions: {
+          ...this.state.comment_actions, like_loader_obj: {
+            ...this.state.comment_actions.like_loader_obj, [comment_id]: false
+          }
+        },
+        book_comments: newBook_comments
+      });
+
+    } else {
+      this.setState({
+        ...this.state,
+        comment_actions: {
+          ...this.state.comment_actions, like_loader_obj: {
+            ...this.state.comment_actions.like_loader_obj, [comment_id]: false
+          }
+        }
+      });
+    }
+  }
+  async unlikeComment(comment_id: string) {
+    this.setState({
+      ...this.state,
+      comment_actions: {
+        ...this.state.comment_actions, unlike_loader_obj: {
+          ...this.state.comment_actions.unlike_loader_obj, [comment_id]: true
+        }
+      }
+    });
+    let res = await this._commentService.unlike(comment_id).catch(error => {
+      this.handleError({ error: error.response });
+    });
+
+    if (res) {
+      let commentIndex = (this.state.book_comments || []).findIndex((cmt: IComment) => cmt.id === comment_id);
+      let newBook_comments: IComment[] = [...this.state.book_comments || []];
+      newBook_comments[commentIndex].liked_by_user = false;
+      newBook_comments[commentIndex].likes = --newBook_comments[commentIndex].likes;
+
+      this.setState({
+        ...this.state,
+        comment_actions: {
+          ...this.state.comment_actions, unlike_loader_obj: {
+            ...this.state.comment_actions.unlike_loader_obj, [comment_id]: false
+          }
+        },
+        book_comments: newBook_comments
+      });
+
+    } else {
+      this.setState({
+        ...this.state,
+        comment_actions: {
+          ...this.state.comment_actions, unlike_loader_obj: {
+            ...this.state.comment_actions.unlike_loader_obj, [comment_id]: false
+          }
+        }
+      });
+    }
   }
 
   toggleWriteComment() {
