@@ -143,12 +143,15 @@ interface ILocalization extends LocalizedStringsMethods {
     customer_review: string;
     read_reviews_that_mention: string;
     see_more: string;
+    see_less: string;
     top_reviews: string;
     verified_purchase: string;
     format: string;
     bookstore_edition: string;
     people_found_this_helpful: string;
     people_found_this_helpful_1: string;
+    people_report_this: string;
+    people_report_this_1: string;
     helpful: string;
     report: string;
     see_all_n_reviews: string;
@@ -192,6 +195,7 @@ interface ILocalization extends LocalizedStringsMethods {
     book_isben: string;
     your_comment: string;
     remove: string;
+    your_report_submited: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

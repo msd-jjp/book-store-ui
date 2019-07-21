@@ -44,6 +44,9 @@ interface IState {
   comment_actions: {
     like_loader_obj: { [key: string]: boolean };
     unlike_loader_obj: { [key: string]: boolean };
+    report_loader_obj: { [key: string]: boolean };
+    unreport_loader_obj: { [key: string]: boolean };
+    comment_compress_obj: { [key: string]: boolean };
   };
 }
 class BookDetailComponent extends BaseComponent<IProps, IState> {
@@ -64,6 +67,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     comment_actions: {
       like_loader_obj: {},
       unlike_loader_obj: {},
+      report_loader_obj: {},
+      unreport_loader_obj: {},
+      comment_compress_obj: {},
     },
   };
   private _bookService = new BookService();
@@ -102,6 +108,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     // debugger;
     this.setState({ ...this.state, commentLoader: true, commentErrorText: undefined });
 
+    // let res = await this._commentService.search(bookId, {limit:10, offset:0}).catch(error => {
     let res = await this._commentService.book_comments(bookId).catch(error => {
       const { body: commentErrorText } = this.handleError({ error: error.response });
 
@@ -434,6 +441,11 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             let like_loader_obj: any = { ...this.state.comment_actions.like_loader_obj };
             let unlike_loader_obj: any = { ...this.state.comment_actions.unlike_loader_obj };
 
+            let report_loader_obj: any = { ...this.state.comment_actions.report_loader_obj };
+            let unreport_loader_obj: any = { ...this.state.comment_actions.unreport_loader_obj };
+
+            let comment_compress_obj: any = { ...this.state.comment_actions.comment_compress_obj };
+
             return (
               <Fragment key={index}>
                 <div className="mb-4 mt-3 user-comment-box">
@@ -458,10 +470,25 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   />
 
                   {/* <h6 className="my-2 ml-1 font-weight-bold">What You Did</h6> */}
-                  <p className="txt mx-1 my-0 pb-2">
+                  <p className={
+                    "comment-body mx-1 mb-0 pb-2 " +
+                    (!comment_compress_obj[bk_cmt.id] ? 'comment-compress' : '')
+                  }>
                     {bk_cmt.body}
                     {/* <button className="btn btn-link p-0">{Localization.see_more}</button> */}
                   </p>
+                  <button className="btn btn-link p-0" onClick={() => this.toggleCommentCompress(bk_cmt.id)}>
+                    {
+                      !comment_compress_obj[bk_cmt.id]
+                      ?
+                      Localization.see_more
+                      :
+                      Localization.see_less
+                    }
+                    
+                  </button>
+                  <div className="clearfix"></div>
+
                   {
                     (bk_cmt.likes && bk_cmt.likes > 0) ?
                       <span className="text-muted mx-1 small">
@@ -475,6 +502,20 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                         {/* {bk_cmt.likes} {Localization.people_found_this_helpful} */}
                       </span>
                       : ''
+                  }
+                  <div className="clearfix"></div>
+                  {
+                    !!(bk_cmt.reports && bk_cmt.reports > 0) &&
+                    <span className="text-muted mx-1 small">
+                      {
+                        bk_cmt.reports === 1
+                          ?
+                          <>{bk_cmt.reports} {Localization.people_report_this_1}</>
+                          :
+                          <>{bk_cmt.reports} {Localization.people_report_this}</>
+                      }
+                      {/* {bk_cmt.likes} {Localization.people_found_this_helpful} */}
+                    </span>
                   }
                   <div className="comment-feedback row__ mt-1 pt-1">
                     {
@@ -497,9 +538,28 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                           {Localization.helpful}
                         </BtnLoader>
                     }
+                    {
+                      bk_cmt.reported_by_user
+                        ?
+                        <BtnLoader
+                          btnClassName="text-warning text-capitalize btn btn-link p-0 ml-3"
+                          loading={unreport_loader_obj[bk_cmt.id]}
+                          onClick={() => { this.unreportComment(bk_cmt.id) }}
+                        >
+                          {Localization.your_report_submited}&nbsp;
+                          <span className="small">({Localization.remove})</span>
+                        </BtnLoader>
+                        :
+                        <BtnLoader
+                          btnClassName="text-muted text-capitalize btn btn-link p-0 ml-3"
+                          loading={report_loader_obj[bk_cmt.id]}
+                          onClick={() => { this.reportComment(bk_cmt.id) }}
+                        >
+                          {Localization.report}
+                        </BtnLoader>
+                    }
 
 
-                    <button className="text-muted text-capitalize btn btn-link p-0 ml-3">{Localization.report}</button>
                   </div>
                 </div>
               </Fragment>
@@ -612,6 +672,102 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         }
       });
     }
+  }
+
+  async reportComment(comment_id: string) {
+    this.setState({
+      ...this.state,
+      comment_actions: {
+        ...this.state.comment_actions, report_loader_obj: {
+          ...this.state.comment_actions.report_loader_obj, [comment_id]: true
+        }
+      }
+    });
+    let res = await this._commentService.report(comment_id).catch(error => {
+      this.handleError({ error: error.response });
+    });
+
+    if (res) {
+      let commentIndex = (this.state.book_comments || []).findIndex((cmt: IComment) => cmt.id === comment_id);
+      let newBook_comments: IComment[] = [...this.state.book_comments || []];
+      newBook_comments[commentIndex].reported_by_user = true;
+      newBook_comments[commentIndex].reports = ++newBook_comments[commentIndex].reports;
+
+      this.setState({
+        ...this.state,
+        comment_actions: {
+          ...this.state.comment_actions, report_loader_obj: {
+            ...this.state.comment_actions.report_loader_obj, [comment_id]: false
+          }
+        },
+        book_comments: newBook_comments
+      });
+
+    } else {
+      this.setState({
+        ...this.state,
+        comment_actions: {
+          ...this.state.comment_actions, report_loader_obj: {
+            ...this.state.comment_actions.report_loader_obj, [comment_id]: false
+          }
+        }
+      });
+    }
+  }
+
+  async unreportComment(comment_id: string) {
+    this.setState({
+      ...this.state,
+      comment_actions: {
+        ...this.state.comment_actions, unreport_loader_obj: {
+          ...this.state.comment_actions.unreport_loader_obj, [comment_id]: true
+        }
+      }
+    });
+    let res = await this._commentService.unreport(comment_id).catch(error => {
+      this.handleError({ error: error.response });
+    });
+
+    if (res) {
+      let commentIndex = (this.state.book_comments || []).findIndex((cmt: IComment) => cmt.id === comment_id);
+      let newBook_comments: IComment[] = [...this.state.book_comments || []];
+      newBook_comments[commentIndex].reported_by_user = false;
+      newBook_comments[commentIndex].reports = --newBook_comments[commentIndex].reports;
+
+      this.setState({
+        ...this.state,
+        comment_actions: {
+          ...this.state.comment_actions, unreport_loader_obj: {
+            ...this.state.comment_actions.unreport_loader_obj, [comment_id]: false
+          }
+        },
+        book_comments: newBook_comments
+      });
+
+    } else {
+      this.setState({
+        ...this.state,
+        comment_actions: {
+          ...this.state.comment_actions, unreport_loader_obj: {
+            ...this.state.comment_actions.unreport_loader_obj, [comment_id]: false
+          }
+        }
+      });
+    }
+  }
+
+  toggleCommentCompress(comment_id: string) {
+    let comment_compress_obj: any = { ...this.state.comment_actions.comment_compress_obj };
+    this.setState({
+      ...this.state,
+      comment_actions: {
+        ...this.state.comment_actions,
+        comment_compress_obj: {
+          ...this.state.comment_actions.comment_compress_obj,
+          [comment_id]: !comment_compress_obj[comment_id]
+        }
+      }
+    });
   }
 
   toggleWriteComment() {

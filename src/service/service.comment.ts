@@ -24,6 +24,10 @@ export class CommentService extends BaseService {
         return this.axiosTokenInstance.get(`/comments/book/${book_id}`);
     }
 
+    search(book_id: string, data: { limit: number, offset: number, filter?: Object }): Promise<IAPI_ResponseList<IComment>> {
+        return this.axiosTokenInstance.post(`/comments/book/${book_id}/_search`, data);
+    }
+
     add(body: string, book_id: string) {
         return this.axiosTokenInstance.post(`/comments`, { body, book_id });
     }

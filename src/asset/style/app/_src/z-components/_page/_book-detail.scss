@@ -168,9 +168,14 @@ $book-detail-border: 1px solid rgb(210, 210, 210);
         color: orange;
         font-weight: bold;
       }
-      .txt {
+      .comment-body {
         font-weight: 450;
         white-space: pre-wrap;
+        overflow: hidden;
+
+        &.comment-compress {
+          height: 50px;
+        }
       }
       .comment-feedback {
         // .col-5 {
