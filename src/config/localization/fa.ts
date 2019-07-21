@@ -26,7 +26,7 @@ export const fa = {
             msg9: 'فرصت ثبت نام شما پایان یافت، لطفا مراحل ثبت نام را از ابتدا شروع کنید.',
             msg10: 'فرصت ثبت نام شما پایان یافت، لطفا مراحل ثبت نام را از ابتدا شروع کنید.',
 
-            msg11: 'token invalid',
+            msg11: 'مجددا وارد شوید', // token invalid
             msg12: 'token expired',
             msg13: 'deleting failed',
             msg14: 'getting failed',
@@ -145,6 +145,7 @@ export const fa = {
     format: 'قالب',
     bookstore_edition: 'نسخه کتابفروشی',
     people_found_this_helpful: 'نفر این مورد را مفید یافتند',
+    people_found_this_helpful_1: 'نفر این مورد را مفید یافت',
     helpful: 'مفید است',
     report: 'گزارش',
     see_all_n_reviews: 'دیدن همه {0} نظر',
@@ -186,4 +187,5 @@ export const fa = {
     load_more: 'بارگذاری بیشتر',
     book_isben: 'شابک',
     your_comment: 'نظر شما',
+    remove: 'حذف',
 }

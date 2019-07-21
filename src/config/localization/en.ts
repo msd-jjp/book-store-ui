@@ -26,7 +26,7 @@ export const en = {
             msg9: 'Your registration has expired, please start the registration process from the beginning.',
             msg10: 'Your registration has expired, please start the registration process from the beginning.',
 
-            msg11: 'token invalid',
+            msg11: 'login again', // token invalid
             msg12: 'token expired',
             msg13: 'deleting failed',
             msg14: 'getting failed',
@@ -143,6 +143,7 @@ export const en = {
     format: 'format',
     bookstore_edition: 'bookstore_edition',
     people_found_this_helpful: 'people found this helpful',
+    people_found_this_helpful_1: 'people found this helpful',
     helpful: 'helpful',
     report: 'report',
     see_all_n_reviews: 'see all {0} reviews',
@@ -184,4 +185,5 @@ export const en = {
     load_more: 'load more',
     book_isben: 'asin',
     your_comment: 'your comment',
+    remove: 'remove',
 }
