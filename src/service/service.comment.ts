@@ -1,4 +1,4 @@
-import { BaseService, IAPI_ResponseList } from './service.base';
+import { BaseService, IAPI_ResponseList, IAPI_Response } from './service.base';
 import { COMMENT_REPORT } from '../enum/Comment';
 import { IComment } from '../model/model.comment';
 
@@ -28,7 +28,7 @@ export class CommentService extends BaseService {
         return this.axiosTokenInstance.post(`/comments/book/${book_id}/_search`, data);
     }
 
-    add(body: string, book_id: string) {
+    add(body: string, book_id: string): Promise<IAPI_Response<IComment>> {
         return this.axiosTokenInstance.post(`/comments`, { body, book_id });
     }
 
