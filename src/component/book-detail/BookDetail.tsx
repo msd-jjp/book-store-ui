@@ -498,18 +498,16 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   <div className="clearfix"></div>
 
                   {
-                    (bk_cmt.likes && bk_cmt.likes > 0) ?
-                      <span className="text-muted mx-1 small">
-                        {
-                          bk_cmt.likes === 1
-                            ?
-                            <>{bk_cmt.likes} {Localization.people_found_this_helpful_1}</>
-                            :
-                            <>{bk_cmt.likes} {Localization.people_found_this_helpful}</>
-                        }
-                        {/* {bk_cmt.likes} {Localization.people_found_this_helpful} */}
-                      </span>
-                      : ''
+                    !!(bk_cmt.likes && bk_cmt.likes > 0) &&
+                    <span className="text-muted mx-1 small">
+                      {
+                        bk_cmt.likes === 1
+                          ?
+                          <>{bk_cmt.likes} {Localization.people_found_this_helpful_1}</>
+                          :
+                          <>{bk_cmt.likes} {Localization.people_found_this_helpful}</>
+                      }
+                    </span>
                   }
                   <div className="clearfix"></div>
                   {
@@ -522,7 +520,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                           :
                           <>{bk_cmt.reports} {Localization.people_report_this}</>
                       }
-                      {/* {bk_cmt.likes} {Localization.people_found_this_helpful} */}
                     </span>
                   }
                   <div className="comment-feedback row__ mt-1 pt-1">
