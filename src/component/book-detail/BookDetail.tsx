@@ -20,6 +20,8 @@ import { CommentService } from "../../service/service.comment";
 import { IComment } from "../../model/model.comment";
 import { Input } from "../form/input/Input";
 
+
+
 interface IProps {
   internationalization: TInternationalization;
   match: any;
@@ -588,7 +590,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                     </div>
                     <span className="pt-2 ml-3 mr-1">{cmt_person_fullName}</span>
                     <span className="pt-2 mx-2">.</span>
-                    <span className="pt-2 ">{bk_cmt.creation_date}</span>
+                    <span className="pt-2 ">{this.getFromNowDate(bk_cmt.creation_date)}</span>
                   </div>
 
                   <Rating

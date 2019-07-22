@@ -2,6 +2,19 @@ import React from 'react';
 import { Setup, TInternationalization } from '../../config/setup';
 import { Localization } from '../../config/localization/localization';
 import { toast, ToastOptions, ToastContainerProps } from 'react-toastify';
+//
+// import * as moment from 'moment';
+import moment from 'moment';
+// import {moment} from 'moment/locale/fa';
+// import {fa} from "moment/src/locale/fa";
+// import moment_jalaali from "moment-jalaali";
+// import fa from "moment/src/locale/fa";
+// const moment_fa = require('moment/src/locale/fa');
+// moment_jalaali.locale("fa", moment_fa);
+// moment_jalaali.loadPersian();
+// import moment_locale from 'moment/min/moment-with-locales';
+import 'moment/locale/fa';
+import 'moment/locale/ar';
 
 interface IHandleError {
     error?: any;
@@ -135,6 +148,13 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
 
     getImageUrl(imageId: string): string {
         return this.image_pre_url + '/' + imageId;
+    }
+
+    getFromNowDate(timestamp: number): string {
+        // let _moment = moment;
+        // moment_jalaali.loadPersian();
+        moment.locale(this.props.internationalization.flag);
+        return moment.unix(timestamp).fromNow();
     }
 
 }
