@@ -194,4 +194,7 @@ export const fa = {
     your_comment: 'نظر شما',
     remove: 'حذف',
     your_report_submited: 'گزارش شما ثبت شد',
+    vote: 'رای',
+    vote_s: 'رای',
+    votes: 'آراء',
 }

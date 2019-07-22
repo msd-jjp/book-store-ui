@@ -25,7 +25,7 @@ export class CommentService extends BaseService {
     }
 
     search(book_id: string, data: { limit: number, offset: number, filter?: Object }): Promise<IAPI_ResponseList<IComment>> {
-        return this.axiosTokenInstance.post(`/comments/book/${book_id}/_search`, data);
+        return this.axiosTokenInstance.post(`/comments/book/${book_id}`, data);
     }
 
     add(body: string, book_id: string): Promise<IAPI_Response<IComment>> {

@@ -198,6 +198,9 @@ interface ILocalization extends LocalizedStringsMethods {
     your_comment: string;
     remove: string;
     your_report_submited: string;
+    vote: string;
+    vote_s: string;
+    votes: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

@@ -192,4 +192,7 @@ export const en = {
     your_comment: 'your comment',
     remove: 'remove',
     your_report_submited: 'your report submited',
+    vote: 'vote',
+    vote_s: 'vote',
+    votes: 'votes',
 }
