@@ -252,21 +252,26 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
         <section >
           <h5 className="text-uppercase">{Localization.about_this_item}</h5>
-          <div className="book-detail-bordered-box py-2 px-3">
-            {/* <h5 className="font-weight-bold text-uppercase">{Localization.description}</h5> */}
-            <h5 className="font-weight-bold text-uppercase">{Localization.product_description}</h5>
-            <p className="font-weight-bold">{book.description}</p>
 
-            {
-              writerList && writerList.length && writerList[0].person.bio &&
-              <>
-                <h5 className="my-2 text-uppercase">{Localization.about_the_author}</h5>
-                <p>{writerList[0].person.bio}</p>
-              </>
-            }
+          {
+            (book.description || (writerList && writerList.length && writerList[0].person.bio)) &&
 
-          </div>
-          <div className="book-detail-bordered-box border-top-0 pb-2 pt-4 px-3 mb-3">
+            <div className="book-detail-bordered-box py-2 px-3 border-bottom-0">
+              {/* <h5 className="font-weight-bold text-uppercase">{Localization.description}</h5> */}
+              <h5 className="font-weight-bold text-uppercase">{Localization.product_description}</h5>
+              <p className="font-weight-bold">{book.description}</p>
+
+              {
+                writerList && writerList.length && writerList[0].person.bio &&
+                <>
+                  <h5 className="my-2 text-uppercase">{Localization.about_the_author}</h5>
+                  <p>{writerList[0].person.bio}</p>
+                </>
+              }
+            </div>
+          }
+
+          <div className="book-detail-bordered-box border-top-0__ pb-2 pt-4 px-3 mb-3">
 
             <h5 className="font-weight-bold text-uppercase">{Localization.features_details}</h5>
             {/* <h5 className="font-weight-bold text-uppercase">{Localization.product_details}</h5> */}
