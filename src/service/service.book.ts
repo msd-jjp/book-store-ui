@@ -41,4 +41,16 @@ export class BookService extends BaseService {
         return this.axiosInstance.post('/books/search-phrase', data); // axiosTokenInstance
     }
 
+    wishList_add_book(book_id: string): Promise<any> {
+        return this.axiosTokenInstance.post('/wish-list', { books: [book_id] });
+    }
+
+    wishList_remove_book(book_id: string): Promise<any> {
+        return this.axiosTokenInstance.delete(`/wish-list/remove-books`, { data: { books: [book_id] } });
+    }
+
+    wishList_clear(): Promise<any> {
+        return this.axiosTokenInstance.delete(`/wish-list`);
+    }
+
 }

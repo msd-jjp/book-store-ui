@@ -54,6 +54,7 @@ interface IState {
       pager_limit: number;
     }
   };
+  wishList_loader: boolean;
 }
 class BookDetailComponent extends BaseComponent<IProps, IState> {
   state = {
@@ -83,6 +84,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         pager_limit: 10
       }
     },
+    wishList_loader: false,
   };
   private _bookService = new BookService();
   bookId!: string;
@@ -93,6 +95,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
   componentDidMount() {
     this.gotoTop();
+    this._bookService.setToken(this.props.token);
     this._followService.setToken(this.props.token);
     this._rateService.setToken(this.props.token);
     this._commentService.setToken(this.props.token);
@@ -230,7 +233,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               </div>
             </div>
             <div className="col-12">
-              <button className="add-to-list btn btn-link p-align-0 mt-2">{Localization.add_to_list}</button>
+              {this.wishList_actionBtn_render(book)}
             </div>
           </div>
 
@@ -386,31 +389,105 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     )
   }
 
+  wishList_actionBtn_render(book: IBook) {
+    let wish_list = this.props.logged_in_user &&
+      this.props.logged_in_user.person &&
+      this.props.logged_in_user.person.wish_list;
+
+    let book_in_wishList = (wish_list || []).filter(bk => bk.id === book.id);
+
+    if (book_in_wishList && book_in_wishList.length) {
+      return (
+        <>
+          <BtnLoader
+            btnClassName="add-to-list btn btn-link p-align-0 mt-2 text-warning"
+            loading={this.state.wishList_loader}
+            onClick={() => { this.wishList_remove_book(book) }}
+          >
+            {Localization.remove_from_list}
+          </BtnLoader>
+        </>
+      )
+    } else {
+      return (
+        <>
+          <BtnLoader
+            btnClassName="add-to-list btn btn-link p-align-0 mt-2"
+            loading={this.state.wishList_loader}
+            onClick={() => { this.wishList_add_book(book) }}
+          >
+            {Localization.add_to_list}
+          </BtnLoader>
+        </>
+      )
+    }
+  }
+
+  async wishList_add_book(book: IBook) {
+    this.setState({ ...this.state, wishList_loader: true });
+
+    let res = await this._bookService.wishList_add_book(book.id).catch(error => {
+      this.handleError({ error: error.response });
+    });
+
+    this.setState({ ...this.state, wishList_loader: false });
+
+    if (res) {
+      let logged_in_user = { ...this.props.logged_in_user! };
+      let wish_list = (logged_in_user.person && logged_in_user.person.wish_list) || [];
+      wish_list.push(book);
+      logged_in_user!.person!.wish_list = wish_list;
+      this.props.onUserLoggedIn && this.props.onUserLoggedIn(logged_in_user);
+    }
+  }
+
+  async wishList_remove_book(book: IBook) {
+    this.setState({ ...this.state, wishList_loader: true });
+
+    let res = await this._bookService.wishList_remove_book(book.id).catch(error => {
+      this.handleError({ error: error.response });
+    });
+
+    this.setState({ ...this.state, wishList_loader: false });
+
+    if (res) {
+      let logged_in_user = { ...this.props.logged_in_user! };
+      let wish_list = (logged_in_user.person && logged_in_user.person.wish_list) || [];
+      let new_wish_list = wish_list.filter(bk => bk.id !== book.id);
+      logged_in_user!.person!.wish_list = new_wish_list;
+      this.props.onUserLoggedIn && this.props.onUserLoggedIn(logged_in_user);
+    }
+  }
+
   comment_sections_render(book: IBook) {
     return (
       <>
-        <section className="customer-reviews mt-3 mb-4">
-          <div className="row">
-            <div className="col-12">
-              <div className="ml-1">
-                <h5 className="mb-2 text-uppercase">{book.rate_no} {Localization.customer_vote_s}</h5>
-                <Rating
-                  className="rating-star"
-                  emptySymbol="fa fa-star rating-empty"
-                  fullSymbol="fa fa-star rating-full"
-                  direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
-                  initialRating={book.rate}
-                  readonly
-                />
-                <span className="ml-2">{Localization.formatString(Localization.n_out_of_m_stars, book.rate, 5)}</span>
+        {
+          !!(book.rate_no && book.rate_no > 0) &&
+          <section className="customer-reviews mt-3 mb-4">
+            <div className="row">
+              <div className="col-12">
+                <div className="ml-1">
+                  <h5 className="mb-2 text-uppercase">{book.rate_no} {Localization.customer_vote_s}</h5>
+                  <Rating
+                    className="rating-star"
+                    emptySymbol="fa fa-star rating-empty"
+                    fullSymbol="fa fa-star rating-full"
+                    direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
+                    initialRating={book.rate}
+                    readonly
+                  />
+                  <span className="ml-2">{Localization.formatString(Localization.n_out_of_m_stars, book.rate, 5)}</span>
+                </div>
               </div>
+
             </div>
+          </section>
+        }
 
-          </div>
-        </section>
-
-        <section className="comments pb-3 px-1">
-          <h5 className="mt-3 text-uppercase font-weight-bold">{Localization.top_reviews}</h5>
+        <section className={"comments pb-3 px-1 " + (book.rate_no && book.rate_no > 0) ? '' : 'border-top-0'}>
+          {/* Localization.top_reviews */}
+          <h5 className="mt-3 text-uppercase font-weight-bold">{Localization.recent_reviews}</h5>
           {this.book_commentList_render()}
 
         </section>

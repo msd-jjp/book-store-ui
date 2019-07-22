@@ -193,4 +193,6 @@ export const ar = {
     vote: 'رای',
     vote_s: 'رای',
     votes: 'آراء',
+    remove_from_list: 'از لیست حذف کن',
+    recent_reviews:'نظرات اخیر',
 }
