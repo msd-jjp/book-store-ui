@@ -85,6 +85,17 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
         let last_name = writerList && writerList.length && writerList[0].person.last_name;
         let writerName = name + " " + last_name;
 
+        let pressList: IBook['roles'] = book.roles.filter(
+            r => r.role === BOOK_ROLES.Press
+        );
+        let first_press: IBook['roles'][0];
+        let first_press_fullname;
+        if (pressList && pressList.length) {
+            first_press = pressList[0];
+            first_press_fullname = (first_press.person.name || '') + ' ' + (first_press.person.last_name || '');
+        }
+
+
         return (
             <>
 
@@ -103,21 +114,21 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                     </div>
                     <div className="kc-rank-card-metadata">
                         <div className="metadata-card">
-                            <div className="kc-wol">42 weeks on the list</div>
+                            {/* <div className="kc-wol">42 weeks on the list</div> */}
                             <div className={book.title}>
                                 {book.title}
                             </div>
                             <div className="kc-rank-card-author" title={writerName}>
                                 {Localization.by_writerName} {writerName}
                             </div>
-                            <div className="kc-rank-card-publisher" title="G.P. Putnam's Sons">
+                            <div className="kc-rank-card-publisher" title={first_press_fullname}>
                                 <span className="text-uppercase">{Localization.publisher}</span>
-                                : {"G.P. Putnam's Sons"}
+                                : {first_press_fullname}
                             </div>
-                            <div className="kc-rank-card-agent" title="Russell Galen">
+                            {/* <div className="kc-rank-card-agent" title="Russell Galen">
                                 <span className="text-uppercase">{Localization.agent}</span>
                                 : {'Russell Galen'}
-                            </div>
+                            </div> */}
                             <div className="kc-rank-card-badge">
                             </div>
                         </div>
@@ -136,11 +147,11 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                                         fullSymbol="fa fa-star rating-full"
                                         readonly
                                         direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
-                                        initialRating={4.8}
+                                        initialRating={book.rate}
                                     />
 
                                     <div className="numeric-star-data">
-                                        <small className="text-uppercase">4.8 / 16,667 {Localization.review_s}</small>
+                                        <small className="text-uppercase">{book.rate} / {book.rate_no} {Localization.vote_s}</small>
                                     </div>
                                 </div>
                             </div>
