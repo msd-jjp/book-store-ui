@@ -485,7 +485,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           </section>
         }
 
-        <section className={"comments pb-3 px-1 " + (book.rate_no && book.rate_no > 0) ? '' : 'border-top-0'}>
+        <section className={"comments pb-3 px-1 " + ((book.rate_no && book.rate_no > 0) ? '' : 'border-top-0')}>
           {/* Localization.top_reviews */}
           <h5 className="mt-3 text-uppercase font-weight-bold">{Localization.recent_reviews}</h5>
           {this.book_commentList_render()}
