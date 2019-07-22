@@ -11,6 +11,7 @@ npm i react-bootstrap @types/react-bootstrap
 npm i react-rating
 npm i -D redux-logger @types/redux-logger
 npm i redux-persist @types/redux-persist
+npm i moment moment-jalaali
 
 ====================================================================================
 ????????????????????????????????????????????????????????????????????????????????????
@@ -93,12 +94,15 @@ if no default value & require --> error
 
 ====================================================================================
 book-detail:
-1)comment create date (number): change to jalali & gregorian data (base on flag)
+1)comment create date (number timestamp): change to jalali & gregorian data (base on flag)
 2)change book duration second to moment method human readable.
 
 store:
 1)slide navigation in desktop.
 
 ====================================================================================
+
+user able to delete his comment;
+
 
 ====================================================================================
