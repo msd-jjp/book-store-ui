@@ -138,7 +138,8 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                             <div className="kc-data-story-mini-content">
                                 <div className="kc-mini-data-story-heading-container">
                                     <div className="data-story-mini-icon data-story-icon-primary"></div>
-                                    <span className="kc-rank-card-bar-heading">{Localization.customer_reviews}</span>
+                                    {/* <span className="kc-rank-card-bar-heading">{Localization.customer_reviews}</span> */}
+                                    <span className="kc-rank-card-bar-heading">{Localization.customer_vote_s}</span>
                                 </div>
                                 <div className="star-rating">
                                     <Rating
