@@ -24,6 +24,7 @@ interface ILocalization extends LocalizedStringsMethods {
             msg4: string;
             your_rate_submited: string;
             your_comment_submited: string;
+            your_comment_will_be_removed_continue: string;
         },
         back: {
             [key: string]: any; // todo
@@ -206,6 +207,8 @@ interface ILocalization extends LocalizedStringsMethods {
     recent_reviews: string;
     minute: string;
     hour: string;
+    remove_comment: string;
+    close: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

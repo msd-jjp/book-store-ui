@@ -19,7 +19,8 @@ import { action_user_logged_in } from "../../redux/action/user";
 import { CommentService } from "../../service/service.comment";
 import { IComment } from "../../model/model.comment";
 import { Input } from "../form/input/Input";
-
+// import { Modal } from "react-bootstrap";
+import Modal from 'react-bootstrap/Modal'
 
 
 interface IProps {
@@ -57,6 +58,10 @@ interface IState {
     }
   };
   wishList_loader: boolean;
+  modal_removeComment: {
+    show: boolean;
+    loader: boolean;
+  }
 }
 class BookDetailComponent extends BaseComponent<IProps, IState> {
   state = {
@@ -87,6 +92,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       }
     },
     wishList_loader: false,
+    modal_removeComment: {
+      show: false,
+      loader: false,
+    }
   };
   private _bookService = new BookService();
   bookId!: string;
@@ -94,6 +103,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   private _rateService = new RateService();
   private _commentService = new CommentService();
   commentTextarea!: HTMLInputElement | HTMLTextAreaElement;
+  comment_id_to_remove: string | undefined;
 
   componentDidMount() {
     this.gotoTop();
@@ -718,13 +728,15 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                         </BtnLoader>
                     }
 
-
+                    {this.book_comment_action_delete_render(bk_cmt)}
                   </div>
                 </div>
               </Fragment>
             )
 
           })}
+
+          {this.modal_removeComment_render()}
         </>
       );
     } else if (this.state.book_comments && !(this.state.book_comments! || []).length) {
@@ -749,6 +761,77 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <div>{Localization.loading_with_dots}</div>
         </>
       );
+    }
+  }
+
+  book_comment_action_delete_render(book_comment: IComment) {
+    if (!this.props.logged_in_user || !this.props.logged_in_user.person) { return; }
+    if (book_comment.person.id === this.props.logged_in_user.person.id) {
+      return (
+        <>
+          <button className="text-danger text-capitalize btn btn-link ml-3 pull-right p-0"
+            onClick={() => this.openModal_removeComment(book_comment.id)}>
+            {Localization.remove_comment}
+          </button>
+        </>
+      )
+    }
+  }
+
+  openModal_removeComment(comment_id: string) {
+    this.comment_id_to_remove = comment_id;
+    this.setState({ ...this.state, modal_removeComment: { ...this.state.modal_removeComment, show: true } });
+  }
+
+  closeModal_removeComment() {
+    this.comment_id_to_remove = undefined;
+    this.setState({ ...this.state, modal_removeComment: { ...this.state.modal_removeComment, show: false } });
+  }
+
+  modal_removeComment_render() {
+    return (
+      <>
+        <Modal show={this.state.modal_removeComment.show} onHide={() => this.closeModal_removeComment()}>
+          <Modal.Header closeButton>
+            <Modal.Title className="text-danger">{Localization.remove_comment}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{Localization.msg.ui.your_comment_will_be_removed_continue}</Modal.Body>
+          <Modal.Footer>
+            <button className="btn btn-light btn-sm" onClick={() => this.closeModal_removeComment()}>
+              {Localization.close}
+            </button>
+            <BtnLoader
+              btnClassName="btn btn-danger btn-sm"
+              loading={this.state.modal_removeComment.loader}
+              onClick={() => this.removeCommentById(this.comment_id_to_remove!)}
+            >
+              {Localization.remove_comment}
+            </BtnLoader>
+
+          </Modal.Footer>
+        </Modal>
+      </>
+    )
+  }
+
+  async removeCommentById(comment_id: string) {
+    this.setState({ ...this.state, modal_removeComment: { ...this.state.modal_removeComment, loader: true } });
+
+    let res = await this._commentService.remove(comment_id).catch(error => {
+      this.handleError({ error: error.response });
+    });
+
+    if (res) {
+      let book_comments: IComment[] = [...this.state.book_comments || []];
+      let newBook_comments = book_comments.filter(bk_cmt => bk_cmt.id !== comment_id);
+      this.setState({
+        ...this.state,
+        book_comments: newBook_comments,
+        modal_removeComment: { ...this.state.modal_removeComment, loader: false }
+      });
+      this.closeModal_removeComment();
+    } else {
+      this.setState({ ...this.state, modal_removeComment: { ...this.state.modal_removeComment, loader: false } });
     }
   }
 
@@ -1082,6 +1165,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       )
     }
   }
+
+
+
   render() {
     return (
       <>

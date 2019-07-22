@@ -15,6 +15,7 @@ export const en = {
             msg4: 'password changed successfully, we redirect you to login page.',
             your_rate_submited: 'your rate submited',
             your_comment_submited: 'your comment submited',
+            your_comment_will_be_removed_continue: 'your comment will be removed, continue?',
         },
         back: {
             msg1: 'user already exists',
@@ -200,4 +201,6 @@ export const en = {
     recent_reviews: 'recent reviews',
     minute: 'minute',
     hour: 'hour',
+    remove_comment: 'remove comment',
+    close: 'close',
 }

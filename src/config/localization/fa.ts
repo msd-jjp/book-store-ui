@@ -15,6 +15,7 @@ export const fa = {
             msg4: 'رمز عبور با موفقیت تغییر کرد، به صفحه ورود منتقل می شوید.',
             your_rate_submited: 'رتبه شما ثبت شد',
             your_comment_submited: 'نظر شما ثبت شد',
+            your_comment_will_be_removed_continue: 'نظر شما حذف خواهد شد، تایید می کنید؟',
         },
         back: {
             msg1: 'کاربر از قبل وجود دارد.',
@@ -202,4 +203,6 @@ export const fa = {
     recent_reviews:'نظرات اخیر',
     minute: 'دقیقه',
     hour: 'ساعت',
+    remove_comment: 'حذف نظر',
+    close: 'بستن',
 }
