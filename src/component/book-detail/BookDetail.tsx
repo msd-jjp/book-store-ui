@@ -608,7 +608,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                     {bk_cmt.body}
                     {/* <button className="btn btn-link p-0">{Localization.see_more}</button> */}
                   </p>
-                  <button className="btn btn-link p-0" onClick={() => this.toggleCommentCompress(bk_cmt.id)}>
+                  <button className="btn btn-link p-0 btn-sm" onClick={() => this.toggleCommentCompress(bk_cmt.id)}>
                     {
                       !comment_compress_obj[bk_cmt.id]
                         ?
