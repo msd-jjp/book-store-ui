@@ -204,6 +204,8 @@ interface ILocalization extends LocalizedStringsMethods {
     votes: string;
     remove_from_list: string;
     recent_reviews: string;
+    minute: string;
+    hour: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

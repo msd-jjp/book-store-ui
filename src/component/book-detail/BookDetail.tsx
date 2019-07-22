@@ -286,7 +286,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               <h6 className="font-weight-bold">{Localization.Length}:&nbsp;
                 {book.pages && <span>{book.pages} {Localization.pages}</span>}
                 {(book.pages && book.duration) && <span>,&nbsp;</span>}
-                {book.duration && <span>{book.duration} {Localization.second}</span>}
+                {book.duration && <span>{this.book_duration_render(book.duration)}</span>}
               </h6>
             }
             <h6 className="font-weight-bold">
@@ -389,6 +389,35 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
       </>
     )
+  }
+
+  /**
+  * @param book_duration `book_duration` is in second.
+  */
+  book_duration_render(book_duration: string) {
+    let second = parseInt(book_duration);
+    let minute = Math.round((second / 60) * 100) / 100;
+    let hour = Math.round((minute / 60) * 100) / 100;
+
+    if (second < 60) {
+      return (
+        <>
+          {second} {Localization.second}
+        </>
+      )
+    } else if (minute < 60) {
+      return (
+        <>
+          {minute} {Localization.minute}
+        </>
+      )
+    } else {
+      return (
+        <>
+          {hour} {Localization.hour}
+        </>
+      )
+    }
   }
 
   wishList_actionBtn_render(book: IBook) {

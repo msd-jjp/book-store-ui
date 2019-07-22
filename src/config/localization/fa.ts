@@ -200,4 +200,6 @@ export const fa = {
     votes: 'آراء',
     remove_from_list: 'از لیست حذف کن',
     recent_reviews:'نظرات اخیر',
+    minute: 'دقیقه',
+    hour: 'ساعت',
 }

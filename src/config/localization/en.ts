@@ -197,5 +197,7 @@ export const en = {
     vote_s: 'vote',
     votes: 'votes',
     remove_from_list: 'remove from list',
-    recent_reviews:'recent reviews',
+    recent_reviews: 'recent reviews',
+    minute: 'minute',
+    hour: 'hour',
 }

@@ -194,5 +194,7 @@ export const ar = {
     vote_s: 'رای',
     votes: 'آراء',
     remove_from_list: 'از لیست حذف کن',
-    recent_reviews:'نظرات اخیر',
+    recent_reviews: 'نظرات اخیر',
+    minute: 'دقیقه',
+    hour: 'ساعت',
 }
