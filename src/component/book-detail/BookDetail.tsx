@@ -36,6 +36,7 @@ interface IState {
   commentLoader: boolean;
   commentErrorText: string | undefined;
   book_comments: IComment[] | undefined;
+  book_newLoadedcomments: IComment[] | undefined;
   newComment: {
     value: string | undefined;
     isValid: boolean;
@@ -47,6 +48,11 @@ interface IState {
     report_loader_obj: { [key: string]: boolean };
     unreport_loader_obj: { [key: string]: boolean };
     comment_compress_obj: { [key: string]: boolean };
+    loadComments: {
+      btnLoader: boolean;
+      pager_offset: number;
+      pager_limit: number;
+    }
   };
 }
 class BookDetailComponent extends BaseComponent<IProps, IState> {
@@ -59,6 +65,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     commentLoader: false,
     commentErrorText: undefined,
     book_comments: undefined,
+    book_newLoadedcomments: undefined,
     newComment: {
       value: undefined,
       isValid: false,
@@ -70,6 +77,11 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       report_loader_obj: {},
       unreport_loader_obj: {},
       comment_compress_obj: {},
+      loadComments: {
+        btnLoader: false,
+        pager_offset: 0,
+        pager_limit: 10
+      }
     },
   };
   private _bookService = new BookService();
@@ -106,18 +118,61 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
   async fetchBook_comments(bookId: IBook["id"]) {
     // debugger;
-    this.setState({ ...this.state, commentLoader: true, commentErrorText: undefined });
+    this.setState({
+      ...this.state,
+      commentLoader: true,
+      commentErrorText: undefined,
 
-    // let res = await this._commentService.search(bookId, {limit:10, offset:0}).catch(error => {
-    let res = await this._commentService.book_comments(bookId).catch(error => {
+      comment_actions: {
+        ...this.state.comment_actions,
+        loadComments: {
+          ...this.state.comment_actions.loadComments,
+          btnLoader: true
+        }
+      }
+
+    });
+
+    let res = await this._commentService.search(bookId, {
+      limit: this.state.comment_actions.loadComments.pager_limit,
+      offset: this.state.comment_actions.loadComments.pager_offset
+    }).catch(error => {
+      // let res = await this._commentService.book_comments(bookId).catch(error => {
       const { body: commentErrorText } = this.handleError({ error: error.response });
 
-      this.setState({ ...this.state, commentLoader: false, commentErrorText });
+      this.setState({
+        ...this.state,
+        commentLoader: false,
+        commentErrorText,
+
+        comment_actions: {
+          ...this.state.comment_actions,
+          loadComments: {
+            ...this.state.comment_actions.loadComments,
+            btnLoader: false
+          }
+        }
+      });
     });
 
     if (res) {
       if (res.data.result) {
-        this.setState({ ...this.state, book_comments: res.data.result, commentLoader: false, commentErrorText: undefined });
+        this.setState({
+          ...this.state,
+          book_newLoadedcomments: res.data.result,
+          // book_comments: res.data.result,
+          book_comments: [...this.state.book_comments || [], ...res.data.result],
+          commentLoader: false,
+          commentErrorText: undefined,
+
+          comment_actions: {
+            ...this.state.comment_actions,
+            loadComments: {
+              ...this.state.comment_actions.loadComments,
+              btnLoader: false
+            }
+          }
+        });
       }
     }
   }
@@ -333,7 +388,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <div className="row">
             <div className="col-12">
               <div className="ml-1">
-                <h5 className="mb-2 text-uppercase">{book.rate_no} {Localization.customer_review}</h5>
+                <h5 className="mb-2 text-uppercase">{book.rate_no} {Localization.customer_vote_s}</h5>
                 <Rating
                   className="rating-star"
                   emptySymbol="fa fa-star rating-empty"
@@ -355,21 +410,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
         </section>
 
-        <div className="section-separator my-2"></div>
-
-        <div className="all-review mx-3_ my-3__ py-2 px-1 ">
-          <div className="row">
-            <div className="col-10">
-              <h6 className="font-weight-bold text-capitalize">
-                {/* {Localization.formatString(Localization.see_all_n_reviews, 127)} */}
-                {Localization.more_reviews}
-              </h6>
-            </div>
-            <div className="col-2">
-              <i className="fa fa-angle-down fa-2x book-detail-bordered-box-icon"></i>
-            </div>
-          </div>
-        </div>
+        {this.loadMoreComments_render()}
 
         <div className="section-separator my-2"></div>
 
@@ -473,7 +514,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                     emptySymbol="fa fa-star rating-empty"
                     fullSymbol="fa fa-star rating-full"
                     direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
-                    initialRating={2.5}
+                    initialRating={bk_cmt.rate_by_user}
                     readonly
                   />
 
@@ -596,6 +637,66 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         </>
       );
     }
+  }
+
+  loadMoreComments_render() {
+    if (
+      this.state.book_newLoadedcomments && (this.state.book_newLoadedcomments! || []).length
+      &&
+      !(this.state.comment_actions.loadComments.pager_limit > (this.state.book_newLoadedcomments! || []).length)
+    ) {
+      return (
+        <>
+          <div className="section-separator my-2"></div>
+          <div className="all-review mx-3_ my-3__ py-2 px-1 " onClick={() => this.loadMoreComments()}>
+            <div className="row">
+              <div className="col-10">
+                <h6 className="font-weight-bold text-capitalize">
+                  {/* {Localization.formatString(Localization.see_all_n_reviews, 127)} */}
+                  {Localization.more_reviews}
+                </h6>
+              </div>
+              <div className="col-2">
+                <i className={
+                  "fa fa-angle-down__ fa-2x book-detail-bordered-box-icon " +
+                  (
+                    this.state.comment_actions.loadComments.btnLoader
+                      ?
+                      'fa-spinner fa-spin'
+                      :
+                      'fa-angle-down'
+                  )
+                }
+                ></i>
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
+  }
+
+  loadMoreComments() {
+    if (this.state.comment_actions.loadComments.btnLoader) {
+      return;
+    }
+    this.setState(
+      {
+        ...this.state,
+        comment_actions: {
+          ...this.state.comment_actions,
+          loadComments: {
+            ...this.state.comment_actions.loadComments,
+            pager_offset:
+              this.state.comment_actions.loadComments.pager_offset +
+              this.state.comment_actions.loadComments.pager_limit
+          }
+        }
+      },
+      () => {
+        this.fetchBook_comments(this.bookId);
+      }
+    );
   }
 
   async likeComment(comment_id: string) {

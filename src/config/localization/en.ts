@@ -138,6 +138,7 @@ export const en = {
     follow: 'follow',
     unfollow: 'unfollow',
     customer_review: 'customer review',
+    customer_vote_s: 'customer votes',
     read_reviews_that_mention: 'read reviews that mention',
     see_more: 'see more',
     see_less: 'see less',

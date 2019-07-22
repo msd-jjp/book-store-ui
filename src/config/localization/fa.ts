@@ -140,6 +140,7 @@ export const fa = {
     follow: 'دنبال کردن',
     unfollow: 'دنبال نکردن',
     customer_review: 'نظر مشتری ها',
+    customer_vote_s: 'رای مشتری ها',
     read_reviews_that_mention: 'خواندن نظر های ذکر شده',
     see_more: 'بیشتر ببینید',
     see_less: 'کمتر ببینید',

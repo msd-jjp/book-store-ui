@@ -1,5 +1,5 @@
 import { BaseModel } from "./model.base";
-import { IBook } from "./model.book";
+// import { IBook } from "./model.book";
 import { IPerson } from "./model.person";
 
 export interface IComment extends BaseModel {
@@ -8,6 +8,7 @@ export interface IComment extends BaseModel {
     reports: number;
     liked_by_user: boolean;
     reported_by_user: boolean;
+    rate_by_user: number;
     // book: IBook;
     person: IPerson;
     parent?: IComment;

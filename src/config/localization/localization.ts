@@ -143,6 +143,7 @@ interface ILocalization extends LocalizedStringsMethods {
     follow: string;
     unfollow: string;
     customer_review: string;
+    customer_vote_s: string;
     read_reviews_that_mention: string;
     see_more: string;
     see_less: string;
