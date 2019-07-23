@@ -13,6 +13,8 @@ import { IBook } from '../../model/model.book';
 import { BOOK_ROLES } from '../../enum/Book';
 import { ToastContainer } from 'react-toastify';
 
+export type category_routeParam_categoryType = 'tag' | 'genre' | 'custom';
+
 interface IProps {
     internationalization: TInternationalization;
     history: History;
@@ -20,7 +22,7 @@ interface IProps {
     match: any;
 }
 interface IState {
-    categoryType: 'tag' | 'genre' | undefined;
+    categoryType: category_routeParam_categoryType | undefined;
     categoryTitle: string | undefined;
     categoryBookList: IBook[] | undefined;
     categoryBookError: string | undefined;
@@ -54,18 +56,25 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
     }
     async fetchCategoryBooks() {
         this.setState({ ...this.state, categoryBookError: undefined });
+        let searchRequest;
 
-        let filter: any = {};
-        filter[this.state.categoryType!] = this.state.categoryTitle;
+        if (this.state.categoryType === 'custom' && this.state.categoryTitle === 'wishlist') {
+            searchRequest = this._bookService.wishList_search({
+                limit: this.state.pager_limit, offset: this.state.pager_offset
+            });
+        } else {
+            let filter: any = {};
+            filter[this.state.categoryType!] = this.state.categoryTitle;
+            searchRequest = this._bookService.search({
+                limit: this.state.pager_limit, offset: this.state.pager_offset, filter: filter
+            });
+        }
 
-        let res = await this._bookService.search({
-            limit: this.state.pager_limit, offset: this.state.pager_offset, filter: filter
-        }).catch(error => {
-
+        let res = await searchRequest.catch(error => {
             let errorMsg = this.handleError({ error: error.response });
             this.setState({ ...this.state, categoryBookError: errorMsg.body });
         });
-        // debugger;
+
         if (res) {
             if (res.data.result) {
                 this.setState({ ...this.state, categoryBookList: res.data.result });
