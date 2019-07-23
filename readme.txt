@@ -83,7 +83,7 @@ delete folder --> book | products | form/number | role | user
 store carousel --> desktop mode arrow left row
 
 ====================================================================================
-
+?)
 comments --> parent: show quote from parent
 
 ====================================================================================
@@ -93,16 +93,12 @@ if regex mobile & not require --> error
 if no default value & require --> error
 
 ====================================================================================
-book-detail:
-1)comment create date (number timestamp): change to jalali & gregorian data (base on flag)
-2)change book duration second to moment method human readable.
 
 store:
 1)slide navigation in desktop.
 
 ====================================================================================
 
-user able to delete his comment;
 
 
 ====================================================================================

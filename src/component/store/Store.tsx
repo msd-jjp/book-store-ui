@@ -11,7 +11,8 @@ import { IBook } from '../../model/model.book';
 import { BookService } from '../../service/service.book';
 import { IToken } from '../../model/model.token';
 import { History } from "history";
-import { BOOK_GENRE } from '../../enum/Book';
+import { BOOK_GENRE, BOOK_ROLES } from '../../enum/Book';
+import { category_routeParam_categoryType } from '../category/Category';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -25,6 +26,10 @@ interface IState {
     recomendedBookError: string | undefined;
     newReleaseBookList: IBook[] | undefined;
     newReleaseBookError: string | undefined;
+    bestSellerBookList: IBook[] | undefined;
+    bestSellerBookError: string | undefined;
+    wishListBookList: IBook[] | undefined;
+    wishListBookError: string | undefined;
 }
 
 class StoreComponent extends BaseComponent<IProps, IState> {
@@ -33,8 +38,16 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         recomendedBookError: undefined,
         newReleaseBookList: undefined,
         newReleaseBookError: undefined,
+        bestSellerBookList: undefined,
+        bestSellerBookError: undefined,
+        wishListBookList: undefined,
+        wishListBookError: undefined,
     };
     private _bookService = new BookService();
+    private recomendedBookCarousel_el!: HTMLDivElement | null;
+    private newReleaseBookCarousel_el!: HTMLDivElement | null;
+    private bestSellerBookCarousel_el!: HTMLDivElement | null;
+    private wishListBookCarousel_el!: HTMLDivElement | null;
 
     componentDidMount() {
         this._bookService.setToken(this.props.token);
@@ -44,6 +57,8 @@ class StoreComponent extends BaseComponent<IProps, IState> {
     fetchAllData() {
         this.fetchNewestBook();
         this.fetchRecomendedBook();
+        this.fetchWishListBook();
+        this.fetchBestSellerBook();
     }
     async fetchRecomendedBook() {
         this.setState({ ...this.state, recomendedBookError: undefined });
@@ -71,15 +86,38 @@ class StoreComponent extends BaseComponent<IProps, IState> {
             }
         }
     }
+    async fetchWishListBook() {
+        this.setState({ ...this.state, wishListBookError: undefined });
 
-    /* top_picks_render() {
-        return (
-            <>
-                {this.carousel_header_render('top picks for you')}
-                {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
-            </>
-        )
-    } */
+        let res = await this._bookService.wishList_search({
+            limit: 10, offset: 0
+        }).catch(error => {
+            let errorMsg = this.handleError({ error: error.response, notify: false });
+            this.setState({ ...this.state, wishListBookError: errorMsg.body });
+        });
+        if (res) {
+            if (res.data.result /* && res.data.result.length */) {
+                this.setState({ ...this.state, wishListBookList: res.data.result });
+            }
+        }
+    }
+    async fetchBestSellerBook() {
+        this.setState({ ...this.state, bestSellerBookError: undefined });
+
+        let res = await this._bookService.search({
+            limit: 10, offset: 0, filter: { tag: "best_seller" }
+        }).catch(error => {
+            let errorMsg = this.handleError({ error: error.response, notify: false });
+            this.setState({ ...this.state, bestSellerBookError: errorMsg.body });
+        });
+        if (res) {
+            if (res.data.result /* && res.data.result.length */) {
+                this.setState({ ...this.state, bestSellerBookList: res.data.result });
+            }
+        }
+    }
+
+
     recommended_render() {
         if (!this.props.logged_in_user) {
             return;
@@ -88,7 +126,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
             return (
                 <>
                     {this.carousel_header_render(Localization.recomended_for_you, 'tag', 'recommended')}
-                    {this.carousel_render(this.state.recomendedBookList!)}
+                    {this.carousel_render(this.state.recomendedBookList!, this.recomendedBookCarousel_el)}
                 </>
             )
 
@@ -116,29 +154,95 @@ class StoreComponent extends BaseComponent<IProps, IState> {
             );
         }
     }
-    /* browsing_history_render() {
-        return (
-            <>
-                {this.carousel_header_render('inspired by your browsing history')}
-                {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
-            </>
-        )
-    } */
-    wishlist_render() {
+
+    wishlist_render__() {
         return (
             <>
                 {this.carousel_header_render(Localization.inspired_by_your_wishlist, 'tag', 'wishlist')}
-                {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
+                {/* {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])} */}
+            </>
+        )
+    }
+    wishlist_render() {
+        if (!this.props.logged_in_user) {
+            return;
+        }
+        if (this.state.wishListBookList && (this.state.wishListBookList! || []).length) {
+            return (
+                <>
+                    {this.carousel_header_render(Localization.inspired_by_your_wishlist, 'custom', 'wishlist')}
+                    {this.carousel_render(this.state.wishListBookList!, this.wishListBookCarousel_el)}
+                </>
+            )
+
+        } else if (this.state.wishListBookList && !(this.state.wishListBookList! || []).length) {
+            return;
+
+        } else if (this.state.wishListBookError) {
+            return (
+                <>
+                    {this.carousel_header_render(Localization.inspired_by_your_wishlist, 'custom', 'wishlist')}
+
+                    <div>{this.state.wishListBookError}</div>
+                    <div onClick={() => this.fetchWishListBook()}>
+                        {Localization.retry}
+                    </div>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    {this.carousel_header_render(Localization.inspired_by_your_wishlist, 'custom', 'wishlist')}
+
+                    <div>{Localization.loading_with_dots}</div>
+                </>
+            );
+        }
+    }
+
+    best_seller_render__() {
+        return (
+            <>
+                {this.carousel_header_render(Localization.best_seller, 'tag', 'best_seller')}
+                {/* {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])} */}
             </>
         )
     }
     best_seller_render() {
-        return (
-            <>
-                {this.carousel_header_render(Localization.best_seller, 'tag', 'best_seller')}
-                {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])}
-            </>
-        )
+        if (!this.props.logged_in_user) {
+            return;
+        }
+        if (this.state.bestSellerBookList && (this.state.bestSellerBookList! || []).length) {
+            return (
+                <>
+                    {this.carousel_header_render(Localization.best_seller, 'tag', 'best_seller')}
+                    {this.carousel_render(this.state.bestSellerBookList!, this.bestSellerBookCarousel_el)}
+                </>
+            )
+
+        } else if (this.state.bestSellerBookList && !(this.state.bestSellerBookList! || []).length) {
+            return;
+
+        } else if (this.state.bestSellerBookError) {
+            return (
+                <>
+                    {this.carousel_header_render(Localization.best_seller, 'tag', 'best_seller')}
+
+                    <div>{this.state.bestSellerBookError}</div>
+                    <div onClick={() => this.fetchBestSellerBook()}>
+                        {Localization.retry}
+                    </div>
+                </>
+            );
+        } else {
+            return (
+                <>
+                    {this.carousel_header_render(Localization.best_seller, 'tag', 'best_seller')}
+
+                    <div>{Localization.loading_with_dots}</div>
+                </>
+            );
+        }
     }
 
     new_releases_render() {
@@ -149,7 +253,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
             return (
                 <>
                     {this.carousel_header_render(Localization.new_release_in_bookstore, 'tag', 'new')}
-                    {this.carousel_render(this.state.newReleaseBookList!)}
+                    {this.carousel_render(this.state.newReleaseBookList!, this.newReleaseBookCarousel_el)}
                 </>
             )
 
@@ -178,10 +282,10 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    carousel_header_render(headerTitle: string, categoryType: 'tag' | 'genre', categoryTitle: string) {
+    carousel_header_render(headerTitle: string, categoryType: category_routeParam_categoryType, categoryTitle: string) {
         return (
             <>
-                <div className="category-wrapper d-flex justify-content-between mb-2"
+                <div className="category-title-wrapper d-flex justify-content-between mb-2"
                     onClick={() => this.gotoCategory(categoryType, categoryTitle)}>
                     <h6 className="category-title text-capitalize">{headerTitle}</h6>
                     <i className="category-icon fa fa-angle-right-app text-muted"></i>
@@ -189,40 +293,66 @@ class StoreComponent extends BaseComponent<IProps, IState> {
             </>
         )
     }
-    carousel_render(bookList: any[]/* IBook[] */) {
+    carousel_render(bookList: IBook[], carousel_el: HTMLDivElement | null) {
         return (
             <>
-                <div className="carousel-wrapper mb-4">
-                    {bookList.map((book, bookIndex) => (
-                        <div className="carousel-item" key={bookIndex}>
-                            <div className="img-wrapper" onClick={() => this.gotoBookDetail(book.id)}>
-                                <img src="/static/media/img/icon/default-book.png" alt="book" />
-                            </div>
-                            <span className="writer-name">Claire McGowan</span>
-                            <div className="clearfix"></div>
-                            <Rating
-                                className="rating-star"
-                                emptySymbol="fa fa-star rating-empty"
-                                fullSymbol="fa fa-star rating-full"
-                                direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
-                                initialRating={2.5}
-                                readonly
-                            />
-                            <span className="rate-count ml-2">(243)</span>
-                        </div>
-                    ))}
+                <div className="carousel-wrapper">
+                    <i className="carousel-arrow go-back fa fa-angle-left-app"
+                        onClick={() => this.carousel_go_back(carousel_el)}></i>
+                    <div ref={elRef => { carousel_el = elRef }} className="carousel-item-wrapper mb-4">
+                        {bookList.map((book, bookIndex) => {
+
+                            const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
+                                "/static/media/img/icon/default-book.png";
+                            let writerList = book.roles.filter(
+                                r => r.role === BOOK_ROLES.Writer
+                            );
+                            let first_writer_fullName = '';
+                            if (writerList.length) {
+                                first_writer_fullName = writerList[0].person.name + ' ' + writerList[0].person.last_name;
+                            }
+
+                            return (
+                                <div className="carousel-item" key={bookIndex}>
+                                    <div className="img-wrapper" onClick={() => this.gotoBookDetail(book.id)}>
+                                        <img src={book_image} alt="book" />
+                                    </div>
+                                    <span className="writer-name text-capitalize" title={first_writer_fullName}>
+                                        {first_writer_fullName}
+                                    </span>
+                                    <div className="clearfix"></div>
+                                    <Rating
+                                        className="rating-star"
+                                        emptySymbol="fa fa-star rating-empty"
+                                        fullSymbol="fa fa-star rating-full"
+                                        direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
+                                        initialRating={book.rate}
+                                        readonly
+                                    />
+                                    <span className="rate-count ml-2">({book.rate_no})</span>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    <i className="carousel-arrow go-forward fa fa-angle-right-app"
+                        onClick={() => this.carousel_go_forward(carousel_el)}></i>
                 </div>
             </>
         )
     }
-    gotoSearch_by_category(category: string) {
-        debugger;
+
+    carousel_go_back(el: HTMLDivElement | null) {
+        el && el.scrollBy(100, 0);
     }
+    carousel_go_forward(el: HTMLDivElement | null) {
+        el && el.scrollBy(-100, 0);
+    }
+
     gotoBookDetail(bookId: string) {
         this.props.history.push(`book-detail/${bookId}`);
     }
 
-    gotoCategory(searchType: 'tag' | 'genre', searchValue: string) {
+    gotoCategory(searchType: category_routeParam_categoryType, searchValue: string) {
         this.props.history.push(`category/${searchType}/${searchValue}`);
     }
 
@@ -231,9 +361,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
             <>
                 <div className="store-wrapper">
                     <h4 className="mt-3 mb-4">{Localization.bookstore_books}:</h4>
-                    {/* {this.top_picks_render()} */}
                     {this.recommended_render()}
-                    {/* {this.browsing_history_render()} */}
                     {this.wishlist_render()}
                     {this.best_seller_render()}
                     {this.new_releases_render()}
