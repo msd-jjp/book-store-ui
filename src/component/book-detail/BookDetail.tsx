@@ -791,10 +791,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   modal_removeComment_render() {
     return (
       <>
-        <Modal show={this.state.modal_removeComment.show} onHide={() => this.closeModal_removeComment()}>
-          <Modal.Header closeButton>
+        <Modal show={this.state.modal_removeComment.show} onHide={() => this.closeModal_removeComment()} centered>
+          {/* <Modal.Header closeButton>
             <Modal.Title className="text-danger">{Localization.remove_comment}</Modal.Title>
-          </Modal.Header>
+          </Modal.Header> */}
           <Modal.Body>{Localization.msg.ui.your_comment_will_be_removed_continue}</Modal.Body>
           <Modal.Footer>
             <button className="btn btn-light btn-sm" onClick={() => this.closeModal_removeComment()}>
