@@ -3,6 +3,7 @@ import { Setup } from '../config/setup';
 import { IToken } from '../model/model.token';
 import { Store2 } from '../redux/store';
 import { action_set_token } from '../redux/action/token';
+import { Utility } from '../asset/script/utility';
 
 
 export interface IAPI_ResponseList<T> {
@@ -69,12 +70,13 @@ export abstract class BaseService {
               });
             } */
 
+            let authObj = Utility.get_decode_auth(Store2.getState().authentication)
             // Try request again with new token
-            return this.getTokenfromServer({ username: 'kk', password: 'kk' })
+            return this.getTokenfromServer(authObj)
                 .then((token) => {
-                    // let state = Store2.getState();
-                    // state.token
                     Store2.dispatch(action_set_token(token.data));
+                    this.setToken(token.data);
+                    
                     // New request with new token
                     const config = error.config;
                     config.headers['authorization'] = `Bearer ${token.data.id}`; // Authorization

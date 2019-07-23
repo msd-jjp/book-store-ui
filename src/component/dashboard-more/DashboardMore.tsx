@@ -12,6 +12,7 @@ import { Localization } from '../../config/localization/localization';
 import { action_remove_token } from '../../redux/action/token';
 
 import { History } from 'history';
+import { action_remove_authentication } from '../../redux/action/authentication';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -20,6 +21,7 @@ export interface IProps {
     internationalization: TInternationalization;
     remove_token: () => void;
     history: History;
+    remove_authentication: () => void;
 }
 
 class DashboardMoreComponent extends BaseComponent<IProps, any> {
@@ -60,6 +62,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
         // debugger;
         this.props.do_logout();
         this.props.remove_token();
+        this.props.remove_authentication();
         this.props.history.push('/login');
     }
     render() {
@@ -127,32 +130,6 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
                     </ul>
                 </div>
 
-
-
-
-                {/* <ul className="list-group list-group-flush__ text-center p-0">
-                    <NavLink className="list-group-item list-group-item-action" to="/register">{Localization.register}</NavLink>
-                    <NavLink className="list-group-item list-group-item-action" to="/login"
-                        style={{
-                            borderBottom: 0
-                        }}
-                    >{Localization.login}</NavLink>
-                </ul>
-
-                <ul className="list-group list-group-horizontal list-group-flush__ text-center  p-0">
-                    <button className="list-group-item list-group-item-action" onClick={() => this.change('fa')}>
-                        <img src="static/media/img/flag/ir.png" alt="" width="50px" />
-                    </button>
-                    <button className="list-group-item list-group-item-action" onClick={() => this.change('en')}>
-                        <img src="static/media/img/flag/us.png" alt="" width="50px" />
-                    </button>
-                    <button className="list-group-item list-group-item-action" onClick={() => this.change('ar')}>
-                        <img src="static/media/img/flag/ar.png" alt="" width="50px" />
-                    </button>
-                </ul> */}
-
-
-
             </>
         )
     }
@@ -163,6 +140,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
         do_logout: () => dispatch(action_user_logged_out()),
         change_app_flag: (internationalization: TInternationalization) => dispatch(action_change_app_flag(internationalization)),
         remove_token: () => dispatch(action_remove_token()),
+        remove_authentication: () => dispatch(action_remove_authentication()),
     }
 }
 

@@ -16,6 +16,8 @@ import { IToken } from '../../model/model.token';
 import { action_set_token } from '../../redux/action/token';
 
 import { History } from 'history';
+import { action_set_authentication } from '../../redux/action/authentication';
+import { Utility } from '../../asset/script/utility';
 
 type inputType = 'username' | 'password';
 
@@ -38,6 +40,7 @@ interface IProps {
     internationalization: TInternationalization;
     onSetToken?: (token: IToken) => void;
     token: IToken;
+    onSetAuthentication: (auth: string) => void;
 }
 
 class LoginComponent extends BaseComponent<IProps, IState> {
@@ -60,10 +63,11 @@ class LoginComponent extends BaseComponent<IProps, IState> {
         if (!this.state.isFormValid) { return; }
         this.setState({ ...this.state, btnLoader: true });
 
-        let tokenObj/* : string | void */ = await this._loginService.login({
+        let authObj = {
             username: this.state.username.value!,
             password: this.state.password.value!
-        }).catch((error) => {
+        }
+        let tokenObj/* : string | void */ = await this._loginService.login(authObj).catch((error) => {
             debugger;
             this.handleError({ error: error.response });
             this.setState({ ...this.state, btnLoader: false });
@@ -72,6 +76,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
         // let user: any; // IUser | void;
         let response: any;
         if (tokenObj) {
+            this.props.onSetAuthentication(Utility.get_encode_auth(authObj));
             this.props.onSetToken && this.props.onSetToken(tokenObj.data);
             // localStorage.setItem('token', JSON.stringify(tokenObj.data)); // todo _DELETE_ME
             // debugger;
@@ -194,7 +199,8 @@ const state2props = (state: redux_state) => {
 const dispatch2props = (dispatch: Dispatch) => {
     return {
         onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
-        onSetToken: (token: IToken) => dispatch(action_set_token(token))
+        onSetToken: (token: IToken) => dispatch(action_set_token(token)),
+        onSetAuthentication: (auth: string) => dispatch(action_set_authentication(auth))
     }
 }
 
