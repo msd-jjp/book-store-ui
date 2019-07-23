@@ -6,4 +6,5 @@ export interface redux_state {
     logged_in_user: IUser | null;
     internationalization: TInternationalization;
     token: IToken;
+    authentication: string;
 }

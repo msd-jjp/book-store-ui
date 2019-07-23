@@ -7,6 +7,7 @@ import { Reducer } from 'redux';
 import { TInternationalization } from '../config/setup';
 import { IToken } from '../model/model.token';
 import { reducer as TokenReducer } from './reducer/token';
+import { reducer as AuthenticationReducer } from './reducer/authentication';
 import logger from 'redux-logger'
 //
 import { persistStore, persistReducer } from 'redux-persist';
@@ -16,6 +17,7 @@ const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
   logged_in_user: UserReducer as Reducer<IUser | null, AnyAction>,
   internationalization: InternationalizationReducer as Reducer<TInternationalization, AnyAction>,
   token: TokenReducer as Reducer<IToken, AnyAction>,
+  authentication: AuthenticationReducer as Reducer<string, AnyAction>,
 }
 
 const main_reducer = combineReducers(reducers);
