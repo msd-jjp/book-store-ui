@@ -19,6 +19,7 @@ import { BookDetail } from '../book-detail/BookDetail';
 import { ForgotPassword } from '../forgot-password/ForgotPassword';
 import { Category } from '../category/Category';
 import { Search } from '../search/Search';
+import { appLocalStorage } from '../../service/appLocalStorage';
 
 const appRoutes = (
   <HashRouter>
@@ -47,6 +48,8 @@ interface IProps {
 }
 
 class AppComponent extends React.Component<IProps, any> {
+  private initStore = new appLocalStorage();
+  
   constructor(props: any) {
     super(props);
 

@@ -60,7 +60,7 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
                     obj.body = Localization.msg.ui.msg2;
                 }
             } else {
-                obj.body = Localization.msg.ui.msg2;
+                obj.body = Localization.msg.ui.no_network_connection;
             }
         }
 
@@ -157,6 +157,6 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         return moment.unix(timestamp).fromNow();
     }
 
-    
+
 
 }

@@ -4,6 +4,7 @@ import { IToken } from '../model/model.token';
 import { Store2 } from '../redux/store';
 import { action_set_token } from '../redux/action/token';
 import { Utility } from '../asset/script/utility';
+import { appLocalStorage } from './appLocalStorage';
 
 
 export interface IAPI_ResponseList<T> {
@@ -21,11 +22,13 @@ export abstract class BaseService {
         baseURL: this.baseURL,
         headers: { 'Content-Type': 'application/json' }
     });
+
     // _axiosTokenInstance: AxiosInstance | undefined;
 
-    // constructor() {
-    //     // this.set_401_interceptors();
-    // }
+    constructor() {
+        // this.set_401_interceptors();
+        this.set_store_interceptors(this.axiosInstance);
+    }
 
     get axiosTokenInstance(): AxiosInstance {
         // if (this._axiosTokenInstance) { return this._axiosTokenInstance; }
@@ -39,6 +42,7 @@ export abstract class BaseService {
             newAX_instance = this.axiosInstance;
         }
         this.set_401_interceptors(newAX_instance);
+        this.set_store_interceptors(newAX_instance);
         return newAX_instance;
         // return this._axiosTokenInstance;
     }
@@ -53,7 +57,7 @@ export abstract class BaseService {
             return response;
         }, (error) => {
             // Return any error which is not due to authentication back to the calling service
-            if (error.response.status !== 401) {
+            if (!error.response || (error.response && error.response.status !== 401)) {
                 return new Promise((resolve, reject) => {
                     reject(error);
                 });
@@ -76,7 +80,7 @@ export abstract class BaseService {
                 .then((token) => {
                     Store2.dispatch(action_set_token(token.data));
                     this.setToken(token.data);
-                    
+
                     // New request with new token
                     const config = error.config;
                     config.headers['authorization'] = `Bearer ${token.data.id}`; // Authorization
@@ -110,6 +114,32 @@ export abstract class BaseService {
         });
 
         return instance.post('/tokens', {});
+    }
+
+    set_store_interceptors(ax_instance: AxiosInstance) {
+        // debugger;
+        ax_instance.interceptors.response.use((response) => {
+
+            try {
+                appLocalStorage.storeUsefullResponse(response);
+            } catch (e) {
+                debugger;
+            }
+
+            return response;
+        }, (error) => {
+            // return error;
+            return new Promise((resolve, reject) => {
+                reject(error);
+            });
+        });
+    }
+
+    isAppOffline(): boolean {
+        if (navigator && !navigator.onLine) {
+            return true;
+        }
+        return false;
     }
 
 }

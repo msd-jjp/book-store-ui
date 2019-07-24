@@ -1,9 +1,19 @@
 import { BaseService, IAPI_ResponseList, IAPI_Response } from './service.base';
 import { IBook } from '../model/model.book';
+import { appLocalStorage } from './appLocalStorage';
 
 export class BookService extends BaseService {
 
     get(bookId: string): Promise<IAPI_Response<IBook>> {
+        if (this.isAppOffline()) {
+            let lcl_book: IBook | null = appLocalStorage.findById('clc_book', bookId);
+            if (lcl_book) {
+                return new Promise((resolve, reject) => {
+                    resolve({ data: lcl_book! });
+                });
+            }
+        }
+
         return this.axiosTokenInstance.get(`/books/${bookId}`);
     }
 
@@ -20,6 +30,14 @@ export class BookService extends BaseService {
     }
 
     search(data: { limit: number, offset: number, filter: Object }): Promise<IAPI_ResponseList<IBook>> {
+        if (this.isAppOffline()) {
+            let lcl_book_list: IBook[] | null = appLocalStorage.search_by_query('clc_book', data);
+            if (lcl_book_list && lcl_book_list.length) {
+                return new Promise((resolve, reject) => {
+                    resolve({ data: { result: lcl_book_list! } });
+                });
+            }
+        }
         return this.axiosTokenInstance.post('/books/_search', data);
     }
 

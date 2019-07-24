@@ -16,6 +16,7 @@ export const fa = {
             your_rate_submited: 'رتبه شما ثبت شد',
             your_comment_submited: 'نظر شما ثبت شد',
             your_comment_will_be_removed_continue: 'نظر شما حذف خواهد شد، تایید می کنید؟',
+            no_network_connection: 'خطا رخ داد، لطفا دسترسی اینترنت خود را بررسی کرده و مجددا تلاش کنید.',
         },
         back: {
             msg1: 'کاربر از قبل وجود دارد.',

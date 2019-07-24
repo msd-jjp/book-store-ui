@@ -16,6 +16,7 @@ export const en = {
             your_rate_submited: 'your rate submited',
             your_comment_submited: 'your comment submited',
             your_comment_will_be_removed_continue: 'your comment will be removed, continue?',
+            no_network_connection: 'error occurred, please check your network connection and try again',
         },
         back: {
             msg1: 'user already exists',

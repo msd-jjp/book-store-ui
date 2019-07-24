@@ -25,6 +25,7 @@ interface ILocalization extends LocalizedStringsMethods {
             your_rate_submited: string;
             your_comment_submited: string;
             your_comment_will_be_removed_continue: string;
+            no_network_connection: string;
         },
         back: {
             [key: string]: any; // todo
