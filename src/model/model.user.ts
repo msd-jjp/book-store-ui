@@ -7,5 +7,5 @@ export interface IUser extends BaseModel {
     username: string;
     password: string;
     // person_id: string;
-    person?: IPerson;
+    person: IPerson;
 }
