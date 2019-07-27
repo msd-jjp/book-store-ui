@@ -95,7 +95,8 @@ if no default value & require --> error
 ====================================================================================
 
 store:
-1)slide navigation in desktop.
+1)slide navigation in desktop.  --> horizontal scroll in store page.
+arrow reverse in en mode
 
 ====================================================================================
 

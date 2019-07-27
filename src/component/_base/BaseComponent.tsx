@@ -15,6 +15,7 @@ import moment from 'moment';
 // import moment_locale from 'moment/min/moment-with-locales';
 import 'moment/locale/fa';
 import 'moment/locale/ar';
+import { Utility } from '../../asset/script/utility';
 
 interface IHandleError {
     error?: any;
@@ -157,6 +158,8 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         return moment.unix(timestamp).fromNow();
     }
 
-
+    isDeviceMobileOrTablet(): boolean {
+        return Utility.mobileAndTabletcheck();
+    }
 
 }
