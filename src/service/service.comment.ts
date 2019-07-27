@@ -28,7 +28,7 @@ export class CommentService extends BaseService {
     search(book_id: string, data: { limit: number, offset: number, filter?: Object }): Promise<IAPI_ResponseList<IComment>> {
         if (this.isAppOffline()) {
             let lcl_comment_list: IComment[] | null = appLocalStorage.search_by_query_comment(book_id, data);
-            if (lcl_comment_list && lcl_comment_list.length) {
+            if (lcl_comment_list /* && lcl_comment_list.length */) {
                 return new Promise((resolve, reject) => {
                     resolve({ data: { result: lcl_comment_list! } });
                 });
