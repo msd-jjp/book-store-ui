@@ -342,10 +342,18 @@ class StoreComponent extends BaseComponent<IProps, IState> {
     }
 
     carousel_go_back(el: HTMLDivElement | null) {
+        if (this.props.internationalization.rtl) {
         el && el.scrollBy(100, 0);
+        } else {
+            el && el.scrollBy(-100, 0);
+        }
     }
     carousel_go_forward(el: HTMLDivElement | null) {
+        if (this.props.internationalization.rtl) {
         el && el.scrollBy(-100, 0);
+        } else {
+            el && el.scrollBy(100, 0);
+        }
     }
 
     gotoBookDetail(bookId: string) {
