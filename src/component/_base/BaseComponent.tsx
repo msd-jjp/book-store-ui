@@ -34,6 +34,7 @@ interface IBaseProps {
 
 export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> extends React.Component<p, S, SS> {
     image_pre_url = '/api/serve-files';
+    defaultBookImagePath = "/static/media/img/icon/default-book.png";
 
     /* async  */
     handleError(handleErrorObj: IHandleError): IHandleErrorResolve { // Promise<IHandleErrorResolve>
@@ -160,6 +161,19 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
 
     isDeviceMobileOrTablet(): boolean {
         return Utility.mobileAndTabletcheck();
+    }
+
+    imageOnError(e: any, defaultImagePath: string) {//React.SyntheticEvent<HTMLImageElement, Event>
+        // let defaultImagePath = "/static/media/img/icon/default-book.png";
+        // let target  = (<React.SyntheticEvent<HTMLImageElement>>e.target).src
+        if (e.target.src !== window.location.origin + defaultImagePath) {
+            // e.target.onerror = null;
+            e.target.src = defaultImagePath;
+        }
+    }
+
+    bookImageOnError(e: any) {
+        return this.imageOnError(e, "/static/media/img/icon/broken-book.png");
     }
 
 

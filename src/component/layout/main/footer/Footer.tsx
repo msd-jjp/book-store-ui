@@ -24,13 +24,13 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
             let current_book = this.props.logged_in_user.person.current_book;
             let current_book_img = (current_book.images && current_book.images.length && this.getImageUrl(current_book.images[0]))
                 ||
-                "/static/media/img/icon/default-book.png";
+                this.defaultBookImagePath;
 
             return (
                 <>
                     <div className="item text-center selected-book">
                         <NavLink to="/dashboard" className="nav-link" activeClassName="active pointer-events-none">
-                            <img src={current_book_img} alt="selected-book" />
+                            <img src={current_book_img} alt="selected-book" onError={e => this.bookImageOnError(e)} />
                         </NavLink>
                     </div>
                 </>

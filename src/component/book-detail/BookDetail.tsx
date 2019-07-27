@@ -194,7 +194,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
   book_detail_template(book: IBook) {
     const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
-      "/static/media/img/icon/default-book.png";
+    this.defaultBookImagePath;
 
     let writerList = book.roles.filter(
       r => r.role === BOOK_ROLES.Writer
@@ -215,7 +215,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             <div className="col-5">
               <div className="book-image-wrapper">
                 {/* <div className="slide-book"> */}
-                <img src={book_image} alt="book" />
+                <img src={book_image} alt="book" onError={e => this.bookImageOnError(e)} />
                 {/* </div> */}
               </div>
             </div>

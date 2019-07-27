@@ -315,7 +315,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                         {bookList.map((book, bookIndex) => {
 
                             const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
-                                "/static/media/img/icon/default-book.png";
+                                this.defaultBookImagePath;
                             let writerList = book.roles.filter(
                                 r => r.role === BOOK_ROLES.Writer
                             );
@@ -327,7 +327,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                             return (
                                 <div className="carousel-item" key={bookIndex}>
                                     <div className="img-wrapper" onClick={() => this.gotoBookDetail(book.id)}>
-                                        <img src={book_image} alt="book" />
+                                        <img src={book_image} alt="book" onError={e => this.bookImageOnError(e)} />
                                     </div>
                                     <span className="writer-name text-capitalize" title={first_writer_fullName}>
                                         {first_writer_fullName}

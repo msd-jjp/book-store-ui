@@ -196,9 +196,10 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                   <img
                     src={
                       (book.images && this.getImageUrl(book.images[0])) ||
-                      "/static/media/img/icon/default-book.png"
+                      this.defaultBookImagePath
                     }
                     alt="book"
+                    onError={e => this.bookImageOnError(e)}
                   />
                   <span className="item-number">{bookIndex}</span>
                 </div>
@@ -229,7 +230,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     let current_book_img =
       (current_book.images && current_book.images.length && this.getImageUrl(current_book.images[0]))
       ||
-      "/static/media/img/icon/default-book.png";
+      this.defaultBookImagePath;
     let writerList = current_book.roles.filter(
       r => r.role === BOOK_ROLES.Writer
     );

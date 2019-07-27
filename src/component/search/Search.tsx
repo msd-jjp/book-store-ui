@@ -115,7 +115,7 @@ class SearchComponent extends BaseComponent<IProps, IState> {
         let book_img =
             (book.images && book.images.length && this.getImageUrl(book.images[0]))
             ||
-            "/static/media/img/icon/default-book.png";
+            this.defaultBookImagePath;
         let writerList = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
         let name = writerList && writerList.length && writerList[0].person.name;
         let last_name = writerList && writerList.length && writerList[0].person.last_name;
@@ -127,7 +127,7 @@ class SearchComponent extends BaseComponent<IProps, IState> {
                     <div className="row">
                         <div className="img-wrapper col-4" onClick={() => this.gotoBookDetail(book.id)}>
                             <div>
-                                <img src={book_img} alt="book" />
+                                <img src={book_img} alt="book" onError={e => this.bookImageOnError(e)} />
                             </div>
                         </div>
                         <div className="detail-wrapper col-8 p-align-0">

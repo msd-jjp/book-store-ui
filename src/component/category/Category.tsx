@@ -106,7 +106,7 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
         let book_img =
             (book.images && book.images.length && this.getImageUrl(book.images[0]))
             ||
-            "/static/media/img/icon/default-book.png";
+            this.defaultBookImagePath;
         let writerList = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
         let name = writerList && writerList.length && writerList[0].person.name;
         let last_name = writerList && writerList.length && writerList[0].person.last_name;
@@ -135,7 +135,7 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                         </div>
                         <div className="kc-book-title-img-section">
                             <div className="kc-book-title-img" onClick={() => this.gotoBookDetail(book.id)}>
-                                <img src={book_img} alt="book" />
+                                <img src={book_img} alt="book" onError={e => this.bookImageOnError(e)} />
                             </div>
                         </div>
                     </div>
