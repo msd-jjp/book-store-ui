@@ -9,6 +9,7 @@ export interface IComment extends BaseModel {
     liked_by_user: boolean;
     reported_by_user: boolean;
     rate_by_user: number;
+    book_id: string;
     // book: IBook;
     person: IPerson;
     parent?: IComment;

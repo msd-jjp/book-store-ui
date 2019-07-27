@@ -31,7 +31,7 @@ export class BookService extends BaseService {
 
     search(data: { limit: number, offset: number, filter: Object }): Promise<IAPI_ResponseList<IBook>> {
         if (this.isAppOffline()) {
-            let lcl_book_list: IBook[] | null = appLocalStorage.search_by_query('clc_book', data);
+            let lcl_book_list: IBook[] | null = appLocalStorage.search_by_query_book(data);
             if (lcl_book_list && lcl_book_list.length) {
                 return new Promise((resolve, reject) => {
                     resolve({ data: { result: lcl_book_list! } });

@@ -42,7 +42,7 @@ export class appLocalStorage {
     }
 
     static initDB() {
-        debugger;
+        // debugger;
         // let coll_list: TCollectionName[] = ['clc_book', 'clc_comment'];
         // coll_list.forEach(coll => {
         //     if (appLocalStorage.app_db.getCollection(coll) === null) {
@@ -121,51 +121,94 @@ export class appLocalStorage {
             // debugger;
             appLocalStorage.addDataToCollection('clc_book', response.data);
         }
+        else if (response.config.url && response.config.url.includes('/api/comments/book/')) {
+            appLocalStorage.addDataToCollection('clc_comment', response.data.result);
+        }
     }
 
+    /* _DELETE_ME **/
     static search_by_query(
         collectionName: TCollectionName,
-        searchData: { limit: number, offset: number, filter: Object }
+        searchData: { limit: number, offset: number, filter?: Object }
     ): any {
         // let lcl_book: IBook | null = appLocalStorage.findById('clc_book', bookId);
         return appLocalStorage[collectionName].chain()
             // .find({'Age': {'$gt':20}})
             .where((obj: any) => {
                 if (searchData.filter && collectionName === 'clc_book') {
-                    let book: IBook = { ...obj };
-                    let filter: any = { ...searchData.filter };
-                    if (filter.tag) {
-                        return !!(book.tags && book.tags.includes(filter.tag));
+                    return appLocalStorage.search_by_query_book_filter(obj, searchData);
 
-                    } else if (filter.genre) {
-                        return book.genre.includes(filter.genre);
-
-                    } else if (filter.writer) { // todo: && filter.book_id
-                        if (filter.book_id) {
-                            if (book.id === filter.book_id) {
-                                return false;
-                            }
-                        }
-                        let hasThisWriter = false;
-                        let writers = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
-                        for (let i = 0; i < writers.length; i++) {
-                            if (writers[i].person.id === filter.writer) {
-                                hasThisWriter = true;
-                                break;
-                            }
-                        }
-                        return hasThisWriter;
-                    } else {
-                        return false;
-                    }
                 }
+                /* else if (searchData.filter && collectionName === 'clc_comment') {
+                    return appLocalStorage.search_by_query_filter_comment(obj, searchData);
+                } */
                 return false;
                 // return obj.id === 0
                 // return obj; // .Country.indexOf('FR') === 0;
             })
-            .simplesort('creation_date')
+            .simplesort('creation_date')//, false
             .offset(searchData.offset)
             .limit(searchData.limit)
+            .data();
+    }
+
+    static search_by_query_book(
+        searchPayload: { limit: number, offset: number, filter?: Object }
+    ): IBook[] {
+        return appLocalStorage.clc_book.chain()
+            .where((book: IBook) => {
+                if (searchPayload.filter) {
+                    return appLocalStorage.search_by_query_book_filter(book, searchPayload);
+                }
+                return false;
+            })
+            .simplesort('creation_date')//, false
+            .offset(searchPayload.offset)
+            .limit(searchPayload.limit)
+            .data();
+    }
+
+    static search_by_query_book_filter(
+        book: IBook, searchData: { limit: number, offset: number, filter?: Object }
+    ): boolean {
+        // let book: IBook = { ...book };
+        let filter: any = { ...searchData.filter };
+        if (filter.tag) {
+            return !!(book.tags && book.tags.includes(filter.tag));
+
+        } else if (filter.genre) {
+            return book.genre.includes(filter.genre);
+
+        } else if (filter.writer) { // todo: && filter.book_id
+            if (filter.book_id) {
+                if (book.id === filter.book_id) {
+                    return false;
+                }
+            }
+            let hasThisWriter = false;
+            let writers = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
+            for (let i = 0; i < writers.length; i++) {
+                if (writers[i].person.id === filter.writer) {
+                    hasThisWriter = true;
+                    break;
+                }
+            }
+            return hasThisWriter;
+        } else {
+            return false;
+        }
+    }
+
+    static search_by_query_comment(
+        book_id: string, searchPayload: { limit: number, offset: number, filter?: Object }
+    ): IComment[] {
+        return appLocalStorage.clc_comment.chain()
+            .where((comment: IComment) => {
+                return comment.book_id === book_id;
+            })
+            .simplesort('creation_date')//, false
+            .offset(searchPayload.offset)
+            .limit(searchPayload.limit)
             .data();
     }
 
