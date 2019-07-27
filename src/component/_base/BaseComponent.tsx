@@ -162,4 +162,5 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         return Utility.mobileAndTabletcheck();
     }
 
+
 }

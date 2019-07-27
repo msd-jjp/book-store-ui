@@ -87,19 +87,28 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         }
     }
     async fetchWishListBook() {
-        this.setState({ ...this.state, wishListBookError: undefined });
+        // this.setState({ ...this.state, wishListBookError: undefined });
 
-        let res = await this._bookService.wishList_search({
+        /* let res = await this._bookService.wishList_search({
             limit: 10, offset: 0
         }).catch(error => {
             let errorMsg = this.handleError({ error: error.response, notify: false });
             this.setState({ ...this.state, wishListBookError: errorMsg.body });
-        });
-        if (res) {
-            if (res.data.result /* && res.data.result.length */) {
-                this.setState({ ...this.state, wishListBookList: res.data.result });
+        }); */
+        // if (res) {
+        //     if (res.data.result /* && res.data.result.length */) {
+        //         this.setState({ ...this.state, wishListBookList: res.data.result });
+        //     }
+        // }
+
+        await this.waitOnMe(0);
+        if (this.props.logged_in_user && this.props.logged_in_user.person.wish_list) {
+            let w_list = this.props.logged_in_user.person.wish_list.slice(0, 10);
+            if (w_list) {
+                this.setState({ ...this.state, wishListBookList: w_list });
             }
         }
+
     }
     async fetchBestSellerBook() {
         this.setState({ ...this.state, bestSellerBookError: undefined });
