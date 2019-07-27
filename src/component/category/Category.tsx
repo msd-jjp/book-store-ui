@@ -12,6 +12,8 @@ import Rating from 'react-rating';
 import { IBook } from '../../model/model.book';
 import { BOOK_ROLES } from '../../enum/Book';
 import { ToastContainer } from 'react-toastify';
+import { IAPI_ResponseList } from '../../service/service.base';
+import { IUser } from '../../model/model.user';
 
 export type category_routeParam_categoryType = 'tag' | 'genre' | 'custom';
 
@@ -20,6 +22,7 @@ interface IProps {
     history: History;
     token: IToken;
     match: any;
+    logged_in_user: IUser | null;
 }
 interface IState {
     categoryType: category_routeParam_categoryType | undefined;
@@ -59,9 +62,7 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
         let searchRequest;
 
         if (this.state.categoryType === 'custom' && this.state.categoryTitle === 'wishlist') {
-            searchRequest = this._bookService.wishList_search({
-                limit: this.state.pager_limit, offset: this.state.pager_offset
-            });
+            searchRequest = this.fetch_category_custom_wishlist();
         } else {
             let filter: any = {};
             filter[this.state.categoryType!] = this.state.categoryTitle;
@@ -80,6 +81,23 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                 this.setState({ ...this.state, categoryBookList: res.data.result });
             }
         }
+    }
+    fetch_category_custom_wishlist(): Promise<IAPI_ResponseList<IBook>> {
+        /* return this._bookService.wishList_search({
+            limit: this.state.pager_limit, offset: this.state.pager_offset
+        }); */
+
+        if (this.props.logged_in_user && this.props.logged_in_user.person.wish_list) {
+            let w_list = this.props.logged_in_user.person.wish_list.slice(this.state.pager_offset, this.state.pager_limit);
+            if (w_list) {
+                return new Promise((res, rej) => {
+                    res({ data: { result: w_list } });
+                });
+            }
+        }
+        return new Promise((res, rej) => {
+            res({ data: { result: [] } });
+        });
     }
     gotoBookDetail(bookId: string) {
         this.props.history.push(`/book-detail/${bookId}`);
@@ -321,7 +339,8 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         internationalization: state.internationalization,
-        token: state.token
+        token: state.token,
+        logged_in_user: state.logged_in_user,
     }
 }
 
