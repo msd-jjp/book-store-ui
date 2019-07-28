@@ -12,10 +12,13 @@ npm i react-rating
 npm i -D redux-logger @types/redux-logger
 npm i redux-persist @types/redux-persist
 npm i moment moment-jalaali @types/moment @types/moment-jalaali
+npm i lokijs @types/lokijs
 
 ====================================================================================
 ????????????????????????????????????????????????????????????????????????????????????
-npm i lokijs @types/lokijs
+
+npm install workbox-build --save-dev
+
 
 ====================================================================================
 
@@ -80,7 +83,7 @@ delete folder --> book | products | form/number | role | user
 
 ====================================================================================
 
-store carousel --> desktop mode arrow left row
+
 
 ====================================================================================
 ?)
@@ -94,9 +97,6 @@ if no default value & require --> error
 
 ====================================================================================
 
-store:
-1)slide navigation in desktop.  --> horizontal scroll in store page.
-arrow reverse in en mode
 
 ====================================================================================
 
