@@ -162,7 +162,8 @@ export class appLocalStorage {
                 }
                 return false;
             })
-            .simplesort('creation_date')//, false
+            // .simplesort('creation_date', false)//, false
+            .sort(this.asc_sort_creation_date)
             .offset(searchPayload.offset)
             .limit(searchPayload.limit)
             .data();
@@ -206,10 +207,18 @@ export class appLocalStorage {
             .where((comment: IComment) => {
                 return comment.book_id === book_id;
             })
-            .simplesort('creation_date')//, false
+            // .simplesort('creation_date')//, false
+            .sort(this.asc_sort_creation_date)
             .offset(searchPayload.offset)
             .limit(searchPayload.limit)
             .data();
+    }
+
+    static asc_sort_creation_date(obj1: TCollectionData, obj2: TCollectionData) {
+        if (obj1.creation_date === obj2.creation_date) return 0;
+        if (obj1.creation_date > obj2.creation_date) return -1;
+        if (obj1.creation_date < obj2.creation_date) return 1;
+        return 0;
     }
 
 }
