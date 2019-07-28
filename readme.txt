@@ -97,6 +97,8 @@ if no default value & require --> error
 
 ====================================================================================
 
+you have to use logout
+if in log in page & this.props.loged_in_user --> redirect to dashboard
 
 ====================================================================================
 
