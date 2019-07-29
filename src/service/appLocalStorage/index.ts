@@ -107,7 +107,7 @@ export class appLocalStorage {
     }
 
     static storeUsefullResponse(response: AxiosResponse<any>) {
-        if (response.config.url === "/api/books/_search") {
+        if (response.config.url === "/api/books/_search" || response.config.url === "/api/books/search-phrase") {
             // debugger;
             // if (response.config.data) {
             //     // let data = JSON.parse(response.config.data);
@@ -219,6 +219,21 @@ export class appLocalStorage {
         if (obj1.creation_date > obj2.creation_date) return -1;
         if (obj1.creation_date < obj2.creation_date) return 1;
         return 0;
+    }
+
+    static search_by_phrase_book(
+        searchPayload: { limit: number, offset: number, filter: { search_phrase: string } }
+    ): IBook[] {
+        return appLocalStorage.clc_book.chain()
+            .find({ title: { '$contains': searchPayload.filter.search_phrase } })
+            // .where((book: IBook) => {
+            //     return book.title.includes(searchPayload.filter.search_phrase);
+            //     // return false;
+            // })
+            .sort(this.asc_sort_creation_date)
+            .offset(searchPayload.offset)
+            .limit(searchPayload.limit)
+            .data();
     }
 
 }

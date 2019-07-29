@@ -3,7 +3,7 @@ import { BOOK_GENRE, BOOK_TYPES, BOOK_ROLES } from "../enum/Book";
 import { IPerson } from "./model.person";
 
 export interface IBook extends BaseModel {
-    name: string;
+    // name: string;
     edition: string;
     genre: BOOK_GENRE[];
     images: string[]; // image_url
