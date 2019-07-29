@@ -56,7 +56,11 @@ class Input extends React.Component<InputProps, InputState> {
         // this.setValidate(props.defaultValue);
 
         // if (this.handleValidate(props.defaultValue) !== this.handleValidate(this.props.defaultValue)) {
-        if (this.handleValidate(props.defaultValue) !== !this.state.invalid) {
+        if (
+            (this.handleValidate(props.defaultValue) !== !this.state.invalid)
+            &&
+            (!this.isEmpty(this.props.defaultValue) || !this.isEmpty(props.defaultValue))
+        ) {
             this.setValidate(props.defaultValue);
             this.props.onChange(props.defaultValue, this.handleValidate(props.defaultValue));
         }
@@ -68,6 +72,10 @@ class Input extends React.Component<InputProps, InputState> {
             this.props.onChange(props.defaultValue, this.handleValidate(props.defaultValue));
         } */
     }
+    isEmpty(val: any): boolean {
+        if (val || val === 0) { return false }
+        return true;
+    }
     handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         this.setValidate(event.target.value);
         this.props.onChange(event.target.value, this.handleValidate(event.target.value));
@@ -78,7 +86,7 @@ class Input extends React.Component<InputProps, InputState> {
     handleValidate(val: any): boolean {
         if (this.props.required && !val) {
             return false;
-        } else if (this.props.pattern) {
+        } else if (this.props.pattern && val) {
             if (!this.props.validationFunc) {
                 return this.props.pattern.test(val);
             } else {
