@@ -29,8 +29,8 @@ export class appLocalStorage {
 
         // adapter: persistenceAdapters.fs,
         adapter: appLocalStorage.idbAdapter,
-        autoload: true,
-        autoloadCallback: appLocalStorage.initDB,
+        // autoload: true,
+        // autoloadCallback: appLocalStorage.initDB,
         autosave: true,
         autosaveInterval: 4000
     });
@@ -38,6 +38,9 @@ export class appLocalStorage {
     static clc_book: Collection<IBook>; // = appLocalStorage.app_db.addCollection('clc_book');
     static clc_comment: Collection<IComment>; // = appLocalStorage.app_db.addCollection('clc_comment');
     constructor() {
+        appLocalStorage.app_db.loadDatabase({}, (err: any) => {
+            debugger;
+        })
         appLocalStorage.initDB();
     }
 
@@ -49,19 +52,36 @@ export class appLocalStorage {
         //         appLocalStorage[coll] = appLocalStorage.app_db.addCollection(coll)
         //     }
         // });
-        appLocalStorage.clc_book = (appLocalStorage.app_db.getCollection('clc_book') === null) ?
+
+        /* appLocalStorage.clc_book = (appLocalStorage.app_db.getCollection('clc_book') === null) ?
             appLocalStorage.app_db.addCollection('clc_book') :
             appLocalStorage.app_db.getCollection('clc_book');
 
         appLocalStorage.clc_comment = (appLocalStorage.app_db.getCollection('clc_comment') === null) ?
             appLocalStorage.app_db.addCollection('clc_comment') :
-            appLocalStorage.app_db.getCollection('clc_comment');
+            appLocalStorage.app_db.getCollection('clc_comment'); */
 
-        // (appLocalStorage.app_db.getCollection('users') === null) ? appLocalStorage.app_db.addCollection('users') : appLocalStorage.app_db.getCollection('users');
-        // (appLocalStorage.app_db.getCollection('reported') === null) ? appLocalStorage.app_db.addCollection('reported') : appLocalStorage.app_db.getCollection('reported');
-        // (appLocalStorage.app_db.getCollection('banned') === null) ? appLocalStorage.app_db.addCollection('banned') : appLocalStorage.app_db.getCollection('banned');
-        // (appLocalStorage.app_db.getCollection('donors') === null) ? appLocalStorage.app_db.addCollection('donors') : appLocalStorage.app_db.getCollection('donors');
-        // (appLocalStorage.app_db.getCollection('stats') === null) ? appLocalStorage.app_db.addCollection('stats') : appLocalStorage.app_db.getCollection('stats');
+        // let coll_list: TCollectionName[] = ['clc_book', 'clc_comment'];
+        // coll_list.forEach((coll: TCollectionName) => {
+        //     if (this.app_db.getCollection(coll)) {
+        //         this[coll] = this.app_db.getCollection(coll);
+        //     } else {
+        //         this[coll] = this.app_db.addCollection(coll);
+        //     }
+        // });
+
+        if (this.app_db.getCollection('clc_book')) {
+            this.clc_book = this.app_db.getCollection('clc_book');
+        } else {
+            this.clc_book = this.app_db.addCollection('clc_book');
+        }
+
+        if (this.app_db.getCollection('clc_comment')) {
+            this.clc_comment = this.app_db.getCollection('clc_comment');
+        } else {
+            this.clc_comment = this.app_db.addCollection('clc_comment');
+        }
+
     }
 
     static addDataToCollection(collectionName: TCollectionName, data: TCollectionData[] | TCollectionData) {
@@ -99,6 +119,9 @@ export class appLocalStorage {
 
         // coll.insert(data);
     }
+
+    clearCollection() { }
+    clearFromCollection() { }
 
     // static findById<TCollectionData>(collectionName: TCollectionName, id: string):TCollectionData |null{
     static findById(collectionName: TCollectionName, id: string): any {
@@ -214,7 +237,7 @@ export class appLocalStorage {
             .data();
     }
 
-    static asc_sort_creation_date(obj1: TCollectionData, obj2: TCollectionData) {
+    static asc_sort_creation_date(obj1: TCollectionData, obj2: TCollectionData): number {
         if (obj1.creation_date === obj2.creation_date) return 0;
         if (obj1.creation_date > obj2.creation_date) return -1;
         if (obj1.creation_date < obj2.creation_date) return 1;
