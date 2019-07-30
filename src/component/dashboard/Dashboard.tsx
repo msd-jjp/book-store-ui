@@ -243,7 +243,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       <>
         <div className="latestBook-wrapper row mt-3">
           <div className="col-4 book-img-wrapper">
-            <img className="" src={current_book_img} alt="book" />
+            <img className="" src={current_book_img} alt="book" onError={e => this.bookImageOnError(e)} />
             <div className="book-progress-state">
               <div className="bp-state-number">
                 <div className="text">7%</div>
