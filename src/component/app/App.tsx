@@ -20,6 +20,7 @@ import { ForgotPassword } from '../forgot-password/ForgotPassword';
 import { Category } from '../category/Category';
 import { Search } from '../search/Search';
 import { appLocalStorage } from '../../service/appLocalStorage';
+import { AppInitService } from '../../service/service.app-init';
 
 const appRoutes = (
   <HashRouter>
@@ -49,6 +50,7 @@ interface IProps {
 
 class AppComponent extends React.Component<IProps, any> {
   private initStore = new appLocalStorage();
+  private _appInitService = new AppInitService();
   
   constructor(props: any) {
     super(props);
