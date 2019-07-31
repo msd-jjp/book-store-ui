@@ -66,7 +66,7 @@ interface IState {
 class BookDetailComponent extends BaseComponent<IProps, IState> {
   state = {
     book: undefined,
-    pageLoader: false,
+    pageLoader: true, // false
     errorText: undefined,
     followWriter_loaderObj: {},
     is_writeCommentBox_open: false,
@@ -118,7 +118,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
 
   async fetchBook(bookId: IBook["id"]) {
-    this.setState({ ...this.state, pageLoader: true });
+    this.setState({ ...this.state, pageLoader: true }); // set in init state too.
 
     let res = await this._bookService.get(bookId).catch(error => {
       const { body: errorText } = this.handleError({ error: error.response });
