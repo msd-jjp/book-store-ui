@@ -1,4 +1,5 @@
-import loki, { Collection, /* LokiFsAdapter, */ LokiLocalStorageAdapter/* , persistenceAdapters */ } from 'lokijs'
+import loki, { Collection, /* LokiFsAdapter, */ LokiLocalStorageAdapter/* , persistenceAdapters */
+/* ,LokiIndexedAdapter */ } from 'lokijs'
 import { IBook } from '../../model/model.book';
 import { IComment } from '../../model/model.comment';
 import { AxiosResponse } from 'axios';
@@ -12,6 +13,9 @@ export class appLocalStorage {
     static model_collection_map = {
 
     };
+
+    // static vsdv = new LokiIndexedAdapter();
+    // static idbAdapter2 = new LokiIndexedAdapter('DATABASETEST');
 
     // idbAdapter = new LokiIndexedAdapter('loki');
     static idbAdapter = new LokiLocalStorageAdapter();
