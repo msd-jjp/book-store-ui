@@ -6,7 +6,7 @@ if ('function' === typeof importScripts) {
     );
     /* global workbox */
     if (workbox) {
-        console.log('Workbox is loaded');
+        console.log('Workbox is loaded 3');
 
         /* injection point for manifest files.  */
         workbox.precaching.precacheAndRoute([]);
