@@ -3,6 +3,7 @@ export const en = {
     register: "register",
     sign_in: 'sign in',
     app_title: 'book store',
+    app_title_: 'app title',
     app_logo: 'bookstore',
     brand_name: 'bookstore',
     sign_in_bookstore_account: 'sign in with your bookstore account',
@@ -204,4 +205,9 @@ export const en = {
     hour: 'hour',
     remove_comment: 'remove comment',
     close: 'close',
+    app_info: 'app info',
+    version: 'version',
+    version_mode: 'version mode',
+    trial_mode: 'trial mode',
+    trial: 'trial',
 }

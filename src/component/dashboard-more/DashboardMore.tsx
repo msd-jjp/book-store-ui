@@ -13,8 +13,9 @@ import { action_remove_token } from '../../redux/action/token';
 
 import { History } from 'history';
 import { action_remove_authentication } from '../../redux/action/authentication';
+import { Modal } from 'react-bootstrap';
 
-export interface IProps {
+interface IProps {
     logged_in_user?: IUser | null;
     do_logout: () => void;
     change_app_flag: (internationalization: TInternationalization) => void;
@@ -24,7 +25,14 @@ export interface IProps {
     remove_authentication: () => void;
 }
 
-class DashboardMoreComponent extends BaseComponent<IProps, any> {
+interface IState {
+    modal_appInfo_show: boolean;
+}
+
+class DashboardMoreComponent extends BaseComponent<IProps, IState> {
+    state = {
+        modal_appInfo_show: false,
+    }
     change(lang: string) {
         // debugger;
         if (lang === 'fa') {
@@ -65,6 +73,48 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
         this.props.remove_authentication();
         this.props.history.push('/login');
     }
+
+    openModal_appInfo() {
+        this.setState({ ...this.state, modal_appInfo_show: true });
+    }
+
+    closeModal_appInfo() {
+        this.setState({ ...this.state, modal_appInfo_show: false });
+    }
+
+    modal_appInfo_render() {
+        return (
+            <>
+                <Modal show={this.state.modal_appInfo_show} onHide={() => this.closeModal_appInfo()} centered>
+                    <Modal.Header closeButton className="border-bottom-0 pb-0">
+                        {/* <Modal.Title className="text-danger_">app info</Modal.Title> */}
+                        <div className="modal-title h6">{Localization.app_info}</div>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {/* <div>{process.env.NODE_ENV}</div> */}
+                        <div className="mb-1">
+                            <span className="text-muted">{Localization.app_title_}:</span>&nbsp;
+                            {Localization.app_title}
+                        </div>
+                        <div className="mb-1">
+                            <span className="text-muted">{Localization.version_mode}:</span>&nbsp;
+                            {Localization.trial}
+                        </div>
+                        <div className="mb-1__">
+                            <span className="text-muted">{Localization.version}:</span>&nbsp;
+                            {process.env.REACT_APP_VERSION}
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer className="pt-0 border-top-0">
+                        <button className="btn btn-light btn-sm" onClick={() => this.closeModal_appInfo()}>
+                            {Localization.close}
+                        </button>
+                    </Modal.Footer>
+                </Modal>
+            </>
+        )
+    }
+
     render() {
 
         return (
@@ -119,7 +169,8 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
                         </li>
 
 
-                        <li className="more-item list-group-item p-align-0">
+                        <li className="more-item list-group-item p-align-0"
+                            onClick={() => this.openModal_appInfo()}>
                             <i className="icon fa fa-info-circle mr-3"></i>
                             <span className="text text-capitalize">{Localization.info}</span>
                         </li>
@@ -130,6 +181,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, any> {
                     </ul>
                 </div>
 
+                {this.modal_appInfo_render()}
             </>
         )
     }

@@ -43,7 +43,7 @@ export class appLocalStorage {
     static clc_comment: Collection<IComment>; // = appLocalStorage.app_db.addCollection('clc_comment');
     constructor() {
         appLocalStorage.app_db.loadDatabase({}, (err: any) => {
-            debugger;
+            // debugger;
         })
         appLocalStorage.initDB();
     }

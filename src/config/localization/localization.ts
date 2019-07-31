@@ -11,6 +11,7 @@ interface ILocalization extends LocalizedStringsMethods {
     register: String;
     sign_in: string;
     app_title: string;
+    app_title_: string;
     app_logo: string;
     brand_name: string;
     sign_in_bookstore_account: string;
@@ -210,6 +211,11 @@ interface ILocalization extends LocalizedStringsMethods {
     hour: string;
     remove_comment: string;
     close: string;
+    app_info: string;
+    version: string;
+    version_mode: string;
+    trial_mode: string;
+    trial: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
