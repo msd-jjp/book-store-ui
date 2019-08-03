@@ -41,7 +41,7 @@ export const fa = {
             msg18: 'نام کاربری یا رمز عبور اشتباه است.',
 
             msg19: 'enum is not correct  type',
-            msg20: 'entity not found',
+            msg20: 'مورد، یافت نشد.',
             invalid_persons: 'there is invalid person id in list',
             addition_error: 'adding model to database failed',
 

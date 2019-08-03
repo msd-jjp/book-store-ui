@@ -86,7 +86,7 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
                                 />
                             </div>
                         </div>
-                        <div className="col-1">
+                        <div className="col-2">
                             <div className="bellcontainer">
                                 <i className="fa fa-bell-o bell"></i>
                             </div>
