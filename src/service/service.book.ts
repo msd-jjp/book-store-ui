@@ -11,6 +11,8 @@ export class BookService extends BaseService {
                 return new Promise((resolve, reject) => {
                     resolve({ data: lcl_book! });
                 });
+            } else {
+                //reject: put if else into Promise
             }
         }
 
