@@ -20,6 +20,7 @@ export class AppInitService extends BaseService {
             debugger;
             console.log('update if you want 2...');
             // this._resetDB();
+            alert('app new version');
 
         }
     }
