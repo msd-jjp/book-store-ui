@@ -5,7 +5,7 @@ import { appLocalStorage } from './appLocalStorage';
 export class BookService extends BaseService {
 
     get(bookId: string): Promise<IAPI_Response<IBook>> {
-        if (this.isAppOffline()) {
+        if (BaseService.isAppOffline()) {
             let lcl_book: IBook | null = appLocalStorage.findById('clc_book', bookId);
             if (lcl_book) {
                 return new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ export class BookService extends BaseService {
     }
 
     search(data: { limit: number, offset: number, filter: Object }): Promise<IAPI_ResponseList<IBook>> {
-        if (this.isAppOffline()) {
+        if (BaseService.isAppOffline()) {
             let lcl_book_list: IBook[] | null = appLocalStorage.search_by_query_book(data);
             lcl_book_list = lcl_book_list || [];
             if (lcl_book_list /* && lcl_book_list.length */) {
@@ -45,7 +45,7 @@ export class BookService extends BaseService {
     }
 
     search_phrase(data: { limit: number, offset: number, filter: { search_phrase: string } }): Promise<IAPI_ResponseList<IBook>> {
-        if (this.isAppOffline()) {
+        if (BaseService.isAppOffline()) {
             let lcl_book_list: IBook[] | null = appLocalStorage.search_by_phrase_book(data);
             lcl_book_list = lcl_book_list || [];
             if (lcl_book_list /* && lcl_book_list.length */) {
