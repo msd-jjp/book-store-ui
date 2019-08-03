@@ -104,7 +104,7 @@ export class appLocalStorage {
         // appLocalStorage.app_db.removeCollection;
         let coll_list: TCollectionName[] = ['clc_book', 'clc_comment'];
         coll_list.forEach((coll: TCollectionName) => {
-            this.clearCollection(coll);
+            appLocalStorage.clearCollection(coll);
         });
     }
 
@@ -207,7 +207,7 @@ export class appLocalStorage {
                 return false;
             })
             // .simplesort('creation_date', false)//, false
-            .sort(this.asc_sort_creation_date)
+            .sort(appLocalStorage.asc_sort_creation_date)
             .offset(searchPayload.offset)
             .limit(searchPayload.limit)
             .data();
@@ -252,7 +252,7 @@ export class appLocalStorage {
                 return comment.book_id === book_id;
             })
             // .simplesort('creation_date')//, false
-            .sort(this.asc_sort_creation_date)
+            .sort(appLocalStorage.asc_sort_creation_date)
             .offset(searchPayload.offset)
             .limit(searchPayload.limit)
             .data();
@@ -274,7 +274,7 @@ export class appLocalStorage {
             //     return book.title.includes(searchPayload.filter.search_phrase);
             //     // return false;
             // })
-            .sort(this.asc_sort_creation_date)
+            .sort(appLocalStorage.asc_sort_creation_date)
             .offset(searchPayload.offset)
             .limit(searchPayload.limit)
             .data();
