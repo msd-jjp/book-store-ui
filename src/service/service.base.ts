@@ -5,6 +5,8 @@ import { Store2 } from '../redux/store';
 import { action_set_token } from '../redux/action/token';
 import { Utility } from '../asset/script/utility';
 import { appLocalStorage } from './appLocalStorage';
+import { NETWORK_STATUS } from '../enum/NetworkStatus';
+import { action_set_network_status } from '../redux/action/netwok-status';
 
 
 export interface IAPI_ResponseList<T> {
@@ -135,11 +137,29 @@ export abstract class BaseService {
         });
     }
 
-    isAppOffline(): boolean {
+    static isAppOffline(): boolean {
+        BaseService.check_network_status();
+        return BaseService._isAppOffline();
+    }
+
+    private static _isAppOffline(): boolean {
         if (navigator && !navigator.onLine) {
             return true;
         }
         return false;
+    }
+
+    static check_network_status() {
+        if (Store2.getState().network_status === NETWORK_STATUS.ONLINE) {
+            if (BaseService._isAppOffline()) {
+                Store2.dispatch(action_set_network_status(NETWORK_STATUS.OFFLINE));
+            }
+
+        } else if (Store2.getState().network_status === NETWORK_STATUS.OFFLINE) {
+            if (!BaseService._isAppOffline()) {
+                Store2.dispatch(action_set_network_status(NETWORK_STATUS.ONLINE));
+            }
+        }
     }
 
 }
