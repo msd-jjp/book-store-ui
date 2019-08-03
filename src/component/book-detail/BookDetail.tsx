@@ -21,6 +21,7 @@ import { IComment } from "../../model/model.comment";
 import { Input } from "../form/input/Input";
 // import { Modal } from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal'
+import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 
 
 interface IProps {
@@ -29,6 +30,7 @@ interface IProps {
   token: IToken;
   logged_in_user?: IUser | null;
   onUserLoggedIn?: (user: IUser) => void;
+  network_status: NETWORK_STATUS;
 }
 interface IState {
   book: IBook | undefined;
@@ -194,7 +196,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
   book_detail_template(book: IBook) {
     const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
-    this.defaultBookImagePath;
+      this.defaultBookImagePath;
 
     let writerList = book.roles.filter(
       r => r.role === BOOK_ROLES.Writer
@@ -231,8 +233,14 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
                 initialRating={book.rate}
                 onChange={(newRate) => this.bookRateChange(newRate, book.id)}
+                readonly={this.props.network_status === NETWORK_STATUS.OFFLINE}
               />
+              {
+                this.props.network_status === NETWORK_STATUS.OFFLINE
+                  ? <i className="fa fa-wifi text-danger"></i> : ''
+              }
               <span className="book-total-rate pl-2">({book.rate_no})</span>
+
               <div className="book-selled-info-container mt-2">
                 {/* <div className="book-selled-info">#1 Best Seller</div> */}
                 {
@@ -370,16 +378,26 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                               btnClassName="btn btn-block author-follow mr-3__"
                               loading={!!followWriter_loaderObj[ab_writer.person.id]}
                               onClick={() => this.unfollow_writer(ab_writer.person.id)}
+                              disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                             >
                               - {Localization.unfollow}
+                              {
+                                this.props.network_status === NETWORK_STATUS.OFFLINE
+                                  ? <i className="fa fa-wifi text-danger"></i> : ''
+                              }
                             </BtnLoader>
                             :
                             <BtnLoader
                               btnClassName="btn btn-block author-follow mr-3__"
                               loading={!!followWriter_loaderObj[ab_writer.person.id]}
                               onClick={() => this.follow_writer(ab_writer.person.id)}
+                              disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                             >
                               + {Localization.follow}
+                              {
+                                this.props.network_status === NETWORK_STATUS.OFFLINE
+                                  ? <i className="fa fa-wifi text-danger"></i> : ''
+                              }
                             </BtnLoader>
                         }
 
@@ -444,8 +462,13 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             btnClassName="add-to-list btn btn-link p-align-0 mt-2 text-warning"
             loading={this.state.wishList_loader}
             onClick={() => { this.wishList_remove_book(book) }}
+            disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
           >
             {Localization.remove_from_list}
+            {
+              this.props.network_status === NETWORK_STATUS.OFFLINE
+                ? <i className="fa fa-wifi text-danger"></i> : ''
+            }
           </BtnLoader>
         </>
       )
@@ -456,8 +479,13 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             btnClassName="add-to-list btn btn-link p-align-0 mt-2"
             loading={this.state.wishList_loader}
             onClick={() => { this.wishList_add_book(book) }}
+            disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
           >
             {Localization.add_to_list}
+            {
+              this.props.network_status === NETWORK_STATUS.OFFLINE
+                ? <i className="fa fa-wifi text-danger"></i> : ''
+            }
           </BtnLoader>
         </>
       )
@@ -547,7 +575,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 <div className="col-2">
                   <i className={
                     "fa fa-angle-down__ fa-2x book-detail-bordered-box-icon " +
-                    (this.state.is_writeCommentBox_open ? 'fa-angle-up' : 'fa-angle-down')
+                    (this.state.is_writeCommentBox_open ? 'fa-angle-up' : 'fa-angle-down') +
+                    ' ' +
+                    (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'fa-wifi text-danger' : '')
                   }></i>
                 </div>
               </div>
@@ -566,7 +596,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             <BtnLoader
               btnClassName="btn btn-light btn-block mt-1__"
               loading={this.state.newComment.loader}
-              disabled={!this.state.newComment.isValid}
+              disabled={!this.state.newComment.isValid || this.props.network_status === NETWORK_STATUS.OFFLINE}
               onClick={() => { this.addComment() }}
             >
               {Localization.submit}
@@ -1191,6 +1221,7 @@ const state2props = (state: redux_state) => {
     internationalization: state.internationalization,
     token: state.token,
     logged_in_user: state.logged_in_user,
+    network_status: state.network_status
   };
 };
 
