@@ -58,7 +58,8 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
         }, this.fetchCategoryBooks);
     }
     async fetchCategoryBooks() {
-        this.setState({ ...this.state, categoryBookError: undefined });
+        // todo: wait 500ms if no res --> setState "categoryBookList: undefined"
+        this.setState({ ...this.state, categoryBookError: undefined, categoryBookList: undefined });
         let searchRequest;
 
         if (this.state.categoryType === 'custom' && this.state.categoryTitle === 'wishlist') {
