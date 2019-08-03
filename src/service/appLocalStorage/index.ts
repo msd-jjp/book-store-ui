@@ -1,5 +1,7 @@
-import loki, { Collection, /* LokiFsAdapter, */ LokiLocalStorageAdapter/* , persistenceAdapters */
-/* ,LokiIndexedAdapter */ } from 'lokijs'
+import loki, {
+    Collection, /* LokiFsAdapter, */ LokiLocalStorageAdapter/* , persistenceAdapters */
+    /* ,LokiIndexedAdapter */
+} from 'lokijs'
 import { IBook } from '../../model/model.book';
 import { IComment } from '../../model/model.comment';
 import { AxiosResponse } from 'axios';
@@ -8,7 +10,6 @@ import { BOOK_ROLES } from '../../enum/Book';
 type TCollectionName = 'clc_book' | 'clc_comment';
 type TCollectionData = IBook | IComment;
 
-
 export class appLocalStorage {
     static model_collection_map = {
 
@@ -16,12 +17,9 @@ export class appLocalStorage {
 
     // static vsdv = new LokiIndexedAdapter();
     // static idbAdapter2 = new LokiIndexedAdapter('DATABASETEST');
-
     // idbAdapter = new LokiIndexedAdapter('loki');
     static idbAdapter = new LokiLocalStorageAdapter();
     // static vdfvf = persistenceAdapters;
-
-
 
     static app_db = new loki('bookstore.db', {
         /* autoload: true,
@@ -88,6 +86,48 @@ export class appLocalStorage {
 
     }
 
+    static clearCollection(collectionName: TCollectionName) {
+        appLocalStorage[collectionName].clear();
+    }
+
+    static removeFromCollection(collectionName: TCollectionName, id_s: string | string[]) {
+        if (Array.isArray(id_s)) {
+            id_s.forEach(id => {
+                appLocalStorage[collectionName].findAndRemove({ id: id });
+            });
+        } else {
+            appLocalStorage[collectionName].findAndRemove({ id: id_s });
+        }
+    }
+
+    static resetDB() {
+        // appLocalStorage.app_db.removeCollection;
+        let coll_list: TCollectionName[] = ['clc_book', 'clc_comment'];
+        coll_list.forEach((coll: TCollectionName) => {
+            this.clearCollection(coll);
+        });
+    }
+
+    static storeUsefullResponse(response: AxiosResponse<any>) {
+        if (response.config.url === "/api/books/_search" || response.config.url === "/api/books/search-phrase") {
+            // debugger;
+            // if (response.config.data) {
+            //     // let data = JSON.parse(response.config.data);
+            // }
+            appLocalStorage.addDataToCollection('clc_book', response.data.result);
+
+        } else if (response.config.url
+            && response.config.url.includes('/api/books/')
+            && response.config.method === "get") {
+
+            // debugger;
+            appLocalStorage.addDataToCollection('clc_book', response.data);
+        }
+        else if (response.config.url && response.config.url.includes('/api/comments/book/')) {
+            appLocalStorage.addDataToCollection('clc_comment', response.data.result);
+        }
+    }
+
     static addDataToCollection(collectionName: TCollectionName, data: TCollectionData[] | TCollectionData) {
         // appLocalStorage.books.insert([{ name: 'Thor', rate: 1 }, { name: 'Loki', rate: 2 }]);
         let coll: Collection<any> = appLocalStorage[collectionName];
@@ -124,33 +164,10 @@ export class appLocalStorage {
         // coll.insert(data);
     }
 
-    clearCollection() { }
-    clearFromCollection() { }
-
     // static findById<TCollectionData>(collectionName: TCollectionName, id: string):TCollectionData |null{
     static findById(collectionName: TCollectionName, id: string): any {
         return appLocalStorage[collectionName].findOne({ id: id });
         // appLocalStorage.books.find({ $eq: { id: bookId } });
-    }
-
-    static storeUsefullResponse(response: AxiosResponse<any>) {
-        if (response.config.url === "/api/books/_search" || response.config.url === "/api/books/search-phrase") {
-            // debugger;
-            // if (response.config.data) {
-            //     // let data = JSON.parse(response.config.data);
-            // }
-            appLocalStorage.addDataToCollection('clc_book', response.data.result);
-
-        } else if (response.config.url
-            && response.config.url.includes('/api/books/')
-            && response.config.method === "get") {
-
-            // debugger;
-            appLocalStorage.addDataToCollection('clc_book', response.data);
-        }
-        else if (response.config.url && response.config.url.includes('/api/comments/book/')) {
-            appLocalStorage.addDataToCollection('clc_comment', response.data.result);
-        }
     }
 
     /* _DELETE_ME **/

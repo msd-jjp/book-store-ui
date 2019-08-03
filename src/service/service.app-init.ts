@@ -1,4 +1,5 @@
 import { BaseService } from './service.base';
+// import { appLocalStorage } from './appLocalStorage';
 
 export class AppInitService extends BaseService {
 
@@ -16,8 +17,19 @@ export class AppInitService extends BaseService {
 
     reInit_onUpdate(appOldVersion: string, appNewVersion: string) {
         if (appOldVersion && appNewVersion && (appOldVersion !== appNewVersion)) {
-            console.log('update if you want...');
+            debugger;
+            console.log('update if you want 2...');
+            // this._resetDB();
+
         }
     }
+
+    // _resetDB() {
+    //     appLocalStorage.resetDB();
+    // }
+
+    // clearAllComments_fromDB() {
+    //     appLocalStorage.clearCollection('clc_comment');
+    // }
 
 }
