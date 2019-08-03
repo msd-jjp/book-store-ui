@@ -8,9 +8,11 @@ import { Dispatch } from 'redux';
 import { redux_state } from '../../../redux/app_state';
 import { IUser } from '../../../model/model.user';
 import { History } from "history";
-import { IToken } from '../../../model/model.token';
-import { action_set_token } from '../../../redux/action/token';
-import { action_user_logged_in } from '../../../redux/action/user';
+// import { IToken } from '../../../model/model.token';
+// import { action_set_token } from '../../../redux/action/token';
+// import { action_user_logged_in } from '../../../redux/action/user';
+// import { NETWORK_STATUS } from '../../../enum/NetworkStatus';
+// import { action_set_network_status } from '../../../redux/action/netwok-status';
 
 export const RouteLayoutMain = ({ component: Component, ...rest }: { [key: string]: any }) => {
     // console.log("RouteLayout");
@@ -29,10 +31,11 @@ export const RouteLayoutMain = ({ component: Component, ...rest }: { [key: strin
 interface IProps {
     logged_in_user?: IUser | null;
     history: History;
-    onUserLoggedIn?: (user: IUser) => void;
-    onSetToken?: (token: IToken) => void;
-    token: IToken;
+    // onUserLoggedIn?: (user: IUser) => void;
+    // onSetToken?: (token: IToken) => void;
+    // token: IToken;
     match: any;
+    // set_network_status?: (network_status: NETWORK_STATUS) => any;
 }
 
 class LayoutMainComponent extends React.Component<IProps> {
@@ -79,7 +82,7 @@ class LayoutMainComponent extends React.Component<IProps> {
         return (
             <>
                 <div className="layout-main-wrapper">
-                    <LayoutMainHeader history={this.props.history} match={this.props.match} />
+                    <LayoutMainHeader {...this.props} />
                     <main className="main mx-3">
                         <div className="row">
                             {/* <div className="col-md-4 offset-md-4"> */}
@@ -97,8 +100,9 @@ class LayoutMainComponent extends React.Component<IProps> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
-        onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
-        onSetToken: (token: IToken) => dispatch(action_set_token(token))
+        // onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
+        // onSetToken: (token: IToken) => dispatch(action_set_token(token)),
+        // set_network_status: (network_status: NETWORK_STATUS) => dispatch(action_set_network_status(network_status)),
     }
 }
 
@@ -106,7 +110,7 @@ const state2props = (state: redux_state) => {
     // debugger;
     return {
         logged_in_user: state.logged_in_user,
-        token: state.token
+        // token: state.token
     }
 }
 
