@@ -21,6 +21,10 @@ import { Category } from '../category/Category';
 import { Search } from '../search/Search';
 import { appLocalStorage } from '../../service/appLocalStorage';
 import { AppInitService } from '../../service/service.app-init';
+// import { NETWORK_STATUS } from '../../enum/NetworkStatus';
+import { BaseService } from '../../service/service.base';
+// import { action_set_network_status } from '../../redux/action/netwok-status';
+// import { Store2 } from '../../redux/store';
 
 const appRoutes = (
   <HashRouter>
@@ -46,26 +50,44 @@ const appRoutes = (
 
 interface IProps {
   internationalization: TInternationalization;
+  // network_status: NETWORK_STATUS;
+  // set_network_status?: (network_status: NETWORK_STATUS) => any;
 }
 
 class AppComponent extends React.Component<IProps, any> {
   private initStore = new appLocalStorage();
   private _appInitService = new AppInitService();
-  
+
   constructor(props: any) {
     super(props);
 
     Localization.setLanguage(props.internationalization.flag);
     document.title = Localization.app_title;
 
-    /* if (Setup.internationalization.rtl) {
-      document.body.classList.add('rtl');
-    } */
     if (props.internationalization.rtl) {
       document.body.classList.add('rtl');
     }
-    
+
+    // if (BaseService.isAppOffline()) {
+    //   // Store2.dispatch(action_set_network_status(NETWORK_STATUS.OFFLINE));
+    //   this.props.set_network_status && this.props.set_network_status(NETWORK_STATUS.OFFLINE);
+    // }
+    BaseService.check_network_status();
+
   }
+
+  /* check_network_status() {
+    if (this.props.network_status === NETWORK_STATUS.ONLINE) {
+      if (BaseService.isAppOffline()) {
+        this.props.set_network_status && this.props.set_network_status(NETWORK_STATUS.OFFLINE);
+      }
+
+    } else if (this.props.network_status === NETWORK_STATUS.OFFLINE) {
+      if (!BaseService.isAppOffline()) {
+        this.props.set_network_status && this.props.set_network_status(NETWORK_STATUS.ONLINE);
+      }
+    }
+  } */
 
   render() {
     return (
@@ -81,12 +103,14 @@ class AppComponent extends React.Component<IProps, any> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
   return {
+    // set_network_status: (network_status: NETWORK_STATUS) => dispatch(action_set_network_status(network_status)),
   }
 }
 
 const state2props = (state: redux_state) => {
   return {
     internationalization: state.internationalization,
+    // network_status: state.network_status
   }
 }
 

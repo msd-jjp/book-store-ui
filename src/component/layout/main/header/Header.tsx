@@ -6,10 +6,15 @@ import { action_user_logged_out } from '../../../../redux/action/user';
 import { redux_state } from '../../../../redux/app_state';
 import { Localization } from '../../../../config/localization/localization';
 import { History } from "history";
+import { NETWORK_STATUS } from '../../../../enum/NetworkStatus';
+// import { action_set_network_status } from '../../../../redux/action/netwok-status';
+import { BaseService } from '../../../../service/service.base';
 
 interface IProps {
     history: History;
     match: any;
+    network_status: NETWORK_STATUS;
+    // set_network_status?: (network_status: NETWORK_STATUS) => any;
 }
 interface IState {
     search_query: string | undefined;
@@ -64,6 +69,19 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
         this.search_query = event.target.value;
     }
 
+    /* check_network_status() {
+        if (this.props.network_status === NETWORK_STATUS.ONLINE) {
+            if (BaseService.isAppOffline()) {
+                this.props.set_network_status && this.props.set_network_status(NETWORK_STATUS.OFFLINE);
+            }
+
+        } else if (this.props.network_status === NETWORK_STATUS.OFFLINE) {
+            if (!BaseService.isAppOffline()) {
+                this.props.set_network_status && this.props.set_network_status(NETWORK_STATUS.ONLINE);
+            }
+        }
+    } */
+
     render() {
         return (
             <>
@@ -88,7 +106,12 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
                         </div>
                         <div className="col-2">
                             <div className="bellcontainer">
-                                <i className="fa fa-bell-o bell"></i>
+                                {/* fa-bell-o */}
+                                <i className={"fa fa-wifi bell " +
+                                    (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'text-danger' : '')
+                                }
+                                    onClick={() => BaseService.check_network_status()}
+                                ></i>
                             </div>
                         </div>
                     </div>
@@ -101,13 +124,15 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
         do_logout: () => dispatch(action_user_logged_out()),
+        // set_network_status: (network_status: NETWORK_STATUS) => dispatch(action_set_network_status(network_status)),
     }
 }
 
 const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
-        internationalization: state.internationalization
+        internationalization: state.internationalization,
+        network_status: state.network_status
     }
 }
 
