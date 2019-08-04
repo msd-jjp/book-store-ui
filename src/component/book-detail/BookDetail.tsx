@@ -583,7 +583,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               </div>
             </div>
           </div>
-          <div className={"write-comment-box mx-1 mt-1 " + (!this.state.is_writeCommentBox_open ? 'd-none' : '')} >
+          <div className={
+            "write-comment-box mx-1 mt-1 " +
+            ((!this.state.is_writeCommentBox_open || this.props.network_status === NETWORK_STATUS.OFFLINE) ? 'd-none' : '')
+          } >
             <Input
               defaultValue={this.state.newComment.value}
               onChange={(val, isValid) => { this.handleCommentInputChange(val, isValid) }}
@@ -600,6 +603,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               onClick={() => { this.addComment() }}
             >
               {Localization.submit}
+              {
+                this.props.network_status === NETWORK_STATUS.OFFLINE
+                  ? <i className="fa fa-wifi text-danger"></i> : ''
+              }
             </BtnLoader>
           </div>
         </div>
@@ -724,17 +731,31 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                           btnClassName="text-success btn btn-link p-0"
                           loading={unlike_loader_obj[bk_cmt.id]}
                           onClick={() => { this.unlikeComment(bk_cmt.id) }}
+                          disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                         >
                           {Localization.thank_you_for_your_feedback}&nbsp;
-                          <span className="small">({Localization.remove})</span>
+                          <span className="small">
+                            (
+                            {Localization.remove}
+                            {
+                              this.props.network_status === NETWORK_STATUS.OFFLINE
+                                ? <i className="fa fa-wifi text-danger"></i> : ''
+                            }
+                            )
+                            </span>
                         </BtnLoader>
                         :
                         <BtnLoader
                           btnClassName="btn btn-block__ btn-helpful text-uppercase"
                           loading={like_loader_obj[bk_cmt.id]}
                           onClick={() => { this.likeComment(bk_cmt.id) }}
+                          disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                         >
                           {Localization.helpful}
+                          {
+                            this.props.network_status === NETWORK_STATUS.OFFLINE
+                              ? <i className="fa fa-wifi text-danger"></i> : ''
+                          }
                         </BtnLoader>
                     }
                     {
@@ -744,17 +765,31 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                           btnClassName="text-warning text-capitalize btn btn-link p-0 ml-3"
                           loading={unreport_loader_obj[bk_cmt.id]}
                           onClick={() => { this.unreportComment(bk_cmt.id) }}
+                          disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                         >
                           {Localization.your_report_submited}&nbsp;
-                          <span className="small">({Localization.remove})</span>
+                          <span className="small">
+                            (
+                            {Localization.remove}
+                            {
+                              this.props.network_status === NETWORK_STATUS.OFFLINE
+                                ? <i className="fa fa-wifi text-danger"></i> : ''
+                            }
+                            )
+                          </span>
                         </BtnLoader>
                         :
                         <BtnLoader
                           btnClassName="text-muted text-capitalize btn btn-link p-0 ml-3"
                           loading={report_loader_obj[bk_cmt.id]}
                           onClick={() => { this.reportComment(bk_cmt.id) }}
+                          disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                         >
                           {Localization.report}
+                          {
+                            this.props.network_status === NETWORK_STATUS.OFFLINE
+                              ? <i className="fa fa-wifi text-danger"></i> : ''
+                          }
                         </BtnLoader>
                     }
 
@@ -800,8 +835,14 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       return (
         <>
           <button className="text-danger text-capitalize btn btn-link ml-3 pull-right p-0"
-            onClick={() => this.openModal_removeComment(book_comment.id)}>
+            onClick={() => this.openModal_removeComment(book_comment.id)}
+            disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+          >
             {Localization.remove_comment}
+            {
+              this.props.network_status === NETWORK_STATUS.OFFLINE
+                ? <i className="fa fa-wifi text-danger"></i> : ''
+            }
           </button>
         </>
       )
@@ -1103,6 +1144,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
 
   toggleWriteComment() {
+    if (this.props.network_status === NETWORK_STATUS.OFFLINE && !this.state.is_writeCommentBox_open) {
+      return;
+    }
     this.setState({ ...this.state, is_writeCommentBox_open: !this.state.is_writeCommentBox_open });
   }
 
