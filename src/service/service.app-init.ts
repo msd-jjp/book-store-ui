@@ -18,9 +18,8 @@ export class AppInitService extends BaseService {
     reInit_onUpdate(appOldVersion: string, appNewVersion: string) {
         if (appOldVersion && appNewVersion && (appOldVersion !== appNewVersion)) {
             debugger;
-            console.log('update if you want 2...');
+            console.log('update if you want 5...');
             // this._resetDB();
-            alert('app new version');
 
         }
     }
