@@ -5,10 +5,11 @@ export class AppInitService extends BaseService {
 
     constructor() {
         super();
-        this.init()
+        this.init();
     }
 
     init() {
+        console.log('app init service');
         let newVersion = process.env.REACT_APP_VERSION || '';
         let oldVersion = localStorage.getItem('app-version') || '';
         this.reInit_onUpdate(oldVersion, newVersion);
@@ -18,7 +19,7 @@ export class AppInitService extends BaseService {
     reInit_onUpdate(appOldVersion: string, appNewVersion: string) {
         if (appOldVersion && appNewVersion && (appOldVersion !== appNewVersion)) {
             debugger;
-            console.log('update if you want 5...');
+            console.log('update if you want, app version: ' + appNewVersion);
             // this._resetDB();
 
         }
