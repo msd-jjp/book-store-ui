@@ -23,6 +23,7 @@ import { appLocalStorage } from '../../service/appLocalStorage';
 import { AppInitService } from '../../service/service.app-init';
 // import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { BaseService } from '../../service/service.base';
+import { Modal } from 'react-bootstrap';
 // import { action_set_network_status } from '../../redux/action/netwok-status';
 // import { Store2 } from '../../redux/store';
 
@@ -53,12 +54,18 @@ interface IProps {
   // network_status: NETWORK_STATUS;
   // set_network_status?: (network_status: NETWORK_STATUS) => any;
 }
+interface IState {
+  showConfirmReloadModal: boolean;
+}
 
-class AppComponent extends React.Component<IProps, any> {
+class AppComponent extends React.Component<IProps, IState> {
   private initStore = new appLocalStorage();
   private _appInitService = new AppInitService();
+  state = {
+    showConfirmReloadModal: false,
+  }
 
-  constructor(props: any) {
+  constructor(props: IProps) {
     super(props);
 
     Localization.setLanguage(props.internationalization.flag);
@@ -74,6 +81,47 @@ class AppComponent extends React.Component<IProps, any> {
     // }
     BaseService.check_network_status();
 
+  }
+
+  componentDidMount() {
+    this.event_confirmReloadModal();
+  }
+
+  event_confirmReloadModal() {
+    window.addEventListener("app-event-newContentAvailable", () => {
+      this.setState({ ...this.state, showConfirmReloadModal: true });
+    });
+  }
+
+  closeModal_confirmReload() {
+    this.setState({ ...this.state, showConfirmReloadModal: false });
+  }
+
+  confirmModal_confirmReload() {
+    // window.location.reload(window.location.href);
+    // window.location.reload(window.location.href);
+    // location.reload(); // true
+    window.location.reload();
+  }
+
+  modal_confirmReload_render() {
+    return (
+      <>
+        <Modal show={this.state.showConfirmReloadModal} onHide={() => this.closeModal_confirmReload()}
+          centered
+          backdrop='static'>
+          <Modal.Body>{Localization.msg.ui.new_vesion_available_update}</Modal.Body>
+          <Modal.Footer>
+            <button className="btn btn-light-- btn-sm btn-link text-muted" onClick={() => this.closeModal_confirmReload()}>
+              {Localization.dont_want_now}
+            </button>
+            <button className="btn btn-system btn-sm" onClick={() => this.confirmModal_confirmReload()}>
+              {Localization.update}
+            </button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    )
   }
 
   /* check_network_status() {
@@ -95,6 +143,8 @@ class AppComponent extends React.Component<IProps, any> {
         <Router>
           {appRoutes}
         </Router>
+
+        {this.modal_confirmReload_render()}
       </div>
     );
   }

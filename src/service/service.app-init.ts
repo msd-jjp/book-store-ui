@@ -9,7 +9,7 @@ export class AppInitService extends BaseService {
     }
 
     init() {
-        console.log('app init service');
+        console.log('app init service 1');
         let newVersion = process.env.REACT_APP_VERSION || '';
         let oldVersion = localStorage.getItem('app-version') || '';
         this.reInit_onUpdate(oldVersion, newVersion);

@@ -93,6 +93,31 @@ function registerValidSW(swUrl: string, config?: Config) {
                 'New content is available and will be used when all tabs for this page are closed.'
               );
 
+              const event = new Event("app-event-newContentAvailable");
+              window.dispatchEvent(event);
+
+              // if (confirm(`New content is available!. Click OK to refresh`)) {
+              //   window.location.reload();
+              // }
+
+
+              /* const _window: any = window;
+
+              _window['isUpdateAvailable']
+                .then((isAvailable: any) => {
+                  if (isAvailable) {
+                    const _this: any = this;
+                    const toast = _this.toastCtrl.create({
+                      message: 'New Update available! Reload the webapp to see the latest juicy changes.',
+                      position: 'bottom',
+                      showCloseButton: true,
+                    });
+                    toast.present();
+                  }
+                }); */
+
+
+
               // Execute callback
               if (config && config.onUpdate) {
                 config.onUpdate(registration);
