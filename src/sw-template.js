@@ -6,7 +6,7 @@ if ('function' === typeof importScripts) {
     );
     /* global workbox */
     if (workbox) {
-        console.log('Workbox is loaded 5');
+        console.log('Workbox is loaded, 7');
 
         /* injection point for manifest files.  */
         workbox.precaching.precacheAndRoute([]);
@@ -128,6 +128,20 @@ if ('function' === typeof importScripts) {
                 }),
                 "GET"
             ],
+            htmlJsCss: [
+                /\.(?:html|js|css)$/,
+                new workbox.strategies.NetworkFirst({
+                    cacheName: "html-js-css",
+                    plugins: [
+                        new workbox.expiration.Plugin({
+                            // maxAgeSeconds: 60 * 60 * 24 * 2, // 2 days
+                            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+                            maxEntries: 100
+                        })
+                    ]
+                }),
+                "GET"
+            ],
             manifest: [
                 /\.manifest.json/,
                 new workbox.strategies.CacheFirst({
@@ -147,8 +161,9 @@ if ('function' === typeof importScripts) {
                     cacheName: "manifest2",
                     plugins: [
                         new workbox.expiration.Plugin({
-                            maxAgeSeconds: 60 * 60 * 24 * 2, // 2 days
-                            maxEntries: 100
+                            // maxAgeSeconds: 60 * 60 * 24 * 2, // 2 days
+                            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+                            maxEntries: 1
                         })
                     ]
                 }),
@@ -160,13 +175,12 @@ if ('function' === typeof importScripts) {
                     cacheName: 'serve-files',
                     plugins: [
                         new workbox.expiration.Plugin({
-                            maxEntries: 60,
+                            maxEntries: 6000,
                             maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
                         }),
                     ],
                 })
             ]
-
         };
 
         /* custom cache rules*/
@@ -211,6 +225,7 @@ if ('function' === typeof importScripts) {
         // workbox.routing.registerRoute(...cacheConfig.imageApi4);
         // workbox.routing.registerRoute(...cacheConfig.imageApi5);
         // workbox.routing.registerRoute(...cacheConfig.jsCss);
+        workbox.routing.registerRoute(...cacheConfig.htmlJsCss);
         workbox.routing.registerRoute(...cacheConfig.fonts);
         // workbox.routing.registerRoute(...cacheConfig.manifest);
         workbox.routing.registerRoute(...cacheConfig.manifest2);
