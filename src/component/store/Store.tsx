@@ -358,16 +358,36 @@ class StoreComponent extends BaseComponent<IProps, IState> {
 
     carousel_go_back(el: HTMLDivElement | null) {
         if (this.props.internationalization.rtl) {
-            el && el.scrollBy(100, 0);
+            // el && el.scrollBy(300, 0);
+            el && el.scrollBy({
+                top: 0,
+                left: 300,
+                behavior: 'smooth'
+            });
         } else {
-            el && el.scrollBy(-100, 0);
+            // el && el.scrollBy(-300, 0);
+            el && el.scrollBy({
+                top: 0,
+                left: -300,
+                behavior: 'smooth'
+            });
         }
     }
     carousel_go_forward(el: HTMLDivElement | null) {
         if (this.props.internationalization.rtl) {
-            el && el.scrollBy(-100, 0);
+            // el && el.scrollBy(-300, 0);
+            el && el.scrollBy({
+                top: 0,
+                left: -300,
+                behavior: 'smooth'
+            });
         } else {
-            el && el.scrollBy(100, 0);
+            // el && el.scrollBy(300, 0);
+            el && el.scrollBy({
+                top: 0,
+                left: 300,
+                behavior: 'smooth'
+            });
         }
     }
 
