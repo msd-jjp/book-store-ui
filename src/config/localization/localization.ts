@@ -27,6 +27,7 @@ interface ILocalization extends LocalizedStringsMethods {
             your_comment_submited: string;
             your_comment_will_be_removed_continue: string;
             no_network_connection: string;
+            new_vesion_available_update: string;
         },
         back: {
             [key: string]: any; // todo
@@ -216,6 +217,8 @@ interface ILocalization extends LocalizedStringsMethods {
     version_mode: string;
     trial_mode: string;
     trial: string;
+    dont_want_now: string;
+    update: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

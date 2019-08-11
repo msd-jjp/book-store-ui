@@ -18,6 +18,7 @@ export const ar = {
             your_comment_submited: 'نظر شما ثبت شد',
             your_comment_will_be_removed_continue: 'نظر شما حذف خواهد شد، تایید می کنید؟',
             no_network_connection: 'خطا رخ داد، لطفا دسترسی اینترنت خود را بررسی کرده و مجددا تلاش کنید.',
+            new_vesion_available_update: 'نسخه جدیدی از برنامه موجود است، می توانید بروز کنید.',
         },
         back: {
             msg1: 'کاربر از قبل وجود دارد.',
@@ -207,4 +208,6 @@ export const ar = {
     version_mode: 'نوع نسخه',
     trial_mode: 'نسخه آزمایشی',
     trial: 'آزمایشی',
+    dont_want_now: "فعلا نمی خواهم",
+    update: 'بروزرسانی',
 }

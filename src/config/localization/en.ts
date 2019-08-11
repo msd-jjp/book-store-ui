@@ -18,6 +18,7 @@ export const en = {
             your_comment_submited: 'your comment submited',
             your_comment_will_be_removed_continue: 'your comment will be removed, continue?',
             no_network_connection: 'error occurred, please check your network connection and try again',
+            new_vesion_available_update: 'new vesion of app is available, you can update it.',
         },
         back: {
             msg1: 'user already exists',
@@ -210,4 +211,6 @@ export const en = {
     version_mode: 'version mode',
     trial_mode: 'trial mode',
     trial: 'trial',
+    dont_want_now: "i don't want now",
+    update: 'update',
 }
