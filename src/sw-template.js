@@ -18,7 +18,7 @@ if ('function' === typeof importScripts) {
                     cacheName: "images",
                     plugins: [
                         new workbox.expiration.Plugin({
-                            maxEntries: 600,
+                            maxEntries: 6000,
                             maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
                         })
                     ]
@@ -225,7 +225,7 @@ if ('function' === typeof importScripts) {
         // workbox.routing.registerRoute(...cacheConfig.imageApi4);
         // workbox.routing.registerRoute(...cacheConfig.imageApi5);
         // workbox.routing.registerRoute(...cacheConfig.jsCss);
-        workbox.routing.registerRoute(...cacheConfig.htmlJsCss);
+        // workbox.routing.registerRoute(...cacheConfig.htmlJsCss);
         workbox.routing.registerRoute(...cacheConfig.fonts);
         // workbox.routing.registerRoute(...cacheConfig.manifest);
         workbox.routing.registerRoute(...cacheConfig.manifest2);
