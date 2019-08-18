@@ -22,6 +22,7 @@ import { Input } from "../form/input/Input";
 // import { Modal } from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal'
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
+import { IPerson } from "../../model/model.person";
 
 
 interface IProps {
@@ -194,6 +195,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     }
   }
 
+  getPersonFullName(person: IPerson): string {
+    return (person.name || '') + ' ' + (person.last_name || '');
+  }
+
   book_detail_template(book: IBook) {
     const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
       this.defaultBookImagePath;
@@ -203,7 +208,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     );
     let first_writer_fullName = '';
     if (writerList.length) {
-      first_writer_fullName = writerList[0].person.name + ' ' + writerList[0].person.last_name;
+      // first_writer_fullName = writerList[0].person.name + ' ' + writerList[0].person.last_name;
+      first_writer_fullName = this.getPersonFullName(writerList[0].person);
     }
 
     let pressList = book.roles.filter(
@@ -344,7 +350,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             {
               writerList.map((ab_writer, ab_writerIndex) => {
 
-                let ab_writer_fullName = ab_writer.person.name + ' ' + ab_writer.person.last_name;
+                // let ab_writer_fullName = ab_writer.person.name + ' ' + ab_writer.person.last_name;
+                let ab_writer_fullName = this.getPersonFullName(ab_writer.person);
                 let ab_writer_image = ab_writer.person.image ? this.getImageUrl(ab_writer.person.image) :
                   "/static/media/img/icon/avatar.png";
 
