@@ -210,4 +210,5 @@ export const ar = {
     trial: 'آزمایشی',
     dont_want_now: "فعلا نمی خواهم",
     update: 'بروزرسانی',
+    shopping_cart: 'سبد خرید',
 }

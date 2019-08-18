@@ -219,6 +219,7 @@ interface ILocalization extends LocalizedStringsMethods {
     trial: string;
     dont_want_now: string;
     update: string;
+    shopping_cart: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

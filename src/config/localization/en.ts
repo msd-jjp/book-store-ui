@@ -213,4 +213,5 @@ export const en = {
     trial: 'trial',
     dont_want_now: "i don't want now",
     update: 'update',
+    shopping_cart: 'shopping cart',
 }
