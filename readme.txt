@@ -26,9 +26,8 @@ serve -s build
 
 ====================================================================================
 
-craete envirenment
-    dev
-    prod
+add to list --> wishing list & shopping list
+dahbord slider reverse order in farsi
 
 ====================================================================================
 
@@ -46,7 +45,7 @@ https://github.com/axios/axios/issues/1361
 
 ====================================================================================
 
-add to homescreen notify.
+
 
 ====================================================================================
 
@@ -90,8 +89,7 @@ comments --> parent: show quote from parent
 ====================================================================================
 
 fix input cmp bug:
-if regex mobile & not require --> error
-if no default value & require --> error
+require star, valua & '' (get from admin project)
 
 ====================================================================================
 

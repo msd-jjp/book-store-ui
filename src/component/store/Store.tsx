@@ -321,7 +321,8 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                             );
                             let first_writer_fullName = '';
                             if (writerList.length) {
-                                first_writer_fullName = writerList[0].person.name + ' ' + writerList[0].person.last_name;
+                                // first_writer_fullName = writerList[0].person.name + ' ' + writerList[0].person.last_name;
+                                first_writer_fullName = this.getPersonFullName(writerList[0].person);
                             }
 
                             return (

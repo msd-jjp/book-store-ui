@@ -22,7 +22,7 @@ import { Input } from "../form/input/Input";
 // import { Modal } from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal'
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
-import { IPerson } from "../../model/model.person";
+// import { IPerson } from "../../model/model.person";
 
 
 interface IProps {
@@ -193,10 +193,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         });
       }
     }
-  }
-
-  getPersonFullName(person: IPerson): string {
-    return (person.name || '') + ' ' + (person.last_name || '');
   }
 
   book_detail_template(book: IBook) {
