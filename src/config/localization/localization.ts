@@ -224,6 +224,7 @@ interface ILocalization extends LocalizedStringsMethods {
     add_to_wish_list: string;
     remove_from_cart_list: string;
     add_to_cart_list: string;
+    your_shopping_cart_is_empty: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

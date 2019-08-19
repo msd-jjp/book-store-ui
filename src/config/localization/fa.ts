@@ -221,4 +221,5 @@ export const fa = {
     add_to_wish_list: 'به لیست علاقه مندی ها اضافه کن',
     remove_from_cart_list: 'از سبد خرید حذف کن',
     add_to_cart_list: 'به سبد خرید اضافه کن',
+    your_shopping_cart_is_empty: 'سبد خرید شما خالیست',
 }

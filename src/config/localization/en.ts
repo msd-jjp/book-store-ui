@@ -218,4 +218,5 @@ export const en = {
     add_to_wish_list: 'add to wish list',
     remove_from_cart_list: 'remove from shopping cart',
     add_to_cart_list: 'add to shopping cart',
+    your_shopping_cart_is_empty: 'your shopping cart is empty',
 }
