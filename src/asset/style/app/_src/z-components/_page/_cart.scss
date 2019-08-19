@@ -33,9 +33,20 @@
         align-items: center;
       }
 
-      .item-count {
+      .item-count-wrapper {
         display: flex;
         flex-direction: column;
+        width: 27px;
+
+        .item-count {
+          width: 27px;
+          border: 1px solid #ddd;
+          margin: 0.1rem 0;
+          font-weight: bold;
+          &.disable {
+            opacity: 0.5;
+          }
+        }
       }
 
       // .item-price {

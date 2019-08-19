@@ -11,6 +11,8 @@ import { ToastContainer } from "react-toastify";
 import { ICartItems, ICartItem } from "../../redux/action/cart/cartAction";
 import { action_add_to_cart, action_remove_from_cart, action_update_cart_item } from "../../redux/action/cart";
 import { Localization } from "../../config/localization/localization";
+import { BOOK_TYPES } from "../../enum/Book";
+import { IBook } from "../../model/model.book";
 // import { IBook } from "../../model/model.book";
 
 interface IProps {
@@ -37,17 +39,30 @@ class CartComponent extends BaseComponent<IProps, IState> {
   }
 
   updateCartItem_up(cartItem: ICartItem) {
+    if (!this.is_countable_book(cartItem.book)) {
+      return;
+    }
     let ci = { ...cartItem };
     ci.count++;
     this.props.update_cart_item(ci);
   }
 
   updateCartItem_down(cartItem: ICartItem) {
+    if (!this.is_countable_book(cartItem.book)) {
+      return;
+    }
     let ci = { ...cartItem };
     if (ci.count === 1) return;
 
     ci.count--;
     this.props.update_cart_item(ci);
+  }
+
+  is_countable_book(book: IBook): boolean {
+    if (book.type === BOOK_TYPES.Hard_Copy) {
+      return true;
+    }
+    return false;
   }
 
   // cartList_add_book(book: IBook) {
@@ -79,7 +94,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
                       const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
                         this.defaultBookImagePath;
 
-                      book.price = book.price || 96500; // todo remove me
+                      book.price = book.price || 96500; // todo _DELETE_ME
 
                       return (<Fragment key={index}>
 
@@ -96,14 +111,33 @@ class CartComponent extends BaseComponent<IProps, IState> {
                             {book.title}
                           </div>
 
-                          <div className="item-count text-center mr-3">
-                            <div className="btn btn-light btn-sm" onClick={() => this.updateCartItem_up(cartItem)}>
-                              <i className="fa fa-angle-up"></i>
-                            </div>
-                            {cartItem.count}
-                            <div className="btn btn-light btn-sm" onClick={() => this.updateCartItem_down(cartItem)}>
-                              <i className="fa fa-angle-down"></i>
-                            </div>
+                          <div className="item-count-wrapper text-center mr-3">
+                            {
+                              this.is_countable_book(cartItem.book) ?
+                                <div className="btn btn-light btn-sm cursor-pointer"
+                                  onClick={() => this.updateCartItem_up(cartItem)}>
+                                  <i className="fa fa-angle-up"></i>
+                                </div>
+                                : ''
+                            }
+
+                            {
+                              this.is_countable_book(cartItem.book) ?
+                                <div className="item-count rounded">{cartItem.count}</div>
+                                :
+                                <div className="item-count rounded disable">{cartItem.count}</div>
+                            }
+                            {
+                              this.is_countable_book(cartItem.book) ?
+                                <div className={
+                                  "btn btn-light btn-sm cursor-pointer " +
+                                  (cartItem.count < 2 ? 'disabled' : '')
+                                }
+                                  onClick={() => this.updateCartItem_down(cartItem)}>
+                                  <i className="fa fa-angle-down"></i>
+                                </div>
+                                : ''
+                            }
                           </div>
 
                           <div className="item-price">
