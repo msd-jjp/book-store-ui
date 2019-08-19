@@ -140,7 +140,8 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <i className="icon fa fa-shopping-cart mr-3"></i>
                             <span className="text text-capitalize">
                                 {Localization.shopping_cart}
-                                &nbsp;<small>({0})</small>
+                                &nbsp;
+                                <small className="font-weight-bold">({0})</small>
                             </span>
                         </li>
                         {/* <li className="more-item list-group-item p-align-0">
