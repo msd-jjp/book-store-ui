@@ -7,6 +7,8 @@ export interface ICartItem {
     count: number;
 }
 
+export type ICartItems = ICartItem[];
+
 export interface ICartAction extends Action<EACTIONS> {
     payload: ICartItem;
 }

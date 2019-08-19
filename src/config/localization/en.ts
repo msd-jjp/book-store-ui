@@ -216,4 +216,6 @@ export const en = {
     shopping_cart: 'shopping cart',
     remove_from_wish_list: 'remove from wish list',
     add_to_wish_list: 'add to wish list',
+    remove_from_cart_list: 'remove from shopping cart',
+    add_to_cart_list: 'add to shopping cart',
 }

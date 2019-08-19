@@ -22,6 +22,8 @@ import { Input } from "../form/input/Input";
 // import { Modal } from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal'
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
+import { ICartItems, ICartItem } from "../../redux/action/cart/cartAction";
+import { action_add_to_cart, action_remove_from_cart } from "../../redux/action/cart";
 // import { IPerson } from "../../model/model.person";
 
 
@@ -32,6 +34,9 @@ interface IProps {
   logged_in_user?: IUser | null;
   onUserLoggedIn?: (user: IUser) => void;
   network_status: NETWORK_STATUS;
+  cart: ICartItems;
+  add_to_cart: (cartItem: ICartItem) => any;
+  remove_from_cart: (cartItem: ICartItem) => any;
 }
 interface IState {
   book: IBook | undefined;
@@ -256,6 +261,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             </div>
             <div className="col-12">
               {this.wishList_actionBtn_render(book)}
+              <div className="clearfix"></div>
+              {this.cartList_actionBtn_render(book)}
             </div>
           </div>
 
@@ -541,6 +548,44 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     }
   }
 
+  cartList_actionBtn_render(book: IBook) {
+    let book_in_cartList = (this.props.cart || []).filter(item => item.book.id === book.id);
+
+    if (book_in_cartList && book_in_cartList.length) {
+      return (
+        <>
+          <button
+            className="add-to-list btn btn-link p-align-0 mt-n2 text-warning"
+            onClick={() => { this.cartList_remove_book(book) }}
+          >
+            {Localization.remove_from_cart_list}
+            <i className="fa fa-shopping-cart"></i>
+          </button>
+        </>
+      )
+    } else {
+      return (
+        <>
+          <button
+            className="btn btn-link p-align-0 mt-n2 text-system"
+            onClick={() => { this.cartList_add_book(book) }}
+          >
+            {Localization.add_to_cart_list}
+            <i className="fa fa-shopping-cart"></i>
+          </button>
+        </>
+      )
+    }
+  }
+
+  cartList_add_book(book: IBook) {
+    this.props.add_to_cart({ book, count: 1 });
+  }
+
+  cartList_remove_book(book: IBook) {
+    this.props.remove_from_cart({ book, count: 1 });
+  }
+
   comment_sections_render(book: IBook) {
     return (
       <>
@@ -626,6 +671,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       </>
     )
   }
+
   handleCommentInputChange(value: any, isValid: boolean) {
     this.setState({ ...this.state, newComment: { ...this.state.newComment, isValid, value } });
   }
@@ -1270,6 +1316,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
   return {
     onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
+    add_to_cart: (cartItem: ICartItem) => dispatch(action_add_to_cart(cartItem)),
+    remove_from_cart: (cartItem: ICartItem) => dispatch(action_remove_from_cart(cartItem)),
   };
 };
 
@@ -1278,7 +1326,8 @@ const state2props = (state: redux_state) => {
     internationalization: state.internationalization,
     token: state.token,
     logged_in_user: state.logged_in_user,
-    network_status: state.network_status
+    network_status: state.network_status,
+    cart: state.cart
   };
 };
 

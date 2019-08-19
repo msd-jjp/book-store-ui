@@ -14,6 +14,7 @@ import { action_remove_token } from '../../redux/action/token';
 import { History } from 'history';
 import { action_remove_authentication } from '../../redux/action/authentication';
 import { Modal } from 'react-bootstrap';
+import { ICartItems } from '../../redux/action/cart/cartAction';
 
 interface IProps {
     logged_in_user?: IUser | null;
@@ -23,6 +24,7 @@ interface IProps {
     remove_token: () => void;
     history: History;
     remove_authentication: () => void;
+    cart: ICartItems;
 }
 
 interface IState {
@@ -140,8 +142,14 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <i className="icon fa fa-shopping-cart mr-3"></i>
                             <span className="text text-capitalize">
                                 {Localization.shopping_cart}
-                                &nbsp;
-                                <small className="font-weight-bold">({0})</small>
+                                {this.props.cart.length
+                                    ?
+                                    <>
+                                        &nbsp;
+                                        <small className="font-weight-bold">({this.props.cart.length})</small>
+                                    </>
+                                    : ''
+                                }
                             </span>
                         </li>
                         {/* <li className="more-item list-group-item p-align-0">
@@ -208,7 +216,8 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
-        internationalization: state.internationalization
+        internationalization: state.internationalization,
+        cart: state.cart
     }
 }
 

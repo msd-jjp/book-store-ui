@@ -213,4 +213,6 @@ export const ar = {
     shopping_cart: 'سبد خرید',
     remove_from_wish_list: 'از لیست علاقه مندی ها حذف کن',
     add_to_wish_list: 'به لیست علاقه مندی ها اضافه کن',
+    remove_from_cart_list: 'از سبد خرید حذف کن',
+    add_to_cart_list: 'به سبد خرید اضافه کن',
 }

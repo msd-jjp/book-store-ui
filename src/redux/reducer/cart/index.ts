@@ -1,8 +1,7 @@
 import { EACTIONS } from "../../ActionEnum";
-import { IToken } from "../../../model/model.token";
-import { ICartItem, ICartAction } from "../../action/cart/cartAction";
+import { ICartItem, ICartAction, ICartItems } from "../../action/cart/cartAction";
 
-export function reducer(state: ICartItem[], action: ICartAction): ICartItem[] {
+export function reducer(state: ICartItems, action: ICartAction): ICartItems {
     switch (action.type) {
         case EACTIONS.ADD_TO_CART:
             if (!isCartItemExist(state, action.payload)) {
@@ -11,13 +10,13 @@ export function reducer(state: ICartItem[], action: ICartAction): ICartItem[] {
                 return state;
             }
         case EACTIONS.REMOVE_FROM_CART:
-            return removeFromCart(state, action.payload);
+            return removeFromCart([...state], action.payload);
     }
     if (state) { return state; }
     return [];
 }
 
-const isCartItemExist = (state: ICartItem[], cartItem: ICartItem): boolean => {
+const isCartItemExist = (state: ICartItems, cartItem: ICartItem): boolean => {
     let exist = false;
     let book_id = cartItem.book.id;
 
@@ -30,7 +29,7 @@ const isCartItemExist = (state: ICartItem[], cartItem: ICartItem): boolean => {
     return exist;
 }
 
-const removeFromCart = (state: ICartItem[], cartItem: ICartItem): ICartItem[] => {
+const removeFromCart = (state: ICartItems, cartItem: ICartItem): ICartItems => {
     let book_id = cartItem.book.id;
 
     for (let i = 0; i < state.length; i++) {
