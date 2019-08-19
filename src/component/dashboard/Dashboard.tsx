@@ -1,11 +1,9 @@
 import React from "react";
 import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
-import { action_user_logged_out } from "../../redux/action/user";
 import { redux_state } from "../../redux/app_state";
 import { IUser } from "../../model/model.user";
 import { TInternationalization } from "../../config/setup";
-import { action_change_app_flag } from "../../redux/action/internationalization";
 import { BaseComponent } from "../_base/BaseComponent";
 import Slider, { Settings } from "react-slick";
 import { Localization } from "../../config/localization/localization";
@@ -24,8 +22,6 @@ import { BOOK_ROLES } from "../../enum/Book";
 
 interface IProps {
   logged_in_user?: IUser | null;
-  do_logout?: () => void;
-  change_app_flag?: (internationalization: TInternationalization) => void;
   internationalization: TInternationalization;
   history: History;
   token: IToken;
@@ -116,14 +112,14 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   gotoBookDetail(bookId: string) {
     this.props.history.push(`book-detail/${bookId}`);
   }
-  getRandomHelenBookUrl(): string {
-    let r = Math.floor(Math.random() * 9) + 1;
-    return `/static/media/img/sample-book/sample-book-h${r}.png`;
-  }
-  getRandomBookUrl(): string {
-    let r = Math.floor(Math.random() * 12) + 1;
-    return `/static/media/img/sample-book/sample-book${r}.png`;
-  }
+  // getRandomHelenBookUrl(): string {
+  //   let r = Math.floor(Math.random() * 9) + 1;
+  //   return `/static/media/img/sample-book/sample-book-h${r}.png`;
+  // }
+  // getRandomBookUrl(): string {
+  //   let r = Math.floor(Math.random() * 12) + 1;
+  //   return `/static/media/img/sample-book/sample-book${r}.png`;
+  // }
 
   readNow() {
     debugger;
@@ -484,9 +480,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
   return {
-    do_logout: () => dispatch(action_user_logged_out()),
-    change_app_flag: (internationalization: TInternationalization) =>
-      dispatch(action_change_app_flag(internationalization))
   };
 };
 

@@ -115,6 +115,10 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         )
     }
 
+    gotoCart() {
+        this.props.history.push('/cart');
+    }
+
     render() {
 
         return (
@@ -132,7 +136,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <i className="icon fa fa-headphones mr-3"></i>
                             <span className="text text-capitalize">{Localization.read_listen_with_audible}</span>
                         </li> */}
-                        <li className="more-item list-group-item p-align-0">
+                        <li className="more-item list-group-item p-align-0" onClick={() => this.gotoCart()}>
                             <i className="icon fa fa-shopping-cart mr-3"></i>
                             <span className="text text-capitalize">
                                 {Localization.shopping_cart}
