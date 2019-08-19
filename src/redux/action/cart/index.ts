@@ -14,3 +14,10 @@ export function action_remove_from_cart(cartItem: ICartItem): ICartAction {
         payload: cartItem
     }
 }
+
+export function action_update_cart_item(cartItem: ICartItem): ICartAction {
+    return {
+        type: EACTIONS.UPDATE_CART_ITEM,
+        payload: cartItem
+    }
+}

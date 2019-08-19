@@ -11,6 +11,8 @@ export function reducer(state: ICartItems, action: ICartAction): ICartItems {
             }
         case EACTIONS.REMOVE_FROM_CART:
             return removeFromCart([...state], action.payload);
+        case EACTIONS.UPDATE_CART_ITEM:
+            return updateCartItem([...state], action.payload);
     }
     if (state) { return state; }
     return [];
@@ -35,6 +37,20 @@ const removeFromCart = (state: ICartItems, cartItem: ICartItem): ICartItems => {
     for (let i = 0; i < state.length; i++) {
         if (book_id === state[i].book.id) {
             state.splice(i, 1);
+            break;
+        }
+    }
+    return state;
+}
+
+const updateCartItem = (state: ICartItems, cartItem: ICartItem): ICartItems => {
+    if (cartItem.count < 1) return state;
+
+    let book_id = cartItem.book.id;
+
+    for (let i = 0; i < state.length; i++) {
+        if (book_id === state[i].book.id) {
+            state[i] = cartItem;
             break;
         }
     }
