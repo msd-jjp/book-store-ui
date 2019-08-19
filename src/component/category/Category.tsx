@@ -109,9 +109,13 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
             ||
             this.defaultBookImagePath;
         let writerList = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
-        let name = writerList && writerList.length && writerList[0].person.name;
-        let last_name = writerList && writerList.length && writerList[0].person.last_name;
-        let writerName = name + " " + last_name;
+        // let name = writerList && writerList.length && writerList[0].person.name;
+        // let last_name = writerList && writerList.length && writerList[0].person.last_name;
+        // let writerName = name + " " + last_name;
+        let writerName = '';
+        if (writerList && writerList.length && writerList[0] && writerList[0].person) {
+            writerName = this.getPersonFullName(writerList[0].person);
+        }
 
         let pressList: IBook['roles'] = book.roles.filter(
             r => r.role === BOOK_ROLES.Press
@@ -146,13 +150,20 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                             <div className={book.title}>
                                 {book.title}
                             </div>
-                            <div className="kc-rank-card-author" title={writerName}>
-                                {Localization.by_writerName} {writerName}
-                            </div>
-                            <div className="kc-rank-card-publisher" title={first_press_fullname}>
-                                <span className="text-uppercase">{Localization.publisher}</span>
-                                : {first_press_fullname}
-                            </div>
+                            {
+                                writerName
+                                    ?
+                                    <div className="kc-rank-card-author" title={writerName}>
+                                        {Localization.by_writerName} {writerName}
+                                    </div>
+                                    : ''
+                            }
+                            {first_press_fullname ?
+                                (<div className="kc-rank-card-publisher" title={first_press_fullname}>
+                                    <span className="text-uppercase">{Localization.publisher}</span>
+                                    : {first_press_fullname}
+                                </div>)
+                                : ''}
                             {/* <div className="kc-rank-card-agent" title="Russell Galen">
                                 <span className="text-uppercase">{Localization.agent}</span>
                                 : {'Russell Galen'}
