@@ -284,14 +284,16 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             <div className="book-detail-bordered-box py-2 px-3 border-bottom-0">
               {/* <h5 className="font-weight-bold text-uppercase">{Localization.description}</h5> */}
               <h5 className="font-weight-bold text-uppercase">{Localization.product_description}</h5>
-              <p className="font-weight-bold">{book.description}</p>
+              <p className="font-weight-bold overflow-hidden white-space-pre-line">{book.description}</p>
 
               {
-                writerList && writerList.length && writerList[0].person.bio &&
-                <>
-                  <h5 className="my-2 text-uppercase">{Localization.about_the_author}</h5>
-                  <p>{writerList[0].person.bio}</p>
-                </>
+                (writerList && writerList.length && writerList[0].person.bio)
+                  ?
+                  <>
+                    <h5 className="my-2 text-uppercase">{Localization.about_the_author}</h5>
+                    <p>{writerList[0].person.bio}</p>
+                  </>
+                  : ''
               }
             </div>
           }
@@ -302,12 +304,16 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             {/* <h5 className="font-weight-bold text-uppercase">{Localization.product_details}</h5> */}
 
             {
-              (book.pages || book.duration) &&
-              <h6 className="font-weight-bold">{Localization.Length}:&nbsp;
-                {book.pages && <span>{book.pages} {Localization.pages}</span>}
-                {(book.pages && book.duration) && <span>,&nbsp;</span>}
-                {book.duration && <span>{this.book_duration_render(book.duration)}</span>}
-              </h6>
+              (book.pages || book.duration)
+                ?
+                <>
+                  <h6 className="font-weight-bold">{Localization.Length}:&nbsp;
+                  {book.pages ? <span>{book.pages} {Localization.pages}</span> : ''}
+                    {(book.pages && book.duration) ? <span>,&nbsp;</span> : ''}
+                    {book.duration ? <span>{this.book_duration_render(book.duration)}</span> : ''}
+                  </h6>
+                </>
+                : ''
             }
             <h6 className="font-weight-bold">
               {Localization.publication_date}: <span> {book.pub_year}</span>
@@ -315,15 +321,17 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             <h6 className="font-weight-bold">
               {Localization.publisher}:&nbsp;
               {
-                pressList && pressList.length &&
-                <span>
-                  {pressList.map((press_item, press_index) => (
-                    <Fragment key={press_index}>
-                      {press_item.person.name + ' ' + press_item.person.last_name}
-                      {press_index + 1 < pressList.length && ', '}
-                    </Fragment>
-                  ))}
-                </span>
+                (pressList && pressList.length)
+                  ?
+                  <span>
+                    {pressList.map((press_item, press_index) => (
+                      <Fragment key={press_index}>
+                        {press_item.person.name + ' ' + press_item.person.last_name}
+                        {press_index + 1 < pressList.length && ', '}
+                      </Fragment>
+                    ))}
+                  </span>
+                  : ''
               }
             </h6>
             <h6 className="font-weight-bold">
@@ -339,79 +347,81 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         </section>
 
         {
-          writerList && writerList.length &&
+          (writerList && writerList.length)
+            ?
+            <section className="author">
+              <h5 className="text-uppercase">{Localization.about_the_author}</h5>
+              {
+                writerList.map((ab_writer, ab_writerIndex) => {
 
-          <section className="author">
-            <h5 className="text-uppercase">{Localization.about_the_author}</h5>
-            {
-              writerList.map((ab_writer, ab_writerIndex) => {
+                  // let ab_writer_fullName = ab_writer.person.name + ' ' + ab_writer.person.last_name;
+                  let ab_writer_fullName = this.getPersonFullName(ab_writer.person);
+                  let ab_writer_image = ab_writer.person.image ? this.getImageUrl(ab_writer.person.image) :
+                    "/static/media/img/icon/avatar.png";
 
-                // let ab_writer_fullName = ab_writer.person.name + ' ' + ab_writer.person.last_name;
-                let ab_writer_fullName = this.getPersonFullName(ab_writer.person);
-                let ab_writer_image = ab_writer.person.image ? this.getImageUrl(ab_writer.person.image) :
-                  "/static/media/img/icon/avatar.png";
+                  let followWriter_loaderObj: any = { ...this.state.followWriter_loaderObj };
 
-                let followWriter_loaderObj: any = { ...this.state.followWriter_loaderObj };
+                  return (
+                    // <>
+                    <div className="author-info mb-3__ book-detail-bordered-box" key={ab_writerIndex}>
+                      {
+                        ab_writer.person.bio ?
+                          <div className="author-about p-3">
+                            <p className="mb-0">{ab_writer.person.bio}</p>
+                          </div>
+                          : ''
+                      }
+                      <div className="row author-profile py-4">
+                        <div className="col-4">
+                          <div className="ml-3">
+                            <img src={ab_writer_image} alt="avatar" />
+                          </div>
+                        </div>
+                        <div className="col-8 p-align-0">
+                          <h6 className="author-name mr-3 text-capitalize">{ab_writer_fullName}</h6>
 
-                return (
-                  // <>
-                  <div className="author-info mb-3__ book-detail-bordered-box" key={ab_writerIndex}>
-                    {
-                      ab_writer.person.bio &&
-                      <div className="author-about p-3">
-                        <p className="mb-0">{ab_writer.person.bio}</p>
-                      </div>
-                    }
-                    <div className="row author-profile py-4">
-                      <div className="col-4">
-                        <div className="ml-3">
-                          <img src={ab_writer_image} alt="avatar" />
+                          {
+                            this.props.logged_in_user &&
+                              this.props.logged_in_user.person &&
+                              this.props.logged_in_user.person.following_list &&
+                              this.props.logged_in_user.person.following_list.includes(ab_writer.person.id)
+                              ?
+                              <BtnLoader
+                                btnClassName="btn btn-block author-follow mr-3__"
+                                loading={!!followWriter_loaderObj[ab_writer.person.id]}
+                                onClick={() => this.unfollow_writer(ab_writer.person.id)}
+                                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                              >
+                                - {Localization.unfollow}
+                                {
+                                  this.props.network_status === NETWORK_STATUS.OFFLINE
+                                    ? <i className="fa fa-wifi text-danger"></i> : ''
+                                }
+                              </BtnLoader>
+                              :
+                              <BtnLoader
+                                btnClassName="btn btn-block author-follow mr-3__"
+                                loading={!!followWriter_loaderObj[ab_writer.person.id]}
+                                onClick={() => this.follow_writer(ab_writer.person.id)}
+                                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                              >
+                                + {Localization.follow}
+                                {
+                                  this.props.network_status === NETWORK_STATUS.OFFLINE
+                                    ? <i className="fa fa-wifi text-danger"></i> : ''
+                                }
+                              </BtnLoader>
+                          }
+
                         </div>
                       </div>
-                      <div className="col-8 p-align-0">
-                        <h6 className="author-name mr-3 text-capitalize">{ab_writer_fullName}</h6>
-
-                        {
-                          this.props.logged_in_user &&
-                            this.props.logged_in_user.person &&
-                            this.props.logged_in_user.person.following_list &&
-                            this.props.logged_in_user.person.following_list.includes(ab_writer.person.id)
-                            ?
-                            <BtnLoader
-                              btnClassName="btn btn-block author-follow mr-3__"
-                              loading={!!followWriter_loaderObj[ab_writer.person.id]}
-                              onClick={() => this.unfollow_writer(ab_writer.person.id)}
-                              disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
-                            >
-                              - {Localization.unfollow}
-                              {
-                                this.props.network_status === NETWORK_STATUS.OFFLINE
-                                  ? <i className="fa fa-wifi text-danger"></i> : ''
-                              }
-                            </BtnLoader>
-                            :
-                            <BtnLoader
-                              btnClassName="btn btn-block author-follow mr-3__"
-                              loading={!!followWriter_loaderObj[ab_writer.person.id]}
-                              onClick={() => this.follow_writer(ab_writer.person.id)}
-                              disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
-                            >
-                              + {Localization.follow}
-                              {
-                                this.props.network_status === NETWORK_STATUS.OFFLINE
-                                  ? <i className="fa fa-wifi text-danger"></i> : ''
-                              }
-                            </BtnLoader>
-                        }
-
-                      </div>
                     </div>
-                  </div>
-                  // </>
-                )
-              })
-            }
-          </section>
+                    // </>
+                  )
+                })
+              }
+            </section>
+            : ''
         }
 
         <div className="section-separator my-2"></div>
