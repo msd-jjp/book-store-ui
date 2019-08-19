@@ -128,29 +128,29 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                                 <span className="sub-text d-block text-muted">Last synced on 06/12/2019, 11:25 AM</span>
                             </div>
                         </li>
-                        <li className="more-item list-group-item p-align-0">
+                        {/* <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-headphones mr-3"></i>
                             <span className="text text-capitalize">{Localization.read_listen_with_audible}</span>
-                        </li>
+                        </li> */}
                         <li className="more-item list-group-item p-align-0">
+                            <i className="icon fa fa-shopping-cart mr-3"></i>
+                            <span className="text text-capitalize">
+                                {Localization.shopping_cart}
+                                &nbsp;<small>({0})</small>
+                            </span>
+                        </li>
+                        {/* <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-leanpub mr-3"></i>
                             <span className="text text-capitalize">{Localization.book_update}</span>
-                        </li>
-                        <li className="more-item list-group-item p-align-0">
+                        </li> */}
+                        {/* <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-free-code-camp mr-3"></i>
                             <span className="text text-capitalize">{Localization.reading_insights}</span>
-                        </li>
+                        </li> */}
                         <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-cog mr-3"></i>
                             <span className="text text-capitalize">{Localization.settings}</span>
                         </li>
-
-
-                        <li className="more-item list-group-item p-align-0" onClick={() => this.logout()}>
-                            <i className="icon fa fa-sign-out mr-3"></i>
-                            <span className="text text-capitalize">{Localization.log_out}</span>
-                        </li>
-
 
                         <li className="more-item list-group-item p-align-0 flag">
                             <i className="icon fa fa-flag mr-3"></i>
@@ -168,7 +168,6 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             </ul>
                         </li>
 
-
                         <li className="more-item list-group-item p-align-0"
                             onClick={() => this.openModal_appInfo()}>
                             <i className="icon fa fa-info-circle mr-3"></i>
@@ -177,6 +176,11 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                         <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-twitch mr-3"></i>
                             <span className="text text-capitalize">{Localization.help_feedback}</span>
+                        </li>
+
+                        <li className="more-item list-group-item p-align-0" onClick={() => this.logout()}>
+                            <i className="icon fa fa-sign-out mr-3"></i>
+                            <span className="text text-capitalize">{Localization.log_out}</span>
                         </li>
                     </ul>
                 </div>
