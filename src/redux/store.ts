@@ -9,11 +9,13 @@ import { IToken } from '../model/model.token';
 import { reducer as TokenReducer } from './reducer/token';
 import { reducer as AuthenticationReducer } from './reducer/authentication';
 import { reducer as NetworkStatusReducer } from './reducer/network-status';
+import { reducer as CartReducer } from './reducer/cart';
 import logger from 'redux-logger'
 //
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import { NETWORK_STATUS } from '../enum/NetworkStatus';
+import { ICartItem } from './action/cart/cartAction';
 
 const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
   logged_in_user: UserReducer as Reducer<IUser | null, AnyAction>,
@@ -21,6 +23,7 @@ const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
   token: TokenReducer as Reducer<IToken, AnyAction>,
   authentication: AuthenticationReducer as Reducer<string, AnyAction>,
   network_status: NetworkStatusReducer as Reducer<NETWORK_STATUS, AnyAction>,
+  cart: CartReducer as Reducer<ICartItem[], AnyAction>,
 }
 
 const main_reducer = combineReducers(reducers);
