@@ -1,0 +1,20 @@
+.cart-wrapper {
+  .cart-list {
+    .cart-item-wrapper {
+      // background-color: #ffffff90; // transparent;
+      cursor: pointer;
+
+      .remove-btn {
+        border-radius: 2rem;
+        i {
+          width: 0.9rem;
+          height: 0.9rem;
+        }
+      }
+
+      &:not(:hover) {
+        background-color: #ffffff90; // transparent;
+      }
+    }
+  }
+}

@@ -24,6 +24,7 @@ import { AppInitService } from '../../service/service.app-init';
 // import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { BaseService } from '../../service/service.base';
 import { Modal } from 'react-bootstrap';
+import { Cart } from '../cart/Cart';
 // import { action_set_network_status } from '../../redux/action/netwok-status';
 // import { Store2 } from '../../redux/store';
 
@@ -39,6 +40,7 @@ const appRoutes = (
       <RouteLayoutMain path="/book-detail/:bookId" component={BookDetail} />
       <RouteLayoutMain path="/category/:searchType/:searchValue" component={Category} />
       <RouteLayoutMain path="/search/:searchQuery" component={Search} />
+      <RouteLayoutMain path="/cart" component={Cart} />
 
       <RouteLayoutAccount path="/login" component={Login} />
       <RouteLayoutAccount path="/register" component={Register} />
