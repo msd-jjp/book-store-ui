@@ -55,13 +55,14 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     dots: false,
     accessibility: false,
     // swipe: false,
-    // infinite: false,
+    infinite: false,
     // className: "center2",
     //centerPadding: "60px",
     // centerPadding: '40px',
     slidesToShow: 3,
     swipeToSlide: true,
-    rtl: false, // this.props.internationalization.rtl,
+    // rtl: false, // this.props.internationalization.rtl,
+    // rtl: this.props.internationalization.rtl,
     // adaptiveHeight: true,
     // slidesToScroll: 1,
 
@@ -183,10 +184,21 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
 
   carousel_render(bookList: IBook[]) {
     if (bookList && bookList.length) {
+
+      let initialSlide = 0;
+      if (this.props.internationalization.rtl) {
+        initialSlide = bookList.length - 1 - 2;
+        bookList = [...bookList].reverse();
+      }
+
+      // bookList = bookList.slice(bookList.length - 1, bookList.length);
+
       return (
         <>
-          <div className="app-carousel">
-            <Slider {...this.sliderSetting}>
+          <div className="app-carousel"
+          // style={{ direction: "ltr" }}
+          >
+            <Slider {...this.sliderSetting} initialSlide={initialSlide}>
               {bookList.map((book: IBook, bookIndex) => (
                 <div
                   key={bookIndex}
