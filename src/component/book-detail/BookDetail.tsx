@@ -477,7 +477,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             onClick={() => { this.wishList_remove_book(book) }}
             disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
           >
-            {Localization.remove_from_list}
+            {Localization.remove_from_wish_list}
             {
               this.props.network_status === NETWORK_STATUS.OFFLINE
                 ? <i className="fa fa-wifi text-danger"></i> : ''
@@ -494,7 +494,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             onClick={() => { this.wishList_add_book(book) }}
             disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
           >
-            {Localization.add_to_list}
+            {Localization.add_to_wish_list}
             {
               this.props.network_status === NETWORK_STATUS.OFFLINE
                 ? <i className="fa fa-wifi text-danger"></i> : ''

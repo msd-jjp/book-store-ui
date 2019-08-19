@@ -220,6 +220,9 @@ interface ILocalization extends LocalizedStringsMethods {
     dont_want_now: string;
     update: string;
     shopping_cart: string;
+
+    remove_from_wish_list: string;
+    add_to_wish_list: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

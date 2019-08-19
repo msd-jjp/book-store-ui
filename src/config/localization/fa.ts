@@ -217,4 +217,6 @@ export const fa = {
     dont_want_now: "فعلا نمی خواهم",
     update: 'بروزرسانی',
     shopping_cart: 'سبد خرید',
+    remove_from_wish_list: 'از لیست علاقه مندی ها حذف کن',
+    add_to_wish_list: 'به لیست علاقه مندی ها اضافه کن',
 }

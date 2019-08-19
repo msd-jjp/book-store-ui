@@ -214,4 +214,6 @@ export const en = {
     dont_want_now: "i don't want now",
     update: 'update',
     shopping_cart: 'shopping cart',
+    remove_from_wish_list: 'remove from wish list',
+    add_to_wish_list: 'add to wish list',
 }
