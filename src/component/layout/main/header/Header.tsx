@@ -9,12 +9,14 @@ import { History } from "history";
 import { NETWORK_STATUS } from '../../../../enum/NetworkStatus';
 // import { action_set_network_status } from '../../../../redux/action/netwok-status';
 import { BaseService } from '../../../../service/service.base';
+import { ICartItems } from '../../../../redux/action/cart/cartAction';
 
 interface IProps {
     history: History;
     match: any;
     network_status: NETWORK_STATUS;
     // set_network_status?: (network_status: NETWORK_STATUS) => any;
+    cart: ICartItems;
 }
 interface IState {
     search_query: string | undefined;
@@ -69,6 +71,9 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
         this.search_query = event.target.value;
     }
 
+    gotoCart() {
+        this.props.history.push('/cart');
+    }
     /* check_network_status() {
         if (this.props.network_status === NETWORK_STATUS.ONLINE) {
             if (BaseService.isAppOffline()) {
@@ -87,7 +92,7 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
             <>
                 <header className="header fixed-top">
                     <div className="row mb-2 mx-2 align-items-center header-inner">
-                        <div className="col-10">
+                        <div className="col-10-- col-md-10 col-sm-8 col-6">
                             <div className="input-group">
                                 <div className="input-group-prepend">
                                     <span className="input-group-text search-icon" onClick={() => this.handleSearchIcon()}>
@@ -104,14 +109,23 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
                                 />
                             </div>
                         </div>
-                        <div className="col-2">
+                        <div className="col-2-- col-md-2 col-sm-4 col-6">
                             <div className="bellcontainer">
                                 {/* fa-bell-o */}
-                                <i className={"fa fa-wifi bell " +
+                                <i className={"fa fa-wifi bell  cursor-pointer " +
                                     (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'text-danger' : '')
                                 }
                                     onClick={() => BaseService.check_network_status()}
                                 ></i>
+
+                                <i className="fa fa-shopping-cart bell ml-3 cursor-pointer"
+                                    title={Localization.shopping_cart}
+                                    onClick={() => this.gotoCart()}
+                                ></i>
+                                <small className="font-weight-bold cursor-pointer"
+                                    title={Localization.shopping_cart}
+                                    onClick={() => this.gotoCart()}
+                                >({this.props.cart.length})</small>
                             </div>
                         </div>
                     </div>
@@ -132,7 +146,8 @@ const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
         internationalization: state.internationalization,
-        network_status: state.network_status
+        network_status: state.network_status,
+        cart: state.cart,
     }
 }
 
