@@ -8,7 +8,7 @@ import { BookService } from "../../service/service.book";
 import { IBook } from "../../model/model.book";
 import { ToastContainer } from "react-toastify";
 import { Localization } from "../../config/localization/localization";
-import { BOOK_ROLES } from "../../enum/Book";
+import { BOOK_ROLES, BOOK_TYPES } from "../../enum/Book";
 import Rating from 'react-rating';
 import { FollowService } from "../../service/service.follow";
 import { IToken } from "../../model/model.token";
@@ -217,6 +217,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       r => r.role === BOOK_ROLES.Press
     );
 
+    const book_type: any = book.type;
+    const book_type_str: BOOK_TYPES = book_type;
+
     return (
       <>
         <section className="book-detail">
@@ -231,6 +234,11 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             <div className="book-info-wrapper col-7 p-align-0">
               <h5>{book.title}</h5>
               <h6 className="book-writer">{first_writer_fullName}</h6>
+              <h6 className="">
+                <span className="text-muted">{Localization.book_type}:</span>
+                &nbsp;
+                {Localization.book_type_list[book_type_str]}
+              </h6>
 
               <Rating
                 className="rating-star"
