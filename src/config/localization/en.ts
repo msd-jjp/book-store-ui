@@ -246,4 +246,6 @@ export const en = {
         Contributer: 'Contributer',
         Designer: 'Designer',
     },
+    buy: 'buy',
+    total_price: 'total price',
 }

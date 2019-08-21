@@ -21,3 +21,10 @@ export function action_update_cart_item(cartItem: ICartItem): ICartAction {
         payload: cartItem
     }
 }
+
+export function action_clear_cart(): ICartAction {
+    return {
+        type: EACTIONS.CLEAR_CART,
+        payload: null
+    }
+}

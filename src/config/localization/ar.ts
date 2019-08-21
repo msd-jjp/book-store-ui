@@ -243,4 +243,6 @@ export const ar = {
         Contributer: 'مشارکت کننده',
         Designer: 'طراح',
     },
+    buy: 'خرید',
+    total_price: 'قیمت کل',
 }

@@ -10,5 +10,5 @@ export interface ICartItem {
 export type ICartItems = ICartItem[];
 
 export interface ICartAction extends Action<EACTIONS> {
-    payload: ICartItem;
+    payload: ICartItem | null;
 }

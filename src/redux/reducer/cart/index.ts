@@ -4,15 +4,17 @@ import { ICartItem, ICartAction, ICartItems } from "../../action/cart/cartAction
 export function reducer(state: ICartItems, action: ICartAction): ICartItems {
     switch (action.type) {
         case EACTIONS.ADD_TO_CART:
-            if (!isCartItemExist(state, action.payload)) {
-                return [...state, action.payload];
+            if (!isCartItemExist(state, action.payload!)) {
+                return [...state, action.payload!];
             } else {
                 return state;
             }
         case EACTIONS.REMOVE_FROM_CART:
-            return removeFromCart([...state], action.payload);
+            return removeFromCart([...state], action.payload!);
         case EACTIONS.UPDATE_CART_ITEM:
-            return updateCartItem([...state], action.payload);
+            return updateCartItem([...state], action.payload!);
+        case EACTIONS.CLEAR_CART:
+            return [];
     }
     if (state) { return state; }
     return [];

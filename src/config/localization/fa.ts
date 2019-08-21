@@ -248,4 +248,6 @@ export const fa = {
         Contributer : 'مشارکت کننده',
         Designer : 'طراح',
     },
+    buy: 'خرید',
+    total_price: 'قیمت کل',
 }

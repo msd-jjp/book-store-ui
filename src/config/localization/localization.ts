@@ -237,6 +237,8 @@ interface ILocalization extends LocalizedStringsMethods {
     role_type_list: {
         [key in BOOK_ROLES]: string;
     };
+    buy: string;
+    total_price: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

@@ -9,10 +9,13 @@ import { History } from "history";
 import { IToken } from "../../model/model.token";
 import { ToastContainer } from "react-toastify";
 import { ICartItems, ICartItem } from "../../redux/action/cart/cartAction";
-import { action_add_to_cart, action_remove_from_cart, action_update_cart_item } from "../../redux/action/cart";
+import { action_add_to_cart, action_remove_from_cart, action_update_cart_item, action_clear_cart } from "../../redux/action/cart";
 import { Localization } from "../../config/localization/localization";
 import { BOOK_TYPES } from "../../enum/Book";
 import { IBook } from "../../model/model.book";
+import { BtnLoader } from "../form/btn-loader/BtnLoader";
+import { NETWORK_STATUS } from "../../enum/NetworkStatus";
+import { OrderService } from "../../service/service.order";
 // import { IBook } from "../../model/model.book";
 
 interface IProps {
@@ -24,16 +27,22 @@ interface IProps {
   add_to_cart: (cartItem: ICartItem) => any;
   remove_from_cart: (cartItem: ICartItem) => any;
   update_cart_item: (cartItem: ICartItem) => any;
+  clear_cart: () => any;
+  network_status: NETWORK_STATUS;
 }
 
 interface IState {
-
+  buy_loader: boolean;
+  totalPrice: number;
 }
 
 class CartComponent extends BaseComponent<IProps, IState> {
   state = {
-    totalPrice: this.getCartPrice()
+    totalPrice: this.getCartPrice(),
+    buy_loader: false
   };
+
+  private _orderService = new OrderService();
 
   componentWillReceiveProps(nextProps: IProps) {
     debugger;
@@ -87,6 +96,31 @@ class CartComponent extends BaseComponent<IProps, IState> {
 
   gotoBookDetail(bookId: string) {
     this.props.history.push(`/book-detail/${bookId}`);
+  }
+
+  async buy() {
+    if (!this.props.logged_in_user) return;
+    if (!this.props.cart || !this.props.cart.length) return;
+
+    this.setState({ ...this.state, buy_loader: true });
+
+    let order_items = this.props.cart.map(ci => {
+      return {
+        book_id: ci.book.id,
+        count: ci.count
+      }
+    });
+
+    let res = await this._orderService.order(order_items, this.props.logged_in_user!.person.id).catch(error => {
+      this.handleError({ error: error });
+      this.setState({ ...this.state, buy_loader: false });
+    });
+
+    if (res) {
+      this.apiSuccessNotify();
+      this.props.clear_cart();
+      this.props.history.push('/dashboard');
+    }
   }
 
   render() {
@@ -179,17 +213,24 @@ class CartComponent extends BaseComponent<IProps, IState> {
           </div>
 
           <div className="row mt-5">
-            <div className="col-12">
-              discount code:
-            </div>
+
             <div className="col-12 mt-3">
-              <h4>total price: {this.state.totalPrice.toLocaleString()}</h4>
+              <h4>{Localization.total_price}: {this.state.totalPrice.toLocaleString()}</h4>
             </div>
+
             <div className="col-12 mt-3">
-              <div className="btn btn-info">check price</div>
-            </div>
-            <div className="col-12 mt-3">
-              <div className="btn btn-info">buy</div>
+              <BtnLoader
+                btnClassName="btn btn-system"
+                loading={this.state.buy_loader}
+                onClick={() => this.buy()}
+                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+              >
+                {Localization.buy} <i className="fa fa-money"></i>
+                {
+                  this.props.network_status === NETWORK_STATUS.OFFLINE
+                    ? <i className="fa fa-wifi text-danger"></i> : ''
+                }
+              </BtnLoader>
             </div>
           </div>
         </div>
@@ -205,6 +246,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     add_to_cart: (cartItem: ICartItem) => dispatch(action_add_to_cart(cartItem)),
     remove_from_cart: (cartItem: ICartItem) => dispatch(action_remove_from_cart(cartItem)),
     update_cart_item: (cartItem: ICartItem) => dispatch(action_update_cart_item(cartItem)),
+    clear_cart: () => dispatch(action_clear_cart()),
   };
 };
 
@@ -213,7 +255,8 @@ const state2props = (state: redux_state) => {
     logged_in_user: state.logged_in_user,
     internationalization: state.internationalization,
     token: state.token,
-    cart: state.cart
+    cart: state.cart,
+    network_status: state.network_status,
   };
 };
 
