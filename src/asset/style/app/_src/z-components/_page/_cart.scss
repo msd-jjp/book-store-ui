@@ -18,6 +18,8 @@
         width: 100px;
         height: 150px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
 
         img {
           width: 100%;
@@ -25,12 +27,18 @@
       }
 
       .item-title {
-        width: 200px;
+        width: 150px;
         overflow: hidden;
         word-break: break-word;
         height: 150px;
         display: flex;
         align-items: center;
+      }
+
+      .item-type.mr-3 {
+        width: 70px;
+        overflow: hidden;
+        word-break: break-word;
       }
 
       .item-count-wrapper {

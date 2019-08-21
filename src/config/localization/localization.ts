@@ -4,6 +4,7 @@ import { Setup } from '../setup';
 import { fa } from './fa';
 import { en } from './en';
 import { ar } from './ar';
+import { BOOK_GENRE, BOOK_TYPES, BOOK_ROLES } from '../../enum/Book';
 
 interface ILocalization extends LocalizedStringsMethods {
     [key: string]: any; // todo
@@ -28,6 +29,7 @@ interface ILocalization extends LocalizedStringsMethods {
             your_comment_will_be_removed_continue: string;
             no_network_connection: string;
             new_vesion_available_update: string;
+            item_will_be_removed_continue: string;
         },
         back: {
             [key: string]: any; // todo
@@ -225,6 +227,16 @@ interface ILocalization extends LocalizedStringsMethods {
     remove_from_cart_list: string;
     add_to_cart_list: string;
     your_shopping_cart_is_empty: string;
+    book_type: string;
+    genre_type_list: {
+        [key in BOOK_GENRE]: string;
+    };
+    book_type_list: {
+        [key in BOOK_TYPES]: string;
+    };
+    role_type_list: {
+        [key in BOOK_ROLES]: string;
+    };
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

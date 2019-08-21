@@ -29,6 +29,8 @@ serve -s build
 add to list --> wishing list & shopping list
 dahbord slider reverse order in farsi
 
+hide most of disable item in offline mode.
+
 ====================================================================================
 
 valid number:

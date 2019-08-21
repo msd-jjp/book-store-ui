@@ -19,6 +19,7 @@ export const en = {
             your_comment_will_be_removed_continue: 'your comment will be removed, continue?',
             no_network_connection: 'error occurred, please check your network connection and try again',
             new_vesion_available_update: 'new vesion of app is available, you can update it.',
+            item_will_be_removed_continue: 'item will be removed continue?',
         },
         back: {
             msg1: 'user already exists',
@@ -219,4 +220,30 @@ export const en = {
     remove_from_cart_list: 'remove from shopping cart',
     add_to_cart_list: 'add to shopping cart',
     your_shopping_cart_is_empty: 'your shopping cart is empty',
+    book_type: 'book type',
+    genre_type_list: {
+        Comedy: "comedy",
+        Drama: "drama",
+        Romance: "romance",
+        Social: "social",
+        Religious: "religious",
+        Historical: "historical",
+        Classic: "classic",
+        Science: "science",
+    },
+    book_type_list: {
+        DVD: 'DVD',
+        Audio: 'Audio',
+        Hard_Copy: 'Hard_Copy',
+        Pdf: 'Pdf',
+        Epub: 'Epub'
+    },
+    role_type_list: {
+        Author: 'Author',
+        Writer: 'Writer',
+        Translator: 'Translator',
+        Press: 'Press',
+        Contributer: 'Contributer',
+        Designer: 'Designer',
+    },
 }

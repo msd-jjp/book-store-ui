@@ -32,7 +32,23 @@ interface IState {
 
 class CartComponent extends BaseComponent<IProps, IState> {
   state = {
+    totalPrice: this.getCartPrice()
   };
+
+  componentWillReceiveProps(nextProps: IProps) {
+    debugger;
+    this.setState({ ...this.state, totalPrice: this.getCartPrice(nextProps.cart) });
+  }
+
+  getCartPrice(cart: ICartItems = this.props.cart): number {
+    let price = 0;
+
+    cart.forEach(cartItem => {
+      price += (cartItem.book.price || 96500) * cartItem.count; // || 0
+    });
+
+    return price;
+  }
 
   removeFromCart(cartItem: ICartItem) {
     this.props.remove_from_cart(cartItem);
@@ -65,13 +81,9 @@ class CartComponent extends BaseComponent<IProps, IState> {
     return false;
   }
 
-  // cartList_add_book(book: IBook) {
-  //   this.props.add_to_cart({ book, count: 1 });
-  // }
+  fetchPrice() {
 
-  // cartList_remove_book(book: IBook) {
-  //   this.props.remove_from_cart({ book, count: 1 });
-  // }
+  }
 
   gotoBookDetail(bookId: string) {
     this.props.history.push(`/book-detail/${bookId}`);
@@ -96,6 +108,9 @@ class CartComponent extends BaseComponent<IProps, IState> {
 
                       book.price = book.price || 96500; // todo _DELETE_ME
 
+                      const book_type: any = book.type;
+                      const book_type_str: BOOK_TYPES = book_type;
+
                       return (<Fragment key={index}>
 
                         <li className="cart-item-wrapper list-group-item">
@@ -109,6 +124,10 @@ class CartComponent extends BaseComponent<IProps, IState> {
 
                           <div className="item-title mr-3">
                             {book.title}
+                          </div>
+
+                          <div className="item-type mr-3">
+                            {Localization.book_type_list[book_type_str]}
                           </div>
 
                           <div className="item-count-wrapper text-center mr-3">
@@ -164,7 +183,13 @@ class CartComponent extends BaseComponent<IProps, IState> {
               discount code:
             </div>
             <div className="col-12 mt-3">
+              <h4>total price: {this.state.totalPrice.toLocaleString()}</h4>
+            </div>
+            <div className="col-12 mt-3">
               <div className="btn btn-info">check price</div>
+            </div>
+            <div className="col-12 mt-3">
+              <div className="btn btn-info">buy</div>
             </div>
           </div>
         </div>

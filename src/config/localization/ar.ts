@@ -19,6 +19,7 @@ export const ar = {
             your_comment_will_be_removed_continue: 'نظر شما حذف خواهد شد، تایید می کنید؟',
             no_network_connection: 'خطا رخ داد، لطفا دسترسی اینترنت خود را بررسی کرده و مجددا تلاش کنید.',
             new_vesion_available_update: 'نسخه جدیدی از برنامه موجود است، می توانید بروز کنید.',
+            item_will_be_removed_continue: 'رکورد مورد نظر حذف خواهد شد، تایید می کنید؟',
         },
         back: {
             msg1: 'کاربر از قبل وجود دارد.',
@@ -216,4 +217,30 @@ export const ar = {
     remove_from_cart_list: 'از سبد خرید حذف کن',
     add_to_cart_list: 'به سبد خرید اضافه کن',
     your_shopping_cart_is_empty: 'سبد خرید شما خالیست',
+    book_type: 'نوع کتاب',
+    genre_type_list: {
+        Comedy: "کمدی",
+        Drama: "درام",
+        Romance: "رمان",
+        Social: "اجتماعی",
+        Religious: "دینی",
+        Historical: "تاریخی",
+        Classic: "کلاسیک",
+        Science: "علمی",
+    },
+    book_type_list: {
+        DVD: 'دی وی دی',
+        Audio: 'صوتی',
+        Hard_Copy: 'چاپی',
+        Pdf: 'پی دی اف',
+        Epub: 'Epub'
+    },
+    role_type_list: {
+        Author: 'مولف',
+        Writer: 'نویسنده',
+        Translator: 'مترجم',
+        Press: 'مطبوعات',
+        Contributer: 'مشارکت کننده',
+        Designer: 'طراح',
+    },
 }
