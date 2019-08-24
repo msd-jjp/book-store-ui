@@ -126,7 +126,6 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-
     recommended_render() {
         if (!this.props.logged_in_user) {
             return;
@@ -147,10 +146,11 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 <>
                     {this.carousel_header_render(Localization.recomended_for_you, 'tag', 'recommended')}
 
-                    <div>{this.state.recomendedBookError}</div>
+                    {/* <div>{this.state.recomendedBookError}</div>
                     <div onClick={() => this.fetchRecomendedBook()}>
                         {Localization.retry}
-                    </div>
+                    </div> */}
+                    {this.carousel_render_error(this.state.recomendedBookError!, () => this.fetchRecomendedBook())}
                 </>
             );
         } else {
@@ -158,20 +158,13 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 <>
                     {this.carousel_header_render(Localization.recomended_for_you, 'tag', 'recommended')}
 
-                    <div>{Localization.loading_with_dots}</div>
+                    {/* <div>{Localization.loading_with_dots}</div> */}
+                    {this.carousel_render_preLoad()}
                 </>
             );
         }
     }
 
-    wishlist_render__() {
-        return (
-            <>
-                {this.carousel_header_render(Localization.inspired_by_your_wishlist, 'tag', 'wishlist')}
-                {/* {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])} */}
-            </>
-        )
-    }
     wishlist_render() {
         if (!this.props.logged_in_user) {
             return;
@@ -192,10 +185,11 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 <>
                     {this.carousel_header_render(Localization.inspired_by_your_wishlist, 'custom', 'wishlist')}
 
-                    <div>{this.state.wishListBookError}</div>
+                    {/* <div>{this.state.wishListBookError}</div>
                     <div onClick={() => this.fetchWishListBook()}>
                         {Localization.retry}
-                    </div>
+                    </div> */}
+                    {this.carousel_render_error(this.state.wishListBookError!, () => this.fetchWishListBook())}
                 </>
             );
         } else {
@@ -203,20 +197,13 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 <>
                     {this.carousel_header_render(Localization.inspired_by_your_wishlist, 'custom', 'wishlist')}
 
-                    <div>{Localization.loading_with_dots}</div>
+                    {/* <div>{Localization.loading_with_dots}</div> */}
+                    {this.carousel_render_preLoad()}
                 </>
             );
         }
     }
 
-    best_seller_render__() {
-        return (
-            <>
-                {this.carousel_header_render(Localization.best_seller, 'tag', 'best_seller')}
-                {/* {this.carousel_render([{}, {}, {}, {}, {}, {}, {}, {}, {}])} */}
-            </>
-        )
-    }
     best_seller_render() {
         if (!this.props.logged_in_user) {
             return;
@@ -237,10 +224,11 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 <>
                     {this.carousel_header_render(Localization.best_seller, 'tag', 'best_seller')}
 
-                    <div>{this.state.bestSellerBookError}</div>
+                    {/* <div>{this.state.bestSellerBookError}</div>
                     <div onClick={() => this.fetchBestSellerBook()}>
                         {Localization.retry}
-                    </div>
+                    </div> */}
+                    {this.carousel_render_error(this.state.bestSellerBookError!, () => this.fetchBestSellerBook())}
                 </>
             );
         } else {
@@ -248,7 +236,8 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 <>
                     {this.carousel_header_render(Localization.best_seller, 'tag', 'best_seller')}
 
-                    <div>{Localization.loading_with_dots}</div>
+                    {/* <div>{Localization.loading_with_dots}</div> */}
+                    {this.carousel_render_preLoad()}
                 </>
             );
         }
@@ -274,10 +263,11 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 <>
                     {this.carousel_header_render(Localization.new_release_in_bookstore, 'tag', 'new')}
 
-                    <div>{this.state.newReleaseBookError}</div>
+                    {/* <div>{this.state.newReleaseBookError}</div>
                     <div onClick={() => this.fetchNewestBook()}>
                         {Localization.retry}
-                    </div>
+                    </div> */}
+                    {this.carousel_render_error(this.state.newReleaseBookError!, () => this.fetchNewestBook())}
                 </>
             );
         } else {
@@ -285,7 +275,8 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 <>
                     {this.carousel_header_render(Localization.new_release_in_bookstore, 'tag', 'new')}
 
-                    <div>{Localization.loading_with_dots}</div>
+                    {/* <div>{Localization.loading_with_dots}</div> */}
+                    {this.carousel_render_preLoad()}
                 </>
             );
         }
@@ -390,6 +381,64 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 behavior: 'smooth'
             });
         }
+    }
+
+    carousel_render_preLoad(slideCount: number = 5) {
+        let list = [];
+        for (let i = 0; i < slideCount; i++) { list.push(i); }
+
+        return (
+            <>
+                <div className="carousel-wrapper carousel-wrapper-preloader" key="carousel-wrapper-preloader">
+                    <div className="carousel-item-wrapper mb-4">
+                        {list.map((_no: number, bookIndex) => {
+                            return (
+                                <div className="carousel-item" key={bookIndex}>
+                                    <div className="img-wrapper">
+                                        <img src={this.defaultBookImagePath} alt="book" />
+                                        <span className="item-loader-wrapper">
+                                            <div className="spinner-grow item-loader">
+                                                <span className="sr-only">{Localization.loading_with_dots}</span>
+                                            </div>
+                                        </span>
+                                    </div>
+                                    <span className="writer-name text-capitalize"></span>
+                                    <div className="clearfix"></div>
+                                    <div className="rate-count">a</div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+            </>
+        )
+    }
+
+    carousel_render_error(errorMsg: string, onClick: () => void) {
+        return (
+            <>
+                <div className="carousel-wrapper carousel-wrapper-error" key="carousel-wrapper-error">
+                    <div className="carousel-item-wrapper mb-4">
+                        <div className="carousel-item">
+                            <div className="img-wrapper">
+                                <img src={this.defaultBookImagePath} alt="book" />
+                            </div>
+                            <span className="writer-name text-capitalize"></span>
+                            <div className="clearfix"></div>
+                            <div className="rate-count">a</div>
+                        </div>
+                    </div>
+                    <div className="item-error-wrapper">
+                        <div className="item-error">
+                            <div className="mb-2">{errorMsg}</div>
+                            <div onClick={() => onClick()} className="cursor-pointer">
+                                {Localization.retry} <i className="fa fa-refresh"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </>
+        );
     }
 
     gotoBookDetail(bookId: string) {

@@ -181,6 +181,61 @@
         opacity: 1;
       }
     }
+
+    &.carousel-wrapper-preloader {
+      .carousel-item-wrapper {
+        .carousel-item {
+          .img-wrapper {
+            background-color: #f3f3f3;
+            position: relative;
+            img {
+              visibility: hidden;
+            }
+            .item-loader-wrapper {
+              @extend .center-el-in-box;
+              .item-loader {
+                width: 8rem; // 3rem;
+                height: 8rem; // 3rem;
+                color: #eaeaea;
+                animation-duration: 3s;
+              }
+            }
+          }
+          .writer-name {
+            background-color: #f3f3f3;
+          }
+          .rate-count {
+            background-color: #f3f3f3;
+            color: #f3f3f3;
+            height: 1.25rem;
+            margin-top: 0.25rem;
+          }
+        }
+      }
+    }
+
+    &.carousel-wrapper-error {
+      position: relative;
+      background-color: #f5f5f5;
+      .carousel-item-wrapper {
+        .carousel-item {
+          .img-wrapper {
+            img {
+              visibility: hidden;
+            }
+          }
+          .rate-count {
+            color: transparent;
+            height: 1.25rem;
+            margin-top: 0.25rem;
+          }
+        }
+      }
+
+      .item-error-wrapper {
+        @extend .center-el-in-box;
+      }
+    }
   }
 
   /* .store-main-menu-link {
