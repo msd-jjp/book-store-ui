@@ -346,7 +346,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   <span>
                     {pressList.map((press_item, press_index) => (
                       <Fragment key={press_index}>
-                        {press_item.person.name + ' ' + press_item.person.last_name}
+                        {/* {press_item.person.name + ' ' + press_item.person.last_name} */}
+                        {this.getPersonFullName(press_item.person)}
                         {press_index + 1 < pressList.length && ', '}
                       </Fragment>
                     ))}

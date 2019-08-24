@@ -127,7 +127,7 @@ export const fa = {
     Length: 'اندازه',
     pages: 'صفحه',
 
-    from_the_editor: 'از ویرایشگر',
+    from_the_editor: 'از ویراستار',
     about_this_item: 'درباره این محصول',
 
     description: 'توضیحات',
