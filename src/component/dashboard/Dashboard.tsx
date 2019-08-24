@@ -19,6 +19,7 @@ import { BookService } from "../../service/service.book";
 import { IToken } from "../../model/model.token";
 import { ToastContainer } from "react-toastify";
 import { BOOK_ROLES } from "../../enum/Book";
+import { NavLink } from "react-router-dom";
 
 interface IProps {
   logged_in_user?: IUser | null;
@@ -288,14 +289,19 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                <Dropdown.Item>{Localization.view_in_store}</Dropdown.Item>
+                <Dropdown.Item as={NavLink} to={`/book-detail/${current_book.id}`}>
+                  {/* {Localization.view_in_store} */}
+                  {/* <NavLink to={`/book-detail/${current_book.id}`} > */}
+                    {Localization.view_detail}
+                  {/* </NavLink> */}
+                </Dropdown.Item>
                 <Dropdown.Item>{Localization.add_to_collection}</Dropdown.Item>
                 <Dropdown.Item>{Localization.mark_as_read}</Dropdown.Item>
-                <Dropdown.Item>{Localization.share_progress}</Dropdown.Item>
-                <Dropdown.Item>
+                {/* <Dropdown.Item>{Localization.share_progress}</Dropdown.Item> */}
+                {/* <Dropdown.Item>
                   {Localization.recommend_this_book}
-                </Dropdown.Item>
-                <Dropdown.Item>{Localization.remove_from_device}</Dropdown.Item>
+                </Dropdown.Item> */}
+                {/* <Dropdown.Item>{Localization.remove_from_device}</Dropdown.Item> */}
                 <Dropdown.Item>{Localization.remove_from_home}</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>

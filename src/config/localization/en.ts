@@ -250,4 +250,5 @@ export const en = {
     price: 'price',
     total_price: 'total price',
     recalculate: 'recalculate',
+    view_detail: 'view detail',
 }
