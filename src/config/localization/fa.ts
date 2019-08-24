@@ -249,5 +249,7 @@ export const fa = {
         Designer : 'طراح',
     },
     buy: 'خرید',
+    price: 'قیمت',
     total_price: 'قیمت کل',
+    recalculate: 'محاسبه مجدد',
 }

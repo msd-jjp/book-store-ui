@@ -247,5 +247,7 @@ export const en = {
         Designer: 'Designer',
     },
     buy: 'buy',
+    price: 'price',
     total_price: 'total price',
+    recalculate: 'recalculate',
 }
