@@ -239,6 +239,11 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 &nbsp;
                 {Localization.book_type_list[book_type_str]}
               </h6>
+              <h6 className="">
+                <span className="text-muted">{Localization.price}:</span>
+                &nbsp;
+                {book.price ? book.price.toLocaleString() : ''}
+              </h6>
 
               <Rating
                 className="rating-star"
