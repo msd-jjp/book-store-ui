@@ -179,47 +179,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  carousel_render(bookList: IBook[]) {
-    if (bookList && bookList.length) {
-
-      let initialSlide = 0;
-      if (this.props.internationalization.rtl) {
-        initialSlide = bookList.length - 1 - 2;
-        bookList = [...bookList].reverse();
-      }
-
-      // bookList = bookList.slice(bookList.length - 1, bookList.length);
-
-      return (
-        <>
-          <div className="app-carousel"
-          // style={{ direction: "ltr" }}
-          >
-            <Slider {...this.sliderSetting} initialSlide={initialSlide}>
-              {bookList.map((book: IBook, bookIndex) => (
-                <div
-                  key={bookIndex}
-                  className="item"
-                  onClick={() => this.gotoBookDetail(book.id)}
-                >
-                  <img
-                    src={
-                      (book.images && this.getImageUrl(book.images[0])) ||
-                      this.defaultBookImagePath
-                    }
-                    alt="book"
-                    onError={e => this.bookImageOnError(e)}
-                  />
-                  <span className="item-number">{bookIndex}</span>
-                </div>
-              ))}
-            </Slider>
-          </div>
-        </>
-      );
-    }
-  }
-
   currentBook_render() {
     // let aa: any = this.props.logged_in_user;
     if (!this.props.logged_in_user) {
@@ -292,7 +251,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 <Dropdown.Item as={NavLink} to={`/book-detail/${current_book.id}`}>
                   {/* {Localization.view_in_store} */}
                   {/* <NavLink to={`/book-detail/${current_book.id}`} > */}
-                    {Localization.view_detail}
+                  {Localization.view_detail}
                   {/* </NavLink> */}
                 </Dropdown.Item>
                 <Dropdown.Item>{Localization.add_to_collection}</Dropdown.Item>
@@ -311,6 +270,97 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         <div className="latestBook-divider">
           <hr />
           <div className="slash">{'//'}</div>
+        </div>
+      </>
+    );
+  }
+
+  carousel_render(bookList: IBook[]) {
+    if (bookList && bookList.length) {
+
+      let initialSlide = 0;
+      if (this.props.internationalization.rtl) {
+        initialSlide = bookList.length - 1 - 2;
+        bookList = [...bookList].reverse();
+      }
+
+      return (
+        <>
+          <div className="app-carousel">
+            <Slider {...this.sliderSetting} initialSlide={initialSlide}>
+              {bookList.map((book: IBook, bookIndex) => (
+                <div
+                  key={bookIndex}
+                  className="item"
+                  onClick={() => this.gotoBookDetail(book.id)}
+                >
+                  <img
+                    src={
+                      (book.images && this.getImageUrl(book.images[0])) ||
+                      this.defaultBookImagePath
+                    }
+                    alt="book"
+                    onError={e => this.bookImageOnError(e)}
+                  />
+                  <span className="item-number">{bookIndex}</span>
+                </div>
+              ))}
+            </Slider>
+          </div>
+        </>
+      );
+    }
+  }
+
+  carousel_render_preLoad(slideCount: number = 3) {
+    let list = [];
+    for (let i = 0; i < slideCount; i++) { list.push(i); }
+
+    // let initialSlide = 0;
+    // if (this.props.internationalization.rtl) {
+    //   initialSlide = list.length - 1 - 2;
+    //   list = [...list].reverse();
+    // }
+
+    return (
+      <>
+        <div className="app-carousel app-carousel-preLoad" key="app-carousel-preloader">
+          <Slider {...this.sliderSetting}
+          // initialSlide={initialSlide}
+          >
+            {list.map((_no: number, bookIndex) => (
+              <div key={bookIndex} className="item">
+                <img src={this.defaultBookImagePath} alt="book" />
+                <span className="item-loader-wrapper">
+                  <div className="spinner-grow item-loader">
+                    <span className="sr-only">{Localization.loading_with_dots}</span>
+                  </div>
+                </span>
+              </div>
+            ))}
+          </Slider>
+        </div>
+      </>
+    );
+  }
+
+  carousel_render_error(errorMsg: string, onClick: () => void) {
+    return (
+      <>
+        <div className="app-carousel app-carousel-error" key="app-carousel-error">
+          <Slider {...this.sliderSetting}>
+            <div className="item">
+              <img src={this.defaultBookImagePath} alt="book" />
+            </div>
+          </Slider>
+          <span className="item-error-wrapper">
+            <div className="item-error">
+              <div className="mb-2">{errorMsg}</div>
+              <div onClick={() => onClick()} className="cursor-pointer">
+                {Localization.retry} <i className="fa fa-refresh"></i>
+              </div>
+            </div>
+          </span>
         </div>
       </>
     );
@@ -337,10 +387,14 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         <>
           <div className="booklist-wrapper mt-3">
             <h6 className="title">{Localization.recomended_for_you}</h6>
-            <div>{this.state.recomendedBookError}</div>
+            {/* <div>{this.state.recomendedBookError}</div>
             <div onClick={() => this.fetchRecomendedBook()}>
               {Localization.retry}
-            </div>
+            </div> */}
+            {this.carousel_render_error(
+              this.state.recomendedBookError!,
+              () => this.fetchRecomendedBook()
+            )}
           </div>
         </>
       );
@@ -349,7 +403,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         <>
           <div className="booklist-wrapper mt-3">
             <h6 className="title">{Localization.recomended_for_you}</h6>
-            <div>{Localization.loading_with_dots}</div>
+            {/* <div>{Localization.loading_with_dots}</div> */}
+            {this.carousel_render_preLoad()}
           </div>
         </>
       );
@@ -374,8 +429,12 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         <>
           <div className="booklist-wrapper mt-3">
             <h6 className="title">{Localization.new_release_in_bookstore}</h6>
-            <div>{this.state.newReleaseBookError}</div>
-            <div onClick={() => this.fetchNewestBook()}>{Localization.retry}</div>
+            {/* <div>{this.state.newReleaseBookError}</div> */}
+            {/* <div onClick={() => this.fetchNewestBook()}>{Localization.retry}</div> */}
+            {this.carousel_render_error(
+              this.state.newReleaseBookError!,
+              () => this.fetchNewestBook()
+            )}
           </div>
         </>
       );
@@ -384,7 +443,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         <>
           <div className="booklist-wrapper mt-3">
             <h6 className="title">{Localization.new_release_in_bookstore}</h6>
-            <div>{Localization.loading_with_dots}</div>
+            {/* <div>{Localization.loading_with_dots}</div> */}
+            {this.carousel_render_preLoad()}
           </div>
         </>
       );
@@ -440,11 +500,14 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 writerFullName
               )}
             </h6>
-            <div>{this.state.byWriterBookError}</div>
+            {/* <div>{this.state.byWriterBookError}</div>
             <div onClick={() =>
               this.fetchBookByWriter(
                 this.fetchBookByWriter_writerId,
-                this.fetchBookByWriter_current_book_id)}>{Localization.retry}</div>
+                this.fetchBookByWriter_current_book_id)}>{Localization.retry}</div> */}
+            {this.carousel_render_error(this.state.byWriterBookError!, () => {
+              this.fetchBookByWriter(this.fetchBookByWriter_writerId, this.fetchBookByWriter_current_book_id)
+            })}
           </div>
         </>
       );
@@ -458,7 +521,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 writerFullName
               )}
             </h6>
-            <div>{Localization.loading_with_dots}</div>
+            {/* <div>{Localization.loading_with_dots}</div> */}
+            {this.carousel_render_preLoad()}
           </div>
         </>
       );

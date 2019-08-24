@@ -173,6 +173,49 @@
           }
         }
       }
+
+      &.app-carousel-preLoad {
+        .slick-slider {
+          .slick-list {
+            .slick-slide {
+              .item {
+                background-color: #f3f3f3;
+                img {
+                  visibility: hidden;
+                }
+                .item-loader-wrapper {
+                  @extend .center-el-in-box;
+                  .item-loader {
+                    width: 15rem; // 3rem;
+                    height: 15rem; // 3rem;
+                    color: #eaeaea;
+                    animation-duration: 3s;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      &.app-carousel-error {
+        background-color: #f5f5f5;
+        position: relative;
+        .slick-slider {
+          .slick-list {
+            .slick-slide {
+              .item {
+                img {
+                  visibility: hidden;
+                }
+              }
+            }
+          }
+        }
+        .item-error-wrapper {
+          @extend .center-el-in-box;
+        }
+      }
     }
   }
 }
