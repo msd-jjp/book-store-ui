@@ -16,6 +16,7 @@ import { IBook } from "../../model/model.book";
 import { BtnLoader } from "../form/btn-loader/BtnLoader";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { OrderService } from "../../service/service.order";
+import { Store2 } from "../../redux/store";
 // import { IBook } from "../../model/model.book";
 
 interface IProps {
@@ -33,72 +34,114 @@ interface IProps {
 
 interface IState {
   buy_loader: boolean;
-  totalPrice: number;
+  fetchPrice_loader: boolean;
+  totalPrice: number | string;
 }
 
 class CartComponent extends BaseComponent<IProps, IState> {
   state = {
-    totalPrice: this.getCartPrice(),
-    buy_loader: false
+    totalPrice: 0, // this.getCartPrice(),
+    buy_loader: false,
+    fetchPrice_loader: false,
   };
 
   private _orderService = new OrderService();
 
-  componentWillReceiveProps(nextProps: IProps) {
-    debugger;
-    this.setState({ ...this.state, totalPrice: this.getCartPrice(nextProps.cart) });
+
+  componentDidMount() {
+    this.fetchPrice(false);
+  }
+  // componentWillReceiveProps(nextProps: IProps) {
+  //   debugger;
+  //   this.setState({ ...this.state, totalPrice: this.getCartPrice(nextProps.cart) });
+  // }
+
+  private getCartItem(): ICartItems {
+    return Store2.getState().cart;
   }
 
-  getCartPrice(cart: ICartItems = this.props.cart): number {
+  // getCartPrice(cart: ICartItems = this.props.cart): number {
+  /* private getCartPrice(cart: ICartItems = this.getCartItem()): number {
     let price = 0;
 
     cart.forEach(cartItem => {
-      price += (cartItem.book.price || 96500) * cartItem.count; // || 0
+      price += (cartItem.book.price || 96501) * cartItem.count; // || 0
     });
 
     return price;
+  } */
+
+  private setCartPrice(toastError?: boolean) {
+    // this.setState({ ...this.state, totalPrice: this.getCartPrice() });
+    this.fetchPrice(toastError);
   }
 
-  removeFromCart(cartItem: ICartItem) {
+  private async fetchPrice(toastError: boolean = true) {
+    if (!this.props.logged_in_user) return;
+    if (!this.props.cart || !this.props.cart.length) return;
+
+    this.setState({ ...this.state, fetchPrice_loader: true });
+
+    let order_items = this.props.cart.map(ci => {
+      return {
+        book_id: ci.book.id,
+        count: ci.count
+      }
+    });
+
+    let res_fetchPrice = await this._orderService.fetchPrice(
+      order_items,
+      this.props.logged_in_user!.person.id
+    ).catch(error => {
+      let msgObj = this.handleError({ error: error, notify: toastError });
+      this.setState({ ...this.state, fetchPrice_loader: false, totalPrice: msgObj.body });
+    });
+
+    // this.setState({ ...this.state, fetchPrice_loader: false });
+
+    if (res_fetchPrice) {
+      this.setState({ ...this.state, totalPrice: res_fetchPrice.result.total, fetchPrice_loader: false });
+    }
+  }
+
+  private removeFromCart(cartItem: ICartItem) {
     this.props.remove_from_cart(cartItem);
+    this.setCartPrice(false);
   }
 
-  updateCartItem_up(cartItem: ICartItem) {
+  private updateCartItem_up(cartItem: ICartItem) {
     if (!this.is_countable_book(cartItem.book)) {
       return;
     }
     let ci = { ...cartItem };
     ci.count++;
     this.props.update_cart_item(ci);
+    this.setCartPrice(false);
   }
 
-  updateCartItem_down(cartItem: ICartItem) {
+  private updateCartItem_down(cartItem: ICartItem) {
     if (!this.is_countable_book(cartItem.book)) {
       return;
     }
     let ci = { ...cartItem };
     if (ci.count === 1) return;
-
     ci.count--;
     this.props.update_cart_item(ci);
+    this.setCartPrice(false);
   }
 
-  is_countable_book(book: IBook): boolean {
-    if (book.type === BOOK_TYPES.Hard_Copy) {
+  private is_countable_book(book: IBook): boolean {
+    if (book.type === BOOK_TYPES.Hard_Copy || book.type === BOOK_TYPES.DVD) {
       return true;
     }
     return false;
   }
 
-  fetchPrice() {
-
-  }
-
-  gotoBookDetail(bookId: string) {
+  private gotoBookDetail(bookId: string) {
     this.props.history.push(`/book-detail/${bookId}`);
   }
 
-  async buy() {
+  private async buy() {
     if (!this.props.logged_in_user) return;
     if (!this.props.cart || !this.props.cart.length) return;
 
@@ -111,36 +154,52 @@ class CartComponent extends BaseComponent<IProps, IState> {
       }
     });
 
-    let res = await this._orderService.order(order_items, this.props.logged_in_user!.person.id).catch(error => {
+    let res_order = await this._orderService.order(order_items, this.props.logged_in_user!.person.id).catch(error => {
       this.handleError({ error: error });
       this.setState({ ...this.state, buy_loader: false });
     });
 
-    if (res) {
-      this.apiSuccessNotify();
-      this.props.clear_cart();
-      this.props.history.push('/dashboard');
+    if (res_order) {
+      let res = await this._orderService.checkout(res_order.data.id).catch(error => {
+        this.handleError({ error: error });
+        this.setState({ ...this.state, buy_loader: false });
+      });
+
+      if (res) {
+        this.apiSuccessNotify();
+        this.props.clear_cart();
+        this.props.history.push('/dashboard');
+      }
+    }
+  }
+
+  totalPrice_render() {
+    // this.state.totalPrice.toLocaleString()
+    if (typeof this.state.totalPrice === 'string') {
+      return <small className="text-danger">{this.state.totalPrice}</small>
+    } else {
+      return this.state.totalPrice.toLocaleString();
     }
   }
 
   render() {
     return (
       <>
-        <div className="cart-wrapper mt-3">
+        <div className="cart-wrapper mt-3 mb-5">
           <div className="row">
             <div className="col-12">
               {
                 (this.props.cart && this.props.cart.length)
                   ?
 
-                  <ul className="cart-list list-group list-group-flush">
+                  <ul className="cart-list list-group list-group-flush pr-0">
                     {this.props.cart.map((cartItem: ICartItem, index: number) => {
 
-                      const book = cartItem.book;
+                      const book = { ...cartItem.book };
                       const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
                         this.defaultBookImagePath;
 
-                      book.price = book.price || 96500; // todo _DELETE_ME
+                      book.price = book.price || 0;
 
                       const book_type: any = book.type;
                       const book_type_str: BOOK_TYPES = book_type;
@@ -153,7 +212,11 @@ class CartComponent extends BaseComponent<IProps, IState> {
                           </button>
 
                           <div className="item-img-wrapper mr-3" onClick={() => this.gotoBookDetail(book.id)}>
-                            <img src={book_image} alt="" className="item-img img-thumbnail rounded" />
+                            <img src={book_image}
+                              alt="book"
+                              className="item-img img-thumbnail rounded"
+                              onError={e => this.bookImageOnError(e)}
+                            />
                           </div>
 
                           <div className="item-title mr-3">
@@ -212,27 +275,43 @@ class CartComponent extends BaseComponent<IProps, IState> {
             </div>
           </div>
 
-          <div className="row mt-5">
+          {
+            (this.props.cart && this.props.cart.length)
+              ?
+              <div className="row mt-5">
+                <div className="col-12 mt-3">
+                  {/* {this.state.totalPrice.toLocaleString()} */}
+                  <h4 className="d-inline-block text-muted">{Localization.total_price}: </h4>
+                  <BtnLoader
+                    btnClassName="btn btn-link-- py-0"
+                    loading={this.state.fetchPrice_loader}
+                    onClick={() => this.fetchPrice()}
+                  // disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                  >
+                    <h4 className="mb-0 text-info">
+                      {this.totalPrice_render()}
+                      <small className="ml-3">({Localization.recalculate})</small>
+                    </h4>
+                  </BtnLoader>
+                </div>
 
-            <div className="col-12 mt-3">
-              <h4>{Localization.total_price}: {this.state.totalPrice.toLocaleString()}</h4>
-            </div>
-
-            <div className="col-12 mt-3">
-              <BtnLoader
-                btnClassName="btn btn-system"
-                loading={this.state.buy_loader}
-                onClick={() => this.buy()}
-                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
-              >
-                {Localization.buy} <i className="fa fa-money"></i>
-                {
-                  this.props.network_status === NETWORK_STATUS.OFFLINE
-                    ? <i className="fa fa-wifi text-danger"></i> : ''
-                }
-              </BtnLoader>
-            </div>
-          </div>
+                <div className="col-12 mt-3">
+                  <BtnLoader
+                    btnClassName="btn btn-system btn-block btn-lg"
+                    loading={this.state.buy_loader}
+                    onClick={() => this.buy()}
+                    disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                  >
+                    <h4 className="mb-0 d-inline">{Localization.buy} <i className="fa fa-money"></i></h4>
+                    {
+                      this.props.network_status === NETWORK_STATUS.OFFLINE
+                        ? <i className="fa fa-wifi text-danger"></i> : ''
+                    }
+                  </BtnLoader>
+                </div>
+              </div>
+              : ''
+          }
         </div>
 
         <ToastContainer {...this.getNotifyContainerConfig()} />
