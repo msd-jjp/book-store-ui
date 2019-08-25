@@ -68,7 +68,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                 <div className="img-wrapper col-4">
                                     <div className="img-container__ mt-2__">
                                         <img src={this.defaultBookImagePath} alt="book"
-                                        onError={e => this.bookImageOnError(e)} />
+                                            onError={e => this.bookImageOnError(e)} />
                                     </div>
                                 </div>
                                 <div className="detail-wrapper col-8 p-align-0">
@@ -106,7 +106,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                     {[1, 2, 1, 2].map((sampleBook, sampleBook_index) => (
                                                         <div className="col-6 book p-align-inverse-0 mb-2" key={sampleBook_index}>
                                                             <img src={this.defaultBookImagePath} alt="book"
-                                                            onError={e => this.bookImageOnError(e)} />
+                                                                onError={e => this.bookImageOnError(e)} />
                                                         </div>
                                                     ))}
                                                 </div>
@@ -154,17 +154,38 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                 <div className="library-wrapper">
                     <div className="library-menu pt-2__">
                         <div className="row menu-wrapper__">
-                            <div className="col-2">
-                                <div className="filter-library pl-2__">
-                                    <i className="fa fa-filter text-dark p-2"></i>
-                                </div>
+                            {
+                                this.state.library_view === LIBRARY_VIEW.collections ? '' :
+                                    <div className="col-2">
+                                        <div className="filter-library pl-2__">
+                                            <i className="fa fa-filter text-dark p-2"></i>
+                                        </div>
+                                    </div>
+                            }
+                            <div className={
+                                "col-8 --111 filter-option text-center "
+                                // + (this.state.library_view === LIBRARY_VIEW.collections ? 'col-10' : 'col-8')
+                            }>
+                                {
+                                    this.state.library_view === LIBRARY_VIEW.collections ? '' :
+                                        <>
+                                            <span className="filter-link text-uppercase mr-3 active">{Localization.all}</span>
+                                            <span className="filter-link text-uppercase ">{Localization.downloaded}</span>
+                                        </>
+                                }
                             </div>
-                            <div className="col-8 filter-option text-center">
-                                <span className="filter-link text-uppercase mr-3 active">{Localization.all}</span>
-                                <span className="filter-link text-uppercase ">{Localization.downloaded}</span>
-                            </div>
-                            <div className="col-2 text-right">
+
+                            <div className={
+                                "col-2-- text-right "
+                                + (this.state.library_view === LIBRARY_VIEW.collections ? 'col-4' : 'col-2')
+                            }>
                                 <div className="view-library pr-2__">
+                                    {
+                                        this.state.library_view !== LIBRARY_VIEW.collections ? '' :
+                                            <>
+                                                <i className="fa fa-plus text-dark p-2"></i>
+                                            </>
+                                    }
                                     <i className="fa fa-sliders text-dark p-2" onClick={() => this.change_library_view_test()}></i>
                                 </div>
                             </div>
