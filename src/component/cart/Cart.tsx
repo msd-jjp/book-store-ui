@@ -17,6 +17,7 @@ import { BtnLoader } from "../form/btn-loader/BtnLoader";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { OrderService } from "../../service/service.order";
 import { Store2 } from "../../redux/store";
+import { PriceService } from "../../service/service.price";
 // import { IBook } from "../../model/model.book";
 
 interface IProps {
@@ -46,6 +47,14 @@ class CartComponent extends BaseComponent<IProps, IState> {
   };
 
   private _orderService = new OrderService();
+  private _priceService = new PriceService();
+
+  constructor(props: IProps) {
+    super(props);
+
+    this._orderService.setToken(this.props.token);
+    this._priceService.setToken(this.props.token);
+  }
 
 
   componentDidMount() {
@@ -82,25 +91,26 @@ class CartComponent extends BaseComponent<IProps, IState> {
 
     this.setState({ ...this.state, fetchPrice_loader: true });
 
-    let order_items = this.props.cart.map(ci => {
+    // let order_items = this.props.cart.map(ci => {
+    let order_items = this.getCartItem().map(ci => {
       return {
         book_id: ci.book.id,
         count: ci.count
       }
     });
 
-    let res_fetchPrice = await this._orderService.fetchPrice(
+    let res_fetchPrice = await this._priceService.calcPrice(
       order_items,
       this.props.logged_in_user!.person.id
     ).catch(error => {
-      let msgObj = this.handleError({ error: error, notify: toastError });
+      let msgObj = this.handleError({ error: error.response, notify: toastError });
       this.setState({ ...this.state, fetchPrice_loader: false, totalPrice: msgObj.body });
     });
 
     // this.setState({ ...this.state, fetchPrice_loader: false });
 
     if (res_fetchPrice) {
-      this.setState({ ...this.state, totalPrice: res_fetchPrice.result.total, fetchPrice_loader: false });
+      this.setState({ ...this.state, totalPrice: res_fetchPrice.data.total_price, fetchPrice_loader: false });
     }
   }
 
@@ -154,14 +164,17 @@ class CartComponent extends BaseComponent<IProps, IState> {
       }
     });
 
-    let res_order = await this._orderService.order(order_items, this.props.logged_in_user!.person.id).catch(error => {
-      this.handleError({ error: error });
+    let person_id = this.props.logged_in_user!.person.id;
+    // person_id = 'caecc785-1ca9-4895-b03c-3b41630ecc26';
+
+    let res_order = await this._orderService.order(order_items, person_id).catch(error => {
+      this.handleError({ error: error.response });
       this.setState({ ...this.state, buy_loader: false });
     });
 
     if (res_order) {
-      let res = await this._orderService.checkout(res_order.data.id).catch(error => {
-        this.handleError({ error: error });
+      let res = await this._orderService.checkout(res_order.data.id, person_id).catch(error => {
+        this.handleError({ error: error.response });
         this.setState({ ...this.state, buy_loader: false });
       });
 
@@ -178,7 +191,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
     if (typeof this.state.totalPrice === 'string') {
       return <small className="text-danger">{this.state.totalPrice}</small>
     } else {
-      return this.state.totalPrice.toLocaleString();
+      return (this.state.totalPrice || '').toLocaleString();
     }
   }
 

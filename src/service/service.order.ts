@@ -5,7 +5,7 @@ interface IOrderItem {
     count: number;
 }
 
-type IOrderItems = IOrderItem[];
+export type IOrderItems = IOrderItem[];
 
 export class OrderService extends BaseService {
 
@@ -13,12 +13,8 @@ export class OrderService extends BaseService {
         return this.axiosTokenInstance.post('/orders', { items, person_id });
     }
 
-    checkout(order_id: string): Promise<any> {
-        return this.axiosTokenInstance.post(`/orders/checkout/${order_id}`);
-    }
-
-    fetchPrice(items: IOrderItems, person_id: string): Promise<any> {
-        return this.axiosTokenInstance.post('/orders/fetchPrice', { items, person_id });
+    checkout(order_id: string, person_id: string): Promise<any> {
+        return this.axiosTokenInstance.post(`/orders/checkout/${order_id}`, { person_id });
     }
 
 }
