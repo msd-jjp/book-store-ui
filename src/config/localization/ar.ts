@@ -32,7 +32,6 @@ export const ar = {
             msg8: 'نام کاربری تکراری است، لطفا نام کاربری دیگری انتخاب کنید.',
             msg9: 'فرصت ثبت نام شما پایان یافت، لطفا مراحل ثبت نام را از ابتدا شروع کنید.',
             msg10: 'فرصت ثبت نام شما پایان یافت، لطفا مراحل ثبت نام را از ابتدا شروع کنید.',
-
             msg11: 'مجددا وارد شوید', // token invalid
             msg12: 'token expired',
             msg13: 'deleting failed',
@@ -45,10 +44,32 @@ export const ar = {
             msg20: 'entity not found',
             invalid_persons: 'there is invalid person id in list',
             addition_error: 'adding model to database failed',
-
             username_cellno_required: 'برای دریافت رمز عبور نام کاربری یا شماره موبایل را وارد کنید',
             invalid_user: "با اطلاعات وارد شده کاربری وجود ندارد",
             invalid_code: 'کد تایید اشتباه است.',
+
+            filter_required: 'filter object is not in data',
+            upload_failed: 'uploading files encountered a problem',
+            invalid_entity: 'entity is not right instance of Class',
+            access_denied: 'user has not access to this action',
+            already_liked: 'user already liked this comment',
+            comment_not_found: 'comment not found',
+            already_reported: ' user already reported the comment',
+            report_not_found: 'report by this user for this comment not found',
+            parent_not_found: 'parent object cant found',
+            follow_denied: 'user cant follow him/her self',
+            already_follows: 'user already follows target',
+            missing_requiered_field: 'missing requiered field',
+            already_rated: 'user already rated to book',
+            already_exists: 'entity already exists',
+            credit_debit_error: 'credit and debit can not have amount at the same time',
+            no_price_found: 'there is no price for this book in our tables',
+            discount_is_float: 'discount should be sent in float format',
+            insufficiant_balance: 'your account value is lower than your reciept',
+            user_has_no_account: 'user has no account',
+            order_invoiced: 'order is invoiced and not deletable',
+            commit_error: 'error while commiting in db',
+            person_has_books: 'person already has roles for books',
         }
     },
     validation: {

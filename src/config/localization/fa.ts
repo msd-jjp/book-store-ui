@@ -34,23 +34,43 @@ export const fa = {
             msg10: 'فرصت ثبت نام شما پایان یافت، لطفا مراحل ثبت نام را از ابتدا شروع کنید.',
 
             msg11: 'مجددا وارد شوید', // token invalid
-            msg12: 'token expired',
-            msg13: 'deleting failed',
-            msg14: 'getting failed',
+            msg12: 'مجددا وارد شوید', // token expired
+            msg13: 'خطا در حذف اطلاعات از سرویس دهنده رخ داد.', // deleting failed
+            msg14: 'خطا در دریافت اطلاعات از سرویس دهنده رخ داد.', // getting failed
             msg15: 'Authentication decoding failed',
             msg16: 'commiting to database failed',
             msg17: 'شما وارد نشده اید',
             msg18: 'نام کاربری یا رمز عبور اشتباه است.',
-
             msg19: 'enum is not correct  type',
             msg20: 'مورد، یافت نشد.',
             invalid_persons: 'there is invalid person id in list',
             addition_error: 'adding model to database failed',
-
             username_cellno_required: 'برای دریافت رمز عبور نام کاربری یا شماره موبایل را وارد کنید',
             invalid_user: "با اطلاعات وارد شده کاربری وجود ندارد",
-
             invalid_code: 'کد تایید اشتباه است.',
+
+            filter_required: 'filter object is not in data',
+            upload_failed: 'بارگذاری فایل با مشکل مواجه شد.',
+            invalid_entity: 'entity is not right instance of Class',
+            access_denied: 'دسترسی به این مورد امکانپذیر نمی باشد',
+            already_liked: 'شما قبلا این نظر را مفید اعلام کردید.',
+            comment_not_found: 'نظر یافت نشد.',
+            already_reported: ' شما قبلا این نظر را گزارش کردید.',
+            report_not_found: 'گزارشی از شما برای این نظر یافت نشد.',
+            parent_not_found: 'نظر مرتبط با این نظر یافت نشد.',
+            follow_denied: 'کاربر نمی تواند خودش را دنبال کند.',
+            already_follows: 'شما از قبل این مورد را دنبال کرده اید.',
+            missing_requiered_field: 'موارد ضروری را پر کنید',
+            already_rated: 'کاربر از قبل به کتاب رتبه داده است.',
+            already_exists: 'از قبل وجود دارد.',
+            credit_debit_error: 'اعتبار و بدهی هر دو نمی تواند همزمان مقدار داشته باشد.',
+            no_price_found: 'برای کتاب قیمتی وجود ندارد.',
+            discount_is_float: 'تخفیف باید عدد وارد شود.',
+            insufficiant_balance: 'موجودی حساب شما از رسید کمتر است',
+            user_has_no_account: 'کاربر حسابی ندارد',
+            order_invoiced: 'سفارش فاکتور شده و قابل حذف نمی باشد.',
+            commit_error: 'خطا در نوع داده ارسالی',
+            person_has_books: 'این شخص در حال حاظر نقش در کتاب(ها) دارد.',
         }
     },
     validation: {

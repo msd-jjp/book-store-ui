@@ -58,6 +58,29 @@ interface ILocalization extends LocalizedStringsMethods {
             username_cellno_required: string;
             invalid_user: string;
             invalid_code: string;
+
+            filter_required: string;
+            upload_failed: string;
+            invalid_entity: string;
+            access_denied: string;
+            already_liked: string;
+            comment_not_found: string;
+            already_reported: string;
+            report_not_found: string;
+            parent_not_found: string;
+            follow_denied: string;
+            already_follows: string;
+            missing_requiered_field: string;
+            already_rated: string;
+            already_exists: string;
+            credit_debit_error: string;
+            no_price_found: string;
+            discount_is_float: string;
+            insufficiant_balance: string;
+            user_has_no_account: string;
+            order_invoiced: string;
+            commit_error: string;
+            person_has_books: string;
         }
     };
     validation: {
