@@ -15,6 +15,7 @@ import { History } from 'history';
 import { action_remove_authentication } from '../../redux/action/authentication';
 import { Modal } from 'react-bootstrap';
 import { ICartItems } from '../../redux/action/cart/cartAction';
+import { action_clear_cart } from '../../redux/action/cart';
 
 interface IProps {
     logged_in_user?: IUser | null;
@@ -25,6 +26,7 @@ interface IProps {
     history: History;
     remove_authentication: () => void;
     cart: ICartItems;
+    clear_cart: () => any;
 }
 
 interface IState {
@@ -73,6 +75,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.do_logout();
         this.props.remove_token();
         this.props.remove_authentication();
+        this.props.clear_cart();
         this.props.history.push('/login');
     }
 
@@ -210,6 +213,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
         change_app_flag: (internationalization: TInternationalization) => dispatch(action_change_app_flag(internationalization)),
         remove_token: () => dispatch(action_remove_token()),
         remove_authentication: () => dispatch(action_remove_authentication()),
+        clear_cart: () => dispatch(action_clear_cart()),
     }
 }
 
