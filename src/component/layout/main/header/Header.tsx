@@ -122,10 +122,15 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
                                     title={Localization.shopping_cart}
                                     onClick={() => this.gotoCart()}
                                 ></i>
-                                <small className="font-weight-bold cursor-pointer"
-                                    title={Localization.shopping_cart}
-                                    onClick={() => this.gotoCart()}
-                                >({this.props.cart.length})</small>
+                                {
+                                    this.props.cart.length ?
+                                        <small className="font-weight-bold cursor-pointer"
+                                            title={Localization.shopping_cart}
+                                            onClick={() => this.gotoCart()}
+                                        >({this.props.cart.length})</small>
+                                        : ''
+                                }
+
                             </div>
                         </div>
                     </div>

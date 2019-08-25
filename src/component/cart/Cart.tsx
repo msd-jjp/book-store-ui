@@ -283,7 +283,14 @@ class CartComponent extends BaseComponent<IProps, IState> {
                     })}
                   </ul>
                   :
-                  <h3 className="text-center">{Localization.your_shopping_cart_is_empty}!</h3>
+                  <>
+                    <div className="text-center">
+                      <h3>{Localization.your_shopping_cart_is_empty}!</h3>
+                      <img src="/static/media/img/icon/empty-shopping-cart.svg"
+                        className="w-200px"
+                        alt="empty shopping cart" />
+                    </div>
+                  </>
               }
             </div>
           </div>
