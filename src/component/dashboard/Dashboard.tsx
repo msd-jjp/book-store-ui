@@ -22,6 +22,7 @@ import { BOOK_ROLES } from "../../enum/Book";
 import { NavLink } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { BtnLoader } from "../form/btn-loader/BtnLoader";
+import { Input } from "../form/input/Input";
 
 interface IProps {
   logged_in_user?: IUser | null;
@@ -41,6 +42,10 @@ interface IState {
     show: boolean;
     createCollection_loader: boolean;
     addToCollections_loader: boolean;
+    newCollectionTitle: {
+      value: string | undefined;
+      isValid: boolean;
+    };
   }
 }
 
@@ -56,7 +61,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       show: false,
       createCollection_loader: false,
       addToCollections_loader: false,
-    }
+      newCollectionTitle: {
+        value: undefined,
+        isValid: false,
+      }
+    },
   };
   private _bookService = new BookService();
   // dragging!: boolean;
@@ -310,16 +319,42 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
             <Modal.Title className="text-capitalize">{Localization.add_to_collection}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <ul className="collcetion-list">
-              {
-                [1, 2, 3, 4, 5, 6].map((clt, clt_index) => (
-                  <li key={clt_index}>
-                    <div>collection {clt}</div>
-                    <div><i className="fa fa-check-square text-primary"></i></div>
-                  </li>
-                ))
-              }
-            </ul>
+            <div className="row">
+              <div className="col-12">
+                <div className="create-collection-wrapper">
+                  <div className="input-wrapper">
+                    <Input
+                      placeholder="new collection"
+                      defaultValue={this.state.modal_addToCollections.newCollectionTitle.value}
+                      onChange={(val, isValid) => { this.handleNewCollectionInputChange(val, isValid) }}
+                      required
+                    />
+                  </div>
+
+                  <BtnLoader
+                    btnClassName="btn btn-link text-success btn-sm text-uppercase"
+                    loading={this.state.modal_addToCollections.createCollection_loader}
+                    onClick={() => this.create_Collection()}
+                    disabled={!this.state.modal_addToCollections.newCollectionTitle.isValid}
+                  >
+                    create
+                  </BtnLoader>
+                </div>
+              </div>
+
+              <div className="col-12">
+                <ul className="collcetion-list">
+                  {
+                    [1, 2, 3, 4, 5, 6].map((clt, clt_index) => (
+                      <li key={clt_index}>
+                        <div>collection {clt}</div>
+                        <div><i className="fa fa-check-square text-primary"></i></div>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </div>
+            </div>
           </Modal.Body>
           <Modal.Footer>
             <button className="btn btn-light btn-sm text-uppercase" onClick={() => this.closeModal_addToCollections()}>
@@ -336,6 +371,20 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         </Modal>
       </>
     )
+  }
+
+  handleNewCollectionInputChange(value: any, isValid: boolean) {
+    this.setState({
+      ...this.state,
+      modal_addToCollections: {
+        ...this.state.modal_addToCollections,
+        newCollectionTitle: { value, isValid }
+      }
+    });
+  }
+
+  create_Collection() {
+
   }
 
   add_toCollections() {

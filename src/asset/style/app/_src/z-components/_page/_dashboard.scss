@@ -229,6 +229,15 @@
     }
   }
   .modal-body {
+    .create-collection-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+
+      .input-wrapper {
+        flex: 3;
+      }
+    }
     .collcetion-list {
       list-style: none;
       body:not(.rtl) & {
