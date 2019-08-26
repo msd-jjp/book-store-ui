@@ -30,6 +30,7 @@ interface ILocalization extends LocalizedStringsMethods {
             no_network_connection: string;
             new_vesion_available_update: string;
             item_will_be_removed_continue: string;
+            your_purchase_completed: string;
         },
         back: {
             [key: string]: any; // todo

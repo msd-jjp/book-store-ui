@@ -55,20 +55,12 @@ use
     <div class="spinner-border"></div>
 instead of current btn loader
 
-uncomment // @import "~bootstrap/scss/spinners"; in bts-list
+
 
 ====================================================================================
 
-notify --> 
-no internet connection
-please check your wi-fi or mobile network connection and try again
-شما به اینترنت دسترسی ندارید
-بروز خطا در انجام عملیات، دسترسی اینترنت خود را بررسی فرمایید
-
 ====================================================================================
 
-image before load show empty img logo
-&&
 404 image or icon (fill empty page)
 
 ====================================================================================
@@ -92,6 +84,8 @@ comments --> parent: show quote from parent
 
 fix input cmp bug:
 require star, valua & '' (get from admin project)
+
+reset input(form element) --> after reset set touch to false.
 
 ====================================================================================
 

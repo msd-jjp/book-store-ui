@@ -173,15 +173,16 @@ class CartComponent extends BaseComponent<IProps, IState> {
     });
 
     if (res_order) {
-      let res = await this._orderService.checkout(res_order.data.id, person_id).catch(error => {
+      let res_checkout = await this._orderService.checkout(res_order.data.id, person_id).catch(error => {
         this.handleError({ error: error.response });
         this.setState({ ...this.state, buy_loader: false });
       });
 
-      if (res) {
-        this.apiSuccessNotify();
+      if (res_checkout) {
+        // this.apiSuccessNotify(Localization.msg.ui.your_purchase_completed);
         this.props.clear_cart();
         this.props.history.push('/dashboard');
+        this.apiSuccessNotify(Localization.msg.ui.your_purchase_completed);
       }
     }
   }

@@ -20,6 +20,7 @@ export const ar = {
             no_network_connection: 'خطا رخ داد، لطفا دسترسی اینترنت خود را بررسی کرده و مجددا تلاش کنید.',
             new_vesion_available_update: 'نسخه جدیدی از برنامه موجود است، می توانید بروز کنید.',
             item_will_be_removed_continue: 'رکورد مورد نظر حذف خواهد شد، تایید می کنید؟',
+            your_purchase_completed: 'خرید شما تکمیل شد',
         },
         back: {
             msg1: 'کاربر از قبل وجود دارد.',

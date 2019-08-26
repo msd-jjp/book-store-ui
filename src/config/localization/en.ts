@@ -20,6 +20,7 @@ export const en = {
             no_network_connection: 'error occurred, please check your network connection and try again',
             new_vesion_available_update: 'new vesion of app is available, you can update it.',
             item_will_be_removed_continue: 'item will be removed continue?',
+            your_purchase_completed: 'your purchase is completed',
         },
         back: {
             msg1: 'user already exists',
