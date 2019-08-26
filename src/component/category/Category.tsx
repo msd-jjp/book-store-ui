@@ -139,7 +139,7 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                             </div>
                         </div>
                         <div className="kc-book-title-img-section">
-                            <div className="kc-book-title-img" onClick={() => this.gotoBookDetail(book.id)}>
+                            <div className="kc-book-title-img cursor-pointer" onClick={() => this.gotoBookDetail(book.id)}>
                                 <img src={book_img} alt="book" onError={e => this.bookImageOnError(e)} />
                             </div>
                         </div>
