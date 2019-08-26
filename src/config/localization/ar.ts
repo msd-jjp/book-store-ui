@@ -271,4 +271,6 @@ export const ar = {
     total_price: 'قیمت کل',
     recalculate: 'محاسبه مجدد',
     view_detail: 'نمایش جزئیات',
+    cancel: 'انصراف',
+    ok: 'تایید',
 }

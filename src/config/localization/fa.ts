@@ -275,4 +275,6 @@ export const fa = {
     total_price: 'قیمت کل',
     recalculate: 'محاسبه مجدد',
     view_detail: 'نمایش جزئیات',
+    cancel: 'انصراف',
+    ok: 'تایید',
 }

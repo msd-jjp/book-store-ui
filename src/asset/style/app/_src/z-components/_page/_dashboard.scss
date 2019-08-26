@@ -220,6 +220,36 @@
   }
 }
 
+.dashboard-modal-addToCollections {
+  .modal-header {
+    border-bottom: 0;
+    padding-bottom: 0;
+    .modal-title {
+      font-weight: normal;
+    }
+  }
+  .modal-body {
+    .collcetion-list {
+      list-style: none;
+      body:not(.rtl) & {
+        padding-left: 0;
+      }
+      body.rtl & {
+        padding-right: 0;
+      }
+      li {
+        display: flex;
+        cursor: pointer;
+        padding: 0.5rem 0;
+        justify-content: space-between;
+      }
+    }
+  }
+  .modal-footer {
+    border-top: 0;
+  }
+}
+
 /* body {
   &:not(.rtl) {
     

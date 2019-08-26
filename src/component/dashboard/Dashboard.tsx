@@ -20,6 +20,8 @@ import { IToken } from "../../model/model.token";
 import { ToastContainer } from "react-toastify";
 import { BOOK_ROLES } from "../../enum/Book";
 import { NavLink } from "react-router-dom";
+import { Modal } from "react-bootstrap";
+import { BtnLoader } from "../form/btn-loader/BtnLoader";
 
 interface IProps {
   logged_in_user?: IUser | null;
@@ -35,6 +37,11 @@ interface IState {
   newReleaseBookError: string | undefined;
   byWriterBookList: IBook[] | undefined;
   byWriterBookError: string | undefined;
+  modal_addToCollections: {
+    show: boolean;
+    createCollection_loader: boolean;
+    addToCollections_loader: boolean;
+  }
 }
 
 class DashboardComponent extends BaseComponent<IProps, IState> {
@@ -44,7 +51,12 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     newReleaseBookList: undefined,
     newReleaseBookError: undefined,
     byWriterBookList: undefined,
-    byWriterBookError: undefined
+    byWriterBookError: undefined,
+    modal_addToCollections: {
+      show: false,
+      createCollection_loader: false,
+      addToCollections_loader: false,
+    }
   };
   private _bookService = new BookService();
   // dragging!: boolean;
@@ -254,7 +266,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                   {Localization.view_detail}
                   {/* </NavLink> */}
                 </Dropdown.Item>
-                <Dropdown.Item>{Localization.add_to_collection}</Dropdown.Item>
+                <Dropdown.Item onClick={() => this.openModal_addToCollections(current_book!.id)}>{Localization.add_to_collection}</Dropdown.Item>
                 <Dropdown.Item>{Localization.mark_as_read}</Dropdown.Item>
                 {/* <Dropdown.Item>{Localization.share_progress}</Dropdown.Item> */}
                 {/* <Dropdown.Item>
@@ -273,6 +285,61 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         </div>
       </>
     );
+  }
+
+  openModal_addToCollections(book_id: string) {
+    // this.comment_id_to_remove = comment_id;
+    this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: true } });
+  }
+
+  closeModal_addToCollections() {
+    // this.comment_id_to_remove = undefined;
+    this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: false } });
+  }
+
+  modal_addToCollections_render() {
+    return (
+      <>
+        <Modal
+          className="dashboard-modal-addToCollections"
+          show={this.state.modal_addToCollections.show}
+          onHide={() => this.closeModal_addToCollections()}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title className="text-capitalize">{Localization.add_to_collection}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <ul className="collcetion-list">
+              {
+                [1, 2, 3, 4, 5, 6].map((clt, clt_index) => (
+                  <li key={clt_index}>
+                    <div>collection {clt}</div>
+                    <div><i className="fa fa-check-square text-primary"></i></div>
+                  </li>
+                ))
+              }
+            </ul>
+          </Modal.Body>
+          <Modal.Footer>
+            <button className="btn btn-light btn-sm text-uppercase" onClick={() => this.closeModal_addToCollections()}>
+              {Localization.cancel}
+            </button>
+            <BtnLoader
+              btnClassName="btn btn-success btn-sm text-uppercase"
+              loading={this.state.modal_addToCollections.addToCollections_loader}
+              onClick={() => this.add_toCollections()}
+            >
+              {Localization.ok}
+            </BtnLoader>
+          </Modal.Footer>
+        </Modal>
+      </>
+    )
+  }
+
+  add_toCollections() {
+
   }
 
   carousel_render(bookList: IBook[]) {
@@ -541,6 +608,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
 
           {this.byWriterBook_render()}
         </div>
+
+        {this.modal_addToCollections_render()}
 
         <ToastContainer {...this.getNotifyContainerConfig()} />
       </>

@@ -272,4 +272,6 @@ export const en = {
     total_price: 'total price',
     recalculate: 'recalculate',
     view_detail: 'view detail',
+    cancel: 'cancel',
+    ok: 'ok',
 }
