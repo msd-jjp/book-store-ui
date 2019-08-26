@@ -14,7 +14,6 @@ import { BaseComponent } from '../_base/BaseComponent';
 import { TInternationalization } from '../../config/setup';
 import { IToken } from '../../model/model.token';
 import { action_set_token } from '../../redux/action/token';
-
 import { History } from 'history';
 import { action_set_authentication } from '../../redux/action/authentication';
 import { Utility } from '../../asset/script/utility';
@@ -35,10 +34,10 @@ interface IState {
     btnLoader: boolean;
 }
 interface IProps {
-    onUserLoggedIn?: (user: IUser) => void;
+    onUserLoggedIn: (user: IUser) => void;
     history: History;
     internationalization: TInternationalization;
-    onSetToken?: (token: IToken) => void;
+    onSetToken: (token: IToken) => void;
     token: IToken;
     onSetAuthentication: (auth: string) => void;
 }
@@ -67,31 +66,27 @@ class LoginComponent extends BaseComponent<IProps, IState> {
             username: this.state.username.value!,
             password: this.state.password.value!
         }
-        let tokenObj/* : string | void */ = await this._loginService.login(authObj).catch((error) => {
-            debugger;
+        let res_token = await this._loginService.login(authObj).catch((error) => {
             this.handleError({ error: error.response });
             this.setState({ ...this.state, btnLoader: false });
         });
 
-        // let user: any; // IUser | void;
-        let response: any;
-        if (tokenObj) {
-            this.props.onSetAuthentication(Utility.get_encode_auth(authObj));
-            this.props.onSetToken && this.props.onSetToken(tokenObj.data);
-            // localStorage.setItem('token', JSON.stringify(tokenObj.data)); // todo _DELETE_ME
-            // debugger;
-            this._loginService.setToken(tokenObj.data); // note: "this.props.token" works too.
+        let res_user;
 
-            response = await this._loginService.profile().catch((error) => { // tokenObj.data.id
-                debugger;
+        if (res_token) {
+            this.props.onSetAuthentication(Utility.get_encode_auth(authObj));
+            this.props.onSetToken(res_token.data);
+            this._loginService.setToken(res_token.data);
+
+            res_user = await this._loginService.profile().catch((error) => {
                 this.handleError({ error: error.response });
             });
         }
+        
         this.setState({ ...this.state, btnLoader: false });
 
-        if (response) {
-            this.props.onUserLoggedIn && this.props.onUserLoggedIn(response.data);
-            // localStorage.setItem('user', JSON.stringify(response.data)); // todo _DELETE_ME
+        if (res_user) {
+            this.props.onUserLoggedIn(res_user.data);
             this.props.history.push('/dashboard');
         }
     }

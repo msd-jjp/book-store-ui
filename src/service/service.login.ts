@@ -5,20 +5,10 @@ import { IToken } from '../model/model.token';
 export class LoginService extends BaseService {
 
     login(data: { username: string, password: string }): Promise<IAPI_Response<IToken>> {
-        /* let username_password_str = data.username + ":" + data.password;
-        let hash = btoa(unescape(encodeURIComponent(username_password_str))); // btoa(token);
-        let basic = "Basic " + hash;
-
-        const instance = axios.create({
-            baseURL: this.baseURL,
-            headers: { 'Content-Type': 'application/json', 'Authorization': basic }
-        });
-
-        return instance.post('/tokens', {}); */
         return this.getTokenfromServer(data);
     }
 
-    profile(): Promise<IUser> {
+    profile(): Promise<IAPI_Response<IUser>> {
         return this.axiosTokenInstance.get('users/profile');
     }
 
