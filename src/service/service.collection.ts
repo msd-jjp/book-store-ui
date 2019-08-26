@@ -34,6 +34,12 @@ export class CollectionService extends BaseService {
     add(title: string, book_ids: string[]) {
         return this.create(title, book_ids);
     }
+    add_toCollections(collections_title: string[], book_id: string) {
+        return this.axiosTokenInstance.post('/collections/book', {
+            book_id,
+            collections: collections_title
+        });
+    }
     remove(title: string) {
         return this.axiosTokenInstance.delete(`/collections/${title}`);
     }
