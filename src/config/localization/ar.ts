@@ -71,6 +71,7 @@ export const ar = {
             order_invoiced: 'order is invoiced and not deletable',
             commit_error: 'error while commiting in db',
             person_has_books: 'person already has roles for books',
+            book_not_in_lib: 'کتاب در کتابخانه شما وجود ندارد و نمی توان آن را به کلکسیونی افزود.',
         }
     },
     validation: {

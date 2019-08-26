@@ -82,6 +82,7 @@ interface ILocalization extends LocalizedStringsMethods {
             order_invoiced: string;
             commit_error: string;
             person_has_books: string;
+            book_not_in_lib: string;
         }
     };
     validation: {

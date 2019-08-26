@@ -72,6 +72,7 @@ export const en = {
             order_invoiced: 'order is invoiced and not deletable',
             commit_error: 'error while commiting in db',
             person_has_books: 'person already has roles for books',
+            book_not_in_lib: 'book is not in users library and cannot add to a collection',
         }
     },
     validation: {
