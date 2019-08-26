@@ -8,7 +8,6 @@ interface InputProps {
     pattern?: RegExp;
     patternName?: 'password' | 'number' | 'email';
     patternError?: string;
-
     label?: string;
     required?: boolean;
     validationFunc?: (value: any) => boolean;
@@ -17,6 +16,9 @@ interface InputProps {
     type?: 'text' | 'password';
     is_textarea?: boolean;
     textarea_rows?: number;
+
+    readOnly?: boolean;
+    disabled?: boolean;
 }
 /* interface IProps_input extends InputProps {
     type?: 'text' | 'password';
@@ -122,10 +124,17 @@ class Input extends React.Component<InputProps, InputState> {
     }
     render() {
         return (
-            <div className="form-group">
+            <div className={"form-group " + (this.props.readOnly ? 'input-readonly' : '')}>
                 {
                     this.props.label &&
-                    <label htmlFor={this.id}>{this.props.label}</label>
+                    <label htmlFor={this.id}>
+                        {this.props.label}
+                        {
+                            this.props.required ?
+                                <span className="text-danger">*</span>
+                                : ''
+                        }
+                    </label>
                 }
                 {
                     !this.props.is_textarea
@@ -134,13 +143,15 @@ class Input extends React.Component<InputProps, InputState> {
                             id={this.id}
                             type={this.props.type}
                             className={`form-control ${this.state.invalid && this.state.touched ? 'is-invalid' : ''}`}
-                            // value={this.props.value}
-                            defaultValue={this.props.defaultValue}
+                            value={this.props.defaultValue || ''}
+                            // defaultValue={this.props.defaultValue}
                             onChange={e => this.handleChange(e)}
                             // ref={this.props.elRef}
                             ref={inputEl => this.setRef(inputEl)}
                             onBlur={() => this.onBlur()}
                             placeholder={this.props.placeholder}
+                            readOnly={this.props.readOnly}
+                            disabled={this.props.disabled}
                         />
                         :
                         <textarea
@@ -148,11 +159,15 @@ class Input extends React.Component<InputProps, InputState> {
                             className={`form-control ${this.state.invalid && this.state.touched ? 'is-invalid' : ''}`}
                             rows={this.props.textarea_rows || 4}
 
-                            defaultValue={this.props.defaultValue}
+                            // defaultValue={this.props.defaultValue}
+                            value={this.props.defaultValue || ''}
                             onChange={e => this.handleChange(e)}
                             ref={inputEl => this.setRef(inputEl)}
                             onBlur={() => this.onBlur()}
                             placeholder={this.props.placeholder}
+
+                            readOnly={this.props.readOnly}
+                            disabled={this.props.disabled}
                         ></textarea>
                 }
 
