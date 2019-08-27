@@ -72,6 +72,7 @@ export const ar = {
             commit_error: 'error while commiting in db',
             person_has_books: 'person already has roles for books',
             book_not_in_lib: 'کتاب در کتابخانه شما وجود ندارد و نمی توان آن را به کلکسیونی افزود.',
+            online_book_count_limitation: 'فقط کتاب چاپی و DVD تعداد بیشتر از 1 می پذیرد.',
         }
     },
     validation: {

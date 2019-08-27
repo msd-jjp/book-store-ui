@@ -72,6 +72,7 @@ export const en = {
             commit_error: 'error while commiting in db',
             person_has_books: 'person already has roles for books',
             book_not_in_lib: 'book is not in users library and cannot add to a collection',
+            online_book_count_limitation: 'online book count limitation',
         }
     },
     validation: {

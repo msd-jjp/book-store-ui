@@ -72,6 +72,7 @@ export const fa = {
             commit_error: 'خطا در نوع داده ارسالی',
             person_has_books: 'این شخص در حال حاظر نقش در کتاب(ها) دارد.',
             book_not_in_lib: 'کتاب در کتابخانه شما وجود ندارد و نمی توان آن را به کلکسیونی افزود.',
+            online_book_count_limitation: 'فقط کتاب چاپی و DVD تعداد بیشتر از 1 می پذیرد.',
         }
     },
     validation: {
