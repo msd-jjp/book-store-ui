@@ -277,4 +277,6 @@ export const fa = {
     view_detail: 'نمایش جزئیات',
     cancel: 'انصراف',
     ok: 'تایید',
+    create: 'ایجاد',
+    new_collection: 'کلکسیون جدید',
 }

@@ -273,4 +273,6 @@ export const ar = {
     view_detail: 'نمایش جزئیات',
     cancel: 'انصراف',
     ok: 'تایید',
+    create: 'ایجاد',
+    new_collection: 'کلکسیون جدید',
 }

@@ -274,4 +274,6 @@ export const en = {
     view_detail: 'view detail',
     cancel: 'cancel',
     ok: 'ok',
+    create: 'create',
+    new_collection: 'new collection',
 }

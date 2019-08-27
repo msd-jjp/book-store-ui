@@ -324,10 +324,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 <div className="create-collection-wrapper">
                   <div className="input-wrapper">
                     <Input
-                      placeholder="new collection"
+                      placeholder={Localization.new_collection}
                       defaultValue={this.state.modal_addToCollections.newCollectionTitle.value}
                       onChange={(val, isValid) => { this.handleNewCollectionInputChange(val, isValid) }}
                       required
+                      hideError
                     />
                   </div>
 
@@ -337,7 +338,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                     onClick={() => this.create_Collection()}
                     disabled={!this.state.modal_addToCollections.newCollectionTitle.isValid}
                   >
-                    create
+                    {Localization.create}
                   </BtnLoader>
                 </div>
               </div>

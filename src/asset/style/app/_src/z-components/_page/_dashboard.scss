@@ -236,6 +236,14 @@
 
       .input-wrapper {
         flex: 3;
+        input {
+          border-radius: 0;
+          border-top: 0;
+          border-left: 0;
+          border-right: 0;
+          box-shadow: none;
+          // background-image: none;
+        }
       }
     }
     .collcetion-list {
