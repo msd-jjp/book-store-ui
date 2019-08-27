@@ -217,7 +217,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                 this.handleError({ error: error.response });
                 /* let time = ((error.response || {}).data || {}).time;
                 if (time) {
-                    let msg: any = Localization.formatString(Localization.msg.back.msg4, time);
+                    let msg: any = Localization.formatString(Localization.msg.back.already_has_valid_key, time);
                     this.errorNotify(msg);
 
                 } else {

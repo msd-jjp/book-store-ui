@@ -34,26 +34,26 @@ interface ILocalization extends LocalizedStringsMethods {
         },
         back: {
             [key: string]: any; // todo
-            msg1: string;
-            msg2: string;
-            msg3: string;
-            msg4: string;
-            msg5: string;
-            msg6: string;
-            msg7: string;
-            msg8: string;
-            msg9: string;
-            msg10: string;
-            msg11: string;
-            msg12: string;
-            msg13: string;
-            msg14: string;
-            msg15: string;
-            msg16: string;
-            msg17: string;
-            msg18: string;
-            msg19: string;
-            msg20: string;
+            user_already_exists: string;
+            no_valid_activation_code: string;
+            wrong_activation_code: string;
+            already_has_valid_key: string;
+            message_not_sent: string;
+            cell_no_required: string;
+            message_sent: string;
+            username_exists: string;
+            signup_token_not_exists: string;
+            invalid_signup_token: string;
+            token_invalid: string;
+            token_expired: string;
+            delete_failed: string;
+            get_failed: string;
+            auth_decoding_failed: string;
+            commit_failed: string;
+            no_auth: string;
+            invalid_username: string;
+            invalid_enum: string;
+            not_found: string;
             invalid_persons: string;
             addition_error: string;
             username_cellno_required: string;
