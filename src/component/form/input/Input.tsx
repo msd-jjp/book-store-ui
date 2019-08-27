@@ -12,13 +12,13 @@ interface InputProps {
     required?: boolean;
     validationFunc?: (value: any) => boolean;
     placeholder?: string;
-
     type?: 'text' | 'password';
     is_textarea?: boolean;
     textarea_rows?: number;
-
     readOnly?: boolean;
     disabled?: boolean;
+    hideError?: boolean;
+    hideErrorMsg?: boolean;
 }
 /* interface IProps_input extends InputProps {
     type?: 'text' | 'password';
@@ -108,7 +108,7 @@ class Input extends React.Component<InputProps, InputState> {
             invalidMsg = this.props.patternError;
         }
 
-        if (!this.state.invalid) { return; }
+        if (!this.state.invalid || this.props.hideErrorMsg) { return; }
 
         return (
             <div className="invalid-feedback">
@@ -124,7 +124,7 @@ class Input extends React.Component<InputProps, InputState> {
     }
     render() {
         return (
-            <div className={"form-group " + (this.props.readOnly ? 'input-readonly' : '')}>
+            <div className={"app-input form-group " + (this.props.readOnly ? 'input-readonly' : '')}>
                 {
                     this.props.label &&
                     <label htmlFor={this.id}>
@@ -142,7 +142,13 @@ class Input extends React.Component<InputProps, InputState> {
                         <input
                             id={this.id}
                             type={this.props.type}
-                            className={`form-control ${this.state.invalid && this.state.touched ? 'is-invalid' : ''}`}
+                            className={
+                                `form-control ${
+                                (this.state.invalid && this.state.touched && !this.props.hideError)
+                                    ?
+                                    'is-invalid' : ''
+                                }`
+                            }
                             value={this.props.defaultValue || ''}
                             // defaultValue={this.props.defaultValue}
                             onChange={e => this.handleChange(e)}
@@ -156,7 +162,13 @@ class Input extends React.Component<InputProps, InputState> {
                         :
                         <textarea
                             id={this.id}
-                            className={`form-control ${this.state.invalid && this.state.touched ? 'is-invalid' : ''}`}
+                            className={
+                                `form-control ${
+                                (this.state.invalid && this.state.touched && !this.props.hideError)
+                                    ?
+                                    'is-invalid' : ''
+                                }`
+                            }
                             rows={this.props.textarea_rows || 4}
 
                             // defaultValue={this.props.defaultValue}

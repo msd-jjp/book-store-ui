@@ -1,37 +1,43 @@
-app-input {
-
-  label, .el-required, .el-tooltip {
-    margin-#{$dir-mode-align-inverse}: .25rem; //@extend .mr-1;
-  }
-  label {
-
-  }
-  .el-required, .el-tooltip {
-    font-size: .9rem;
-  }
-  .el-required {
-
-  }
-  .el-tooltip {
-
-  }
-
-  input {
-  }
-
-  &.input-sm {
-    label {
-      font-size: .8rem;
-      margin-bottom: .25rem;
-    }
-
-    .el-required, .el-tooltip {
-      font-size: .7rem;
-    }
-
+.app-input {
+  &.input-readonly {
     input {
-      @extend .form-control-sm;
+      border-color: transparent;
+      box-shadow: none;
     }
-
   }
+
+  // label, .el-required, .el-tooltip {
+  //   margin-#{$dir-mode-align-inverse}: .25rem; //@extend .mr-1;
+  // }
+  // label {
+
+  // }
+  // .el-required, .el-tooltip {
+  //   font-size: .9rem;
+  // }
+  // .el-required {
+
+  // }
+  // .el-tooltip {
+
+  // }
+
+  // input {
+  // }
+
+  // &.input-sm {
+  //   label {
+  //     font-size: .8rem;
+  //     margin-bottom: .25rem;
+  //   }
+
+  //   .el-required, .el-tooltip {
+  //     font-size: .7rem;
+  //   }
+
+  //   input {
+  //     @extend .form-control-sm;
+  //   }
+
+  // }
 }
