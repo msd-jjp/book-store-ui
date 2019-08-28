@@ -224,10 +224,14 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       r => r.role === BOOK_ROLES.Writer
     );
 
-    let name = writerList && writerList.length && writerList[0].person.name;
-    let last_name =
-      writerList && writerList.length && writerList[0].person.last_name;
-    let writerName = name + " " + last_name;
+    // let name = writerList && writerList.length && writerList[0].person.name;
+    // let last_name =
+    //   writerList && writerList.length && writerList[0].person.last_name;
+    let writerName = ''; // name + " " + last_name;
+    if (writerList && writerList.length && writerList[0].person) {
+      writerName = this.getPersonFullName(writerList[0].person);
+    }
+
     return (
       <>
         <div className="latestBook-wrapper row mt-3">
