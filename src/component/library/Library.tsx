@@ -238,14 +238,25 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             </>
         )
     }
+
     view_collection_render() {
+        // let uncollected_book_list = [];
+        let uncollected_book_list_length = 0;
+        let collected_book_list = [];
+
+        this.state.collection_data.forEach((coll: ICollection) => {
+            collected_book_list.push(coll.books);
+        });
+
+        uncollected_book_list_length = this.state.library_data.length - collected_book_list.length;
+
         return (
             <>
                 <div className="library-view-collection-wrapper mr-3 mt-3">
                     <div className="row">
-                        {[1, 1, 2, 2, 2, 1, 2].map((collection, collection_index) => (
+                        {this.state.collection_data.map((collection: ICollection, collection_index) => (
                             <div className="col-4 p-align-inverse-0 mb-3" key={collection_index}>
-                                <div className="item-wrapper">
+                                <div className="item-wrapper cursor-pointer">
                                     <img src={this.defaultBookImagePath}
                                         className="item-size" alt="" onError={e => this.bookImageOnError(e)} />
 
@@ -253,41 +264,53 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                         <div className="collection-detail-inner">
                                             <div className="book-wrapper">
                                                 <div className="row pr-3">
-                                                    {[1, 2, 1, 2].map((sampleBook, sampleBook_index) => (
-                                                        <div className="col-6 book p-align-inverse-0 mb-2" key={sampleBook_index}>
-                                                            <img src={this.defaultBookImagePath} alt="book"
-                                                                onError={e => this.bookImageOnError(e)} />
-                                                        </div>
-                                                    ))}
+                                                    {collection.books.slice(0, 4).map((sampleBook, sampleBook_index) => {
+                                                        const book_img =
+                                                            (sampleBook.images && sampleBook.images.length && this.getImageUrl(sampleBook.images[0]))
+                                                            ||
+                                                            this.defaultBookImagePath;
+
+                                                        return (
+                                                            <div className="col-6 book p-align-inverse-0 mb-2" key={sampleBook_index}>
+                                                                <img src={book_img} alt="book"
+                                                                    onError={e => this.bookImageOnError(e)} />
+                                                            </div>
+                                                        )
+                                                    })}
                                                 </div>
                                             </div>
-                                            <div className="collection-name small">my collection name</div>
-                                            <div className="collection-book-count small float-right text-right">9</div>
+                                            <div className="collection-name small">{collection.title}</div>
+                                            <div className="collection-book-count small float-right text-right">
+                                                {collection.books.length}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         ))}
-                        <div className="col-4 p-align-inverse-0 mb-3">
-                            <div className="item-wrapper uncollected">
-                                <img src={this.defaultBookImagePath}
-                                    className="item-size" alt="" onError={e => this.bookImageOnError(e)} />
+                        {uncollected_book_list_length ?
+                            <div className="col-4 p-align-inverse-0 mb-3">
+                                <div className="item-wrapper uncollected cursor-pointer">
+                                    <img src={this.defaultBookImagePath}
+                                        className="item-size" alt="" onError={e => this.bookImageOnError(e)} />
 
-                                <div className="collection-detail p-2">
-                                    <div className="collection-detail-inner">
-                                        <div className="collection-book-count">14</div>
-                                        <div className="collection-name small text-muted text-capitalize">
-                                            {Localization.uncollected}
+                                    <div className="collection-detail p-2">
+                                        <div className="collection-detail-inner">
+                                            <div className="collection-book-count">{uncollected_book_list_length}</div>
+                                            <div className="collection-name small text-muted text-capitalize">
+                                                {Localization.uncollected}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            : ''}
                     </div>
                 </div>
             </>
         )
     }
+
     change_library_view_test() {
         if (this.state.library_view === LIBRARY_VIEW.grid) {
             this.setState({ ...this.state, library_view: LIBRARY_VIEW.list });
@@ -396,7 +419,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             // todo add ro redux collection
             this.setState({
                 ...this.state,
-                collection_data: [...this.state.collection_data, res.data],
+                collection_data: [...this.state.collection_data, { title: res.data.title, books: [] }],
                 modal_createCollections: {
                     ...this.state.modal_createCollections,
                     loader: false,

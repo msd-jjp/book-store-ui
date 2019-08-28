@@ -25,7 +25,7 @@ export class CollectionService extends BaseService {
     // get_byId(id: string): Promise<IAPI_Response<IBook>> {
     //     return this.axiosTokenInstance.get(`/collections/${id}`);
     // }
-    create(title: string, book_ids?: string[]): Promise<IAPI_Response<ICollection>> { // todo
+    create(title: string, book_ids?: string[]): Promise<IAPI_Response<{title:string, [key: string]: any}>> { // todo
         return this.axiosTokenInstance.post('/collections', {
             book_ids,
             title
