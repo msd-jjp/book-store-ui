@@ -333,6 +333,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                       onChange={(val, isValid) => { this.handleNewCollectionInputChange(val, isValid) }}
                       required
                       hideError
+                      className="input-bordered-bottom"
                     />
                   </div>
 
