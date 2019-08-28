@@ -6,6 +6,16 @@
     }
   }
 
+  &.input-bordered-bottom {
+    input {
+      box-shadow: none;
+      border-radius: 0;
+      border-top: 0;
+      border-right: 0;
+      border-left: 0;
+    }
+  }
+
   // label, .el-required, .el-tooltip {
   //   margin-#{$dir-mode-align-inverse}: .25rem; //@extend .mr-1;
   // }

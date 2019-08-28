@@ -19,6 +19,7 @@ interface InputProps {
     disabled?: boolean;
     hideError?: boolean;
     hideErrorMsg?: boolean;
+    className?: string;
 }
 /* interface IProps_input extends InputProps {
     type?: 'text' | 'password';
@@ -124,7 +125,12 @@ class Input extends React.Component<InputProps, InputState> {
     }
     render() {
         return (
-            <div className={"app-input form-group " + (this.props.readOnly ? 'input-readonly' : '')}>
+            <div className={
+                "app-input form-group "
+                + (this.props.readOnly ? 'input-readonly' : '')
+                + ' '
+                + (this.props.className ? this.props.className : '')
+            }>
                 {
                     this.props.label &&
                     <label htmlFor={this.id}>
