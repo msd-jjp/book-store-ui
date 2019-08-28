@@ -1,19 +1,19 @@
 import React from 'react';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { redux_state } from '../../redux/app_state';
-import { IUser } from '../../model/model.user';
-import { TInternationalization } from '../../config/setup';
-import { BaseComponent } from '../_base/BaseComponent';
-import { Localization } from '../../config/localization/localization';
-import { LibraryService, ILibrary } from '../../service/service.library';
-import { IToken } from '../../model/model.token';
-import { CollectionService, ICollection } from '../../service/service.collection';
-import { BOOK_TYPES, BOOK_ROLES } from '../../enum/Book';
+import { redux_state } from '../../../redux/app_state';
+import { IUser } from '../../../model/model.user';
+import { TInternationalization } from '../../../config/setup';
+import { BaseComponent } from '../../_base/BaseComponent';
+import { Localization } from '../../../config/localization/localization';
+import { LibraryService, ILibrary } from '../../../service/service.library';
+import { IToken } from '../../../model/model.token';
+import { CollectionService, ICollection } from '../../../service/service.collection';
+import { BOOK_TYPES, BOOK_ROLES } from '../../../enum/Book';
 import { ToastContainer } from 'react-toastify';
 import { Modal } from 'react-bootstrap';
-import { Input } from '../form/input/Input';
-import { BtnLoader } from '../form/btn-loader/BtnLoader';
+import { Input } from '../../form/input/Input';
+import { BtnLoader } from '../../form/btn-loader/BtnLoader';
 import { History } from "history";
 
 export interface IProps {
@@ -23,14 +23,13 @@ export interface IProps {
     history: History;
 }
 
-enum LIBRARY_VIEW {
+enum COLLECTION_VIEW {
     grid = 'grid',
     list = 'list',
-    collections = 'collections'
 }
 
 interface IState {
-    library_view: LIBRARY_VIEW;
+    library_view: COLLECTION_VIEW;
     library_data: ILibrary[] | [];
     collection_data: ICollection[] | [];
     modal_createCollections: {
@@ -40,13 +39,12 @@ interface IState {
             value: string | undefined;
             isValid: boolean;
         };
-    };
-    isCollection_editMode: boolean;
+    }
 }
 
-class LibraryComponent extends BaseComponent<IProps, IState> {
+class CollectionComponent extends BaseComponent<IProps, IState> {
     state = {
-        library_view: LIBRARY_VIEW.grid,
+        library_view: COLLECTION_VIEW.grid,
         library_data: [],
         collection_data: [],
         modal_createCollections: {
@@ -57,7 +55,6 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                 isValid: false,
             }
         },
-        isCollection_editMode: false
     }
 
     private _libraryService = new LibraryService();
@@ -95,53 +92,28 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         return (
             <div className="library-menu pt-2__">
                 <div className="row menu-wrapper__">
-                    {
-                        this.state.library_view === LIBRARY_VIEW.collections ? '' :
-                            <div className="col-2">
-                                <div className="filter-library pl-2__">
-                                    <i className="fa fa-filter text-dark p-2"></i>
-                                </div>
-                            </div>
-                    }
+                    <div className="col-2">
+                        <div className="filter-library pl-2__">
+                            <i className="fa fa-arrow-left-app text-dark p-2 cursor-pointer"
+                                onClick={() => this.gotoLibrary()}
+                            ></i>
+                        </div>
+                    </div>
                     <div className={
-                        "col-8-- --111 filter-option text-center "
-                        + (this.state.library_view === LIBRARY_VIEW.collections ? 'col-4' : 'col-8')
+                        "col-8 --111 filter-option text-center "
+                        // + (this.state.library_view === COLLECTION_VIEW.collections ? 'col-10' : 'col-8')
                     }>
-                        {
-                            this.state.library_view === LIBRARY_VIEW.collections ? '' :
-                                <>
-                                    <span className="filter-link text-uppercase mr-3 active">{Localization.all}</span>
-                                    <span className="filter-link text-uppercase ">{Localization.downloaded}</span>
-                                </>
-                        }
+                        {/* <span className="filter-link text-uppercase mr-3 active">{Localization.all}</span> */}
+                        {/* <span className="filter-link text-uppercase ">{Localization.downloaded}</span> */}
                     </div>
 
                     <div className={
-                        "col-2-- text-right "
-                        + (this.state.library_view === LIBRARY_VIEW.collections ? 'col-4-- col-8' : 'col-2')
+                        "col-2 text-right "
+                        // + (this.state.library_view === COLLECTION_VIEW.collections ? 'col-4' : 'col-2')
                     }>
                         <div className="view-library pr-2__">
-                            {
-                                this.state.library_view !== LIBRARY_VIEW.collections ? '' :
-                                    <>
-                                        <i className={
-                                            "icon fa fa-circle-o-- text-dark p-2 "
-                                            + (this.state.isCollection_editMode ? 'fa-check-circle-o' : 'fa-circle-o')
-                                        }
-                                            onClick={() => this.change_collections_mode()}></i>
-                                        <i className={
-                                            "icon fa fa-plus text-dark p-2 "
-                                            + (this.state.isCollection_editMode ? 'disabled' : '')
-                                        }
-                                            onClick={() => this.openModal_createCollections()}></i>
-                                    </>
-                            }
-                            <i className={
-                                "icon fa fa-sliders text-dark p-2 "
-                                + (this.state.isCollection_editMode ? 'disabled' : '')
-                            }
-                                onClick={() => this.change_library_view_test()}
-                            ></i>
+
+                            <i className="icon fa fa-sliders text-dark p-2" onClick={() => this.change_library_view_test()}></i>
                         </div>
                     </div>
                 </div>
@@ -256,141 +228,21 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         )
     }
 
-    view_collection_render() {
-        // let uncollected_book_list = [];
-        let uncollected_book_list_length = 0;
-        let collected_book_list = [];
-
-        this.state.collection_data.forEach((coll: ICollection) => {
-            collected_book_list.push(coll.books);
-        });
-
-        uncollected_book_list_length = this.state.library_data.length - collected_book_list.length;
-
-        return (
-            <>
-                <div className="library-view-collection-wrapper mr-3 mt-3">
-                    <div className="row">
-                        {this.state.collection_data.map((collection: ICollection, collection_index) => (
-                            <div className="col-4 p-align-inverse-0 mb-3" key={collection_index}>
-                                <div className="item-wrapper">
-                                    <div className="cursor-pointer" onClick={() => this.gotoCollection(collection.title)}>
-                                        <img src={this.defaultBookImagePath}
-                                            className="item-size" alt="" onError={e => this.bookImageOnError(e)} />
-
-                                        <div className="collection-detail p-2">
-                                            <div className="collection-detail-inner">
-                                                <div className="book-wrapper">
-                                                    <div className="row pr-3">
-                                                        {collection.books.slice(0, 4).map((sampleBook, sampleBook_index) => {
-                                                            const book_img =
-                                                                (sampleBook.images && sampleBook.images.length && this.getImageUrl(sampleBook.images[0]))
-                                                                ||
-                                                                this.defaultBookImagePath;
-
-                                                            return (
-                                                                <div className="col-6 book p-align-inverse-0 mb-2" key={sampleBook_index}>
-                                                                    <img src={book_img} alt="book"
-                                                                        onError={e => this.bookImageOnError(e)} />
-                                                                </div>
-                                                            )
-                                                        })}
-                                                    </div>
-                                                </div>
-                                                <div className="collection-name small">{collection.title}</div>
-                                                <div className="collection-book-count small float-right text-right">
-                                                    {collection.books.length}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className={
-                                        "collection-actions "
-                                        + (this.state.isCollection_editMode ? '' : 'd-none')
-                                    }>
-                                        <div className="actions">
-                                            <div className="action download">
-                                                <i className="fa fa-download"></i>
-                                            </div>
-                                            <div className="action rename">
-                                                <i className="fa fa-pencil"></i>
-                                            </div>
-                                            <div className="action remove">
-                                                <i className="fa fa-trash"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                        {uncollected_book_list_length ?
-                            <div className="col-4 p-align-inverse-0 mb-3">
-                                <div className="item-wrapper uncollected">
-                                    <div className="cursor-pointer" onClick={() => this.gotoCollection('uncollected', true)}>
-                                        <img src={this.defaultBookImagePath}
-                                            className="item-size" alt="" onError={e => this.bookImageOnError(e)} />
-
-                                        <div className="collection-detail p-2">
-                                            <div className="collection-detail-inner">
-                                                <div className="collection-book-count">{uncollected_book_list_length}</div>
-                                                <div className="collection-name small text-muted text-capitalize">
-                                                    {Localization.uncollected}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className={
-                                        "collection-actions "
-                                        + (this.state.isCollection_editMode ? '' : 'd-none')
-                                    }>
-                                        <div className="actions">
-                                            <div className="action download">
-                                                <i className="fa fa-download"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            : ''}
-                    </div>
-                </div>
-            </>
-        )
-    }
-
     change_library_view_test() {
-        if (this.state.isCollection_editMode) return;
-
-        if (this.state.library_view === LIBRARY_VIEW.grid) {
-            this.setState({ ...this.state, library_view: LIBRARY_VIEW.list });
-        } else if (this.state.library_view === LIBRARY_VIEW.list) {
-            this.setState({ ...this.state, library_view: LIBRARY_VIEW.collections });
-        } else {
-            this.setState({ ...this.state, library_view: LIBRARY_VIEW.grid });
+        if (this.state.library_view === COLLECTION_VIEW.grid) {
+            this.setState({ ...this.state, library_view: COLLECTION_VIEW.list });
+        } else if (this.state.library_view === COLLECTION_VIEW.list) {
+            this.setState({ ...this.state, library_view: COLLECTION_VIEW.grid });
         }
 
     }
 
-    gotoCollection(collectionTitle: string, isUncollected: boolean = false) {
-        if (this.state.isCollection_editMode) return;
-
-        let unClt = isUncollected ? `/${isUncollected}` : '';
-        this.props.history.push(`/collection/${collectionTitle}${unClt}`);
-    }
-
-    change_collections_mode() {
-        this.setState({
-            ...this.state,
-            isCollection_editMode: !this.state.isCollection_editMode
-        });
+    gotoLibrary() {
+        this.props.history.push(`/library`);
     }
 
     //#region modal
     openModal_createCollections() {
-        if (this.state.isCollection_editMode) return;
-
         this.setState({ ...this.state, modal_createCollections: { ...this.state.modal_createCollections, show: true } });
     }
 
@@ -510,12 +362,10 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                     {this.library_header_render()}
                     {(() => {
                         switch (this.state.library_view) {
-                            case LIBRARY_VIEW.grid:
+                            case COLLECTION_VIEW.grid:
                                 return this.view_grid_render();
-                            case LIBRARY_VIEW.list:
+                            case COLLECTION_VIEW.list:
                                 return this.view_list_render();
-                            case LIBRARY_VIEW.collections:
-                                return this.view_collection_render();
                             default:
                                 return undefined;
                         }
@@ -544,4 +394,4 @@ const state2props = (state: redux_state) => {
     }
 }
 
-export const Library = connect(state2props, dispatch2props)(LibraryComponent);
+export const Collection = connect(state2props, dispatch2props)(CollectionComponent);

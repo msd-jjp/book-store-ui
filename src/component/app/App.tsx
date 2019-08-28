@@ -25,6 +25,7 @@ import { AppInitService } from '../../service/service.app-init';
 import { BaseService } from '../../service/service.base';
 import { Modal } from 'react-bootstrap';
 import { Cart } from '../cart/Cart';
+import { Collection } from '../library/collection/Collection';
 // import { action_set_network_status } from '../../redux/action/netwok-status';
 // import { Store2 } from '../../redux/store';
 
@@ -41,6 +42,7 @@ const appRoutes = (
       <RouteLayoutMain path="/category/:searchType/:searchValue" component={Category} />
       <RouteLayoutMain path="/search/:searchQuery" component={Search} />
       <RouteLayoutMain path="/cart" component={Cart} />
+      <RouteLayoutMain path="/collection/:collectionTitle/:isUncollected?" component={Collection} />
 
       <RouteLayoutAccount path="/login" component={Login} />
       <RouteLayoutAccount path="/register" component={Register} />

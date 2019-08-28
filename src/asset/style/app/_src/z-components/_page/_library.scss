@@ -17,6 +17,14 @@
     }
     .view-library {
       line-height: 3rem;
+      .icon {
+        cursor: pointer;
+
+        &.disabled {
+          opacity: 0.5;
+          cursor: default;
+        }
+      }
     }
 
     // .menu-wrapper {
@@ -224,6 +232,41 @@
         body.rtl & {
           right: 1rem;
           left: 0;
+        }
+      }
+
+      .collection-actions {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        background-color: #efefef99;
+        body:not(.rtl) & {
+          left: 15px;
+          right: 0;
+        }
+        body.rtl & {
+          right: 15px;
+          left: 0;
+        }
+        .actions {
+          display: flex;
+          justify-content: center;
+          height: 100%;
+          flex-flow: column;
+          text-align: center;
+          .action {
+            align-self: center;
+            width: 2rem;
+            height: 2rem;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            flex-flow: column;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            background-color: #ffffffc4;
+            border-radius: 0.5rem;
+          }
         }
       }
 

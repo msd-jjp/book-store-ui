@@ -94,7 +94,7 @@ if in log in page & this.props.loged_in_user --> redirect to dashboard
 
 ====================================================================================
 
-remove remove comment modal footer border --> border-top-0
+add price to book in category & store
 
 ====================================================================================
 
