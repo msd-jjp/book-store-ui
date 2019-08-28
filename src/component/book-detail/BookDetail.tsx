@@ -940,7 +940,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             <Modal.Title className="text-danger">{Localization.remove_comment}</Modal.Title>
           </Modal.Header> */}
           <Modal.Body>{Localization.msg.ui.your_comment_will_be_removed_continue}</Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer className="border-top-0 pt-0">
             <button className="btn btn-light btn-sm" onClick={() => this.closeModal_removeComment()}>
               {Localization.close}
             </button>
