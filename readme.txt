@@ -94,6 +94,37 @@ if in log in page & this.props.loged_in_user --> redirect to dashboard
 
 ====================================================================================
 
+remove remove comment modal footer border --> border-top-0
 
+====================================================================================
+
+
+library collection
+
+----------------------------
+
+profile in bookStore
+
+----------------------------
+
+update readme head request & get request
+
+----------------------------
+
+buy history
+
+list buy history on click goto buy history detail.
+
+----------------------------
+
+share 
+	whats app , telegram , sms
+	
+----------------------------
+
+notification (r&d)
+	even if close
+	
+----------------------------
 
 ====================================================================================

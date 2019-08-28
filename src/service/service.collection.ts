@@ -1,7 +1,7 @@
 import { BaseService, IAPI_Response, IAPI_ResponseList } from './service.base';
 import { IBook } from '../model/model.book';
 
-interface ICollection {
+export interface ICollection {
     books: IBook[];
     title: string;
 }
@@ -25,7 +25,7 @@ export class CollectionService extends BaseService {
     // get_byId(id: string): Promise<IAPI_Response<IBook>> {
     //     return this.axiosTokenInstance.get(`/collections/${id}`);
     // }
-    create(title: string, book_ids?: string[]) { // todo
+    create(title: string, book_ids?: string[]): Promise<IAPI_Response<ICollection>> { // todo
         return this.axiosTokenInstance.post('/collections', {
             book_ids,
             title
