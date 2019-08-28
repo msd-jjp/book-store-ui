@@ -276,4 +276,6 @@ export const en = {
     ok: 'ok',
     create: 'create',
     new_collection: 'new collection',
+    collection_name: 'collection name',
+    create_new_collection: 'create new collection',
 }

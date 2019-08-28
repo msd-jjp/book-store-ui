@@ -272,6 +272,8 @@ interface ILocalization extends LocalizedStringsMethods {
     ok: string;
     create: string;
     new_collection: string;
+    collection_name: string;
+    create_new_collection: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

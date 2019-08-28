@@ -279,4 +279,6 @@ export const fa = {
     ok: 'تایید',
     create: 'ایجاد',
     new_collection: 'کلکسیون جدید',
+    collection_name: 'نام کلکسیون',
+    create_new_collection: 'ایجاد کلکسیون جدید',
 }
