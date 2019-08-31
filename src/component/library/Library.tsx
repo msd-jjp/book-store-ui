@@ -52,6 +52,10 @@ interface IState {
         show: boolean;
         loader: boolean;
     };
+    modal_downloadCollections: {
+        show: boolean;
+        loader: boolean;
+    };
 }
 
 class LibraryComponent extends BaseComponent<IProps, IState> {
@@ -69,6 +73,10 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         },
         isCollection_editMode: false,
         modal_removeCollections: {
+            show: false,
+            loader: false
+        },
+        modal_downloadCollections: {
             show: false,
             loader: false
         }
@@ -341,10 +349,10 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                         + (this.state.isCollection_editMode ? '' : 'd-none')
                                     }>
                                         <div className="actions">
-                                            <div className="action download">
+                                            <div className="action download" onClick={() => this.openModal_downloadCollection(collection.title)}>
                                                 <i className="fa fa-download"></i>
                                             </div>
-                                            <div className="action rename">
+                                            <div className="action rename" onClick={() => this.openModal_renameCollections(collection.title)}>
                                                 <i className="fa fa-pencil"></i>
                                             </div>
                                             <div className="action remove" onClick={() => this.openModal_removeCollection(collection.title)}>
@@ -377,7 +385,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                         + (this.state.isCollection_editMode ? '' : 'd-none')
                                     }>
                                         <div className="actions">
-                                            <div className="action download">
+                                            <div className="action download" onClick={() => this.openModal_downloadCollection('uncollected', true)}>
                                                 <i className="fa fa-download"></i>
                                             </div>
                                         </div>
@@ -423,16 +431,6 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         });
     }
 
-    async renameCollection(currentTitle: string, newTitle: string) {
-        let res = await this._collectionService.rename(currentTitle, newTitle).catch(error => {
-            this.handleError({ error: error.response });
-        });
-
-        if (res) {
-            // todo
-        }
-    }
-
     //#region modal remove collection
     private collection_title_to_remove: string | undefined;
     openModal_removeCollection(title: string) {
@@ -455,7 +453,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                 >
                     <Modal.Header
                         className="border-bottom-0 pb-0">
-                        <Modal.Title className="text-capitalize">{Localization.delete_collection_}</Modal.Title>
+                        <Modal.Title className="text-capitalize font-weight-normal">{Localization.delete_collection_}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>{Localization.msg.ui.your_collection_will_be_removed_continue}</Modal.Body>
                     <Modal.Footer className="border-top-0 pt-0">
@@ -467,7 +465,8 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                             loading={this.state.modal_removeCollections.loader}
                             onClick={() => this.removeCollection(this.collection_title_to_remove!)}
                         >
-                            {Localization.remove_collection}
+                            {/* {Localization.remove_collection} */}
+                            {Localization.remove}
                         </BtnLoader>
 
                     </Modal.Footer>
@@ -501,21 +500,55 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     //#endregion
 
     //#region modal create collection
+    private modal_saveCollection_mode: 'create' | 'edit' = 'create';
+    private collection_title_to_rename: string | undefined;
+
     openModal_createCollections() {
         if (this.state.isCollection_editMode) return;
+
+        this.modal_saveCollection_mode = 'create';
 
         this.setState({ ...this.state, modal_createCollections: { ...this.state.modal_createCollections, show: true } });
     }
 
+    openModal_renameCollections(title: string) {
+        if (!this.state.isCollection_editMode) return;
+
+        this.modal_saveCollection_mode = 'edit';
+        this.collection_title_to_rename = title;
+
+        this.setState({
+            ...this.state, modal_createCollections: {
+                ...this.state.modal_createCollections,
+                show: true,
+                newCollectionTitle: {
+                    value: title,
+                    isValid: true
+                }
+            }
+        });
+    }
+
     closeModal_createCollections() {
-        this.setState({ ...this.state, modal_createCollections: { ...this.state.modal_createCollections, show: false } });
+        this.collection_title_to_rename = undefined;
+
+        this.setState({
+            ...this.state, modal_createCollections: {
+                ...this.state.modal_createCollections,
+                show: false,
+                newCollectionTitle: {
+                    value: undefined,
+                    isValid: false
+                }
+            }
+        });
     }
 
     modal_createCollections_render() {
         return (
             <>
                 <Modal
-                    className="dashboard-modal-createCollections--"
+                    className=""
                     show={this.state.modal_createCollections.show}
                     onHide={() => this.closeModal_createCollections()}
                     centered
@@ -523,13 +556,18 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                     <Modal.Header
                         // closeButton
                         className="border-bottom-0 pb-0">
-                        <Modal.Title className="text-capitalize">{Localization.create_new_collection}</Modal.Title>
+                        <Modal.Title className="text-capitalize font-weight-normal">{
+                            this.modal_saveCollection_mode === 'create' ?
+                                Localization.create_new_collection
+                                :
+                                Localization.rename_collection
+                        }</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <div className="row">
                             <div className="col-12">
-                                <div className="create-collection-wrapper--">
-                                    <div className="input-wrapper--">
+                                <div className="">
+                                    <div className="">
                                         <Input
                                             placeholder={Localization.collection_name}
                                             defaultValue={this.state.modal_createCollections.newCollectionTitle.value}
@@ -547,14 +585,29 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                         <button className="btn btn-light btn-sm text-uppercase" onClick={() => this.closeModal_createCollections()}>
                             {Localization.cancel}
                         </button>
-                        <BtnLoader
-                            btnClassName="btn btn-success btn-sm text-uppercase"
-                            loading={this.state.modal_createCollections.loader}
-                            disabled={!this.state.modal_createCollections.newCollectionTitle.isValid}
-                            onClick={() => this.create_Collection()}
-                        >
-                            {Localization.create}
-                        </BtnLoader>
+                        {
+                            this.modal_saveCollection_mode === 'create' ?
+                                <BtnLoader
+                                    btnClassName="btn btn-success btn-sm text-uppercase"
+                                    loading={this.state.modal_createCollections.loader}
+                                    disabled={!this.state.modal_createCollections.newCollectionTitle.isValid}
+                                    onClick={() => this.create_Collection()}
+                                >
+                                    {Localization.create}
+                                </BtnLoader>
+                                :
+                                <BtnLoader
+                                    btnClassName="btn btn-primary btn-sm text-uppercase"
+                                    loading={this.state.modal_createCollections.loader}
+                                    disabled={!this.state.modal_createCollections.newCollectionTitle.isValid}
+                                    onClick={() => this.renameCollection(
+                                        this.collection_title_to_rename!,
+                                        this.state.modal_createCollections.newCollectionTitle.value!
+                                    )}
+                                >
+                                    {Localization.rename}
+                                </BtnLoader>
+                        }
                     </Modal.Footer>
                 </Modal>
             </>
@@ -596,7 +649,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         });
 
         if (res) {
-            this.props.set_collections_data([...this.props.collection.data, { title: res.data.title, books: [] }]);
+            this.props.set_collections_data([{ title: res.data.title, books: [] }, ...this.props.collection.data]);
 
             this.setState({
                 ...this.state,
@@ -613,6 +666,104 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
 
             // todo goto new collection page
         }
+    }
+
+    async renameCollection(currentTitle: string, newTitle: string) {
+        if (!this.state.modal_createCollections.newCollectionTitle.isValid) return;
+
+        this.setState({
+            ...this.state,
+            modal_createCollections: {
+                ...this.state.modal_createCollections,
+                loader: true
+            }
+        });
+
+        let res = await this._collectionService.rename(currentTitle, newTitle).catch(error => {
+            this.handleError({ error: error.response });
+            this.setState({
+                ...this.state,
+                modal_createCollections: {
+                    ...this.state.modal_createCollections,
+                    loader: false
+                }
+            });
+        });
+
+        if (res) {
+            let allColls = [...this.props.collection.data];
+            let col_index = allColls.findIndex(c => c.title === currentTitle);
+            allColls[col_index].title = newTitle;
+
+            this.props.set_collections_data(allColls);
+
+            this.setState({
+                ...this.state,
+                modal_createCollections: {
+                    ...this.state.modal_createCollections,
+                    loader: false,
+                    newCollectionTitle: {
+                        value: undefined,
+                        isValid: false
+                    }
+                }
+            });
+            this.closeModal_createCollections();
+        }
+    }
+    //#endregion
+
+    //#region modal download collection
+    private collection_title_to_download: string | undefined;
+    private collection_to_download_isUncollected: boolean = false;
+    openModal_downloadCollection(title: string, isUncollected: boolean = false) {
+        this.collection_title_to_download = title;
+        this.collection_to_download_isUncollected = isUncollected;
+        this.setState({ ...this.state, modal_downloadCollections: { ...this.state.modal_downloadCollections, show: true } });
+    }
+
+    closeModal_downloadCollection() {
+        this.collection_title_to_download = undefined;
+        this.collection_to_download_isUncollected = false;
+        this.setState({ ...this.state, modal_downloadCollections: { ...this.state.modal_downloadCollections, show: false } });
+    }
+
+    modal_downloadCollection_render() {
+        return (
+            <>
+                <Modal
+                    show={this.state.modal_downloadCollections.show}
+                    onHide={() => this.closeModal_downloadCollection()}
+                    centered
+                >
+                    <Modal.Header
+                        className="border-bottom-0 pb-0">
+                        <Modal.Title className="text-capitalize font-weight-normal">{Localization.download_collection_}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>{Localization.msg.ui.your_collection_will_be_downloaded_continue}</Modal.Body>
+                    <Modal.Footer className="border-top-0 pt-0">
+                        <button className="btn btn-light btn-sm" onClick={() => this.closeModal_downloadCollection()}>
+                            {Localization.cancel}
+                        </button>
+                        <BtnLoader
+                            btnClassName="btn btn-system btn-sm"
+                            loading={this.state.modal_downloadCollections.loader}
+                            onClick={() => this.downloadCollection(this.collection_title_to_download!)}
+                        >
+                            {Localization.download}
+                        </BtnLoader>
+
+                    </Modal.Footer>
+                </Modal>
+            </>
+        )
+    }
+
+    async downloadCollection(title: string) {
+        // let collection_title = title;
+        // let isUncollected = this.collection_to_download_isUncollected;
+
+        this.closeModal_downloadCollection();
     }
     //#endregion
 
@@ -638,6 +789,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
 
                 {this.modal_createCollections_render()}
                 {this.modal_removeCollection_render()}
+                {this.modal_downloadCollection_render()}
 
                 <ToastContainer {...this.getNotifyContainerConfig()} />
 

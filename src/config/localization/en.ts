@@ -22,6 +22,7 @@ export const en = {
             item_will_be_removed_continue: 'item will be removed continue?',
             your_purchase_completed: 'your purchase is completed',
             your_collection_will_be_removed_continue: 'deleting a collection will not remove the books contained within the collection.',
+            your_collection_will_be_downloaded_continue: 'all the book in the collection will be downloaded.',
         },
         back: {
             user_already_exists: 'user already exists',
@@ -281,4 +282,8 @@ export const en = {
     create_new_collection: 'create new collection',
     remove_collection: 'remove collection',
     delete_collection_: 'delete collection?',
+    rename_collection: 'rename collection',
+    rename: 'rename',
+    download_collection_: 'download collection?',
+    download: 'download',
 }

@@ -32,6 +32,7 @@ interface ILocalization extends LocalizedStringsMethods {
             item_will_be_removed_continue: string;
             your_purchase_completed: string;
             your_collection_will_be_removed_continue: string;
+            your_collection_will_be_downloaded_continue: string;
         },
         back: {
             [key: string]: any; // todo
@@ -277,6 +278,10 @@ interface ILocalization extends LocalizedStringsMethods {
     create_new_collection: string;
     remove_collection: string;
     delete_collection_: string;
+    rename_collection: string;
+    rename: string;
+    download_collection_: string;
+    download: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

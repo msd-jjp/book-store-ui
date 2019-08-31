@@ -24,8 +24,8 @@ export class CollectionService extends BaseService {
         return this.axiosTokenInstance.get(`/collections/title/${title}`);
     }
 
-    rename(currentTitle: string, newTitle: string): Promise<any> {
-        return this.axiosTokenInstance.put(`/collections/title/${currentTitle}`, { title: newTitle });
+    rename(currentTitle: string, newTitle: string): Promise<IAPI_ResponseList<any>> {
+        return this.axiosTokenInstance.put(`/collections/${currentTitle}`, { title: newTitle });
     }
     // get_byId(id: string): Promise<IAPI_Response<IBook>> {
     //     return this.axiosTokenInstance.get(`/collections/${id}`);

@@ -22,6 +22,7 @@ export const ar = {
             item_will_be_removed_continue: 'رکورد مورد نظر حذف خواهد شد، تایید می کنید؟',
             your_purchase_completed: 'خرید شما تکمیل شد',
             your_collection_will_be_removed_continue: 'حذف کلکسیون کتاب های موجود در آن را حذف نخواهد کرد.',
+            your_collection_will_be_downloaded_continue: 'همه کتاب های این کلکسیون دانلود می شود.',
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',
@@ -281,4 +282,8 @@ export const ar = {
     create_new_collection: 'ایجاد کلکسیون جدید',
     remove_collection: 'حذف کلکسیون',
     delete_collection_: 'کلکسیون حذف شود؟',
+    rename_collection: 'تغییر نام کلکسیون',
+    rename: 'تغییر نام',
+    download_collection_: 'کلکسیون دانلود شود؟',
+    download: 'دانلود',
 }
