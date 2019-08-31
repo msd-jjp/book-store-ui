@@ -17,17 +17,22 @@ import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { History } from "history";
 import { ILibrary } from '../../model/model.library';
 import { LIBRARY_VIEW } from '../../enum/Library';
+import { ILibrary_schema } from '../../redux/action/library/libraryAction';
+import { action_set_library_data, action_set_library_view } from '../../redux/action/library';
 
 export interface IProps {
     logged_in_user?: IUser | null;
     internationalization: TInternationalization;
     token: IToken;
     history: History;
+    library: ILibrary_schema;
+    set_library_data: (data: ILibrary[]) => any;
+    set_library_view: (view: LIBRARY_VIEW) => any;
 }
 
 interface IState {
-    library_view: LIBRARY_VIEW;
-    library_data: ILibrary[] | [];
+    // library_view: LIBRARY_VIEW;
+    // library_data: ILibrary[] | [];
     collection_data: ICollection[] | [];
     modal_createCollections: {
         show: boolean;
@@ -42,8 +47,8 @@ interface IState {
 
 class LibraryComponent extends BaseComponent<IProps, IState> {
     state = {
-        library_view: LIBRARY_VIEW.grid,
-        library_data: [],
+        // library_view: this.props.library.view, // LIBRARY_VIEW.grid,
+        // library_data: [],
         collection_data: [],
         modal_createCollections: {
             show: false,
@@ -74,44 +79,18 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             this.handleError({ error: error.response });
         });
 
-        // _DELETE_ME
-        // res = {
-        //     data: {
-        //         result: [
-        //             {
-        //                 id: '1',
-        //                 book: this.props.logged_in_user!.person.current_book!,
-        //                 status: {
-        //                     status: "buyed",
-        //                     reading_started: true,
-        //                     read_pages: 50,
-        //                     read_duration: 0,
-        //                 }
-        //             }
-        //         ]
-        //     }
-        // };
+        if (res) {
+            this.props.set_library_data(res.data.result);
+        }
 
         let res_coll = await this._collectionService.getAll().catch(error => {
             this.handleError({ error: error.response });
         });
 
-        // _DELETE_ME
-        // res_coll = {
-        //     data: {
-        //         result: [
-        //             {
-        //                 books: [this.props.logged_in_user!.person.current_book!],
-        //                 title: 'test'
-        //             }
-        //         ]
-        //     }
-        // };
-
-        if (res) {
+        if (res_coll) {
             this.setState({
                 ...this.state,
-                library_data: res.data.result,
+                // library_data: res.data.result,
                 collection_data: res_coll ? res_coll.data.result : []
             });
         }
@@ -122,7 +101,8 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             <div className="library-menu pt-2__">
                 <div className="row menu-wrapper__">
                     {
-                        this.state.library_view === LIBRARY_VIEW.collections ? '' :
+                        // this.state.library_view
+                        this.props.library.view === LIBRARY_VIEW.collections ? '' :
                             <div className="col-2">
                                 <div className="filter-library pl-2__">
                                     <i className="fa fa-filter text-dark p-2"></i>
@@ -131,10 +111,13 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                     }
                     <div className={
                         "col-8-- --111 filter-option text-center "
-                        + (this.state.library_view === LIBRARY_VIEW.collections ? 'col-4' : 'col-8')
+                        + (
+                            // this.state.library_view
+                            this.props.library.view === LIBRARY_VIEW.collections ? 'col-4' : 'col-8')
                     }>
                         {
-                            this.state.library_view === LIBRARY_VIEW.collections ? '' :
+                            // this.state.library_view
+                            this.props.library.view === LIBRARY_VIEW.collections ? '' :
                                 <>
                                     <span className="filter-link text-uppercase mr-3 active">{Localization.all}</span>
                                     <span className="filter-link text-uppercase ">{Localization.downloaded}</span>
@@ -144,11 +127,14 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
 
                     <div className={
                         "col-2-- text-right "
-                        + (this.state.library_view === LIBRARY_VIEW.collections ? 'col-4-- col-8' : 'col-2')
+                        + (
+                            // this.state.library_view
+                            this.props.library.view === LIBRARY_VIEW.collections ? 'col-4-- col-8' : 'col-2')
                     }>
                         <div className="view-library pr-2__">
                             {
-                                this.state.library_view !== LIBRARY_VIEW.collections ? '' :
+                                // this.state.library_view
+                                this.props.library.view !== LIBRARY_VIEW.collections ? '' :
                                     <>
                                         <i className={
                                             "icon fa fa-circle-o-- text-dark p-2 "
@@ -201,7 +187,8 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                 <div className="library-view-grid-wrapper mr-3 mt-3">
                     <div className="row">
                         {
-                            this.state.library_data.map((item: ILibrary, index) => {
+                            // this.state.library_data
+                            this.props.library.data.map((item: ILibrary, index) => {
                                 let book_img =
                                     (item.book.images && item.book.images.length && this.getImageUrl(item.book.images[0]))
                                     ||
@@ -238,45 +225,47 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         return (
             <>
                 <div className="library-view-list-wrapper mt-3">
-                    {this.state.library_data.map((item: ILibrary, index) => {
-                        let book_img =
-                            (item.book.images && item.book.images.length && this.getImageUrl(item.book.images[0]))
-                            ||
-                            this.defaultBookImagePath;
+                    {
+                        // this.state.library_data
+                        this.props.library.data.map((item: ILibrary, index) => {
+                            let book_img =
+                                (item.book.images && item.book.images.length && this.getImageUrl(item.book.images[0]))
+                                ||
+                                this.defaultBookImagePath;
 
-                        let writerList = item.book.roles.filter(
-                            r => r.role === BOOK_ROLES.Writer
-                        );
+                            let writerList = item.book.roles.filter(
+                                r => r.role === BOOK_ROLES.Writer
+                            );
 
-                        let writerName = '';
-                        if (writerList && writerList.length && writerList[0].person) {
-                            writerName = this.getPersonFullName(writerList[0].person);
-                        }
+                            let writerName = '';
+                            if (writerList && writerList.length && writerList[0].person) {
+                                writerName = this.getPersonFullName(writerList[0].person);
+                            }
 
-                        return (
-                            <div className="view-list-item py-2__ pb-2 mb-2" key={index}>
-                                <div className="item-wrapper row">
-                                    <div className="img-wrapper col-4">
-                                        <div className="img-container__ mt-2__">
-                                            <img src={book_img} alt="book"
-                                                onError={e => this.bookImageOnError(e)} />
+                            return (
+                                <div className="view-list-item py-2__ pb-2 mb-2" key={index}>
+                                    <div className="item-wrapper row">
+                                        <div className="img-wrapper col-4">
+                                            <div className="img-container__ mt-2__">
+                                                <img src={book_img} alt="book"
+                                                    onError={e => this.bookImageOnError(e)} />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="detail-wrapper col-8 p-align-0">
-                                        <div className="book-title">{item.book.title}</div>
-                                        <span className="book-writer text-muted py-2 small">{writerName}</span>
-                                        <span className="book-progress mr-2 small">{this.calc_read_percent(item)}</span>
-                                        {/* todo: size */}
-                                        {/* <span className="book-volume small">789.3 kb</span> */}
-                                        <i className="fa fa-check-circle downloaded-icon"></i>
-                                    </div>
-                                    {/* <div className="col-2 text-right is-downloaded pt-1">
+                                        <div className="detail-wrapper col-8 p-align-0">
+                                            <div className="book-title">{item.book.title}</div>
+                                            <span className="book-writer text-muted py-2 small">{writerName}</span>
+                                            <span className="book-progress mr-2 small">{this.calc_read_percent(item)}</span>
+                                            {/* todo: size */}
+                                            {/* <span className="book-volume small">789.3 kb</span> */}
+                                            <i className="fa fa-check-circle downloaded-icon"></i>
+                                        </div>
+                                        {/* <div className="col-2 text-right is-downloaded pt-1">
                                         
                                     </div> */}
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    })}
+                            )
+                        })}
                 </div>
             </>
         )
@@ -295,7 +284,9 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         });
         collected_book_id_list_unique = Array.from(new Set(collected_book_id_list));
 
-        uncollected_book_list_length = this.state.library_data.length - collected_book_id_list_unique.length;
+        uncollected_book_list_length =
+            // this.state.library_data.length
+            this.props.library.data.length - collected_book_id_list_unique.length;
 
         return (
             <>
@@ -393,12 +384,17 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     change_library_view_test() {
         if (this.state.isCollection_editMode) return;
 
-        if (this.state.library_view === LIBRARY_VIEW.grid) {
-            this.setState({ ...this.state, library_view: LIBRARY_VIEW.list });
-        } else if (this.state.library_view === LIBRARY_VIEW.list) {
-            this.setState({ ...this.state, library_view: LIBRARY_VIEW.collections });
+        // if (this.state.library_view === LIBRARY_VIEW.grid) {
+        if (this.props.library.view === LIBRARY_VIEW.grid) {
+            // this.setState({ ...this.state, library_view: LIBRARY_VIEW.list });
+            this.props.set_library_view(LIBRARY_VIEW.list);
+            // } else if (this.state.library_view === LIBRARY_VIEW.list) {
+        } else if (this.props.library.view === LIBRARY_VIEW.list) {
+            // this.setState({ ...this.state, library_view: LIBRARY_VIEW.collections });
+            this.props.set_library_view(LIBRARY_VIEW.collections);
         } else {
-            this.setState({ ...this.state, library_view: LIBRARY_VIEW.grid });
+            // this.setState({ ...this.state, library_view: LIBRARY_VIEW.grid });
+            this.props.set_library_view(LIBRARY_VIEW.grid);
         }
 
     }
@@ -539,7 +535,8 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                 <div className="library-wrapper">
                     {this.library_header_render()}
                     {(() => {
-                        switch (this.state.library_view) {
+                        // switch (this.state.library_view) {
+                        switch (this.props.library.view) {
                             case LIBRARY_VIEW.grid:
                                 return this.view_grid_render();
                             case LIBRARY_VIEW.list:
@@ -563,6 +560,8 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
+        set_library_data: (data: ILibrary[]) => dispatch(action_set_library_data(data)),
+        set_library_view: (view: LIBRARY_VIEW) => dispatch(action_set_library_view(view)),
     }
 }
 
@@ -571,6 +570,7 @@ const state2props = (state: redux_state) => {
         logged_in_user: state.logged_in_user,
         internationalization: state.internationalization,
         token: state.token,
+        library: state.library,
     }
 }
 
