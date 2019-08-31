@@ -6,7 +6,7 @@ import { IUser } from '../../model/model.user';
 import { TInternationalization } from '../../config/setup';
 import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
-import { LibraryService, ILibrary } from '../../service/service.library';
+import { LibraryService } from '../../service/service.library';
 import { IToken } from '../../model/model.token';
 import { CollectionService, ICollection } from '../../service/service.collection';
 import { BOOK_TYPES, BOOK_ROLES } from '../../enum/Book';
@@ -15,18 +15,14 @@ import { Modal } from 'react-bootstrap';
 import { Input } from '../form/input/Input';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { History } from "history";
+import { ILibrary } from '../../model/model.library';
+import { LIBRARY_VIEW } from '../../enum/Library';
 
 export interface IProps {
     logged_in_user?: IUser | null;
     internationalization: TInternationalization;
     token: IToken;
     history: History;
-}
-
-enum LIBRARY_VIEW {
-    grid = 'grid',
-    list = 'list',
-    collections = 'collections'
 }
 
 interface IState {
@@ -78,9 +74,39 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             this.handleError({ error: error.response });
         });
 
+        // _DELETE_ME
+        // res = {
+        //     data: {
+        //         result: [
+        //             {
+        //                 id: '1',
+        //                 book: this.props.logged_in_user!.person.current_book!,
+        //                 status: {
+        //                     status: "buyed",
+        //                     reading_started: true,
+        //                     read_pages: 50,
+        //                     read_duration: 0,
+        //                 }
+        //             }
+        //         ]
+        //     }
+        // };
+
         let res_coll = await this._collectionService.getAll().catch(error => {
             this.handleError({ error: error.response });
         });
+
+        // _DELETE_ME
+        // res_coll = {
+        //     data: {
+        //         result: [
+        //             {
+        //                 books: [this.props.logged_in_user!.person.current_book!],
+        //                 title: 'test'
+        //             }
+        //         ]
+        //     }
+        // };
 
         if (res) {
             this.setState({
@@ -259,13 +285,17 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     view_collection_render() {
         // let uncollected_book_list = [];
         let uncollected_book_list_length = 0;
-        let collected_book_list = [];
+        // let collected_book_list = [];
+        let collected_book_id_list: string[] = [];
+        let collected_book_id_list_unique: string[] = [];
 
         this.state.collection_data.forEach((coll: ICollection) => {
-            collected_book_list.push(coll.books);
+            let b_ids = coll.books.map(b => b.id);
+            collected_book_id_list = [...collected_book_id_list, ...b_ids]
         });
+        collected_book_id_list_unique = Array.from(new Set(collected_book_id_list));
 
-        uncollected_book_list_length = this.state.library_data.length - collected_book_list.length;
+        uncollected_book_list_length = this.state.library_data.length - collected_book_id_list_unique.length;
 
         return (
             <>
