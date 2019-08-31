@@ -11,6 +11,7 @@ import { reducer as AuthenticationReducer } from './reducer/authentication';
 import { reducer as NetworkStatusReducer } from './reducer/network-status';
 import { reducer as CartReducer } from './reducer/cart';
 import { reducer as LibraryReducer } from './reducer/library';
+import { reducer as CollectionReducer } from './reducer/collection';
 import logger from 'redux-logger'
 //
 import { persistStore, persistReducer } from 'redux-persist';
@@ -18,6 +19,7 @@ import storage from 'redux-persist/lib/storage'; // defaults to localStorage for
 import { NETWORK_STATUS } from '../enum/NetworkStatus';
 import { ICartItems } from './action/cart/cartAction';
 import { ILibrary_schema } from './action/library/libraryAction';
+import { ICollection_schema } from './action/collection/collectionAction';
 
 const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
   logged_in_user: UserReducer as Reducer<IUser | null, AnyAction>,
@@ -27,6 +29,7 @@ const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
   network_status: NetworkStatusReducer as Reducer<NETWORK_STATUS, AnyAction>,
   cart: CartReducer as Reducer<ICartItems, AnyAction>,
   library: LibraryReducer as Reducer<ILibrary_schema, AnyAction>,
+  collection: CollectionReducer as Reducer<ICollection_schema, AnyAction>,
 }
 
 const main_reducer = combineReducers(reducers);
