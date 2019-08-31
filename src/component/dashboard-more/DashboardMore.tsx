@@ -17,6 +17,7 @@ import { Modal } from 'react-bootstrap';
 import { ICartItems } from '../../redux/action/cart/cartAction';
 import { action_clear_cart } from '../../redux/action/cart';
 import { action_clear_library } from '../../redux/action/library';
+import { action_clear_collections } from '../../redux/action/collection';
 
 interface IProps {
     logged_in_user?: IUser | null;
@@ -29,6 +30,7 @@ interface IProps {
     cart: ICartItems;
     clear_cart: () => any;
     clear_library: () => any;
+    clear_collections: () => any;
 }
 
 interface IState {
@@ -79,6 +81,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.remove_authentication();
         this.props.clear_cart();
         this.props.clear_library();
+        this.props.clear_collections();
         this.props.history.push('/login');
     }
 
@@ -218,6 +221,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
         remove_authentication: () => dispatch(action_remove_authentication()),
         clear_cart: () => dispatch(action_clear_cart()),
         clear_library: () => dispatch(action_clear_library()),
+        clear_collections: () => dispatch(action_clear_collections()),
     }
 }
 

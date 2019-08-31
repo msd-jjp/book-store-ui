@@ -20,6 +20,8 @@ import { LIBRARY_VIEW } from '../../enum/Library';
 import { ILibrary_schema } from '../../redux/action/library/libraryAction';
 import { action_set_library_data, action_set_library_view } from '../../redux/action/library';
 import { ICollection } from '../../model/model.collection';
+import { action_set_collections_data } from '../../redux/action/collection';
+import { ICollection_schema } from '../../redux/action/collection/collectionAction';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -29,12 +31,14 @@ export interface IProps {
     library: ILibrary_schema;
     set_library_data: (data: ILibrary[]) => any;
     set_library_view: (view: LIBRARY_VIEW) => any;
+    collection: ICollection_schema;
+    set_collections_data: (data: ICollection[]) => any;
 }
 
 interface IState {
     // library_view: LIBRARY_VIEW;
     // library_data: ILibrary[] | [];
-    collection_data: ICollection[] | [];
+    // collection_data: ICollection[] | [];
     modal_createCollections: {
         show: boolean;
         loader: boolean;
@@ -44,13 +48,17 @@ interface IState {
         };
     };
     isCollection_editMode: boolean;
+    modal_removeCollections: {
+        show: boolean;
+        loader: boolean;
+    };
 }
 
 class LibraryComponent extends BaseComponent<IProps, IState> {
     state = {
         // library_view: this.props.library.view, // LIBRARY_VIEW.grid,
         // library_data: [],
-        collection_data: [],
+        // collection_data: [],
         modal_createCollections: {
             show: false,
             loader: false,
@@ -59,7 +67,11 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                 isValid: false,
             }
         },
-        isCollection_editMode: false
+        isCollection_editMode: false,
+        modal_removeCollections: {
+            show: false,
+            loader: false
+        }
     }
 
     private _libraryService = new LibraryService();
@@ -89,11 +101,12 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         });
 
         if (res_coll) {
-            this.setState({
-                ...this.state,
-                // library_data: res.data.result,
-                collection_data: res_coll ? res_coll.data.result : []
-            });
+            this.props.set_collections_data(res_coll.data.result);
+            // this.setState({
+            //     ...this.state,
+            //     // library_data: res.data.result,
+            //     collection_data: res_coll ? res_coll.data.result : []
+            // });
         }
     }
 
@@ -273,27 +286,23 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     }
 
     view_collection_render() {
-        // let uncollected_book_list = [];
         let uncollected_book_list_length = 0;
-        // let collected_book_list = [];
         let collected_book_id_list: string[] = [];
         let collected_book_id_list_unique: string[] = [];
 
-        this.state.collection_data.forEach((coll: ICollection) => {
+        this.props.collection.data.forEach((coll: ICollection) => {
             let b_ids = coll.books.map(b => b.id);
             collected_book_id_list = [...collected_book_id_list, ...b_ids]
         });
         collected_book_id_list_unique = Array.from(new Set(collected_book_id_list));
 
-        uncollected_book_list_length =
-            // this.state.library_data.length
-            this.props.library.data.length - collected_book_id_list_unique.length;
+        uncollected_book_list_length = this.props.library.data.length - collected_book_id_list_unique.length;
 
         return (
             <>
                 <div className="library-view-collection-wrapper mr-3 mt-3">
                     <div className="row">
-                        {this.state.collection_data.map((collection: ICollection, collection_index) => (
+                        {this.props.collection.data.map((collection: ICollection, collection_index) => (
                             <div className="col-4 p-align-inverse-0 mb-3" key={collection_index}>
                                 <div className="item-wrapper">
                                     <div className="cursor-pointer" onClick={() => this.gotoCollection(collection.title)}>
@@ -338,7 +347,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                             <div className="action rename">
                                                 <i className="fa fa-pencil"></i>
                                             </div>
-                                            <div className="action remove">
+                                            <div className="action remove" onClick={() => this.openModal_removeCollection(collection.title)}>
                                                 <i className="fa fa-trash"></i>
                                             </div>
                                         </div>
@@ -414,7 +423,84 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         });
     }
 
-    //#region modal
+    async renameCollection(currentTitle: string, newTitle: string) {
+        let res = await this._collectionService.rename(currentTitle, newTitle).catch(error => {
+            this.handleError({ error: error.response });
+        });
+
+        if (res) {
+            // todo
+        }
+    }
+
+    //#region modal remove collection
+    private collection_title_to_remove: string | undefined;
+    openModal_removeCollection(title: string) {
+        this.collection_title_to_remove = title;
+        this.setState({ ...this.state, modal_removeCollections: { ...this.state.modal_removeCollections, show: true } });
+    }
+
+    closeModal_removeCollection() {
+        this.collection_title_to_remove = undefined;
+        this.setState({ ...this.state, modal_removeCollections: { ...this.state.modal_removeCollections, show: false } });
+    }
+
+    modal_removeCollection_render() {
+        return (
+            <>
+                <Modal
+                    show={this.state.modal_removeCollections.show}
+                    onHide={() => this.closeModal_removeCollection()}
+                    centered
+                >
+                    <Modal.Header
+                        className="border-bottom-0 pb-0">
+                        <Modal.Title className="text-capitalize">{Localization.delete_collection_}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>{Localization.msg.ui.your_collection_will_be_removed_continue}</Modal.Body>
+                    <Modal.Footer className="border-top-0 pt-0">
+                        <button className="btn btn-light btn-sm" onClick={() => this.closeModal_removeCollection()}>
+                            {Localization.cancel}
+                        </button>
+                        <BtnLoader
+                            btnClassName="btn btn-danger btn-sm"
+                            loading={this.state.modal_removeCollections.loader}
+                            onClick={() => this.removeCollection(this.collection_title_to_remove!)}
+                        >
+                            {Localization.remove_collection}
+                        </BtnLoader>
+
+                    </Modal.Footer>
+                </Modal>
+            </>
+        )
+    }
+
+    async removeCollection(title: string) {
+        this.setState({
+            ...this.state,
+            modal_removeCollections: { ...this.state.modal_removeCollections, loader: true }
+        });
+
+        let res = await this._collectionService.remove(title).catch(error => {
+            this.handleError({ error: error.response });
+        });
+
+        this.setState({
+            ...this.state,
+            modal_removeCollections: { ...this.state.modal_removeCollections, loader: false }
+        });
+
+        if (res) {
+            let allColls = [...this.props.collection.data];
+            let newColls = allColls.filter(cl => cl.title !== title);
+            this.props.set_collections_data(newColls);
+            this.closeModal_removeCollection();
+        }
+    }
+    //#endregion
+
+    //#region modal create collection
     openModal_createCollections() {
         if (this.state.isCollection_editMode) return;
 
@@ -510,10 +596,10 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         });
 
         if (res) {
-            // todo add ro redux collection
+            this.props.set_collections_data([...this.props.collection.data, { title: res.data.title, books: [] }]);
+
             this.setState({
                 ...this.state,
-                collection_data: [...this.state.collection_data, { title: res.data.title, books: [] }],
                 modal_createCollections: {
                     ...this.state.modal_createCollections,
                     loader: false,
@@ -551,6 +637,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                 </div>
 
                 {this.modal_createCollections_render()}
+                {this.modal_removeCollection_render()}
 
                 <ToastContainer {...this.getNotifyContainerConfig()} />
 
@@ -563,6 +650,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
         set_library_data: (data: ILibrary[]) => dispatch(action_set_library_data(data)),
         set_library_view: (view: LIBRARY_VIEW) => dispatch(action_set_library_view(view)),
+        set_collections_data: (data: ICollection[]) => dispatch(action_set_collections_data(data)),
     }
 }
 
@@ -572,6 +660,7 @@ const state2props = (state: redux_state) => {
         internationalization: state.internationalization,
         token: state.token,
         library: state.library,
+        collection: state.collection,
     }
 }
 

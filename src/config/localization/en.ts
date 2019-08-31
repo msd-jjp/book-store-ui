@@ -21,6 +21,7 @@ export const en = {
             new_vesion_available_update: 'new vesion of app is available, you can update it.',
             item_will_be_removed_continue: 'item will be removed continue?',
             your_purchase_completed: 'your purchase is completed',
+            your_collection_will_be_removed_continue: 'deleting a collection will not remove the books contained within the collection.',
         },
         back: {
             user_already_exists: 'user already exists',
@@ -278,4 +279,6 @@ export const en = {
     new_collection: 'new collection',
     collection_name: 'collection name',
     create_new_collection: 'create new collection',
+    remove_collection: 'remove collection',
+    delete_collection_: 'delete collection?',
 }

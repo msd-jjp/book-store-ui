@@ -21,6 +21,7 @@ export const fa = {
             new_vesion_available_update: 'نسخه جدیدی از برنامه موجود است، می توانید آن را بروز کنید.',
             item_will_be_removed_continue: 'رکورد مورد نظر حذف خواهد شد، تایید می کنید؟',
             your_purchase_completed: 'خرید شما تکمیل شد',
+            your_collection_will_be_removed_continue: 'حذف کلکسیون کتاب های موجود در آن را حذف نخواهد کرد.',
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',
@@ -281,4 +282,6 @@ export const fa = {
     new_collection: 'کلکسیون جدید',
     collection_name: 'نام کلکسیون',
     create_new_collection: 'ایجاد کلکسیون جدید',
+    remove_collection: 'حذف کلکسیون',
+    delete_collection_: 'کلکسیون حذف شود؟',
 }

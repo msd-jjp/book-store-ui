@@ -31,6 +31,7 @@ interface ILocalization extends LocalizedStringsMethods {
             new_vesion_available_update: string;
             item_will_be_removed_continue: string;
             your_purchase_completed: string;
+            your_collection_will_be_removed_continue: string;
         },
         back: {
             [key: string]: any; // todo
@@ -274,6 +275,8 @@ interface ILocalization extends LocalizedStringsMethods {
     new_collection: string;
     collection_name: string;
     create_new_collection: string;
+    remove_collection: string;
+    delete_collection_: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
