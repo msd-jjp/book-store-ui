@@ -11,5 +11,5 @@ export interface ILibrary_schema {
 }
 
 export interface ILibraryAction extends Action<EACTIONS> {
-    payload: ILibrary_schema | ILibrary[] | LIBRARY_VIEW | string | null;
+    payload: /* ILibrary_schema | */ ILibrary[] | LIBRARY_VIEW | string | null;
 }
