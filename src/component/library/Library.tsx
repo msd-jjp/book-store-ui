@@ -8,7 +8,7 @@ import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
 import { LibraryService } from '../../service/service.library';
 import { IToken } from '../../model/model.token';
-import { CollectionService, ICollection } from '../../service/service.collection';
+import { CollectionService } from '../../service/service.collection';
 import { BOOK_TYPES, BOOK_ROLES } from '../../enum/Book';
 import { ToastContainer } from 'react-toastify';
 import { Modal } from 'react-bootstrap';
@@ -19,6 +19,7 @@ import { ILibrary } from '../../model/model.library';
 import { LIBRARY_VIEW } from '../../enum/Library';
 import { ILibrary_schema } from '../../redux/action/library/libraryAction';
 import { action_set_library_data, action_set_library_view } from '../../redux/action/library';
+import { ICollection } from '../../model/model.collection';
 
 export interface IProps {
     logged_in_user?: IUser | null;

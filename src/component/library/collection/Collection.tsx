@@ -8,7 +8,7 @@ import { BaseComponent } from '../../_base/BaseComponent';
 import { Localization } from '../../../config/localization/localization';
 import { LibraryService } from '../../../service/service.library';
 import { IToken } from '../../../model/model.token';
-import { CollectionService, ICollection } from '../../../service/service.collection';
+import { CollectionService } from '../../../service/service.collection';
 import { BOOK_TYPES, BOOK_ROLES } from '../../../enum/Book';
 import { ToastContainer } from 'react-toastify';
 import { Modal } from 'react-bootstrap';
@@ -16,6 +16,7 @@ import { Input } from '../../form/input/Input';
 import { BtnLoader } from '../../form/btn-loader/BtnLoader';
 import { History } from "history";
 import { ILibrary } from '../../../model/model.library';
+import { ICollection } from '../../../model/model.collection';
 
 export interface IProps {
     logged_in_user?: IUser | null;

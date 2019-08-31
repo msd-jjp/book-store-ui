@@ -1,10 +1,11 @@
 import { BaseService, IAPI_Response, IAPI_ResponseList } from './service.base';
 import { IBook } from '../model/model.book';
+import { ICollection } from '../model/model.collection';
 
-export interface ICollection {
-    books: IBook[];
-    title: string;
-}
+// export interface ICollection {
+//     books: IBook[];
+//     title: string;
+// }
 
 export class CollectionService extends BaseService {
 
