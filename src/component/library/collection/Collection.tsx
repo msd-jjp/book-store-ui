@@ -6,9 +6,9 @@ import { IUser } from '../../../model/model.user';
 import { TInternationalization } from '../../../config/setup';
 import { BaseComponent } from '../../_base/BaseComponent';
 import { Localization } from '../../../config/localization/localization';
-import { LibraryService } from '../../../service/service.library';
+// import { LibraryService } from '../../../service/service.library';
 import { IToken } from '../../../model/model.token';
-import { CollectionService } from '../../../service/service.collection';
+// import { CollectionService } from '../../../service/service.collection';
 import { BOOK_TYPES, BOOK_ROLES } from '../../../enum/Book';
 import { ToastContainer } from 'react-toastify';
 import { Modal, Dropdown } from 'react-bootstrap';
@@ -51,15 +51,15 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    private _libraryService = new LibraryService();
-    private _collectionService = new CollectionService();
+    // private _libraryService = new LibraryService();
+    // private _collectionService = new CollectionService();
     private collectionTitle: string = '';
     private isUncollected: boolean = false;
 
     constructor(props: IProps) {
         super(props);
-        this._libraryService.setToken(this.props.token);
-        this._collectionService.setToken(this.props.token);
+        // this._libraryService.setToken(this.props.token);
+        // this._collectionService.setToken(this.props.token);
 
         this.collectionTitle = this.props.match.params.collectionTitle;
         this.isUncollected = (this.props.match.params.isUncollected === 'true');
@@ -70,24 +70,52 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     }
 
     get_col_libraryData(): ILibrary[] {
-        let thisCol: ICollection | undefined =
-            this.props.collection.data.find(col => col.title === this.collectionTitle);
+        if (this.isUncollected) {
+            return this.get_uncollectedCol_libraryData();
 
-        let collection_library_data: ILibrary[] = [];
-        if (thisCol) {
-            thisCol.books.forEach(bk => {
-                for (let i = 0; i < this.props.library.data.length; i++) {
-                    let lib = this.props.library.data[i];
-                    if (lib.book.id === bk.id) {
-                        collection_library_data.push(lib);
-                        break;
+        } else {
+            let thisCol: ICollection | undefined =
+                this.props.collection.data.find(col => col.title === this.collectionTitle);
+
+            let collection_library_data: ILibrary[] = [];
+            if (thisCol) {
+                thisCol.books.forEach(bk => {
+                    for (let i = 0; i < this.props.library.data.length; i++) {
+                        let lib = this.props.library.data[i];
+                        if (lib.book.id === bk.id) {
+                            collection_library_data.push(lib);
+                            break;
+                        }
                     }
-                }
-            });
+                });
 
-            return collection_library_data;
+                return collection_library_data;
+            }
+            return [];
         }
-        return [];
+    }
+
+    get_uncollectedCol_libraryData(): ILibrary[] {
+        // let uncollected_book_list_length = 0;
+        let collected_book_id_list: string[] = [];
+        let collected_book_id_list_unique: string[] = [];
+
+        this.props.collection.data.forEach((coll: ICollection) => {
+            let b_ids = coll.books.map(b => b.id);
+            collected_book_id_list = [...collected_book_id_list, ...b_ids]
+        });
+        collected_book_id_list_unique = Array.from(new Set(collected_book_id_list));
+
+        // uncollected_book_list_length = this.props.library.data.length - collected_book_id_list_unique.length;
+        let uncollected_books_lib: ILibrary[] = [];
+        for (let i = 0; i < this.props.library.data.length; i++) {
+            let lib = this.props.library.data[i];
+            if (!collected_book_id_list_unique.includes(lib.book.id)) {
+                uncollected_books_lib.push(lib);
+                break;
+            }
+        }
+        return uncollected_books_lib;
     }
 
     set_col_libraryData() {
