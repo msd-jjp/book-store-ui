@@ -287,4 +287,8 @@ export const en = {
     download_collection: 'download collection',
     download_collection_: 'download collection?',
     download: 'download',
+    add: 'add',
+    selected: 'selected',
+    select_all: 'select all',
+    deselect_all: 'deselect all',
 }

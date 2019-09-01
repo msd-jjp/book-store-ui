@@ -287,4 +287,8 @@ export const ar = {
     download_collection: 'دانلود کلکسیون',
     download_collection_: 'کلکسیون دانلود شود؟',
     download: 'دانلود',
+    add: 'افزودن',
+    selected: 'انتخاب شده',
+    select_all: 'انتخاب همه',
+    deselect_all: 'لغو انتخاب همه',
 }

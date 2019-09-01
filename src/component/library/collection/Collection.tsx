@@ -20,6 +20,7 @@ import { action_set_collections_data, action_set_collections_view } from '../../
 import { ILibrary_schema } from '../../../redux/action/library/libraryAction';
 import { ICollection_schema } from '../../../redux/action/collection/collectionAction';
 import { COLLECTION_VIEW } from '../../../enum/Library';
+import { NavLink } from 'react-router-dom';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -130,7 +131,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
             <div className="collection-menu pt-2__">
                 <div className="row menu-wrapper__">
                     <div className="col-6">
-                        <div className="filter-collection pl-2__">
+                        <div className="icon-wrapper">
                             <i className="fa fa-arrow-left-app text-dark p-2 cursor-pointer"
                                 onClick={() => this.goBack()}
                             ></i>
@@ -149,7 +150,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                     </div>
 
                     <div className="col-6 text-right ">
-                        <div className="view-collection pr-2__">
+                        <div className="icon-wrapper">
 
                             <i className="icon fa fa-sliders text-dark p-2"
                                 onClick={() => this.change_collection_view_test()}
@@ -161,11 +162,13 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                                         <Dropdown.Toggle
                                             as="i"
                                             id="dropdown-collection-menu"
-                                            className="icon fa fa-ellipsis-v text-dark p-2 ">
+                                            className="icon fa fa-ellipsis-v text-dark p-2 no-default-icon">
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu className="dropdown-menu-right border-0 shadow2">
-                                            <Dropdown.Item href="#/action-1"
+                                            <Dropdown.Item
+                                                as={NavLink}
+                                                to={`/collection-update/${this.collectionTitle}`}
                                                 className="text-capitalize"
                                             >{Localization.add_to_collection}</Dropdown.Item>
                                             <Dropdown.Item

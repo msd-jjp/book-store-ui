@@ -12,16 +12,18 @@
     padding-left: 1rem;
     @include box-shadow(0px 2px 5px 0px rgb(195, 194, 194));
 
-    .filter-collection {
-      line-height: 3rem;
-    }
-    .view-collection {
+    // .filter-collection {
+    //   line-height: 3rem;
+    // }
+    .icon-wrapper {
       line-height: 3rem;
 
       .collection-menu-dd {
         .icon {
-          &:after {
-            display: none;
+          &.no-default-icon {
+            &:after {
+              display: none;
+            }
           }
         }
         .dropdown-menu {
@@ -121,6 +123,34 @@
           color: white;
           text-align: center;
           padding-top: 0.2rem;
+        }
+      }
+
+      //used in collectionUpdate cmp
+      .selected-item-wrapper {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        background-color: #77777799;
+        body:not(.rtl) & {
+          right: 0;
+          left: 15px;
+        }
+        body.rtl & {
+          right: 15px;
+          left: 0;
+        }
+
+        .selected-icon-wrapper {
+          display: flex;
+          justify-content: center;
+          height: 100%;
+          flex-flow: column;
+          text-align: center;
+          .icon {
+            font-size: 4rem;
+            color: #ffffff;
+          }
         }
       }
     }

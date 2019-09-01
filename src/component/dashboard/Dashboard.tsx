@@ -276,7 +276,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 <Dropdown.Item as={NavLink} to={`/book-detail/${current_book.id}`}>
                   {/* {Localization.view_in_store} */}
                   {/* <NavLink to={`/book-detail/${current_book.id}`} > */}
-                  {Localization.view_detail}
+                  {/* Localization.view_detail */}
+                  {Localization.view_in_store}
                   {/* </NavLink> */}
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => this.openModal_addToCollections(current_book!.id)}>{Localization.add_to_collection}</Dropdown.Item>
