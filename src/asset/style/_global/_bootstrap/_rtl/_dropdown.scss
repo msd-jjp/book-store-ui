@@ -1,0 +1,10 @@
+.dropdown-menu {
+  &.dropdown-menu-right {
+    // body:not(.rtl) & {
+    // }
+    body.rtl & {
+      right: auto !important;
+      left: 0 !important;
+    }
+  }
+}
