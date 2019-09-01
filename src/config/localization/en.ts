@@ -284,6 +284,7 @@ export const en = {
     delete_collection_: 'delete collection?',
     rename_collection: 'rename collection',
     rename: 'rename',
+    download_collection: 'download collection',
     download_collection_: 'download collection?',
     download: 'download',
 }

@@ -146,6 +146,8 @@
           font-weight: 500;
           text-overflow: ellipsis;
           text-transform: capitalize;
+          max-width: calc(100% - 1.5rem);
+          overflow-wrap: break-word;
         }
         .book-writer {
           word-break: break-all;

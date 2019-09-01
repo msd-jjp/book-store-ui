@@ -284,6 +284,7 @@ export const ar = {
     delete_collection_: 'کلکسیون حذف شود؟',
     rename_collection: 'تغییر نام کلکسیون',
     rename: 'تغییر نام',
+    download_collection: 'دانلود کلکسیون',
     download_collection_: 'کلکسیون دانلود شود؟',
     download: 'دانلود',
 }

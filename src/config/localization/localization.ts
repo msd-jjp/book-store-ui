@@ -280,6 +280,7 @@ interface ILocalization extends LocalizedStringsMethods {
     delete_collection_: string;
     rename_collection: string;
     rename: string;
+    download_collection: string;
     download_collection_: string;
     download: string;
 }

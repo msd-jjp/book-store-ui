@@ -40,7 +40,7 @@ export const fa = {
             delete_failed: 'خطا در حذف اطلاعات از سرویس دهنده رخ داد.',
             get_failed: 'خطا در دریافت اطلاعات از سرویس دهنده رخ داد.',
             auth_decoding_failed: 'Authentication decoding failed',
-            commit_failed: 'commiting to database failed',
+            commit_failed: 'سرویس دهنده با خطا مواجه شد.',
             no_auth: 'شما وارد نشده اید',
             invalid_username: 'نام کاربری یا رمز عبور اشتباه است.',
             invalid_enum: 'enum is not correct  type',
@@ -287,6 +287,7 @@ export const fa = {
     delete_collection_: 'کلکسیون حذف شود؟',
     rename_collection: 'تغییر نام کلکسیون',
     rename: 'تغییر نام',
+    download_collection: 'دانلود کلکسیون',
     download_collection_: 'کلکسیون دانلود شود؟',
     download: 'دانلود',
 }
