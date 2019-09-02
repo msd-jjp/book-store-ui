@@ -214,8 +214,9 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
         });
 
         if (res) {
+            const newClt: ICollection = { title: res.data.title, books: [] };
             this.props.set_collections_data &&
-                this.props.set_collections_data([{ title: res.data.title, books: [] }, ...this.props.collection.data]);
+                this.props.set_collections_data([newClt, ...this.props.collection.data]);
 
             this.setState({
                 ...this.state,
@@ -223,10 +224,11 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
                 newCollectionTitle: {
                     value: undefined,
                     isValid: false
-                }
+                },
+                // push new added collection to selected_collection_list
+                selected_collection_list: [...this.state.selected_collection_list, newClt]
             });
 
-            // todo selcect new added collection
         }
     }
 
