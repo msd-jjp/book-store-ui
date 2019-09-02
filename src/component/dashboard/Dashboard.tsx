@@ -20,9 +20,7 @@ import { IToken } from "../../model/model.token";
 import { ToastContainer } from "react-toastify";
 import { BOOK_ROLES } from "../../enum/Book";
 import { NavLink } from "react-router-dom";
-import { Modal } from "react-bootstrap";
-import { BtnLoader } from "../form/btn-loader/BtnLoader";
-import { Input } from "../form/input/Input";
+import { AddToCollection } from "../library/collection/add-to-collection/AddToCollection";
 
 interface IProps {
   logged_in_user?: IUser | null;
@@ -40,12 +38,12 @@ interface IState {
   byWriterBookError: string | undefined;
   modal_addToCollections: {
     show: boolean;
-    createCollection_loader: boolean;
-    addToCollections_loader: boolean;
-    newCollectionTitle: {
-      value: string | undefined;
-      isValid: boolean;
-    };
+    // createCollection_loader: boolean;
+    // addToCollections_loader: boolean;
+    // newCollectionTitle: {
+    //   value: string | undefined;
+    //   isValid: boolean;
+    // };
   }
 }
 
@@ -59,12 +57,12 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     byWriterBookError: undefined,
     modal_addToCollections: {
       show: false,
-      createCollection_loader: false,
-      addToCollections_loader: false,
-      newCollectionTitle: {
-        value: undefined,
-        isValid: false,
-      }
+      // createCollection_loader: false,
+      // addToCollections_loader: false,
+      // newCollectionTitle: {
+      //   value: undefined,
+      //   isValid: false,
+      // }
     },
   };
   private _bookService = new BookService();
@@ -302,100 +300,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   openModal_addToCollections(book_id: string) {
-    // this.comment_id_to_remove = comment_id;
     this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: true } });
   }
 
   closeModal_addToCollections() {
-    // this.comment_id_to_remove = undefined;
     this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: false } });
-  }
-
-  modal_addToCollections_render() {
-    return (
-      <>
-        <Modal
-          className="dashboard-modal-addToCollections"
-          show={this.state.modal_addToCollections.show}
-          onHide={() => this.closeModal_addToCollections()}
-          centered
-        >
-          <Modal.Header closeButton>
-            <Modal.Title className="text-capitalize">{Localization.add_to_collection}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="row">
-              <div className="col-12">
-                <div className="create-collection-wrapper">
-                  <div className="input-wrapper">
-                    <Input
-                      placeholder={Localization.new_collection}
-                      defaultValue={this.state.modal_addToCollections.newCollectionTitle.value}
-                      onChange={(val, isValid) => { this.handleNewCollectionInputChange(val, isValid) }}
-                      required
-                      hideError
-                      className="input-bordered-bottom"
-                    />
-                  </div>
-
-                  <BtnLoader
-                    btnClassName="btn btn-link text-success btn-sm text-uppercase"
-                    loading={this.state.modal_addToCollections.createCollection_loader}
-                    onClick={() => this.create_Collection()}
-                    disabled={!this.state.modal_addToCollections.newCollectionTitle.isValid}
-                  >
-                    {Localization.create}
-                  </BtnLoader>
-                </div>
-              </div>
-
-              <div className="col-12">
-                <ul className="collcetion-list">
-                  {
-                    [1, 2, 3, 4, 5, 6].map((clt, clt_index) => (
-                      <li key={clt_index}>
-                        <div>collection {clt}</div>
-                        <div><i className="fa fa-check-square text-primary"></i></div>
-                      </li>
-                    ))
-                  }
-                </ul>
-              </div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <button className="btn btn-light btn-sm text-uppercase" onClick={() => this.closeModal_addToCollections()}>
-              {Localization.cancel}
-            </button>
-            <BtnLoader
-              btnClassName="btn btn-success btn-sm text-uppercase"
-              loading={this.state.modal_addToCollections.addToCollections_loader}
-              onClick={() => this.add_toCollections()}
-            >
-              {Localization.ok}
-            </BtnLoader>
-          </Modal.Footer>
-        </Modal>
-      </>
-    )
-  }
-
-  handleNewCollectionInputChange(value: any, isValid: boolean) {
-    this.setState({
-      ...this.state,
-      modal_addToCollections: {
-        ...this.state.modal_addToCollections,
-        newCollectionTitle: { value, isValid }
-      }
-    });
-  }
-
-  create_Collection() {
-
-  }
-
-  add_toCollections() {
-
   }
 
   carousel_render(bookList: IBook[]) {
@@ -653,6 +562,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   render() {
+    const current_book =
+      this.props.logged_in_user &&
+      this.props.logged_in_user.person &&
+      this.props.logged_in_user.person.current_book;
+
     return (
       <>
         {this.currentBook_render()}
@@ -665,7 +579,15 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
           {this.byWriterBook_render()}
         </div>
 
-        {this.modal_addToCollections_render()}
+        {
+          current_book ?
+            <AddToCollection
+              show={this.state.modal_addToCollections.show}
+              book={current_book}
+              onHide={() => this.closeModal_addToCollections()}
+            />
+            : ''
+        }
 
         <ToastContainer {...this.getNotifyContainerConfig()} />
       </>
