@@ -21,6 +21,7 @@ import { ILibrary_schema } from '../../../redux/action/library/libraryAction';
 import { ICollection_schema } from '../../../redux/action/collection/collectionAction';
 import { COLLECTION_VIEW } from '../../../enum/Library';
 import { NavLink } from 'react-router-dom';
+import { CollectionService } from '../../../service/service.collection';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -37,30 +38,36 @@ export interface IProps {
 
 interface IState {
     collection_library_data: ILibrary[];
+    collection_library_data_selected: ILibrary[];
     modal_downloadCollections: {
         show: boolean;
         loader: boolean;
     };
+    isCollection_editMode: boolean;
+    remove_loader: boolean;
 }
 
 class CollectionComponent extends BaseComponent<IProps, IState> {
     state = {
         collection_library_data: [],
+        collection_library_data_selected: [],
         modal_downloadCollections: {
             show: false,
             loader: false
-        }
+        },
+        isCollection_editMode: false,
+        remove_loader: false,
     }
 
     // private _libraryService = new LibraryService();
-    // private _collectionService = new CollectionService();
+    private _collectionService = new CollectionService();
     private collectionTitle: string = '';
     private isUncollected: boolean = false;
 
     constructor(props: IProps) {
         super(props);
         // this._libraryService.setToken(this.props.token);
-        // this._collectionService.setToken(this.props.token);
+        this._collectionService.setToken(this.props.token);
 
         this.collectionTitle = this.props.match.params.collectionTitle;
         this.isUncollected = (this.props.match.params.isUncollected === 'true');
@@ -152,6 +159,103 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                     <div className="col-6 text-right ">
                         <div className="icon-wrapper">
 
+                            {
+                                (
+                                    this.state.isCollection_editMode
+                                    // && this.state.collection_library_data_selected.length
+                                ) ?
+                                    <Dropdown className={
+                                        "d-inline-block-- collection-menu-dd mr-3 "
+                                        + (!this.state.collection_library_data.length ?
+                                            'd-none' : 'd-inline-block')
+                                    }>
+                                        <Dropdown.Toggle
+                                            as="span"
+                                            id="dropdown-collection-menu"
+                                            className="icon fa-- fa-ellipsis-v-- text-dark p-2-- "
+                                        >
+                                            {this.state.collection_library_data_selected.length}
+                                            &nbsp;
+                                        {Localization.selected}
+                                        </Dropdown.Toggle>
+
+                                        <Dropdown.Menu className="dropdown-menu-right border-0 shadow2">
+                                            <Dropdown.Item
+                                                onClick={() => this.selectAll_libraryData()}
+                                                className={
+                                                    "text-uppercase "
+                                                    + (this.state.collection_library_data_selected.length ===
+                                                        this.state.collection_library_data.length
+                                                        ? 'd-none' : '')
+                                                }
+                                            >{Localization.select_all}
+                                            </Dropdown.Item>
+                                            <Dropdown.Item
+                                                onClick={() => this.deselectAll_libraryData()}
+                                                className={
+                                                    "text-uppercase "
+                                                    + (this.state.collection_library_data_selected.length === 0 ? 'd-none' : '')
+                                                }
+                                            >{Localization.deselect_all}
+                                            </Dropdown.Item>
+
+                                            <Dropdown.Divider
+                                                className={
+                                                    (!this.state.collection_library_data_selected.length ? 'd-none' : '')
+                                                }
+                                            />
+
+                                            <Dropdown.Item
+                                                onClick={() => { }}
+                                                className={
+                                                    "text-capitalize "
+                                                    + (!this.state.collection_library_data_selected.length ? 'd-none' : '')
+                                                }
+                                            >{Localization.mark_as_read}
+                                            </Dropdown.Item>
+                                            <Dropdown.Item
+                                                onClick={() => this.viewInStore()}
+                                                className={
+                                                    "text-capitalize "
+                                                    + (this.state.collection_library_data_selected.length === 1 ? '' : 'd-none')
+                                                }
+                                            >{Localization.view_in_store}
+                                            </Dropdown.Item>
+                                            <Dropdown.Item
+                                                onClick={() => this.removeBooksFromCollection()}
+                                                className={
+                                                    "text-capitalize "
+                                                    + (this.state.remove_loader ? 'disabled ' : '')
+                                                    + (this.isUncollected ? 'd-none ' : '')
+                                                    + (!this.state.collection_library_data_selected.length ? 'd-none' : '')
+                                                }
+                                            >{
+                                                    !this.state.remove_loader ?
+                                                        Localization.remove
+                                                        :
+                                                        <i className="icon-- text-primary-- fa fa-spinner fa-spin p-2--"></i>
+                                                }
+                                            </Dropdown.Item>
+                                            <Dropdown.Item
+                                                onClick={() => { }}
+                                                className={
+                                                    "text-capitalize "
+                                                    + (!this.state.collection_library_data_selected.length ? 'd-none' : '')
+                                                }
+                                            >{Localization.remove_from_device}
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                    : ''
+                            }
+
+                            <i className={
+                                "icon fa fa-gear text-dark p-2 "
+                                + (this.state.isCollection_editMode ? 'shadow2' : '')
+                            }
+                                onClick={() => this.change_collections_mode()}
+                            ></i>
+
                             <i className="icon fa fa-sliders text-dark p-2"
                                 onClick={() => this.change_collection_view_test()}
                             ></i>
@@ -186,6 +290,24 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                 </div>
             </div>
         )
+    }
+
+    viewInStore() {
+        const lib: ILibrary = this.state.collection_library_data_selected[0];
+        if (lib) {
+            this.gotoBookDetail(lib.book.id);
+        }
+    }
+
+    gotoBookDetail(bookId: string) {
+        this.props.history.push(`/book-detail/${bookId}`);
+    }
+
+    change_collections_mode() {
+        this.setState({
+            ...this.state,
+            isCollection_editMode: !this.state.isCollection_editMode
+        });
     }
 
     calc_read_percent(item: ILibrary): string {
@@ -226,7 +348,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
 
                                     return (
                                         <div className="col-4 p-align-inverse-0 mb-3" key={index}>
-                                            <div className="item-wrapper">
+                                            <div className="item-wrapper" onClick={() => this.onItemSelect(item)}>
                                                 <img src={book_img}
                                                     alt="book"
                                                     className="collection-grid-book-show"
@@ -240,6 +362,15 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                                                 </div>
                                                 <div className="book-download">
                                                     <i className="fa fa-check" />
+                                                </div>
+
+                                                <div className={
+                                                    "selected-item-wrapper "
+                                                    + (this.isItemSelected(item) ? '' : 'd-none')
+                                                }>
+                                                    <div className="selected-icon-wrapper">
+                                                        <i className="icon fa fa-check"></i>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -279,7 +410,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
 
                                 return (
                                     <div className="view-list-item py-2__ pb-2 mb-2" key={index}>
-                                        <div className="item-wrapper row">
+                                        <div className="item-wrapper row" onClick={() => this.onItemSelect(item)}>
                                             <div className="img-wrapper col-4">
                                                 <div className="img-container__ mt-2__">
                                                     <img src={book_img} alt="book"
@@ -297,6 +428,14 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                                             {/* <div className="col-2 text-right is-downloaded pt-1">
                                         
                                     </div> */}
+                                            <div className={
+                                                "selected-item-wrapper "
+                                                + (this.isItemSelected(item) ? '' : 'd-none')
+                                            }>
+                                                <div className="selected-icon-wrapper">
+                                                    <i className="icon fa fa-check"></i>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 )
@@ -309,6 +448,43 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                 </div>
             </>
         )
+    }
+
+    onItemSelect(item: ILibrary) {
+        if (this.state.isCollection_editMode) {
+            this.toggleSelect_libraryData(item);
+        } else {
+
+        }
+    }
+
+    isItemSelected(item: ILibrary): boolean {
+        let selected_list: ILibrary[] = [...this.state.collection_library_data_selected];
+        let index = selected_list.indexOf(item);
+        if (index < 0) {
+            return false;
+        }
+        return true;
+    }
+
+    toggleSelect_libraryData(item: ILibrary) {
+        let selected_list: ILibrary[] = [...this.state.collection_library_data_selected];
+        let index = selected_list.indexOf(item);
+        if (index < 0) {
+            selected_list.push(item);
+        } else {
+            selected_list.splice(index, 1);
+        }
+
+        this.setState({ ...this.state, collection_library_data_selected: selected_list });
+    }
+
+    selectAll_libraryData() {
+        this.setState({ ...this.state, collection_library_data_selected: [...this.state.collection_library_data] });
+    }
+
+    deselectAll_libraryData() {
+        this.setState({ ...this.state, collection_library_data_selected: [] });
     }
 
     change_collection_view_test() {
@@ -370,6 +546,35 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         this.closeModal_downloadCollection();
     }
     //#endregion
+
+    async removeBooksFromCollection() {
+        if (this.isUncollected || !this.state.collection_library_data_selected.length) return;
+        this.setState({ ...this.state, remove_loader: true });
+
+        let book_ids_toRemove = this.state.collection_library_data_selected.map((lib: ILibrary) => lib.book.id);
+
+        let res = await this._collectionService.remove_books(
+            this.collectionTitle,
+            book_ids_toRemove
+        ).catch(error => {
+            this.handleError({ error: error.response });
+        });
+
+        this.setState({ ...this.state, remove_loader: false });
+
+        if (res) {
+            let allColl = [...this.props.collection.data];
+            let thisColl: ICollection = allColl.find(col => col.title === this.collectionTitle)!;
+
+            let thisColl_currentBooks = [...thisColl.books];
+            thisColl_currentBooks = thisColl_currentBooks.filter(bk => !book_ids_toRemove.includes(bk.id));
+            thisColl.books = [...thisColl_currentBooks];
+            this.props.set_collections_data(allColl);
+
+            this.set_col_libraryData();
+            // this.goBack();
+        }
+    }
 
     render() {
         return (

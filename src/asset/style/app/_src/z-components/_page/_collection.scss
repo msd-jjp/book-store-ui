@@ -72,6 +72,7 @@
       text-align: center;
       background-color: #f3f3f3;
       cursor: pointer;
+      position: relative;
 
       .collection-grid-book-show {
         max-width: 100%;
@@ -126,20 +127,22 @@
         }
       }
 
-      //used in collectionUpdate cmp
+      //used in collectionUpdate cmp & collection edit mode
       .selected-item-wrapper {
         position: absolute;
         top: 0;
         bottom: 0;
         background-color: #77777799;
-        body:not(.rtl) & {
-          right: 0;
-          left: 15px;
-        }
-        body.rtl & {
-          right: 15px;
-          left: 0;
-        }
+        // body:not(.rtl) & {
+        //   right: 0;
+        //   left: 15px;
+        // }
+        // body.rtl & {
+        //   right: 15px;
+        //   left: 0;
+        // }
+        right: 0;
+        left: 0;
 
         .selected-icon-wrapper {
           display: flex;
@@ -163,6 +166,37 @@
       // .list-row {
       .item-wrapper {
         cursor: pointer;
+        position: relative;
+
+        //used in collectionUpdate cmp & collection edit mode
+        .selected-item-wrapper {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          background-color: #77777799;
+          // body:not(.rtl) & {
+          //   right: 0;
+          //   left: 15px;
+          // }
+          // body.rtl & {
+          //   right: 15px;
+          //   left: 0;
+          // }
+          right: 15px;
+          left: 15px;
+
+          .selected-icon-wrapper {
+            display: flex;
+            justify-content: center;
+            height: 100%;
+            flex-flow: column;
+            text-align: center;
+            .icon {
+              font-size: 4rem;
+              color: #ffffff;
+            }
+          }
+        }
       }
       .img-wrapper {
         // .img-container {
