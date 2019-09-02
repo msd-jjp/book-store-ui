@@ -95,9 +95,16 @@ class CollectionUpdateComponent extends BaseComponent<IProps, IState> {
                             <div className="title h6 text-capitalize d-inline-block mb-0 font-weight-normal"
                                 title={this.collectionTitle}>{this.collectionTitle}</div>
 
-                            <span className="text-muted mx-2">|</span>
+                            <span className={"text-muted mx-2 "
+                                + (!this.state.collection_library_data.length ?
+                                    'd-none' : '')
+                            }>|</span>
 
-                            <Dropdown className="d-inline-block collection-menu-dd">
+                            <Dropdown className={
+                                "d-inline-block-- collection-menu-dd "
+                                + (!this.state.collection_library_data.length ?
+                                    'd-none' : 'd-inline-block')
+                            }>
                                 <Dropdown.Toggle
                                     as="span"
                                     id="dropdown-collection-menu"
@@ -259,7 +266,7 @@ class CollectionUpdateComponent extends BaseComponent<IProps, IState> {
     selectAll_libraryData() {
         // const allLib: ILibrary[] = this.state.collection_library_data;
         // const selected_list: ILibrary[] = allLib.map(lb => lb.id);
-        this.setState({ ...this.state, collection_library_data_selected: [... this.state.collection_library_data] });
+        this.setState({ ...this.state, collection_library_data_selected: [...this.state.collection_library_data] });
     }
 
     deselectAll_libraryData() {

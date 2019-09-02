@@ -364,8 +364,8 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     }
 
     async downloadCollection() {
-        let collection_title = this.collectionTitle;
-        let isUncollected = this.isUncollected;
+        // let collection_title = this.collectionTitle;
+        // let isUncollected = this.isUncollected;
 
         this.closeModal_downloadCollection();
     }
