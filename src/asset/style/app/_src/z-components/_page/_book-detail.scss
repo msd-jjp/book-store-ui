@@ -200,6 +200,11 @@ $book-detail-border: 1px solid rgb(210, 210, 210);
 .book-detail-bordered-box {
   border: $book-detail-border;
 }
+
+[class~="book-detail-bordered-box"]:not(:last-child) {
+  border-bottom: 0;
+}
+
 .book-detail-bordered-box-icon {
   @include calc(top, "50% - 16px");
   position: absolute;
