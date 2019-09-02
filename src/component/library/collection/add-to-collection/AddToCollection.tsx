@@ -24,7 +24,7 @@ export interface IProps {
     set_collections_data?: (data: ICollection[]) => any;
 
     // book_id: string;
-    book: IBook;
+    book?: IBook;
     show: boolean;
     onHide: () => any
 }
@@ -123,7 +123,7 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
                                                     <div
                                                         className={
                                                             "selected-icon "
-                                                            + (isClt_selected ? '' : 'd-none')
+                                                            + (isClt_selected || isBk_exist_Clt ? '' : 'd-none')
                                                         }
                                                     >
                                                         <i className="fa fa-check-square text-primary"></i>
@@ -144,7 +144,7 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
                             btnClassName="btn btn-success btn-sm text-uppercase"
                             loading={this.state.addToCollections_loader}
                             onClick={() => this.add_toCollections()}
-                            disabled={!this.props.book.id || !this.state.selected_collection_list.length}
+                            disabled={!this.props.book || !this.props.book.id || !this.state.selected_collection_list.length}
                         >
                             {Localization.ok}
                         </BtnLoader>
@@ -162,6 +162,8 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
     }
 
     isBook_existInCollection(collection: ICollection): boolean {
+        if (!this.props.book) return false;
+
         const book_ids = collection.books.map(bk => bk.id);
         if (book_ids.includes(this.props.book.id)) {
             return true;
@@ -229,7 +231,8 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
     }
 
     async add_toCollections() {
-        if (!this.props.book.id || !this.state.selected_collection_list.length) return;
+        if (!this.props.book || !this.props.book.id || !this.state.selected_collection_list.length) return;
+        const book_toAdd = this.props.book;
 
         this.setState({
             ...this.state,
@@ -240,7 +243,7 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
 
         let res = await this._collectionService.add_toCollections(
             selected_collection_list_title,
-            this.props.book.id
+            book_toAdd.id
         ).catch(error => {
             this.handleError({ error: error.response });
         });
@@ -253,7 +256,7 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
         if (res) {
             let allColl = [...this.props.collection.data];
             this.state.selected_collection_list.forEach((clt: ICollection) => {
-                clt.books.unshift(this.props.book);
+                clt.books.unshift(book_toAdd);
             })
 
             this.props.set_collections_data &&
