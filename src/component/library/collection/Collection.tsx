@@ -22,6 +22,8 @@ import { ICollection_schema } from '../../../redux/action/collection/collectionA
 import { COLLECTION_VIEW } from '../../../enum/Library';
 import { NavLink } from 'react-router-dom';
 import { CollectionService } from '../../../service/service.collection';
+import { AddToCollection } from './add-to-collection/AddToCollection';
+import { IBook } from '../../../model/model.book';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -45,6 +47,9 @@ interface IState {
     };
     isCollection_editMode: boolean;
     remove_loader: boolean;
+    modal_addToCollections: {
+        show: boolean;
+    };
 }
 
 class CollectionComponent extends BaseComponent<IProps, IState> {
@@ -57,6 +62,9 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         },
         isCollection_editMode: false,
         remove_loader: false,
+        modal_addToCollections: {
+            show: false
+        },
     }
 
     // private _libraryService = new LibraryService();
@@ -205,6 +213,15 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                                                 }
                                             />
 
+                                            <Dropdown.Item
+                                                onClick={() => this.openModal_addToCollections()}
+                                                className={
+                                                    "text-capitalize "
+                                                    + (!this.state.collection_library_data_selected.length ? 'd-none ' : '')
+                                                    + (this.state.collection_library_data_selected.length === 1 ? '' : 'd-none')
+                                                }
+                                            >{Localization.add_to_collection}
+                                            </Dropdown.Item>
                                             <Dropdown.Item
                                                 onClick={() => { }}
                                                 className={
@@ -576,6 +593,19 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         }
     }
 
+    openModal_addToCollections(/* book_id: string */) {
+        this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: true } });
+    }
+
+    closeModal_addToCollections() {
+        this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: false } });
+    }
+
+    getBookModal_addToCollections(): IBook | undefined {
+        const lib_0: ILibrary = this.state.collection_library_data_selected[0];
+        if (lib_0) { return lib_0.book; }
+    }
+
     render() {
         return (
             <>
@@ -594,6 +624,12 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                 </div>
 
                 {this.modal_downloadCollection_render()}
+
+                <AddToCollection
+                    show={this.state.modal_addToCollections.show}
+                    book={this.getBookModal_addToCollections()}
+                    onHide={() => this.closeModal_addToCollections()}
+                />
 
                 <ToastContainer {...this.getNotifyContainerConfig()} />
             </>

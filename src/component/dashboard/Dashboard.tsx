@@ -278,7 +278,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                   {Localization.view_in_store}
                   {/* </NavLink> */}
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => this.openModal_addToCollections(current_book!.id)}>{Localization.add_to_collection}</Dropdown.Item>
+                <Dropdown.Item onClick={() => this.openModal_addToCollections(/* current_book!.id */)}>{Localization.add_to_collection}</Dropdown.Item>
                 <Dropdown.Item>{Localization.mark_as_read}</Dropdown.Item>
                 {/* <Dropdown.Item>{Localization.share_progress}</Dropdown.Item> */}
                 {/* <Dropdown.Item>
@@ -299,7 +299,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     );
   }
 
-  openModal_addToCollections(book_id: string) {
+  openModal_addToCollections(/* book_id: string */) {
     this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: true } });
   }
 
