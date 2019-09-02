@@ -691,7 +691,8 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             });
             this.closeModal_createCollections();
 
-            // todo goto new collection page
+            this.props.history.push(`/collection/${res.data.title}`);
+            this.props.history.push(`/collection-update/${res.data.title}`);
         }
     }
 
