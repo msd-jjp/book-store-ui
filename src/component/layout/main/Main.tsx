@@ -8,6 +8,13 @@ import { Dispatch } from 'redux';
 import { redux_state } from '../../../redux/app_state';
 import { IUser } from '../../../model/model.user';
 import { History } from "history";
+import { LibraryService } from '../../../service/service.library';
+import { CollectionService } from '../../../service/service.collection';
+import { IToken } from '../../../model/model.token';
+import { ILibrary } from '../../../model/model.library';
+import { ICollection } from '../../../model/model.collection';
+import { action_set_library_data } from '../../../redux/action/library';
+import { action_set_collections_data } from '../../../redux/action/collection';
 // import { IToken } from '../../../model/model.token';
 // import { action_set_token } from '../../../redux/action/token';
 // import { action_user_logged_in } from '../../../redux/action/user';
@@ -33,36 +40,74 @@ interface IProps {
     history: History;
     // onUserLoggedIn?: (user: IUser) => void;
     // onSetToken?: (token: IToken) => void;
-    // token: IToken;
+    token: IToken;
     match: any;
     // set_network_status?: (network_status: NETWORK_STATUS) => any;
+    set_library_data?: (data: ILibrary[]) => any;
+    set_collections_data?: (data: ICollection[]) => any;
 }
 
 class LayoutMainComponent extends React.Component<IProps> {
+
+    private _libraryService = new LibraryService();
+    private _collectionService = new CollectionService();
+
+    constructor(props: IProps) {
+        super(props);
+        this._libraryService.setToken(this.props.token);
+        this._collectionService.setToken(this.props.token);
+    }
 
     componentWillMount() {
         // debugger;
         if (!this.props.logged_in_user) {
             this.props.history.push("/login");
-            // this.setFromLocalStorage();
-            /* if (!this.props.logged_in_user) {
-                this.props.history.push("/login");
-            } */
+
+        } else {
+            this.start_fetchingData();
         }
     }
 
-    /* setFromLocalStorage() {
-        // todo: _DELETE_ME
-        let user = localStorage.getItem('user');
-        let token = localStorage.getItem('token');
+    componentWillUnmount() {
+        this.stop_fetchingData();
+    }
 
-        if (user) {
-            this.props.onUserLoggedIn && this.props.onUserLoggedIn(JSON.parse(user));
-        }
-        if (token) {
-            this.props.onSetToken && this.props.onSetToken(JSON.parse(token));
-        }
-    } */
+    private fetch_timeout_timer: number = 30000; // in ms --> 30second
+    start_fetchingData() {
+        this.fetchLibrary();
+        this.fetchCollection();
+    }
+
+    stop_fetchingData() {
+        clearTimeout(this.fetchLibrary_timeout);
+        clearTimeout(this.fetchCollection_timeout);
+    }
+
+    private fetchLibrary_timeout: any;
+    async fetchLibrary() {
+        await this._libraryService.getAll().then(res => {
+            this.props.set_library_data &&
+                this.props.set_library_data(res.data.result);
+        }).catch(error => { });
+
+        clearTimeout(this.fetchLibrary_timeout);
+        this.fetchLibrary_timeout = setTimeout(() => {
+            this.fetchLibrary();
+        }, this.fetch_timeout_timer);
+    }
+
+    private fetchCollection_timeout: any;
+    async fetchCollection() {
+        await this._collectionService.getAll().then(res => {
+            this.props.set_collections_data &&
+                this.props.set_collections_data(res.data.result);
+        }).catch(error => { });
+
+        clearTimeout(this.fetchCollection_timeout);
+        this.fetchCollection_timeout = setTimeout(() => {
+            this.fetchCollection();
+        }, this.fetch_timeout_timer);
+    }
 
     shouldComponentUpdate() {
         // debugger;
@@ -103,6 +148,8 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
         // onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
         // onSetToken: (token: IToken) => dispatch(action_set_token(token)),
         // set_network_status: (network_status: NETWORK_STATUS) => dispatch(action_set_network_status(network_status)),
+        set_library_data: (data: ILibrary[]) => dispatch(action_set_library_data(data)),
+        set_collections_data: (data: ICollection[]) => dispatch(action_set_collections_data(data)),
     }
 }
 
@@ -110,7 +157,7 @@ const state2props = (state: redux_state) => {
     // debugger;
     return {
         logged_in_user: state.logged_in_user,
-        // token: state.token
+        token: state.token
     }
 }
 

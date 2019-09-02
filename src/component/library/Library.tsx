@@ -6,7 +6,7 @@ import { IUser } from '../../model/model.user';
 import { TInternationalization } from '../../config/setup';
 import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
-import { LibraryService } from '../../service/service.library';
+// import { LibraryService } from '../../service/service.library';
 import { IToken } from '../../model/model.token';
 import { CollectionService } from '../../service/service.collection';
 import { BOOK_TYPES, BOOK_ROLES } from '../../enum/Book';
@@ -18,7 +18,7 @@ import { History } from "history";
 import { ILibrary } from '../../model/model.library';
 import { LIBRARY_VIEW } from '../../enum/Library';
 import { ILibrary_schema } from '../../redux/action/library/libraryAction';
-import { action_set_library_data, action_set_library_view } from '../../redux/action/library';
+import { /* action_set_library_data, */ action_set_library_view } from '../../redux/action/library';
 import { ICollection } from '../../model/model.collection';
 import { action_set_collections_data } from '../../redux/action/collection';
 import { ICollection_schema } from '../../redux/action/collection/collectionAction';
@@ -29,7 +29,7 @@ export interface IProps {
     token: IToken;
     history: History;
     library: ILibrary_schema;
-    set_library_data: (data: ILibrary[]) => any;
+    // set_library_data: (data: ILibrary[]) => any;
     set_library_view: (view: LIBRARY_VIEW) => any;
     collection: ICollection_schema;
     set_collections_data: (data: ICollection[]) => any;
@@ -82,41 +82,36 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    private _libraryService = new LibraryService();
+    // private _libraryService = new LibraryService();
     private _collectionService = new CollectionService();
 
     constructor(props: IProps) {
         super(props);
-        this._libraryService.setToken(this.props.token);
+        // this._libraryService.setToken(this.props.token);
         this._collectionService.setToken(this.props.token);
     }
 
     componentDidMount() {
-        this.fetchLibrary()
+        // this.fetchLibrary()
     }
 
-    async fetchLibrary() {
-        let res = await this._libraryService.getAll().catch(error => {
-            this.handleError({ error: error.response });
-        });
+    // async fetchLibrary() {
+    //     let res = await this._libraryService.getAll().catch(error => {
+    //         this.handleError({ error: error.response });
+    //     });
 
-        if (res) {
-            this.props.set_library_data(res.data.result);
-        }
+    //     if (res) {
+    //         this.props.set_library_data(res.data.result);
+    //     }
 
-        let res_coll = await this._collectionService.getAll().catch(error => {
-            this.handleError({ error: error.response });
-        });
+    //     let res_coll = await this._collectionService.getAll().catch(error => {
+    //         this.handleError({ error: error.response });
+    //     });
 
-        if (res_coll) {
-            this.props.set_collections_data(res_coll.data.result);
-            // this.setState({
-            //     ...this.state,
-            //     // library_data: res.data.result,
-            //     collection_data: res_coll ? res_coll.data.result : []
-            // });
-        }
-    }
+    //     if (res_coll) {
+    //         this.props.set_collections_data(res_coll.data.result);
+    //     }
+    // }
 
     library_header_render() {
         return (
@@ -828,7 +823,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
-        set_library_data: (data: ILibrary[]) => dispatch(action_set_library_data(data)),
+        // set_library_data: (data: ILibrary[]) => dispatch(action_set_library_data(data)),
         set_library_view: (view: LIBRARY_VIEW) => dispatch(action_set_library_view(view)),
         set_collections_data: (data: ICollection[]) => dispatch(action_set_collections_data(data)),
     }
