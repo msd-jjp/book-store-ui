@@ -89,6 +89,9 @@ $book-detail-border: 1px solid rgb(210, 210, 210);
           width: 100%;
           border-radius: 50%;
           background-color: gray;
+
+          min-width: 100px;
+          min-height: 100px;
         }
 
         .author-name {
