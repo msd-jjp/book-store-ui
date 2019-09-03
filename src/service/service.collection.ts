@@ -13,6 +13,11 @@ export class CollectionService extends BaseService {
         return this.axiosTokenInstance.post('/collections/_search', data);
     }
     getAll(): Promise<IAPI_ResponseList<ICollection>> {
+        if (BaseService.isAppOffline()) {
+            return new Promise((resolve, reject) => {
+                reject({ error: 'no internet access' });
+            });
+        }
         return this.axiosTokenInstance.get('/collections');
     }
     get_byTitle(title: string): Promise<IAPI_Response<IBook>> {
