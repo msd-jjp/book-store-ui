@@ -17,6 +17,24 @@
     }
     .view-library {
       line-height: 3rem;
+
+      .collection-menu-dd {
+        .icon {
+          &.no-default-icon {
+            &:after {
+              display: none;
+            }
+          }
+        }
+        .dropdown-menu {
+          .dropdown-item {
+            // height: 2rem;
+            line-height: 1rem;
+            padding: 0.5rem 1rem;
+          }
+        }
+      }
+
       .icon {
         cursor: pointer;
 

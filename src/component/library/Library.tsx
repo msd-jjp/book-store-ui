@@ -11,7 +11,7 @@ import { IToken } from '../../model/model.token';
 import { CollectionService } from '../../service/service.collection';
 import { BOOK_TYPES, BOOK_ROLES } from '../../enum/Book';
 import { ToastContainer } from 'react-toastify';
-import { Modal } from 'react-bootstrap';
+import { Modal, Dropdown } from 'react-bootstrap';
 import { Input } from '../form/input/Input';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { History } from "history";
@@ -23,6 +23,8 @@ import { ICollection } from '../../model/model.collection';
 import { action_set_collections_data } from '../../redux/action/collection';
 import { ICollection_schema } from '../../redux/action/collection/collectionAction';
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
+import { AddToCollection } from './collection/add-to-collection/AddToCollection';
+import { IBook } from '../../model/model.book';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -50,6 +52,8 @@ interface IState {
         };
     };
     isCollection_editMode: boolean;
+    isLibrary_editMode: boolean;
+    library_data_selected: ILibrary[];
     modal_removeCollections: {
         show: boolean;
         loader: boolean;
@@ -57,6 +61,9 @@ interface IState {
     modal_downloadCollections: {
         show: boolean;
         loader: boolean;
+    };
+    modal_addToCollections: {
+        show: boolean;
     };
 }
 
@@ -74,6 +81,8 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             }
         },
         isCollection_editMode: false,
+        isLibrary_editMode: false,
+        library_data_selected: [],
         modal_removeCollections: {
             show: false,
             loader: false
@@ -81,7 +90,10 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         modal_downloadCollections: {
             show: false,
             loader: false
-        }
+        },
+        modal_addToCollections: {
+            show: false
+        },
     }
 
     // private _libraryService = new LibraryService();
@@ -123,7 +135,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                         // this.state.library_view
                         this.props.library.view === LIBRARY_VIEW.collections ? '' :
                             <div className="col-2">
-                                <div className="filter-library pl-2__">
+                                <div className="filter-library pl-2__ d-none">
                                     <i className="fa fa-filter text-dark p-2"></i>
                                 </div>
                             </div>
@@ -131,15 +143,13 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                     <div className={
                         "col-8-- --111 filter-option text-center "
                         + (
-                            // this.state.library_view
-                            this.props.library.view === LIBRARY_VIEW.collections ? 'col-4' : 'col-8')
+                            this.props.library.view === LIBRARY_VIEW.collections ? 'col-4' : 'co--l-40000--')
                     }>
                         {
-                            // this.state.library_view
                             this.props.library.view === LIBRARY_VIEW.collections ? '' :
                                 <>
-                                    <span className="filter-link text-uppercase mr-3 active">{Localization.all}</span>
-                                    <span className="filter-link text-uppercase ">{Localization.downloaded}</span>
+                                    <span className="filter-link text-uppercase mr-3 active d-none">{Localization.all}</span>
+                                    <span className="filter-link text-uppercase d-none">{Localization.downloaded}</span>
                                 </>
                         }
                     </div>
@@ -147,10 +157,120 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                     <div className={
                         "col-2-- text-right "
                         + (
-                            // this.state.library_view
-                            this.props.library.view === LIBRARY_VIEW.collections ? 'col-4-- col-8' : 'col-2')
+                            this.props.library.view === LIBRARY_VIEW.collections ? 'col-4-- col-8' : 'col-10')
                     }>
                         <div className="view-library pr-2__">
+
+                            {
+                                (
+                                    this.state.isLibrary_editMode
+                                    &&
+                                    this.props.library.view !== LIBRARY_VIEW.collections
+                                ) ?
+                                    <Dropdown className={
+                                        "d-inline-block-- collection-menu-dd mr-3 "
+                                        + (!this.props.library.data.length ?
+                                            'd-none' : 'd-inline-block')
+                                    }>
+                                        <Dropdown.Toggle
+                                            as="span"
+                                            id="dropdown-collection-menu"
+                                            className="icon fa-- fa-ellipsis-v-- text-dark p-2-- "
+                                        >
+                                            {this.state.library_data_selected.length}
+                                            &nbsp;
+            {Localization.selected}
+                                        </Dropdown.Toggle>
+
+                                        <Dropdown.Menu className="dropdown-menu-right border-0 shadow2">
+                                            <Dropdown.Item
+                                                onClick={() => this.selectAll_libraryData()}
+                                                className={
+                                                    "text-uppercase "
+                                                    + (this.state.library_data_selected.length ===
+                                                        this.props.library.data.length
+                                                        ? 'd-none' : '')
+                                                }
+                                            >{Localization.select_all}
+                                            </Dropdown.Item>
+                                            <Dropdown.Item
+                                                onClick={() => this.deselectAll_libraryData()}
+                                                className={
+                                                    "text-uppercase "
+                                                    + (this.state.library_data_selected.length === 0 ? 'd-none' : '')
+                                                }
+                                            >{Localization.deselect_all}
+                                            </Dropdown.Item>
+
+                                            <Dropdown.Divider
+                                                className={
+                                                    (!this.state.library_data_selected.length ? 'd-none' : '')
+                                                }
+                                            />
+
+                                            <Dropdown.Item
+                                                onClick={() => this.openModal_addToCollections()}
+                                                className={
+                                                    "text-capitalize "
+                                                    + (!this.state.library_data_selected.length ? 'd-none ' : '')
+                                                    + (this.state.library_data_selected.length === 1 ? '' : 'd-none')
+                                                }
+                                                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                                            >
+                                                {Localization.add_to_collection}
+                                                {
+                                                    this.props.network_status === NETWORK_STATUS.OFFLINE
+                                                        ? <i className="fa fa-wifi text-danger"></i> : ''
+                                                }
+                                            </Dropdown.Item>
+                                            <Dropdown.Item
+                                                onClick={() => { }}
+                                                className={
+                                                    "text-capitalize "
+                                                    + (!this.state.library_data_selected.length ? 'd-none' : '')
+                                                }
+                                                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                                            >
+                                                {Localization.mark_as_read}
+                                                {
+                                                    this.props.network_status === NETWORK_STATUS.OFFLINE
+                                                        ? <i className="fa fa-wifi text-danger"></i> : ''
+                                                }
+                                            </Dropdown.Item>
+                                            <Dropdown.Item
+                                                onClick={() => this.viewInStore()}
+                                                className={
+                                                    "text-capitalize "
+                                                    + (this.state.library_data_selected.length === 1 ? '' : 'd-none')
+                                                }
+                                            >{Localization.view_in_store}
+                                            </Dropdown.Item>
+                                            <Dropdown.Item
+                                                onClick={() => { }}
+                                                className={
+                                                    "text-capitalize "
+                                                    + (!this.state.library_data_selected.length ? 'd-none' : '')
+                                                }
+                                            >{Localization.remove_from_device}
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                    : ''
+                            }
+
+                            {
+                                this.props.library.view !== LIBRARY_VIEW.collections
+                                    ?
+                                    <i className={
+                                        "icon fa fa-wrench text-dark p-2 "
+                                        + (this.state.isLibrary_editMode ? 'shadow2' : '')
+                                    }
+                                        onClick={() => this.change_library_mode()}
+                                    ></i>
+                                    :
+                                    ''
+                            }
+
                             {
                                 // this.state.library_view
                                 this.props.library.view !== LIBRARY_VIEW.collections ? '' :
@@ -179,6 +299,28 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                 </div>
             </div>
         )
+    }
+
+    viewInStore() {
+        const lib: ILibrary = this.state.library_data_selected[0];
+        if (lib) {
+            this.gotoBookDetail(lib.book.id);
+        }
+    }
+
+    gotoBookDetail(bookId: string) {
+        this.props.history.push(`/book-detail/${bookId}`);
+    }
+
+    change_library_mode() {
+        this.setState({
+            ...this.state,
+            isLibrary_editMode: !this.state.isLibrary_editMode,
+            library_data_selected: []
+            // this.state.isLibrary_editMode
+            //     ? [] :
+            //     this.state.library_data_selected
+        });
     }
 
     calc_read_percent(item: ILibrary): string {
@@ -220,7 +362,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
 
                                     return (
                                         <div className="col-4 p-align-inverse-0 mb-3" key={index}>
-                                            <div className="item-wrapper">
+                                            <div className="item-wrapper" onClick={() => this.onItemSelect(item)}>
                                                 <img src={book_img}
                                                     alt="book"
                                                     className="library-grid-book-show-- lib-img"
@@ -234,6 +376,15 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                 </div>
                                                 <div className="book-download">
                                                     <i className="fa fa-check" />
+                                                </div>
+
+                                                <div className={
+                                                    "selected-item-wrapper "
+                                                    + (this.isItemSelected(item) ? '' : 'd-none')
+                                                }>
+                                                    <div className="selected-icon-wrapper">
+                                                        <i className="icon fa fa-check"></i>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -274,7 +425,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
 
                                 return (
                                     <div className="view-list-item py-2__ pb-2 mb-2" key={index}>
-                                        <div className="item-wrapper row">
+                                        <div className="item-wrapper row" onClick={() => this.onItemSelect(item)}>
                                             <div className="img-wrapper col-4">
                                                 <div className="img-container__ mt-2__">
                                                     <img src={book_img} alt="book"
@@ -292,6 +443,15 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                             {/* <div className="col-2 text-right is-downloaded pt-1">
                                         
                                     </div> */}
+
+                                            <div className={
+                                                "selected-item-wrapper "
+                                                + (this.isItemSelected(item) ? '' : 'd-none')
+                                            }>
+                                                <div className="selected-icon-wrapper">
+                                                    <i className="icon fa fa-check"></i>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 )
@@ -306,6 +466,60 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             </>
         )
     }
+
+    //#region select item
+    onItemSelect(item: ILibrary) {
+        if (this.state.isLibrary_editMode) {
+            this.toggleSelect_libraryData(item);
+        } else {
+            //open book reader
+        }
+    }
+
+    isItemSelected(item: ILibrary): boolean {
+        let selected_list: ILibrary[] = [...this.state.library_data_selected];
+
+        let selected = false;
+        for (let i = 0; i < selected_list.length; i++) {
+            if (selected_list[i].id === item.id) {
+                selected = true;
+                break;
+            }
+        }
+
+        return selected;
+    }
+
+    toggleSelect_libraryData(item: ILibrary) {
+        let selected_list: ILibrary[] = [...this.state.library_data_selected];
+
+        let index = -1;
+        let selected = false;
+        for (let i = 0; i < selected_list.length; i++) {
+            if (selected_list[i].id === item.id) {
+                selected = true;
+                index = i;
+                break;
+            }
+        }
+
+        if (selected) {
+            selected_list.splice(index, 1);
+        } else {
+            selected_list.push(item);
+        }
+
+        this.setState({ ...this.state, library_data_selected: selected_list });
+    }
+
+    selectAll_libraryData() {
+        this.setState({ ...this.state, library_data_selected: [...this.props.library.data] });
+    }
+
+    deselectAll_libraryData() {
+        this.setState({ ...this.state, library_data_selected: [] });
+    }
+    //#endregion
 
     view_collection_render() {
         let uncollected_book_list_length = 0;
@@ -813,6 +1027,22 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     }
     //#endregion
 
+
+    //#region modal add to collection
+    openModal_addToCollections() {
+        this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: true } });
+    }
+
+    async closeModal_addToCollections() {
+        this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: false } });
+    }
+
+    getBookModal_addToCollections(): IBook | undefined {
+        const lib_0: ILibrary = this.state.library_data_selected[0];
+        if (lib_0) { return lib_0.book; }
+    }
+    //#endregion
+
     render() {
         return (
             <>
@@ -836,6 +1066,12 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                 {this.modal_createCollections_render()}
                 {this.modal_removeCollection_render()}
                 {this.modal_downloadCollection_render()}
+
+                <AddToCollection
+                    show={this.state.modal_addToCollections.show}
+                    book={this.getBookModal_addToCollections()}
+                    onHide={() => this.closeModal_addToCollections()}
+                />
 
                 <ToastContainer {...this.getNotifyContainerConfig()} />
 

@@ -645,6 +645,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         }
     }
 
+    //#region modal add to collection
     openModal_addToCollections(/* book_id: string */) {
         this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: true } });
     }
@@ -675,6 +676,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         const lib_0: ILibrary = this.state.collection_library_data_selected[0];
         if (lib_0) { return lib_0.book; }
     }
+    //#endregion
 
     render() {
         return (
