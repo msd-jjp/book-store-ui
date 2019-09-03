@@ -24,6 +24,7 @@ import Modal from 'react-bootstrap/Modal'
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { ICartItems, ICartItem } from "../../redux/action/cart/cartAction";
 import { action_add_to_cart, action_remove_from_cart } from "../../redux/action/cart";
+import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 // import { IPerson } from "../../model/model.person";
 
 
@@ -37,6 +38,7 @@ interface IProps {
   cart: ICartItems;
   add_to_cart: (cartItem: ICartItem) => any;
   remove_from_cart: (cartItem: ICartItem) => any;
+  library: ILibrary_schema;
 }
 interface IState {
   book: IBook | undefined;
@@ -563,7 +565,22 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
 
   cartList_actionBtn_render(book: IBook) {
+    let book_in_library = (this.props.library.data || []).find(item => item.book.id === book.id);
     let book_in_cartList = (this.props.cart || []).filter(item => item.book.id === book.id);
+
+    if (book_in_library) {
+      return (
+        <>
+          <div
+            className="add-to-list-- btn btn-link-- p-align-0 mt-n2 text-system--"
+            // onClick={() => { this.cartList_remove_book(book) }}
+          >
+            {Localization.exist_in_library}
+            <i className="fa fa-book"></i>
+          </div>
+        </>
+      )
+    }
 
     if (book_in_cartList && book_in_cartList.length) {
       return (
@@ -1341,7 +1358,8 @@ const state2props = (state: redux_state) => {
     token: state.token,
     logged_in_user: state.logged_in_user,
     network_status: state.network_status,
-    cart: state.cart
+    cart: state.cart,
+    library: state.library,
   };
 };
 

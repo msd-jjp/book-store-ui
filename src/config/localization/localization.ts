@@ -287,8 +287,9 @@ interface ILocalization extends LocalizedStringsMethods {
     selected: string;
     select_all: string;
     deselect_all: string;
-    profile:string;
-    profile_image:string;
+    profile: string;
+    profile_image: string;
+    exist_in_library: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
