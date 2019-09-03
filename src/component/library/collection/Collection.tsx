@@ -130,7 +130,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
             let lib = this.props.library.data[i];
             if (!collected_book_id_list_unique.includes(lib.book.id)) {
                 uncollected_books_lib.push(lib);
-                break;
+                // break;
             }
         }
         return uncollected_books_lib;
