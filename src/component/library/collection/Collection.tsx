@@ -494,27 +494,56 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         if (this.state.isCollection_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
-
+            //open book reader
         }
     }
 
     isItemSelected(item: ILibrary): boolean {
         let selected_list: ILibrary[] = [...this.state.collection_library_data_selected];
-        let index = selected_list.indexOf(item);
-        if (index < 0) {
-            return false;
+
+        let selected = false;
+        for (let i = 0; i < selected_list.length; i++) {
+            if (selected_list[i].id === item.id) {
+                selected = true;
+                break;
+            }
         }
-        return true;
+
+        return selected;
+
+        // let index = selected_list.indexOf(item);
+        // if (index < 0) {
+        //     return false;
+        // }
+        // return true;
     }
 
     toggleSelect_libraryData(item: ILibrary) {
         let selected_list: ILibrary[] = [...this.state.collection_library_data_selected];
-        let index = selected_list.indexOf(item);
-        if (index < 0) {
-            selected_list.push(item);
-        } else {
-            selected_list.splice(index, 1);
+
+        let index = -1;
+        let selected = false;
+        for (let i = 0; i < selected_list.length; i++) {
+            if (selected_list[i].id === item.id) {
+                selected = true;
+                index = i;
+                break;
+            }
         }
+
+        if (selected) {
+            selected_list.splice(index, 1);
+        } else {
+            selected_list.push(item);
+        }
+
+
+        // let index = selected_list.indexOf(item);
+        // if (index < 0) {
+        //     selected_list.push(item);
+        // } else {
+        //     selected_list.splice(index, 1);
+        // }
 
         this.setState({ ...this.state, collection_library_data_selected: selected_list });
     }
@@ -625,7 +654,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
             // remove "removed item" from collection_library_data_selected.
             // after add book to collection(s) it should remove from uncollected clt.
             this.set_col_libraryData();
-            await this.waitOnMe();
+            await this.waitOnMe(100);
             this.unCollected_remove_from_selected();
         }
         this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: false } });
