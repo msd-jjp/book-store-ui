@@ -621,6 +621,9 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     }
 
     closeModal_addToCollections() {
+        if (this.isUncollected) { // after add book to collection(s) it should remove from uncollected clt.
+            this.set_col_libraryData();
+        }
         this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: false } });
     }
 
