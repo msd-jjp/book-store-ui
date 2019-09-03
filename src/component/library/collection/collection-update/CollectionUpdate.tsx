@@ -17,6 +17,7 @@ import { action_set_collections_data } from '../../../../redux/action/collection
 import { ILibrary_schema } from '../../../../redux/action/library/libraryAction';
 import { ICollection_schema } from '../../../../redux/action/collection/collectionAction';
 import { CollectionService } from '../../../../service/service.collection';
+import { NETWORK_STATUS } from '../../../../enum/NetworkStatus';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -28,6 +29,7 @@ export interface IProps {
     library: ILibrary_schema;
     collection: ICollection_schema;
     set_collections_data: (data: ICollection[]) => any;
+    network_status: NETWORK_STATUS;
 }
 
 interface IState {
@@ -86,7 +88,7 @@ class CollectionUpdateComponent extends BaseComponent<IProps, IState> {
         return (
             <div className="collection-menu pt-2__">
                 <div className="row menu-wrapper__">
-                    <div className="col-10">
+                    <div className="col-8">
                         <div className="icon-wrapper">
                             <i className="fa fa-arrow-left-app text-dark p-2 cursor-pointer"
                                 onClick={() => this.goBack()}
@@ -139,16 +141,28 @@ class CollectionUpdateComponent extends BaseComponent<IProps, IState> {
                         </div>
                     </div>
 
-                    <div className="col-2 text-right ">
+                    <div className="col-4 text-right ">
                         <div className="icon-wrapper">
 
                             {
                                 (this.state.collection_library_data_selected.length
                                     && !this.state.add_loader
                                 ) ?
-                                    <span className="icon text-primary p-2 text-uppercase"
+                                    <span className={
+                                        "icon-- text-primary p-2 text-uppercase "
+                                        + (
+                                            this.props.network_status === NETWORK_STATUS.OFFLINE
+                                                ? 'opacity-5 cursor-not-allowed' : 'cursor-pointer'
+                                        )
+                                    }
                                         onClick={() => this.addBookToCollection()}
-                                    >{Localization.add}</span>
+                                    >
+                                        {Localization.add}
+                                        {
+                                            this.props.network_status === NETWORK_STATUS.OFFLINE
+                                                ? <i className="fa fa-wifi text-danger"></i> : ''
+                                        }
+                                    </span>
                                     : ''
 
                             }
@@ -280,7 +294,10 @@ class CollectionUpdateComponent extends BaseComponent<IProps, IState> {
     }
 
     async addBookToCollection() {
-        if (!this.state.collection_library_data_selected.length) return;
+        if (!this.state.collection_library_data_selected.length
+            ||
+            (this.props.network_status === NETWORK_STATUS.OFFLINE)
+        ) return;
         this.setState({ ...this.state, add_loader: true });
 
         let newBook_ids = this.state.collection_library_data_selected.map((lib: ILibrary) => lib.book.id);
@@ -340,6 +357,7 @@ const state2props = (state: redux_state) => {
         token: state.token,
         library: state.library,
         collection: state.collection,
+        network_status: state.network_status,
     }
 }
 

@@ -22,6 +22,7 @@ import { /* action_set_library_data, */ action_set_library_view } from '../../re
 import { ICollection } from '../../model/model.collection';
 import { action_set_collections_data } from '../../redux/action/collection';
 import { ICollection_schema } from '../../redux/action/collection/collectionAction';
+import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -33,6 +34,7 @@ export interface IProps {
     set_library_view: (view: LIBRARY_VIEW) => any;
     collection: ICollection_schema;
     set_collections_data: (data: ICollection[]) => any;
+    network_status: NETWORK_STATUS;
 }
 
 interface IState {
@@ -486,9 +488,14 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                             btnClassName="btn btn-danger btn-sm"
                             loading={this.state.modal_removeCollections.loader}
                             onClick={() => this.removeCollection(this.collection_title_to_remove!)}
+                            disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                         >
                             {/* {Localization.remove_collection} */}
                             {Localization.remove}
+                            {
+                                this.props.network_status === NETWORK_STATUS.OFFLINE
+                                    ? <i className="fa fa-wifi text-danger--"></i> : ''
+                            }
                         </BtnLoader>
 
                     </Modal.Footer>
@@ -612,22 +619,38 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                 <BtnLoader
                                     btnClassName="btn btn-success btn-sm text-uppercase"
                                     loading={this.state.modal_createCollections.loader}
-                                    disabled={!this.state.modal_createCollections.newCollectionTitle.isValid}
+                                    disabled={
+                                        !this.state.modal_createCollections.newCollectionTitle.isValid
+                                        ||
+                                        (this.props.network_status === NETWORK_STATUS.OFFLINE)
+                                    }
                                     onClick={() => this.create_Collection()}
                                 >
                                     {Localization.create}
+                                    {
+                                        this.props.network_status === NETWORK_STATUS.OFFLINE
+                                            ? <i className="fa fa-wifi text-danger"></i> : ''
+                                    }
                                 </BtnLoader>
                                 :
                                 <BtnLoader
                                     btnClassName="btn btn-primary btn-sm text-uppercase"
                                     loading={this.state.modal_createCollections.loader}
-                                    disabled={!this.state.modal_createCollections.newCollectionTitle.isValid}
+                                    disabled={
+                                        !this.state.modal_createCollections.newCollectionTitle.isValid
+                                        ||
+                                        (this.props.network_status === NETWORK_STATUS.OFFLINE)
+                                    }
                                     onClick={() => this.renameCollection(
                                         this.collection_title_to_rename!,
                                         this.state.modal_createCollections.newCollectionTitle.value!
                                     )}
                                 >
                                     {Localization.rename}
+                                    {
+                                        this.props.network_status === NETWORK_STATUS.OFFLINE
+                                            ? <i className="fa fa-wifi text-danger"></i> : ''
+                                    }
                                 </BtnLoader>
                         }
                     </Modal.Footer>
@@ -836,6 +859,7 @@ const state2props = (state: redux_state) => {
         token: state.token,
         library: state.library,
         collection: state.collection,
+        network_status: state.network_status,
     }
 }
 

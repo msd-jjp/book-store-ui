@@ -24,6 +24,7 @@ import { NavLink } from 'react-router-dom';
 import { CollectionService } from '../../../service/service.collection';
 import { AddToCollection } from './add-to-collection/AddToCollection';
 import { IBook } from '../../../model/model.book';
+import { NETWORK_STATUS } from '../../../enum/NetworkStatus';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -36,6 +37,7 @@ export interface IProps {
     set_collections_view: (view: COLLECTION_VIEW) => any;
     collection: ICollection_schema;
     set_collections_data: (data: ICollection[]) => any;
+    network_status: NETWORK_STATUS;
 }
 
 interface IState {
@@ -220,7 +222,13 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                                                     + (!this.state.collection_library_data_selected.length ? 'd-none ' : '')
                                                     + (this.state.collection_library_data_selected.length === 1 ? '' : 'd-none')
                                                 }
-                                            >{Localization.add_to_collection}
+                                                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                                            >
+                                                {Localization.add_to_collection}
+                                                {
+                                                    this.props.network_status === NETWORK_STATUS.OFFLINE
+                                                        ? <i className="fa fa-wifi text-danger"></i> : ''
+                                                }
                                             </Dropdown.Item>
                                             <Dropdown.Item
                                                 onClick={() => { }}
@@ -228,7 +236,13 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                                                     "text-capitalize "
                                                     + (!this.state.collection_library_data_selected.length ? 'd-none' : '')
                                                 }
-                                            >{Localization.mark_as_read}
+                                                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                                            >
+                                                {Localization.mark_as_read}
+                                                {
+                                                    this.props.network_status === NETWORK_STATUS.OFFLINE
+                                                        ? <i className="fa fa-wifi text-danger"></i> : ''
+                                                }
                                             </Dropdown.Item>
                                             <Dropdown.Item
                                                 onClick={() => this.viewInStore()}
@@ -246,11 +260,16 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                                                     + (this.isUncollected ? 'd-none ' : '')
                                                     + (!this.state.collection_library_data_selected.length ? 'd-none' : '')
                                                 }
+                                                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                                             >{
                                                     !this.state.remove_loader ?
                                                         Localization.remove
                                                         :
                                                         <i className="icon-- text-primary-- fa fa-spinner fa-spin p-2--"></i>
+                                                }
+                                                {
+                                                    this.props.network_status === NETWORK_STATUS.OFFLINE
+                                                        ? <i className="fa fa-wifi text-danger"></i> : ''
                                                 }
                                             </Dropdown.Item>
                                             <Dropdown.Item
@@ -651,6 +670,7 @@ const state2props = (state: redux_state) => {
         token: state.token,
         library: state.library,
         collection: state.collection,
+        network_status: state.network_status,
     }
 }
 
