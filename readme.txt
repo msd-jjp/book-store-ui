@@ -98,16 +98,11 @@ add price to book in category & store
 
 ====================================================================================
 
-
-library collection
-
-----------------------------
-
 profile in bookStore
 
 ----------------------------
 
-update readme head request & get request
+collection & library head request & get request
 
 ----------------------------
 
@@ -126,5 +121,9 @@ notification (r&d)
 	even if close
 	
 ----------------------------
+
+====================================================================================
+
+cmp search check library book exist (progress & downloaded)
 
 ====================================================================================

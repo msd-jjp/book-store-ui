@@ -286,7 +286,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                             }
 
                             <i className={
-                                "icon fa fa-gear text-dark p-2 "
+                                "icon fa fa-wrench text-dark p-2 "
                                 + (this.state.isCollection_editMode ? 'shadow2' : '')
                             }
                                 onClick={() => this.change_collections_mode()}
@@ -620,11 +620,26 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: true } });
     }
 
-    closeModal_addToCollections() {
-        if (this.isUncollected) { // after add book to collection(s) it should remove from uncollected clt.
+    async closeModal_addToCollections() {
+        if (this.isUncollected) {
+            // remove "removed item" from collection_library_data_selected.
+            // after add book to collection(s) it should remove from uncollected clt.
             this.set_col_libraryData();
+            await this.waitOnMe();
+            this.unCollected_remove_from_selected();
         }
         this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: false } });
+    }
+
+    /**
+     * in uncollected mode, after add item to other collcetion remove it from selected_list
+     */
+    unCollected_remove_from_selected() {
+        const list: ILibrary[] = [...this.state.collection_library_data];
+        const list_ids = list.map(li => li.id);
+        let selected_list: ILibrary[] = [...this.state.collection_library_data_selected];
+        selected_list = selected_list.filter(lib => list_ids.includes(lib.id));
+        this.setState({ ...this.state, collection_library_data_selected: selected_list });
     }
 
     getBookModal_addToCollections(): IBook | undefined {
