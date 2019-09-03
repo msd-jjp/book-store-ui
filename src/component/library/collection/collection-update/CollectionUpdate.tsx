@@ -305,8 +305,8 @@ class CollectionUpdateComponent extends BaseComponent<IProps, IState> {
         // let thisColl: ICollection = allColl.find(col => col.title === this.collectionTitle)!;
         // let currentBook_ids = thisColl.books.map(bk => bk.id);
 
-        let res = await this._collectionService.add(
-            this.collectionTitle,
+        let res = await this._collectionService.add_toCollections(
+            [this.collectionTitle],
             // [...newBook_ids, ...currentBook_ids]
             newBook_ids
         ).catch(error => {

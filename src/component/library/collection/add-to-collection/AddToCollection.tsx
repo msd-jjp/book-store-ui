@@ -66,6 +66,10 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
     }
 
     closeModal() {
+        this.setState({
+            ...this.state,
+            selected_collection_list: []
+        });
         this.props.onHide();
     }
 
@@ -173,21 +177,48 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
 
     isCollectionSelected(collection: ICollection): boolean {
         let selected_list: ICollection[] = [...this.state.selected_collection_list];
-        let index = selected_list.indexOf(collection);
-        if (index < 0) {
-            return false;
+        // let index = selected_list.indexOf(collection);
+
+        let selected = false;
+        for (let i = 0; i < selected_list.length; i++) {
+            if (selected_list[i].title === collection.title) {
+                selected = true;
+                // index = i;
+                break;
+            }
         }
-        return true;
+
+        return selected;
+        // if (index < 0) {
+        //     return false;
+        // }
+        // return true;
     }
 
     toggleSelectCollection(collection: ICollection) {
         let selected_list: ICollection[] = [...this.state.selected_collection_list];
-        let index = selected_list.indexOf(collection);
-        if (index < 0) {
-            selected_list.push(collection);
-        } else {
-            selected_list.splice(index, 1);
+        let index = -1; // = selected_list.indexOf(collection);
+
+        let selected = false;
+        for (let i = 0; i < selected_list.length; i++) {
+            if (selected_list[i].title === collection.title) {
+                selected = true;
+                index = i;
+                break;
+            }
         }
+
+        if (selected) {
+            selected_list.splice(index, 1);
+        } else {
+            selected_list.push(collection);
+        }
+
+        // if (index < 0) {
+        //     selected_list.push(collection);
+        // } else {
+        //     selected_list.splice(index, 1);
+        // }
 
         this.setState({
             ...this.state,
@@ -245,7 +276,7 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
 
         let res = await this._collectionService.add_toCollections(
             selected_collection_list_title,
-            book_toAdd.id
+            [book_toAdd.id]
         ).catch(error => {
             this.handleError({ error: error.response });
         });
@@ -257,9 +288,13 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
 
         if (res) {
             let allColl = [...this.props.collection.data];
-            this.state.selected_collection_list.forEach((clt: ICollection) => {
-                clt.books.unshift(book_toAdd);
-            })
+            this.state.selected_collection_list.forEach((clt_selected: ICollection) => {
+                const c = allColl.find(clt => clt.title === clt_selected.title);
+                // clt_selected.books.unshift(book_toAdd);
+                if (c) {
+                    c.books.unshift(book_toAdd);
+                }
+            });
 
             this.props.set_collections_data &&
                 this.props.set_collections_data(allColl);

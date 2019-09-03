@@ -36,12 +36,12 @@ export class CollectionService extends BaseService {
             title
         });
     }
-    add(title: string, book_ids: string[]) {
-        return this.create(title, book_ids);
-    }
-    add_toCollections(collections_title: string[], book_id: string) {
+    // add(title: string, book_ids: string[]) {
+    //     return this.create(title, book_ids);
+    // }
+    add_toCollections(collections_title: string[], book_ids: string[]) {
         return this.axiosTokenInstance.post('/collections/book', {
-            book_id,
+            book_ids,
             collections: collections_title
         });
     }
