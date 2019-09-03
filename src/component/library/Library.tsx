@@ -204,7 +204,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     view_grid_render() {
         return (
             <>
-                <div className={"library-view-grid-wrapper mr-3-- mt-3 "
+                <div className={"library-view-grid-wrapper-- library-items-view-grid-wrapper mr-3-- mt-3 "
                     + (this.props.library.data.length ? 'mr-3' : '')
                 }>
                     <div className="row">
@@ -223,7 +223,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                             <div className="item-wrapper">
                                                 <img src={book_img}
                                                     alt="book"
-                                                    className="library-grid-book-show"
+                                                    className="library-grid-book-show-- lib-img"
                                                     onError={e => this.bookImageOnError(e)} />
 
                                                 <div className="book-progress-state">
@@ -252,7 +252,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     view_list_render() {
         return (
             <>
-                <div className="library-view-list-wrapper mt-3">
+                <div className="library-view-list-wrapper-- library-items-view-list-wrapper mt-3">
                     {
                         // this.state.library_data
                         this.props.library.data.length

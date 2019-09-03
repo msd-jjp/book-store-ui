@@ -373,7 +373,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     view_grid_render() {
         return (
             <>
-                <div className={"collection-view-grid-wrapper mr-3-- mt-3 "
+                <div className={"collection-view-grid-wrapper-- library-items-view-grid-wrapper mr-3-- mt-3 "
                     + (this.state.collection_library_data.length ? 'mr-3' : '')
                 }>
                     <div className="row">
@@ -391,7 +391,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                                             <div className="item-wrapper" onClick={() => this.onItemSelect(item)}>
                                                 <img src={book_img}
                                                     alt="book"
-                                                    className="collection-grid-book-show"
+                                                    className="collection-grid-book-show-- lib-img"
                                                     onError={e => this.bookImageOnError(e)} />
 
                                                 <div className="book-progress-state">
@@ -429,7 +429,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     view_list_render() {
         return (
             <>
-                <div className="collection-view-list-wrapper mt-3">
+                <div className="collection-view-list-wrapper-- library-items-view-list-wrapper mt-3">
                     {
                         this.state.collection_library_data.length
                             ?
