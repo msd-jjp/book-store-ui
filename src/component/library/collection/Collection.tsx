@@ -342,7 +342,11 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     change_collections_mode() {
         this.setState({
             ...this.state,
-            isCollection_editMode: !this.state.isCollection_editMode
+            isCollection_editMode: !this.state.isCollection_editMode,
+            collection_library_data_selected: []
+            // this.state.isCollection_editMode
+            //     ? [] :
+            //     this.state.collection_library_data_selected
         });
     }
 
