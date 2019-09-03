@@ -291,4 +291,6 @@ export const en = {
     selected: 'selected',
     select_all: 'select all',
     deselect_all: 'deselect all',
+    profile:"profile",
+    profile_image:"profile image",
 }

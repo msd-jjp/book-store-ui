@@ -130,6 +130,10 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.history.push('/cart');
     }
 
+    gotoProfile() {
+        this.props.history.push('/profile');
+    }
+
     render() {
 
         return (
@@ -169,6 +173,11 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <i className="icon fa fa-free-code-camp mr-3"></i>
                             <span className="text text-capitalize">{Localization.reading_insights}</span>
                         </li> */}
+                        <li className="more-item list-group-item p-align-0 d-none" onClick={() => this.gotoProfile()}>
+                            <i className="icon fa fa-user-circle-o mr-3"></i>
+                            <span className="text text-capitalize">{Localization.profile}</span>
+                        </li>
+
                         <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-cog mr-3"></i>
                             <span className="text text-capitalize">{Localization.settings}</span>

@@ -294,4 +294,6 @@ export const fa = {
     selected: 'انتخاب شده',
     select_all: 'انتخاب همه',
     deselect_all: 'لغو انتخاب همه',
+    profile:"پروفایل",
+    profile_image:"تصویر پروفایل",
 }
