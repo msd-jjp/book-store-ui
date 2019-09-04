@@ -117,10 +117,15 @@ export function libraryItem_viewGrid_render(
     return (
         <div className="col-4 p-align-inverse-0 mb-3">
             <div className="item-wrapper" onClick={() => onItemSelect(item)}>
-                <img src={book_img}
-                    alt="book"
-                    className="library-grid-book-show-- lib-img"
-                    onError={e => bookImageOnError(e)} />
+                <div className="img-container">
+                    <img src="/static/media/img/icon/default-book.png" className="img-view-scaffolding" alt="book" />
+
+                    <img src={book_img}
+                        alt="book"
+                        className="lib-img center-el-in-box"
+                        onError={e => bookImageOnError(e)}
+                    />
+                </div>
 
                 <div className="book-progress-state">
                     <div className="bp-state-number">

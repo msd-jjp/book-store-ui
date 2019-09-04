@@ -8,10 +8,19 @@
     cursor: pointer;
     position: relative;
 
-    // .collection-grid-book-show {
-    .lib-img {
-      max-width: 100%;
+    .img-container {
+      position: relative;
+      overflow: hidden;
+
+      .img-view-scaffolding {
+        visibility: hidden;
+        max-width: 100%;
+      }
+      .lib-img {
+        max-width: 100%;
+      }
     }
+
     .book-progress-state {
       position: absolute;
       top: 0rem;
