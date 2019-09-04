@@ -475,59 +475,89 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                             (this.props.library.data.length || this.props.collection.data.length)
                                 ?
                                 <>
-                                    {this.props.collection.data.map((collection: ICollection, collection_index) => (
-                                        <div className="col-4 p-align-inverse-0 mb-3" key={collection_index}>
-                                            <div className="item-wrapper">
-                                                <div className="cursor-pointer" onClick={() => this.gotoCollection(collection.title)}>
-                                                    <img src={this.defaultBookImagePath}
-                                                        className="item-size" alt="" onError={e => this.bookImageOnError(e)} />
+                                    {this.props.collection.data.map((collection: ICollection, collection_index) => {
 
-                                                    <div className="collection-detail p-2">
-                                                        <div className="collection-detail-inner">
-                                                            <div className="book-wrapper">
-                                                                <div className="row pr-3">
-                                                                    {collection.books.slice(0, 4).map((sampleBook, sampleBook_index) => {
-                                                                        const book_img =
-                                                                            (sampleBook.images && sampleBook.images.length && this.getImageUrl(sampleBook.images[0]))
-                                                                            ||
-                                                                            this.defaultBookImagePath;
+                                        const img_list_4: string[] = [];
+                                        for (let i = 0; i < 4; i++) {
+                                            const col_book_i = collection.books[i];
+                                            let book_img_i = '';
+                                            if (col_book_i) {
+                                                book_img_i = (
+                                                    col_book_i.images &&
+                                                    col_book_i.images.length &&
+                                                    this.getImageUrl(col_book_i.images[0])
+                                                ) || this.defaultBookImagePath;
+                                            }
+                                            img_list_4.push(book_img_i);
+                                        }
 
-                                                                        return (
-                                                                            <div className="col-6 book p-align-inverse-0 mb-2" key={sampleBook_index}>
-                                                                                <img src={book_img} alt="book"
-                                                                                    onError={e => this.bookImageOnError(e)} />
-                                                                            </div>
-                                                                        )
-                                                                    })}
+                                        return (
+                                            // key={collection_index}
+                                            <div className="col-4 p-align-inverse-0 mb-3" key={collection.title}>
+                                                <div className="item-wrapper">
+                                                    <div className="cursor-pointer" onClick={() => this.gotoCollection(collection.title)}>
+                                                        <img src={this.defaultBookImagePath}
+                                                            className="item-size" alt="" onError={e => this.bookImageOnError(e)} />
+
+                                                        <div className="collection-detail p-2">
+                                                            <div className="collection-detail-inner">
+                                                                <div className="book-wrapper">
+                                                                    <div className="row pr-3">
+                                                                        {/* {collection.books.slice(0, 4).map((sampleBook, sampleBook_index) => { */}
+                                                                        {img_list_4.slice(0, 4).map((imgUrl, imgUrl_index) => {
+                                                                            // const book_img =
+                                                                            //     (sampleBook.images && sampleBook.images.length && this.getImageUrl(sampleBook.images[0]))
+                                                                            //     ||
+                                                                            //     this.defaultBookImagePath;
+
+                                                                            return (
+                                                                                <div className="col-6 book p-align-inverse-0 mb-2" key={imgUrl_index}>
+                                                                                    <div className={"img-container "+(imgUrl?'':'empty')}>
+                                                                                        <img src="/static/media/img/icon/default-book.png" className="img-view-scaffolding" alt="book" />
+                                                                                        {
+                                                                                            imgUrl ?
+                                                                                                <img src={imgUrl}
+                                                                                                    alt="book"
+                                                                                                    className="book-img center-el-in-box"
+                                                                                                    onError={e => this.bookImageOnError(e)}
+                                                                                                />
+                                                                                                : ''
+                                                                                        }
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            )
+                                                                        })}
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div className="collection-name small">{collection.title}</div>
-                                                            <div className="collection-book-count small float-right text-right">
-                                                                {collection.books.length}
+                                                                <div className="collection-name small">{collection.title}</div>
+                                                                <div className="collection-book-count small float-right text-right">
+                                                                    {collection.books.length}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
 
-                                                <div className={
-                                                    "collection-actions "
-                                                    + (this.state.isCollection_editMode ? '' : 'd-none')
-                                                }>
-                                                    <div className="actions">
-                                                        <div className="action download" onClick={() => this.openModal_downloadCollection(collection.title)}>
-                                                            <i className="fa fa-download"></i>
-                                                        </div>
-                                                        <div className="action rename" onClick={() => this.openModal_renameCollections(collection.title)}>
-                                                            <i className="fa fa-pencil"></i>
-                                                        </div>
-                                                        <div className="action remove" onClick={() => this.openModal_removeCollection(collection.title)}>
-                                                            <i className="fa fa-trash"></i>
+                                                    <div className={
+                                                        "collection-actions "
+                                                        + (this.state.isCollection_editMode ? '' : 'd-none')
+                                                    }>
+                                                        <div className="actions">
+                                                            <div className="action download" onClick={() => this.openModal_downloadCollection(collection.title)}>
+                                                                <i className="fa fa-download"></i>
+                                                            </div>
+                                                            <div className="action rename" onClick={() => this.openModal_renameCollections(collection.title)}>
+                                                                <i className="fa fa-pencil"></i>
+                                                            </div>
+                                                            <div className="action remove" onClick={() => this.openModal_removeCollection(collection.title)}>
+                                                                <i className="fa fa-trash"></i>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        )
+                                    })}
                                     {uncollected_book_list_length ?
                                         <div className="col-4 p-align-inverse-0 mb-3">
                                             <div className="item-wrapper uncollected">
