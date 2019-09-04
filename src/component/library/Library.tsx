@@ -26,6 +26,7 @@ import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { AddToCollection } from './collection/add-to-collection/AddToCollection';
 import { IBook } from '../../model/model.book';
 import { libraryItem_viewGrid_render, libraryItem_viewList_render } from './libraryViewTemplate';
+import { CmpUtility } from '../_base/CmpUtility';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -513,7 +514,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                                             return (
                                                                                 <div className="col-6 book p-align-inverse-0 mb-2" key={imgUrl_index}>
                                                                                     <div className={"img-container "+(imgUrl?'':'empty')}>
-                                                                                        <img src="/static/media/img/icon/default-book.png" className="img-view-scaffolding" alt="book" />
+                                                                                        <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
                                                                                         {
                                                                                             imgUrl ?
                                                                                                 <img src={imgUrl}

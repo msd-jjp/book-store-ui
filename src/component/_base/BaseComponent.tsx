@@ -9,6 +9,7 @@ import 'moment/locale/fa';
 import 'moment/locale/ar';
 import { Utility } from '../../asset/script/utility';
 import { IPerson } from '../../model/model.person';
+import { CmpUtility } from './CmpUtility';
 
 interface IHandleError {
     error?: any;
@@ -26,8 +27,8 @@ interface IBaseProps {
 }
 
 export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> extends React.Component<p, S, SS> {
-    image_pre_url = '/api/serve-files';
-    defaultBookImagePath = "/static/media/img/icon/default-book.png";
+    image_pre_url = CmpUtility.image_pre_url; // '/api/serve-files';
+    defaultBookImagePath = CmpUtility.defaultBookImagePath; // "/static/media/img/icon/default-book.png";
 
     /* async  */
     handleError(handleErrorObj: IHandleError): IHandleErrorResolve { // Promise<IHandleErrorResolve>

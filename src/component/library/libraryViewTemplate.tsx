@@ -1,52 +1,7 @@
 import { ILibrary } from "../../model/model.library";
-import { BOOK_TYPES, BOOK_ROLES } from "../../enum/Book";
-import { IPerson } from "../../model/model.person";
+import { BOOK_TYPES } from "../../enum/Book";
 import React from 'react';
-import { IBook } from "../../model/model.book";
-
-const image_pre_url = '/api/serve-files';
-const defaultBookImagePath = "/static/media/img/icon/default-book.png";
-
-function getImageUrl(imageId: string): string {
-    return image_pre_url + '/' + imageId;
-}
-
-function imageOnError(e: any, defaultImagePath: string) {
-    if (e.target.src !== window.location.origin + defaultImagePath) {
-        e.target.src = defaultImagePath;
-    }
-}
-
-function bookImageOnError(e: any) {
-    return imageOnError(e, "/static/media/img/icon/broken-book.png");
-}
-
-function getPersonFullName(person: IPerson): string {
-    let name = person.name || '';
-    let last_name = person.last_name || '';
-    name = name ? name + ' ' : '';
-    return (name + last_name).trim();
-}
-
-function getBook_firstImg(book: IBook): string {
-    const img_path =
-        (book.images && book.images.length && getImageUrl(book.images[0]))
-        ||
-        defaultBookImagePath;
-    return img_path;
-}
-
-function getBook_firstWriterFullName(book: IBook): string {
-    const writerList = book.roles.filter(
-        r => r.role === BOOK_ROLES.Writer
-    );
-
-    let writerName = '';
-    if (writerList && writerList.length && writerList[0].person) {
-        writerName = getPersonFullName(writerList[0].person);
-    }
-    return writerName;
-}
+import { CmpUtility } from "../_base/CmpUtility";
 
 export function calc_read_percent(item: ILibrary): string {
     let read = 0;
@@ -73,30 +28,22 @@ export function libraryItem_viewList_render(
     onItemSelect: (item: ILibrary) => any,
     isItemSelected: (item: ILibrary) => any
 ): JSX.Element {
-    const book_img = getBook_firstImg(item.book);
-    const writerName = getBook_firstWriterFullName(item.book);
+    const book_img = CmpUtility.getBook_firstImg(item.book);
+    const writerName = CmpUtility.getBook_firstWriterFullName(item.book);
 
     return (
         <div className="view-list-item pb-2 mb-2" >
             <div className="item-wrapper row" onClick={() => onItemSelect(item)}>
                 <div className="img-wrapper-- col-4">
                     <div className="img-container">
-                        <img src="/static/media/img/icon/default-book.png" className="img-view-scaffolding" alt="book" />
+                        <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
 
-                        {/* <img src={book_img}
-                            alt="book"
-                            onError={e => bookImageOnError(e)}
-                        /> */}
                         <img src={book_img}
                             alt="book"
                             className="lib-img center-el-in-box"
-                            onError={e => bookImageOnError(e)}
+                            onError={e => CmpUtility.bookImageOnError(e)}
                         />
                     </div>
-                    {/* <div className="img-container__">
-                        <img src={book_img} alt="book"
-                            onError={e => bookImageOnError(e)} />
-                    </div> */}
                 </div>
                 <div className="detail-wrapper col-8 p-align-0">
                     <div className="book-title">{item.book.title}</div>
@@ -125,18 +72,18 @@ export function libraryItem_viewGrid_render(
     onItemSelect: (item: ILibrary) => any,
     isItemSelected: (item: ILibrary) => any
 ): JSX.Element {
-    const book_img = getBook_firstImg(item.book);
+    const book_img = CmpUtility.getBook_firstImg(item.book);
 
     return (
         <div className="col-4 p-align-inverse-0 mb-3">
             <div className="item-wrapper" onClick={() => onItemSelect(item)}>
                 <div className="img-container">
-                    <img src="/static/media/img/icon/default-book.png" className="img-view-scaffolding" alt="book" />
+                    <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
 
                     <img src={book_img}
                         alt="book"
                         className="lib-img center-el-in-box"
-                        onError={e => bookImageOnError(e)}
+                        onError={e => CmpUtility.bookImageOnError(e)}
                     />
                 </div>
 

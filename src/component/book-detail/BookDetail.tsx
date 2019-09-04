@@ -25,6 +25,7 @@ import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { ICartItems, ICartItem } from "../../redux/action/cart/cartAction";
 import { action_add_to_cart, action_remove_from_cart } from "../../redux/action/cart";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
+import { CmpUtility } from "../_base/CmpUtility";
 // import { IPerson } from "../../model/model.person";
 
 
@@ -228,7 +229,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <div className="row">
             <div className="col-5">
               <div className="book-image-wrapper">
-                <img src="/static/media/img/icon/default-book.png" className="img-view-scaffolding" alt="book" />
+                <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
                 <img src={book_image} alt="book" onError={e => this.bookImageOnError(e)} className="book-img center-el-in-box" />
               </div>
             </div>
