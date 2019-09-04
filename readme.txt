@@ -128,3 +128,7 @@ notification (r&d)
 cmp search check library book exist (progress & downloaded)
 
 ====================================================================================
+
+get data from storage first
+
+====================================================================================

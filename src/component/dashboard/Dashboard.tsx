@@ -372,7 +372,16 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
           >
             {list.map((_no: number, bookIndex) => (
               <div key={bookIndex} className="item">
-                <img src={this.defaultBookImagePath} alt="book" />
+                <div className="img-container">
+                  <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
+
+                  {/* <img src={CmpUtility.getBook_firstImg(book)}
+                      alt="book"
+                      className="book-img center-el-in-box"
+                      onError={e => CmpUtility.bookImageOnError(e)}
+                    /> */}
+                </div>
+                {/* <img src={this.defaultBookImagePath} alt="book" /> */}
                 <span className="item-loader-wrapper">
                   <div className="spinner-grow item-loader">
                     <span className="sr-only">{Localization.loading_with_dots}</span>
