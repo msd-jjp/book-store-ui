@@ -33,6 +33,8 @@ interface ILocalization extends LocalizedStringsMethods {
             your_purchase_completed: string;
             your_collection_will_be_removed_continue: string;
             your_collection_will_be_downloaded_continue: string;
+            file_could_not_be_uploaded: string;
+            one_img_upload_allowed_remove_existing_one: string;
         },
         back: {
             [key: string]: any; // todo
@@ -93,6 +95,8 @@ interface ILocalization extends LocalizedStringsMethods {
         mobileFormat: string;
         smsCodeFormat: string;
         confirmPassword: string;
+        emailFormat: string;
+        phoneFormat: string;
     },
     username: string;
     password: string;
@@ -101,6 +105,7 @@ interface ILocalization extends LocalizedStringsMethods {
     phone: string;
     address: string;
     mobile: string;
+    email: string;
     confirm_password: string;
     invalid_value: string;
     required_field: string;
@@ -290,6 +295,9 @@ interface ILocalization extends LocalizedStringsMethods {
     profile: string;
     profile_image: string;
     exist_in_library: string;
+    preview: string;
+    drag_and_drop: string;
+    choose_image: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

@@ -23,6 +23,8 @@ export const en = {
             your_purchase_completed: 'your purchase is completed',
             your_collection_will_be_removed_continue: 'deleting a collection will not remove the books contained within the collection.',
             your_collection_will_be_downloaded_continue: 'all the book in the collection will be downloaded.',
+            file_could_not_be_uploaded: 'the file could not be uploaded.',
+            one_img_upload_allowed_remove_existing_one: "one img upload allowed, remove existing one",
         },
         back: {
             user_already_exists: 'user already exists',
@@ -82,6 +84,8 @@ export const en = {
         mobileFormat: 'mobile format is not valid',
         smsCodeFormat: 'code is not valid.',
         confirmPassword: 'confirm password not match password.',
+        emailFormat: 'email format is not valid',
+        phoneFormat: 'phone format is not valid',
     },
     username: 'username',
     password: 'password',
@@ -90,6 +94,7 @@ export const en = {
     phone: 'phone',
     address: 'address',
     mobile: 'mobile',
+    email: 'email',
     confirm_password: 'confirm password',
     invalid_value: 'invalid value',
     required_field: 'required field',
@@ -294,4 +299,7 @@ export const en = {
     profile: "profile",
     profile_image: "profile image",
     exist_in_library: 'exist in library',
+    preview: "preview",
+    drag_and_drop: "drag and drop",
+    choose_image: 'choose image',
 }

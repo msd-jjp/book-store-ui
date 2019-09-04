@@ -29,6 +29,7 @@ interface IBaseProps {
 export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> extends React.Component<p, S, SS> {
     image_pre_url = CmpUtility.image_pre_url; // '/api/serve-files';
     defaultBookImagePath = CmpUtility.defaultBookImagePath; // "/static/media/img/icon/default-book.png";
+    defaultPersonImagePath = "/static/media/img/icon/avatar.png";
 
     /* async  */
     handleError(handleErrorObj: IHandleError): IHandleErrorResolve { // Promise<IHandleErrorResolve>
@@ -172,6 +173,10 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
 
     bookImageOnError(e: any) {
         return this.imageOnError(e, "/static/media/img/icon/broken-book.png");
+    }
+
+    personImageOnError(e: any) {
+        return this.imageOnError(e, "/static/media/img/icon/broken-avatar.png");
     }
 
     getPersonFullName(person: IPerson): string {

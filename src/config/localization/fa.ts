@@ -23,6 +23,8 @@ export const fa = {
             your_purchase_completed: 'خرید شما تکمیل شد',
             your_collection_will_be_removed_continue: 'حذف کلکسیون، کتاب های موجود در آن را حذف نخواهد کرد.',
             your_collection_will_be_downloaded_continue: 'همه کتاب های این کلکسیون دانلود می شود.',
+            file_could_not_be_uploaded: 'فایل قابل آپلود نیست.',
+            one_img_upload_allowed_remove_existing_one: "تنها می توانید یک تصویر بارگذاری کنید، لطفا عکس فعلی را حذف کنید.",
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',
@@ -82,6 +84,8 @@ export const fa = {
         mobileFormat: 'فرمت موبایل صحیح نیست',
         smsCodeFormat: 'فرمت کد صحیح نیست.',
         confirmPassword: 'رمز عبور با تایید آن همخوانی ندارد.',
+        emailFormat: 'فرمت ایمیل صحیح نیست',
+        phoneFormat: 'فرمت تلفن صحیح نیست',
     },
     username: 'نام کاربری',
     password: 'رمز عبور',
@@ -90,6 +94,7 @@ export const fa = {
     phone: 'تلفن',
     address: 'آدرس',
     mobile: 'تلفن همراه',
+    email: 'ایمیل',
     confirm_password: 'تایید رمز عبور',
     invalid_value: 'مقدار نامعتبر است',
     required_field: 'فیلد ضروری است',
@@ -297,4 +302,7 @@ export const fa = {
     profile: "پروفایل",
     profile_image: "تصویر پروفایل",
     exist_in_library: 'موجود در کتابخانه',
+    preview: "پیش نمایش",
+    drag_and_drop: "بکشید و رها کنید",
+    choose_image: 'انتخاب تصویر',
 }
