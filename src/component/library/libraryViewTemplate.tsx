@@ -79,11 +79,24 @@ export function libraryItem_viewList_render(
     return (
         <div className="view-list-item pb-2 mb-2" >
             <div className="item-wrapper row" onClick={() => onItemSelect(item)}>
-                <div className="img-wrapper col-4">
-                    <div className="img-container__">
+                <div className="img-wrapper-- col-4">
+                    <div className="img-container">
+                        <img src="/static/media/img/icon/default-book.png" className="img-view-scaffolding" alt="book" />
+
+                        {/* <img src={book_img}
+                            alt="book"
+                            onError={e => bookImageOnError(e)}
+                        /> */}
+                        <img src={book_img}
+                            alt="book"
+                            className="lib-img center-el-in-box"
+                            onError={e => bookImageOnError(e)}
+                        />
+                    </div>
+                    {/* <div className="img-container__">
                         <img src={book_img} alt="book"
                             onError={e => bookImageOnError(e)} />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="detail-wrapper col-8 p-align-0">
                     <div className="book-title">{item.book.title}</div>
