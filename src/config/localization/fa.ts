@@ -53,7 +53,7 @@ export const fa = {
 
             filter_required: 'filter object is not in data',
             upload_failed: 'بارگذاری فایل با مشکل مواجه شد.',
-            invalid_entity: 'entity is not right instance of Class',
+            invalid_entity: 'خطا از سرویس دهنده رخ داد.',
             access_denied: 'دسترسی به این مورد امکانپذیر نمی باشد',
             already_liked: 'شما قبلا این نظر را مفید اعلام کردید.',
             comment_not_found: 'نظر یافت نشد.',
