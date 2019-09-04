@@ -21,6 +21,7 @@ import { ToastContainer } from "react-toastify";
 import { BOOK_ROLES } from "../../enum/Book";
 import { NavLink } from "react-router-dom";
 import { AddToCollection } from "../library/collection/add-to-collection/AddToCollection";
+import { CmpUtility } from "../_base/CmpUtility";
 
 interface IProps {
   logged_in_user?: IUser | null;
@@ -326,14 +327,23 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                   className="item"
                   onClick={() => this.gotoBookDetail(book.id)}
                 >
-                  <img
+                  <div className="img-container">
+                    <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
+
+                    <img src={CmpUtility.getBook_firstImg(book)}
+                      alt="book"
+                      className="book-img center-el-in-box"
+                      onError={e => CmpUtility.bookImageOnError(e)}
+                    />
+                  </div>
+                  {/* <img
                     src={
                       (book.images && this.getImageUrl(book.images[0])) ||
                       this.defaultBookImagePath
                     }
                     alt="book"
                     onError={e => this.bookImageOnError(e)}
-                  />
+                  /> */}
                   <span className="item-number">{bookIndex}</span>
                 </div>
               ))}
