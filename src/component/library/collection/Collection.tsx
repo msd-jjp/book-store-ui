@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../../redux/app_state';
@@ -9,7 +9,7 @@ import { Localization } from '../../../config/localization/localization';
 // import { LibraryService } from '../../../service/service.library';
 import { IToken } from '../../../model/model.token';
 // import { CollectionService } from '../../../service/service.collection';
-import { BOOK_TYPES, BOOK_ROLES } from '../../../enum/Book';
+// import { BOOK_TYPES, BOOK_ROLES } from '../../../enum/Book';
 import { ToastContainer } from 'react-toastify';
 import { Modal, Dropdown } from 'react-bootstrap';
 import { BtnLoader } from '../../form/btn-loader/BtnLoader';
@@ -25,6 +25,7 @@ import { CollectionService } from '../../../service/service.collection';
 import { AddToCollection } from './add-to-collection/AddToCollection';
 import { IBook } from '../../../model/model.book';
 import { NETWORK_STATUS } from '../../../enum/NetworkStatus';
+import { libraryItem_viewList_render, libraryItem_viewGrid_render } from '../libraryViewTemplate';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -350,72 +351,45 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         });
     }
 
-    calc_read_percent(item: ILibrary): string {
-        let read = 0;
-        let total = 0;
+    // calc_read_percent(item: ILibrary): string {
+    //     let read = 0;
+    //     let total = 0;
 
-        if (item.book.type === BOOK_TYPES.Audio) {
-            read = item.status.read_duration;
-            total = +item.book.duration;
+    //     if (item.book.type === BOOK_TYPES.Audio) {
+    //         read = item.status.read_duration;
+    //         total = +item.book.duration;
 
-        } else if (item.book.type === BOOK_TYPES.Epub || item.book.type === BOOK_TYPES.Pdf) {
-            read = item.status.read_pages;
-            total = +item.book.pages;
-        }
+    //     } else if (item.book.type === BOOK_TYPES.Epub || item.book.type === BOOK_TYPES.Pdf) {
+    //         read = item.status.read_pages;
+    //         total = +item.book.pages;
+    //     }
 
-        if (total) {
-            return Math.floor(((read || 0) * 100) / +total) + '%';
-        } else {
-            return '0%';
-        }
-    }
+    //     if (total) {
+    //         return Math.floor(((read || 0) * 100) / +total) + '%';
+    //     } else {
+    //         return '0%';
+    //     }
+    // }
 
     view_grid_render() {
         return (
             <>
-                <div className={"collection-view-grid-wrapper-- library-items-view-grid-wrapper mr-3-- mt-3 "
+                <div className={"library-items-view-grid-wrapper mt-3 "
                     + (this.state.collection_library_data.length ? 'mr-3' : '')
                 }>
                     <div className="row">
                         {
                             this.state.collection_library_data.length
                                 ?
-                                this.state.collection_library_data.map((item: ILibrary, index) => {
-                                    let book_img =
-                                        (item.book.images && item.book.images.length && this.getImageUrl(item.book.images[0]))
-                                        ||
-                                        this.defaultBookImagePath;
-
-                                    return (
-                                        <div className="col-4 p-align-inverse-0 mb-3" key={index}>
-                                            <div className="item-wrapper" onClick={() => this.onItemSelect(item)}>
-                                                <img src={book_img}
-                                                    alt="book"
-                                                    className="collection-grid-book-show-- lib-img"
-                                                    onError={e => this.bookImageOnError(e)} />
-
-                                                <div className="book-progress-state">
-                                                    <div className="bp-state-number">
-                                                        <div className="text">{this.calc_read_percent(item)}</div>
-                                                    </div>
-                                                    <div className="bp-state-arrow" />
-                                                </div>
-                                                <div className="book-download">
-                                                    <i className="fa fa-check" />
-                                                </div>
-
-                                                <div className={
-                                                    "selected-item-wrapper "
-                                                    + (this.isItemSelected(item) ? '' : 'd-none')
-                                                }>
-                                                    <div className="selected-icon-wrapper">
-                                                        <i className="icon fa fa-check"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                })
+                                this.state.collection_library_data.map((item: ILibrary) => (
+                                    <Fragment key={item.id}>
+                                        {libraryItem_viewGrid_render(
+                                            item,
+                                            (it) => this.onItemSelect(it),
+                                            (it) => this.isItemSelected(it)
+                                        )}
+                                    </Fragment>
+                                ))
                                 :
                                 <div className="col-12">
                                     <h4 className="text-center text-warning">{Localization.no_item_found}</h4>
@@ -429,57 +403,19 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     view_list_render() {
         return (
             <>
-                <div className="collection-view-list-wrapper-- library-items-view-list-wrapper mt-3">
+                <div className="library-items-view-list-wrapper mt-3">
                     {
                         this.state.collection_library_data.length
                             ?
-                            this.state.collection_library_data.map((item: ILibrary, index) => {
-                                let book_img =
-                                    (item.book.images && item.book.images.length && this.getImageUrl(item.book.images[0]))
-                                    ||
-                                    this.defaultBookImagePath;
-
-                                let writerList = item.book.roles.filter(
-                                    r => r.role === BOOK_ROLES.Writer
-                                );
-
-                                let writerName = '';
-                                if (writerList && writerList.length && writerList[0].person) {
-                                    writerName = this.getPersonFullName(writerList[0].person);
-                                }
-
-                                return (
-                                    <div className="view-list-item py-2__ pb-2 mb-2" key={index}>
-                                        <div className="item-wrapper row" onClick={() => this.onItemSelect(item)}>
-                                            <div className="img-wrapper col-4">
-                                                <div className="img-container__ mt-2__">
-                                                    <img src={book_img} alt="book"
-                                                        onError={e => this.bookImageOnError(e)} />
-                                                </div>
-                                            </div>
-                                            <div className="detail-wrapper col-8 p-align-0">
-                                                <div className="book-title">{item.book.title}</div>
-                                                <span className="book-writer text-muted py-2 small">{writerName}</span>
-                                                <span className="book-progress mr-2 small">{this.calc_read_percent(item)}</span>
-                                                {/* todo: size */}
-                                                {/* <span className="book-volume small">789.3 kb</span> */}
-                                                <i className="fa fa-check-circle downloaded-icon"></i>
-                                            </div>
-                                            {/* <div className="col-2 text-right is-downloaded pt-1">
-                                        
-                                    </div> */}
-                                            <div className={
-                                                "selected-item-wrapper "
-                                                + (this.isItemSelected(item) ? '' : 'd-none')
-                                            }>
-                                                <div className="selected-icon-wrapper">
-                                                    <i className="icon fa fa-check"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            })
+                            this.state.collection_library_data.map((item: ILibrary) => (
+                                <Fragment key={item.id}>
+                                    {libraryItem_viewList_render(
+                                        item,
+                                        (it) => this.onItemSelect(it),
+                                        (it) => this.isItemSelected(it)
+                                    )}
+                                </Fragment>
+                            ))
                             :
                             <div className="col-12">
                                 <h4 className="text-center text-warning">{Localization.no_item_found}</h4>

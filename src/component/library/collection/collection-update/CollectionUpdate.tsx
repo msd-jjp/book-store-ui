@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../../../redux/app_state';
@@ -7,7 +7,7 @@ import { TInternationalization } from '../../../../config/setup';
 import { BaseComponent } from '../../../_base/BaseComponent';
 import { Localization } from '../../../../config/localization/localization';
 import { IToken } from '../../../../model/model.token';
-import { BOOK_TYPES } from '../../../../enum/Book';
+// import { BOOK_TYPES } from '../../../../enum/Book';
 import { ToastContainer } from 'react-toastify';
 import { Dropdown } from 'react-bootstrap';
 import { History } from "history";
@@ -18,6 +18,7 @@ import { ILibrary_schema } from '../../../../redux/action/library/libraryAction'
 import { ICollection_schema } from '../../../../redux/action/collection/collectionAction';
 import { CollectionService } from '../../../../service/service.collection';
 import { NETWORK_STATUS } from '../../../../enum/NetworkStatus';
+import { libraryItem_viewGrid_render } from '../../libraryViewTemplate';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -179,72 +180,45 @@ class CollectionUpdateComponent extends BaseComponent<IProps, IState> {
         )
     }
 
-    calc_read_percent(item: ILibrary): string {
-        let read = 0;
-        let total = 0;
+    // calc_read_percent(item: ILibrary): string {
+    //     let read = 0;
+    //     let total = 0;
 
-        if (item.book.type === BOOK_TYPES.Audio) {
-            read = item.status.read_duration;
-            total = +item.book.duration;
+    //     if (item.book.type === BOOK_TYPES.Audio) {
+    //         read = item.status.read_duration;
+    //         total = +item.book.duration;
 
-        } else if (item.book.type === BOOK_TYPES.Epub || item.book.type === BOOK_TYPES.Pdf) {
-            read = item.status.read_pages;
-            total = +item.book.pages;
-        }
+    //     } else if (item.book.type === BOOK_TYPES.Epub || item.book.type === BOOK_TYPES.Pdf) {
+    //         read = item.status.read_pages;
+    //         total = +item.book.pages;
+    //     }
 
-        if (total) {
-            return Math.floor(((read || 0) * 100) / +total) + '%';
-        } else {
-            return '0%';
-        }
-    }
+    //     if (total) {
+    //         return Math.floor(((read || 0) * 100) / +total) + '%';
+    //     } else {
+    //         return '0%';
+    //     }
+    // }
 
     view_grid_render() {
         return (
             <>
-                <div className={"collection-view-grid-wrapper-- library-items-view-grid-wrapper mr-3-- mt-3 "
+                <div className={"library-items-view-grid-wrapper mt-3 "
                     + (this.state.collection_library_data.length ? 'mr-3' : '')
                 }>
                     <div className="row">
                         {
                             this.state.collection_library_data.length
                                 ?
-                                this.state.collection_library_data.map((item: ILibrary, index) => {
-                                    let book_img =
-                                        (item.book.images && item.book.images.length && this.getImageUrl(item.book.images[0]))
-                                        ||
-                                        this.defaultBookImagePath;
-
-                                    return (
-                                        <div className="col-4 p-align-inverse-0 mb-3" key={index}>
-                                            <div className="item-wrapper" onClick={() => this.toggleSelect_libraryData(item)}>
-                                                <img src={book_img}
-                                                    alt="book"
-                                                    className="collection-grid-book-show-- lib-img"
-                                                    onError={e => this.bookImageOnError(e)} />
-
-                                                <div className="book-progress-state">
-                                                    <div className="bp-state-number">
-                                                        <div className="text">{this.calc_read_percent(item)}</div>
-                                                    </div>
-                                                    <div className="bp-state-arrow" />
-                                                </div>
-                                                <div className="book-download">
-                                                    <i className="fa fa-check" />
-                                                </div>
-
-                                                <div className={
-                                                    "selected-item-wrapper "
-                                                    + (this.isItemSelected(item) ? '' : 'd-none')
-                                                }>
-                                                    <div className="selected-icon-wrapper">
-                                                        <i className="icon fa fa-check"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                })
+                                this.state.collection_library_data.map((item: ILibrary) => (
+                                    <Fragment key={item.id}>
+                                        {libraryItem_viewGrid_render(
+                                            item,
+                                            (it) => this.toggleSelect_libraryData(it),
+                                            (it) => this.isItemSelected(it)
+                                        )}
+                                    </Fragment>
+                                ))
                                 :
                                 <div className="col-12">
                                     <h4 className="text-center text-warning">{Localization.no_item_found}</h4>
