@@ -64,131 +64,6 @@
     }
     // }
   }
-  // .row-wrapper {
-  .library-view-grid-wrapper_DELETE_ME {
-    //   width: 100%;
-    .item-wrapper {
-      width: 100%;
-      height: 100%; // auto;
-      text-align: center;
-      background-color: #f3f3f3;
-      cursor: pointer;
-
-      .library-grid-book-show {
-        max-width: 100%;
-      }
-      .book-progress-state {
-        position: absolute;
-        top: 0rem;
-        body:not(.rtl) & {
-          right: 0.5rem;
-        }
-        body.rtl & {
-          left: 0.5rem;
-        }
-
-        .bp-state-number {
-          width: 1.6rem;
-          height: 1.2rem;
-          background-color: rgba(0, 0, 0, 0.6);
-          font-size: 0.6rem;
-          color: white;
-          text-align: center;
-          .text {
-            @extend .center-el-in-box;
-            top: 40%;
-          }
-        }
-        .bp-state-arrow {
-          width: 0;
-          height: 0;
-          border-left: 0.8rem solid transparent;
-          border-right: 0.8rem solid transparent;
-          border-top: 0.6rem solid rgba(0, 0, 0, 0.6);
-        }
-      }
-      .book-download {
-        position: absolute;
-        bottom: 0.5rem;
-        body:not(.rtl) & {
-          right: 0.5rem;
-        }
-        body.rtl & {
-          left: 0.5rem;
-        }
-        i {
-          width: 1.5rem;
-          height: 1.5rem;
-          background-color: rgba(0, 0, 0, 0.6);
-          border-radius: 50%;
-          color: white;
-          text-align: center;
-          padding-top: 0.2rem;
-        }
-      }
-    }
-  }
-  // }
-
-  .library-view-list-wrapper_DELETE_ME {
-    .view-list-item {
-      border-bottom: 1px solid rgb(224, 224, 224);
-      // .list-row {
-      .item-wrapper {
-        cursor: pointer;
-      }
-      .img-wrapper {
-        // .img-container {
-        img {
-          max-width: 100%;
-        }
-        // }
-      }
-      .detail-wrapper {
-        .book-title {
-          font-weight: 500;
-          text-overflow: ellipsis;
-          text-transform: capitalize;
-          max-width: calc(100% - 1.5rem);
-          overflow-wrap: break-word;
-        }
-        .book-writer {
-          word-break: break-all;
-          text-transform: uppercase;
-          display: block;
-        }
-        .book-progress {
-          font-weight: 500;
-        }
-        .book-volume {
-          font-weight: 500;
-          direction: ltr;
-          display: inline-block;
-        }
-        .downloaded-icon {
-          position: absolute;
-          top: 0;
-          font-size: 1.5rem;
-          body:not(.rtl) & {
-            right: 1rem;
-          }
-          body.rtl & {
-            left: 1rem;
-          }
-        }
-      }
-      /* .is-downloaded {
-        .downloaded-icon {
-          font-size: 1.5rem;
-        }
-      } */
-      // }
-
-      &:last-child {
-        border-bottom: 0;
-      }
-    }
-  }
 
   .library-view-collection-wrapper {
     .item-wrapper {
@@ -213,18 +88,25 @@
           max-height: 100%;
           overflow: hidden;
           .book-wrapper {
-            // max-width: 90%;
-            /* body:not(.rtl) & {
-              margin-left: 5%;
-            }
-            body.rtl & {
-              margin-right: 5%;
-            } */
-            .book {
-              img {
+            .img-container {
+              position: relative;
+              overflow: hidden;
+              background-color: #f3f3f3;
+
+              .img-view-scaffolding {
+                visibility: hidden;
                 max-width: 100%;
               }
+              .book-img {
+                max-width: 100%;
+                max-height: 100%;
+              }
             }
+            // .book {
+            //   img {
+            //     max-width: 100%;
+            //   }
+            // }
           }
           .collection-name {
             width: 85%;
