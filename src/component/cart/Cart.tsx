@@ -228,7 +228,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
                           <div className="item-img-wrapper mr-3" onClick={() => this.gotoBookDetail(book.id)}>
                             <img src={book_image}
                               alt="book"
-                              className="item-img img-thumbnail rounded"
+                              className="item-img img-thumbnail rounded center-el-in-box"
                               onError={e => this.bookImageOnError(e)}
                             />
                           </div>

@@ -228,9 +228,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <div className="row">
             <div className="col-5">
               <div className="book-image-wrapper">
-                {/* <div className="slide-book"> */}
-                <img src={book_image} alt="book" onError={e => this.bookImageOnError(e)} />
-                {/* </div> */}
+                <img src="/static/media/img/icon/default-book.png" className="img-view-scaffolding" alt="book" />
+                <img src={book_image} alt="book" onError={e => this.bookImageOnError(e)} className="book-img center-el-in-box" />
               </div>
             </div>
             <div className="book-info-wrapper col-7 p-align-0">
