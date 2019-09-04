@@ -175,7 +175,17 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                         </li> */}
                         <li className="more-item list-group-item p-align-0" onClick={() => this.gotoProfile()}>
                             <i className="icon fa fa-user-circle-o mr-3"></i>
-                            <span className="text text-capitalize">{Localization.profile}</span>
+                            <span className="text text-capitalize mr-3">{Localization.profile}</span>
+                            <img className="w-50px h-50px radius-50px mr-3"
+                                src={
+                                    (this.props.logged_in_user!.person.image) ?
+                                        this.getImageUrl(this.props.logged_in_user!.person.image)
+                                        : this.defaultPersonImagePath
+                                }
+                                alt="avatar"
+                                onError={e => this.personImageOnError(e)}
+                            />
+                            <span>{this.getPersonFullName(this.props.logged_in_user!.person)}</span>
                         </li>
 
                         <li className="more-item list-group-item p-align-0">

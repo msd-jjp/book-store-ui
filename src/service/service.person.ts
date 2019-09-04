@@ -19,7 +19,7 @@ export class PersonService extends BaseService {
         return this.axiosTokenInstance.get(`/persons/${person_id}`);
     }
 
-    update(person: any, id: string) {
+    update(person: any, id: string): Promise<IAPI_Response<IPerson>> {
         return this.axiosTokenInstance.put(`/persons/${id}`, person);
     }
 
