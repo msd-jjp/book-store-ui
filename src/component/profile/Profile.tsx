@@ -16,6 +16,7 @@ import { Input } from "../form/input/Input";
 import Dropzone from "react-dropzone";
 import { AppRegex } from "../../config/regex";
 import { UploadService } from "../../service/service.upload";
+import { action_user_logged_in } from "../../redux/action/user";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -23,6 +24,7 @@ interface IProps {
   history: History;
   token: IToken;
   network_status: NETWORK_STATUS;
+  onUserLoggedIn: (user: IUser) => void;
 }
 
 interface IState {
@@ -112,11 +114,26 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
   }
 
   componentDidMount() {
-    this.fetchPrice();
+    this.fetchPerson();
   }
 
-  private async fetchPrice() {
-    this.setState({ ...this.state, fetchPerson_loader: true });
+  private async fetchPerson() {
+    let current_person = this.props.logged_in_user!.person;
+
+    this.setState({
+      ...this.state, fetchPerson_loader: true,
+      person: {
+        name: { value: current_person.name, isValid: !!current_person.name },
+        last_name: { value: current_person.last_name, isValid: !!current_person.last_name },
+        address: { value: current_person.address, isValid: true },
+        phone: { value: current_person.phone, isValid: true },
+        image: { value: current_person.image ? [current_person.image] : [], isValid: true },
+        email: { value: current_person.email, isValid: true },
+        cell_no: { value: current_person.cell_no, isValid: !!current_person.cell_no },
+      }
+    });
+
+    if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
 
     let res = await this._personService.byId(this.props.logged_in_user!.person.id).catch(error => {
       this.handleError({ error: error.response });
@@ -212,9 +229,19 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
     let res = await this._personService.update(newPerson, this.props.logged_in_user!.person.id).catch(e => {
       this.handleError({ error: e.response });
     });
+
     this.setState({ ...this.state, saveLoader: false });
+
     if (res) {
-      // this.props.history.push('/person/manage');
+      let logged_in_user = { ...this.props.logged_in_user! };
+      logged_in_user.person.name = res.data.name;
+      logged_in_user.person.last_name = res.data.last_name;
+      logged_in_user.person.address = res.data.address;
+      logged_in_user.person.phone = res.data.phone;
+      logged_in_user.person.image = res.data.image;
+      logged_in_user.person.email = res.data.email;
+
+      this.props.onUserLoggedIn(logged_in_user);
       this.apiSuccessNotify();
     }
 
@@ -427,9 +454,13 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
                           btnClassName="btn btn-primary btn-block"
                           loading={this.state.saveLoader}
                           onClick={() => this.update()}
-                          disabled={!this.state.isFormValid}
+                          disabled={!this.state.isFormValid || this.props.network_status === NETWORK_STATUS.OFFLINE}
                         >
                           {Localization.update}
+                          {
+                            this.props.network_status === NETWORK_STATUS.OFFLINE
+                              ? <i className="fa fa-wifi text-danger"></i> : ''
+                          }
                         </BtnLoader>
                       </div>
                     </div>
@@ -448,6 +479,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
   return {
+    onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
   };
 };
 
