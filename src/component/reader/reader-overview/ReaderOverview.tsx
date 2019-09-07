@@ -28,16 +28,17 @@ interface IProps {
 }
 
 interface IState {
-
+  book: IBook | undefined;
 }
 
 class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
-  state = {
+  private book_id: string = '';
 
+  state = {
+    book: undefined, // this.getBookFromLibrary(this.book_id),
   };
 
   private _personService = new PersonService();
-  private book_id: string = '';
 
   constructor(props: IProps) {
     super(props);
@@ -57,6 +58,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     const book = this.getBookFromLibrary(this.book_id);
     logged_in_user.person.current_book = book;
     this.props.onUserLoggedIn(logged_in_user);
+
+    this.setState({ ...this.state, book: this.getBookFromLibrary(this.book_id) });
   }
 
   getBookFromLibrary(book_id: string): IBook {
@@ -66,6 +69,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   async updateUserCurrentBook_server() {
     if (!this.book_id) return;
+    if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
 
     await this._personService.update(
       { current_book_id: this.book_id },
@@ -127,11 +131,17 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     )
   }
 
+  getBookTitle(): string {
+    const book: IBook | undefined = this.state.book;
+    if (!book) return '';
+    return book!.title;
+  }
+
   overview_body_render() {
     return (
       <>
         <div className="overview-body my-3">
-          <h5 className="mt-3 text-center">book title</h5>
+          <h5 className="mt-3 text-center">{this.getBookTitle()}</h5>
 
           {this.carousel_render()}
 

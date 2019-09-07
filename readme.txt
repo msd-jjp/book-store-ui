@@ -138,3 +138,7 @@ if not login layout main(noWrap) push '/login' to history
     in login after logedIn pop if has length else push dashboard.
 
 ====================================================================================
+
+upload progress bar if file size big (use https://github.com/fkhadra/react-toastify#use-a-controlled-progress-bar)
+
+====================================================================================
