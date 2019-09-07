@@ -103,7 +103,11 @@ class CartComponent extends BaseComponent<IProps, IState> {
       order_items,
       this.props.logged_in_user!.person.id
     ).catch(error => {
-      let msgObj = this.handleError({ error: error.response, notify: toastError });
+      let msgObj = this.handleError({
+        error: error.response,
+        notify: toastError,
+        toastOptions: { toastId: 'fetchPrice_error' }
+      });
       this.setState({ ...this.state, fetchPrice_loader: false, totalPrice: msgObj.body });
     });
 
@@ -168,13 +172,13 @@ class CartComponent extends BaseComponent<IProps, IState> {
     // person_id = 'caecc785-1ca9-4895-b03c-3b41630ecc26';
 
     let res_order = await this._orderService.order(order_items, person_id).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'buy_error' } });
       this.setState({ ...this.state, buy_loader: false });
     });
 
     if (res_order) {
       let res_checkout = await this._orderService.checkout(res_order.data.id, person_id).catch(error => {
-        this.handleError({ error: error.response });
+        this.handleError({ error: error.response, toastOptions: { toastId: 'buy_error' } });
         this.setState({ ...this.state, buy_loader: false });
       });
 
