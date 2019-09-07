@@ -1,5 +1,5 @@
 import { ILibrary } from "../../model/model.library";
-import { BOOK_TYPES } from "../../enum/Book";
+import { BOOK_TYPES, BOOK_ROLES } from "../../enum/Book";
 import React from 'react';
 import { CmpUtility } from "../_base/CmpUtility";
 
@@ -29,7 +29,8 @@ export function libraryItem_viewList_render(
     isItemSelected: (item: ILibrary) => any
 ): JSX.Element {
     const book_img = CmpUtility.getBook_firstImg(item.book);
-    const writerName = CmpUtility.getBook_firstWriterFullName(item.book);
+    // const writerName = CmpUtility.getBook_firstWriterFullName(item.book);
+    const writerName = CmpUtility.getBook_role_fisrt_fullName(item.book, BOOK_ROLES.Writer);
 
     return (
         <div className="view-list-item pb-2 mb-2" >

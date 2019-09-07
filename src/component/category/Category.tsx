@@ -14,6 +14,7 @@ import { BOOK_ROLES } from '../../enum/Book';
 import { ToastContainer } from 'react-toastify';
 import { IAPI_ResponseList } from '../../service/service.base';
 import { IUser } from '../../model/model.user';
+import { CmpUtility } from '../_base/CmpUtility';
 
 export type category_routeParam_categoryType = 'tag' | 'genre' | 'custom';
 
@@ -104,28 +105,33 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
         this.props.history.push(`/book-detail/${bookId}`);
     }
     card_render(book: IBook, bookIndex: any) {
-        let book_img =
-            (book.images && book.images.length && this.getImageUrl(book.images[0]))
-            ||
-            this.defaultBookImagePath;
-        let writerList = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
-        // let name = writerList && writerList.length && writerList[0].person.name;
-        // let last_name = writerList && writerList.length && writerList[0].person.last_name;
-        // let writerName = name + " " + last_name;
-        let writerName = '';
-        if (writerList && writerList.length && writerList[0] && writerList[0].person) {
-            writerName = this.getPersonFullName(writerList[0].person);
-        }
+        // let book_img =
+        //     (book.images && book.images.length && this.getImageUrl(book.images[0]))
+        //     ||
+        //     this.defaultBookImagePath;
 
-        let pressList: IBook['roles'] = book.roles.filter(
-            r => r.role === BOOK_ROLES.Press
-        );
-        let first_press: IBook['roles'][0];
-        let first_press_fullname;
-        if (pressList && pressList.length) {
-            first_press = pressList[0];
-            first_press_fullname = (first_press.person.name || '') + ' ' + (first_press.person.last_name || '');
-        }
+        const book_img = CmpUtility.getBook_firstImg(book);
+        const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(book, BOOK_ROLES.Writer);
+        const firstPressFullName = CmpUtility.getBook_role_fisrt_fullName(book, BOOK_ROLES.Press);
+
+        // let writerList = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
+        // // let name = writerList && writerList.length && writerList[0].person.name;
+        // // let last_name = writerList && writerList.length && writerList[0].person.last_name;
+        // // let writerName = name + " " + last_name;
+        // let writerName = '';
+        // if (writerList && writerList.length && writerList[0] && writerList[0].person) {
+        //     writerName = this.getPersonFullName(writerList[0].person);
+        // }
+
+        // let pressList: IBook['roles'] = book.roles.filter(
+        //     r => r.role === BOOK_ROLES.Press
+        // );
+        // let first_press: IBook['roles'][0];
+        // let first_press_fullname;
+        // if (pressList && pressList.length) {
+        //     first_press = pressList[0];
+        //     first_press_fullname = (first_press.person.name || '') + ' ' + (first_press.person.last_name || '');
+        // }
 
 
         return (
@@ -140,7 +146,15 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                         </div>
                         <div className="kc-book-title-img-section">
                             <div className="kc-book-title-img cursor-pointer" onClick={() => this.gotoBookDetail(book.id)}>
-                                <img src={book_img} alt="book" onError={e => this.bookImageOnError(e)} />
+                                <div className="img-container">
+                                    <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
+                                    <img src={book_img}
+                                        alt="book"
+                                        className="book-img center-el-in-box"
+                                        onError={e => CmpUtility.bookImageOnError(e)}
+                                    />
+                                </div>
+                                {/* <img src={book_img} alt="book" onError={e => this.bookImageOnError(e)} /> */}
                             </div>
                         </div>
                     </div>
@@ -151,17 +165,17 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                                 {book.title}
                             </div>
                             {
-                                writerName
+                                firstWriterFullName
                                     ?
-                                    <div className="kc-rank-card-author" title={writerName}>
-                                        {Localization.by_writerName} {writerName}
+                                    <div className="kc-rank-card-author" title={firstWriterFullName}>
+                                        {Localization.by_writerName} {firstWriterFullName}
                                     </div>
                                     : ''
                             }
-                            {first_press_fullname ?
-                                (<div className="kc-rank-card-publisher" title={first_press_fullname}>
+                            {firstPressFullName ?
+                                (<div className="kc-rank-card-publisher" title={firstPressFullName}>
                                     <span className="text-uppercase">{Localization.publisher}</span>
-                                    : {first_press_fullname}
+                                    : {firstPressFullName}
                                 </div>)
                                 : ''}
                             {/* <div className="kc-rank-card-agent" title="Russell Galen">

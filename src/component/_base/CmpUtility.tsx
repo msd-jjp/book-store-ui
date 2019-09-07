@@ -39,15 +39,27 @@ export abstract class CmpUtility {
         return img_path;
     }
 
-    static getBook_firstWriterFullName(book: IBook): string {
-        const writerList = book.roles.filter(
-            r => r.role === BOOK_ROLES.Writer
+    static getBook_role_fisrt_fullName(book: IBook, role: BOOK_ROLES): string {
+        const roleList = book.roles.filter(
+            r => r.role === BOOK_ROLES[role]
         );
-
-        let writerName = '';
-        if (writerList && writerList.length && writerList[0].person) {
-            writerName = CmpUtility.getPersonFullName(writerList[0].person);
+        let fullName = '';
+        if (roleList && roleList.length && roleList[0].person) {
+            fullName = CmpUtility.getPersonFullName(roleList[0].person);
         }
-        return writerName;
+        return fullName;
     }
+
+    // static getBook_firstWriterFullName(book: IBook): string {
+    //     const writerList = book.roles.filter(
+    //         r => r.role === BOOK_ROLES.Writer
+    //     );
+
+    //     let writerName = '';
+    //     if (writerList && writerList.length && writerList[0].person) {
+    //         writerName = CmpUtility.getPersonFullName(writerList[0].person);
+    //     }
+    //     return writerName;
+    // }
+
 }
