@@ -269,11 +269,11 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
   }
 
   onDropRejectedNotify(files: any[]) {
-    toast.warn(Localization.msg.ui.file_could_not_be_uploaded, this.getNotifyConfig());
+    toast.warn(Localization.msg.ui.file_could_not_be_uploaded, this.getNotifyConfig({ toastId: 'file_could_not_be_uploaded' }));
   }
 
   removePreviousImgNotify() {
-    toast.warn(Localization.msg.ui.one_img_upload_allowed_remove_existing_one, this.getNotifyConfig());
+    toast.warn(Localization.msg.ui.one_img_upload_allowed_remove_existing_one, this.getNotifyConfig({ toastId: 'one_img_upload_allowed_remove_existing_one' }));
   }
 
   onDrop(files: any[]) {
@@ -429,7 +429,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
                                             tmUrl = this.getTmpUrl(file);
                                           }
                                           return <Fragment key={index}>
-                                            <div className="file-item-row mb-2">
+                                            <div className="file-item-row justify-content-center mb-2">
                                               <button title={Localization.remove}
                                                 className="remove-file-btn btn btn-outline-danger btn-sm mr-2"
                                                 onClick={() => this.removeItemFromDZ(index/* , tmUrl */)}
