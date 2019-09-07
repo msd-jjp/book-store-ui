@@ -223,7 +223,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
       last_name: this.state.person.last_name.value,
       address: this.state.person.address.value,
       phone: this.state.person.phone.value,
-      image: imgUrls[0],
+      image: imgUrls[0] || null, // '',
       email: this.state.person.email.value,
       // cell_no: this.state.person.cell_no.value,
     }
