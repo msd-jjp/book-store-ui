@@ -13,6 +13,7 @@ import { IToken } from '../../model/model.token';
 import { History } from "history";
 import { BOOK_GENRE, BOOK_ROLES } from '../../enum/Book';
 import { category_routeParam_categoryType } from '../category/Category';
+import { CmpUtility } from '../_base/CmpUtility';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -305,24 +306,32 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                     <div ref={elRef => { carousel_el = elRef }} className="carousel-item-wrapper mb-4">
                         {bookList.map((book, bookIndex) => {
 
-                            const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
-                                this.defaultBookImagePath;
-                            let writerList = book.roles.filter(
-                                r => r.role === BOOK_ROLES.Writer
-                            );
-                            let first_writer_fullName = '';
-                            if (writerList.length) {
-                                // first_writer_fullName = writerList[0].person.name + ' ' + writerList[0].person.last_name;
-                                first_writer_fullName = this.getPersonFullName(writerList[0].person);
-                            }
+                            const book_image = CmpUtility.getBook_firstImg(book);
+                            const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(book, BOOK_ROLES.Writer);
+
+                            // const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
+                            //     this.defaultBookImagePath;
+                            // let writerList = book.roles.filter(
+                            //     r => r.role === BOOK_ROLES.Writer
+                            // );
+                            // let first_writer_fullName = '';
+                            // if (writerList.length) {
+                            //     // first_writer_fullName = writerList[0].person.name + ' ' + writerList[0].person.last_name;
+                            //     first_writer_fullName = this.getPersonFullName(writerList[0].person);
+                            // }
 
                             return (
                                 <div className="carousel-item" key={bookIndex}>
                                     <div className="img-wrapper" onClick={() => this.gotoBookDetail(book.id)}>
-                                        <img src={book_image} alt="book" onError={e => this.bookImageOnError(e)} />
+                                        <img
+                                            src={book_image}
+                                            alt="book"
+                                            onError={e => this.bookImageOnError(e)}
+                                            className="center-el-in-box"
+                                        />
                                     </div>
-                                    <span className="writer-name text-capitalize" title={first_writer_fullName}>
-                                        {first_writer_fullName}
+                                    <span className="writer-name text-capitalize" title={firstWriterFullName}>
+                                        {firstWriterFullName}
                                     </span>
                                     <div className="clearfix"></div>
                                     <Rating

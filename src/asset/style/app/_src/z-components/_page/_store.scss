@@ -98,8 +98,12 @@
           height: 11rem;
           // background-color: yellow;
           overflow: hidden;
+
+          position: relative;
+          background-color: #f3f3f3;
           img {
             max-width: 100%;
+            max-height: 100%;
           }
         }
         .writer-name {
