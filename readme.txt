@@ -131,3 +131,10 @@ use icon for book type(in cart, dashboard image small icon in corner, store, det
 set id for toaster --> if it is open, don't open another one or force close before open another.
 
 ====================================================================================
+
+====================================================================================
+
+if not login layout main(noWrap) push '/login' to history
+    in login after logedIn pop if has length else push dashboard.
+
+====================================================================================

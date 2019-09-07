@@ -1,0 +1,51 @@
+.reader-overview-wrapper {
+  .overview-header {
+    background: white;
+    // height: 3rem;
+    min-height: 3rem;
+    border-bottom: 1px solid rgb(212, 212, 212);
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    // @include box-shadow(0px 2px 5px 0px rgb(195, 194, 194));
+    @include box-shadow(0px 2px 5px 0px #e6e6e6);
+
+    .icon-wrapper {
+      line-height: 3rem;
+
+      .menu-dd {
+        .icon {
+          &.no-default-icon {
+            &:after {
+              display: none;
+            }
+          }
+        }
+        .dropdown-menu {
+          .dropdown-item {
+            // height: 2rem;
+            line-height: 1rem;
+            padding: 0.5rem 1rem;
+          }
+        }
+      }
+      .icon {
+        cursor: pointer;
+
+        &.disabled {
+          opacity: 0.5;
+          cursor: default;
+        }
+      }
+    }
+  }
+
+  .overview-body {
+  }
+
+  .overview-footer {
+    display: flex;
+    justify-content: space-between;
+  }
+}

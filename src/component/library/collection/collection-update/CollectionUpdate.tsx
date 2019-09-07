@@ -118,7 +118,7 @@ class CollectionUpdateComponent extends BaseComponent<IProps, IState> {
                                     {Localization.selected}
                                 </Dropdown.Toggle>
 
-                                <Dropdown.Menu className="dropdown-menu-right-- border-0 shadow2">
+                                <Dropdown.Menu className="dropdown-menu-right-- border-0 rounded-0 shadow2">
                                     <Dropdown.Item
                                         onClick={() => this.selectAll_libraryData()}
                                         className={

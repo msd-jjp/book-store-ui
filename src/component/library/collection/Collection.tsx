@@ -306,7 +306,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                                             className="icon fa fa-ellipsis-v text-dark p-2 no-default-icon">
                                         </Dropdown.Toggle>
 
-                                        <Dropdown.Menu className="dropdown-menu-right border-0 shadow2">
+                                        <Dropdown.Menu className="dropdown-menu-right border-0 rounded-0 shadow2">
                                             <Dropdown.Item
                                                 as={NavLink}
                                                 to={`/collection-update/${this.collectionTitle}`}
@@ -430,7 +430,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         if (this.state.isCollection_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
-            //open book reader
+            this.gotoReader(item.book.id);
         }
     }
 
@@ -504,6 +504,10 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     goBack() {
         if (this.props.history.length > 1) { this.props.history.goBack(); }
         else { this.props.history.push(`/library`); }
+    }
+
+    gotoReader(book_id: string) {
+        this.props.history.push(`/reader/${book_id}/overview`);
     }
 
     //#region modal download collection

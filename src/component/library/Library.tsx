@@ -184,7 +184,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             {Localization.selected}
                                         </Dropdown.Toggle>
 
-                                        <Dropdown.Menu className="dropdown-menu-right border-0 shadow2">
+                                        <Dropdown.Menu className="dropdown-menu-right border-0 rounded-0 shadow2">
                                             <Dropdown.Item
                                                 onClick={() => this.selectAll_libraryData()}
                                                 className={
@@ -406,7 +406,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         if (this.state.isLibrary_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
-            //open book reader
+            this.gotoReader(item.book.id);
         }
     }
 
@@ -452,6 +452,10 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
 
     deselectAll_libraryData() {
         this.setState({ ...this.state, library_data_selected: [] });
+    }
+
+    gotoReader(book_id: string) {
+        this.props.history.push(`/reader/${book_id}/overview`);
     }
     //#endregion
 
@@ -513,7 +517,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
 
                                                                             return (
                                                                                 <div className="col-6 book p-align-inverse-0 mb-2" key={imgUrl_index}>
-                                                                                    <div className={"img-container "+(imgUrl?'':'empty')}>
+                                                                                    <div className={"img-container " + (imgUrl ? '' : 'empty')}>
                                                                                         <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
                                                                                         {
                                                                                             imgUrl ?
