@@ -17,6 +17,7 @@ interface IHandleError {
     type?: 'ui' | 'back';
     body?: string;
     timeout?: number;
+    toastOptions?: ToastOptions;
 }
 export interface IHandleErrorResolve {
     body: string;
@@ -89,7 +90,12 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
 
         if (obj.notify) {
             // toast.configure(this.getNotifyContainerConfig());
-            toast.error(obj.body, this.getNotifyConfig({ autoClose: obj.timeout }));
+            const toastOptions = Object.assign((obj.toastOptions || {}), { autoClose: obj.timeout });
+            if (toastOptions.toastId && toast.isActive(toastOptions.toastId)) {
+                toast.update(toastOptions.toastId, this.getNotifyConfig(toastOptions));
+            } else {
+                toast.error(obj.body, this.getNotifyConfig(toastOptions));
+            }
         }
         // resolve({ body: obj.body! });
         return { body: obj.body! };
