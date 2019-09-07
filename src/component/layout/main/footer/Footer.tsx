@@ -7,6 +7,7 @@ import { Dispatch } from 'redux';
 import { TInternationalization } from "../../../../config/setup";
 import { IUser } from "../../../../model/model.user";
 import { BaseComponent } from "../../../_base/BaseComponent";
+import { CmpUtility } from "../../../_base/CmpUtility";
 
 export interface IProps {
     internationalization: TInternationalization;
@@ -30,7 +31,16 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
                 <>
                     <div className="item text-center selected-book">
                         <NavLink to="/dashboard" className="nav-link" activeClassName="active pointer-events-none">
-                            <img src={current_book_img} alt="selected-book" onError={e => this.bookImageOnError(e)} />
+                            <div className="img-scaffolding-container">
+                                <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="book" />
+
+                                <img src={current_book_img}
+                                    alt="book"
+                                    className="book-img center-el-in-box"
+                                    onError={e => CmpUtility.bookImageOnError(e)}
+                                />
+                            </div>
+                            {/* <img src={current_book_img} alt="selected-book" onError={e => this.bookImageOnError(e)} /> */}
                         </NavLink>
                     </div>
                 </>
