@@ -22,12 +22,21 @@ import { BOOK_ROLES } from "../../enum/Book";
 import { NavLink } from "react-router-dom";
 import { AddToCollection } from "../library/collection/add-to-collection/AddToCollection";
 import { CmpUtility } from "../_base/CmpUtility";
+import { action_user_logged_in } from "../../redux/action/user";
+import { PersonService } from "../../service/service.person";
+import { calc_read_percent } from "../library/libraryViewTemplate";
+import { ILibrary } from "../../model/model.library";
+import { ILibrary_schema } from "../../redux/action/library/libraryAction";
+import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 
 interface IProps {
-  logged_in_user?: IUser | null;
+  logged_in_user: IUser | null;
   internationalization: TInternationalization;
   history: History;
   token: IToken;
+  onUserLoggedIn: (user: IUser) => void;
+  library: ILibrary_schema;
+  network_status: NETWORK_STATUS;
 }
 
 interface IState {
@@ -39,13 +48,8 @@ interface IState {
   byWriterBookError: string | undefined;
   modal_addToCollections: {
     show: boolean;
-    // createCollection_loader: boolean;
-    // addToCollections_loader: boolean;
-    // newCollectionTitle: {
-    //   value: string | undefined;
-    //   isValid: boolean;
-    // };
-  }
+  };
+  // removeFromHome_loader: boolean;
 }
 
 class DashboardComponent extends BaseComponent<IProps, IState> {
@@ -65,8 +69,10 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       //   isValid: false,
       // }
     },
+    // removeFromHome_loader: false,
   };
   private _bookService = new BookService();
+  private _personService = new PersonService();
   // dragging!: boolean;
   sliderSetting: Settings = {
     dots: false,
@@ -96,6 +102,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
 
   fetchBookByWriter_writerId!: string;
   fetchBookByWriter_current_book_id!: string;
+
+  constructor(props: IProps) {
+    super(props);
+    this._personService.setToken(this.props.token);
+  }
 
   componentDidMount() {
     this._bookService.setToken(this.props.token);
@@ -133,14 +144,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   gotoBookDetail(bookId: string) {
     this.props.history.push(`book-detail/${bookId}`);
   }
-  // getRandomHelenBookUrl(): string {
-  //   let r = Math.floor(Math.random() * 9) + 1;
-  //   return `/static/media/img/sample-book/sample-book-h${r}.png`;
-  // }
-  // getRandomBookUrl(): string {
-  //   let r = Math.floor(Math.random() * 12) + 1;
-  //   return `/static/media/img/sample-book/sample-book${r}.png`;
-  // }
 
   readNow() {
     debugger;
@@ -200,45 +203,29 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   currentBook_render() {
-    // let aa: any = this.props.logged_in_user;
-    if (!this.props.logged_in_user) {
-      return;
-    }
-
-    // let current_book: IBook = aa.current_book;
-    let current_book =
-      this.props.logged_in_user &&
-      this.props.logged_in_user.person &&
-      this.props.logged_in_user.person.current_book;
-
-    if (!current_book) {
-      return;
-    }
-
-    let current_book_img =
-      (current_book.images && current_book.images.length && this.getImageUrl(current_book.images[0]))
-      ||
-      this.defaultBookImagePath;
-    let writerList = current_book.roles.filter(
-      r => r.role === BOOK_ROLES.Writer
-    );
-
-    // let name = writerList && writerList.length && writerList[0].person.name;
-    // let last_name =
-    //   writerList && writerList.length && writerList[0].person.last_name;
-    let writerName = ''; // name + " " + last_name;
-    if (writerList && writerList.length && writerList[0].person) {
-      writerName = this.getPersonFullName(writerList[0].person);
-    }
+    if (!this.props.logged_in_user) { return; }
+    let current_book = this.props.logged_in_user.person && this.props.logged_in_user.person.current_book;
+    if (!current_book) { return; }
+    const current_book_img = CmpUtility.getBook_firstImg(current_book);
+    const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(current_book, BOOK_ROLES.Writer);
 
     return (
       <>
         <div className="latestBook-wrapper row mt-3">
           <div className="col-4 book-img-wrapper">
-            <img className="" src={current_book_img} alt="book" onError={e => this.bookImageOnError(e)} />
+            <div className="img-scaffolding-container">
+              <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="book" />
+
+              <img src={current_book_img}
+                alt="book"
+                className="book-img center-el-in-box"
+                onError={e => CmpUtility.bookImageOnError(e)}
+              />
+            </div>
+            {/* <img className="" src={current_book_img} alt="book" onError={e => this.bookImageOnError(e)} /> */}
             <div className="book-progress-state">
               <div className="bp-state-number">
-                <div className="text">7%</div>
+                <div className="text">{this.calc_read_percent_by_bookItem_in_lib(current_book.id)}</div>
               </div>
               <div className="bp-state-arrow" />
             </div>
@@ -250,7 +237,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
             <h6 className="title">{current_book.title}</h6>
             {/* <h6 className="more">parts 1,2,3</h6> */}
             <div className="writer text-muted mb-2 mt-1">
-              <small>{writerName}</small>
+              <small>{firstWriterFullName}</small>
             </div>
 
             <Dropdown as={ButtonGroup} className="book-btns">
@@ -285,8 +272,17 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 {/* <Dropdown.Item>
                   {Localization.recommend_this_book}
                 </Dropdown.Item> */}
-                {/* <Dropdown.Item>{Localization.remove_from_device}</Dropdown.Item> */}
-                <Dropdown.Item>{Localization.remove_from_home}</Dropdown.Item>
+                <Dropdown.Item>{Localization.remove_from_device}</Dropdown.Item>
+                <Dropdown.Item
+                  // className={(this.state.removeFromHome_loader ? 'opacity-5 ' : '')}
+                  // disabled={this.state.removeFromHome_loader}
+                  onClick={() => this.removeBookFrom_home()}
+                >{
+                    // !this.state.removeFromHome_loader ?
+                    Localization.remove_from_home
+                    // :
+                    // <i className="fa fa-spinner fa-spin"></i>
+                  }</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>
@@ -299,6 +295,41 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       </>
     );
   }
+
+  calc_read_percent_by_bookItem_in_lib(book_id: string): string {
+    return calc_read_percent(this.getItemFromLibrary(book_id));
+  }
+
+  getItemFromLibrary(book_id: string): ILibrary {
+    const lib = this.props.library.data.find(lib => lib.book.id === book_id);
+    return lib!;
+  }
+
+  //#region updateUserCurrentBook
+  async removeBookFrom_home() {
+    this.updateUserCurrentBook_client();
+    this.updateUserCurrentBook_server();
+  }
+
+  updateUserCurrentBook_client() {
+    let logged_in_user = { ...this.props.logged_in_user! };
+    if (!logged_in_user) return;
+    logged_in_user.person.current_book = undefined;
+    this.props.onUserLoggedIn(logged_in_user);
+  }
+
+  async updateUserCurrentBook_server() {
+    if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
+    // this.setState({ ...this.state, removeFromHome_loader: true });
+    await this._personService.update(
+      { current_book_id: null },
+      this.props.logged_in_user!.person.id
+    ).catch(e => {
+      // this.handleError({ error: e.response });
+    });
+    // this.setState({ ...this.state, removeFromHome_loader: false });
+  }
+  //#endregion
 
   openModal_addToCollections(/* book_id: string */) {
     this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: true } });
@@ -616,6 +647,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
   return {
+    onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
   };
 };
 
@@ -623,7 +655,9 @@ const state2props = (state: redux_state) => {
   return {
     logged_in_user: state.logged_in_user,
     internationalization: state.internationalization,
-    token: state.token
+    token: state.token,
+    library: state.library,
+    network_status: state.network_status,
   };
 };
 
