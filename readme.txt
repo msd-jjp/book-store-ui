@@ -27,9 +27,6 @@ serve -s build
 
 ====================================================================================
 
-add to list --> wishing list & shopping list
-dahbord slider reverse order in farsi
-
 hide most of disable item in offline mode.
 
 ====================================================================================
@@ -84,8 +81,6 @@ comments --> parent: show quote from parent
 ====================================================================================
 
 fix input cmp bug:
-require star, valua & '' (get from admin project)
-
 reset input(form element) --> after reset set touch to false.
 
 ====================================================================================
@@ -98,10 +93,6 @@ if in log in page & this.props.loged_in_user --> redirect to dashboard
 add price to book in category & store
 
 ====================================================================================
-
-profile in bookStore
-
-----------------------------
 
 collection & library head request & get request
 
@@ -129,6 +120,14 @@ cmp search check library book exist (progress & downloaded)
 
 ====================================================================================
 
-get data from storage first
+get data from storage first (in page like store, dashborad)
+
+====================================================================================
+
+use icon for book type(in cart, dashboard image small icon in corner, store, detail,...)
+
+====================================================================================
+
+set id for toaster --> if it is open, don't open another one or force close before open another.
 
 ====================================================================================

@@ -17,6 +17,7 @@ import Dropzone from "react-dropzone";
 import { AppRegex } from "../../config/regex";
 import { UploadService } from "../../service/service.upload";
 import { action_user_logged_in } from "../../redux/action/user";
+import { IPerson } from "../../model/model.person";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -156,6 +157,8 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
           cell_no: { value: res.data.cell_no, isValid: !!res.data.cell_no },
         },
       });
+
+      this.updateStoreData_profile(res.data);
     }
   }
 
@@ -168,8 +171,6 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
       , isFormValid: this.checkFormValidate(isValid, inputType)
     })
   }
-
-  //  check form validation for avtive button
 
   checkFormValidate(isValid: boolean, inputType: any): boolean {
     let valid = true;
@@ -233,18 +234,33 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, saveLoader: false });
 
     if (res) {
-      let logged_in_user = { ...this.props.logged_in_user! };
-      logged_in_user.person.name = res.data.name;
-      logged_in_user.person.last_name = res.data.last_name;
-      logged_in_user.person.address = res.data.address;
-      logged_in_user.person.phone = res.data.phone;
-      logged_in_user.person.image = res.data.image;
-      logged_in_user.person.email = res.data.email;
+      // let logged_in_user = { ...this.props.logged_in_user! };
+      // logged_in_user.person.name = res.data.name;
+      // logged_in_user.person.last_name = res.data.last_name;
+      // logged_in_user.person.address = res.data.address;
+      // logged_in_user.person.phone = res.data.phone;
+      // logged_in_user.person.image = res.data.image;
+      // logged_in_user.person.email = res.data.email;
 
-      this.props.onUserLoggedIn(logged_in_user);
+      // this.props.onUserLoggedIn(logged_in_user);
+      this.updateStoreData_profile(res.data);
       this.apiSuccessNotify();
     }
 
+  }
+
+  updateStoreData_profile(person: IPerson) {
+    let logged_in_user = { ...this.props.logged_in_user! };
+    if (!logged_in_user || !person) return;
+
+    logged_in_user.person.name = person.name;
+    logged_in_user.person.last_name = person.last_name;
+    logged_in_user.person.address = person.address;
+    logged_in_user.person.phone = person.phone;
+    logged_in_user.person.image = person.image;
+    logged_in_user.person.email = person.email;
+
+    this.props.onUserLoggedIn(logged_in_user);
   }
 
   //#region dropzone
@@ -330,6 +346,17 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
                       required
                     />
                   </div>
+                  <div className="col-md-12">
+                    <Input
+                      onChange={(value, isValid) => this.handleInputChange(value, isValid, "cell_no")}
+                      label={Localization.mobile}
+                      placeholder={Localization.mobile}
+                      defaultValue={this.state.person.cell_no.value}
+                      pattern={AppRegex.mobile}
+                      patternError={Localization.validation.mobileFormat}
+                      readOnly
+                    />
+                  </div>
                   <div className="col-md-6">
                     <Input
                       onChange={(value, isValid) => this.handleInputChange(value, isValid, 'email')}
@@ -350,17 +377,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
                       patternError={Localization.validation.phoneFormat}
                     />
                   </div>
-                  <div className="col-md-6">
-                    <Input
-                      onChange={(value, isValid) => this.handleInputChange(value, isValid, "cell_no")}
-                      label={Localization.mobile}
-                      placeholder={Localization.mobile}
-                      defaultValue={this.state.person.cell_no.value}
-                      pattern={AppRegex.mobile}
-                      patternError={Localization.validation.mobileFormat}
-                      readOnly
-                    />
-                  </div>
+
                   <div className="col-12">
                     <div className="row">
                       <div className="col-md-12">
