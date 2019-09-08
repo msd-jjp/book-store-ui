@@ -507,7 +507,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     }
 
     gotoReader(book_id: string) {
-        this.props.history.push(`/reader/${book_id}/overview`);
+        this.props.history.push(`/reader/${book_id}/reading`);
     }
 
     //#region modal download collection
