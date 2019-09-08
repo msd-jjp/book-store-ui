@@ -197,6 +197,7 @@ export const en = {
     thank_you_for_your_feedback: 'thank you for your feedback',
     inspired_by_your_wishlist: 'inspired by your wishlist',
     uncollected: 'uncollected',
+    of: 'of',
     from: 'from',
     to: 'to',
     customer_reviews: 'customer reviews',
@@ -302,4 +303,5 @@ export const en = {
     preview: "preview",
     drag_and_drop: "drag and drop",
     choose_image: 'choose image',
+    n_min_left_in_chapter: '{0} min left in chapter',
 }

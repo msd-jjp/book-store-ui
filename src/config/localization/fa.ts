@@ -200,6 +200,7 @@ export const fa = {
     thank_you_for_your_feedback: 'با تشکر از بازخورد شما',
     inspired_by_your_wishlist: 'با توجه به لیست علاقه مندی ها شما',
     uncollected: 'بدون دسته',
+    of: 'از',
     from: 'از',
     to: 'تا',
     customer_reviews: 'نظرات مشتری ها',
@@ -305,4 +306,5 @@ export const fa = {
     preview: "پیش نمایش",
     drag_and_drop: "بکشید و رها کنید",
     choose_image: 'انتخاب تصویر',
+    n_min_left_in_chapter: '{0} دقیقه از فصل مانده است',
 }

@@ -208,6 +208,7 @@ interface ILocalization extends LocalizedStringsMethods {
     thank_you_for_your_feedback: string;
     inspired_by_your_wishlist: string;
     uncollected: string;
+    of: string;
     from: string;
     to: string;
     customer_reviews: string;
@@ -298,6 +299,7 @@ interface ILocalization extends LocalizedStringsMethods {
     preview: string;
     drag_and_drop: string;
     choose_image: string;
+    n_min_left_in_chapter: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
