@@ -181,7 +181,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     //   if(this.props.history.action === 'POP'){}
     //   this.props.history.action = 'POP';
     // }
-    this.props.history.push(`/reader/${book_id}/overview`);
+    // this.props.history.goBack();
+    // this.props.history.push(`/reader/${book_id}/overview`);
+    this.props.history.replace(`/reader/${book_id}/overview`);
   }
 
   goBack() {
