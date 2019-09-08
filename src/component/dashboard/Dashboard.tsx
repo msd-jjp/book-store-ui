@@ -145,10 +145,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     this.props.history.push(`book-detail/${bookId}`);
   }
 
-  readNow() {
-    debugger;
-  }
-
   async fetchRecomendedBook() {
     this.setState({ ...this.state, recomendedBookError: undefined });
 
@@ -205,7 +201,12 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   currentBook_render() {
     if (!this.props.logged_in_user) { return; }
     let current_book = this.props.logged_in_user.person && this.props.logged_in_user.person.current_book;
-    if (!current_book) { return; }
+    if (!current_book) {
+      // return;
+      return (
+        this.currentBook_empty_render()
+      )
+    }
     const current_book_img = CmpUtility.getBook_firstImg(current_book);
     const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(current_book, BOOK_ROLES.Writer);
 
@@ -213,7 +214,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       <>
         <div className="latestBook-wrapper row mt-3">
           <div className="col-4 book-img-wrapper">
-            <div className="img-scaffolding-container">
+            <div className="img-scaffolding-container cursor-pointer" onClick={() => this.gotoReader(current_book!.id)}>
               <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="book" />
 
               <img src={current_book_img}
@@ -244,7 +245,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
               <Button
                 variant="dark"
                 className="btn-read-now"
-                onClick={() => this.readNow()}
+                onClick={() => this.gotoReader(current_book!.id)}
               >
                 {Localization.read_now}
               </Button>
@@ -268,10 +269,10 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => this.openModal_addToCollections(/* current_book!.id */)}>{Localization.add_to_collection}</Dropdown.Item>
                 <Dropdown.Item>{Localization.mark_as_read}</Dropdown.Item>
-                {/* <Dropdown.Item>{Localization.share_progress}</Dropdown.Item> */}
-                {/* <Dropdown.Item>
+                <Dropdown.Item>{Localization.share_progress}</Dropdown.Item>
+                <Dropdown.Item>
                   {Localization.recommend_this_book}
-                </Dropdown.Item> */}
+                </Dropdown.Item>
                 <Dropdown.Item>{Localization.remove_from_device}</Dropdown.Item>
                 <Dropdown.Item
                   // className={(this.state.removeFromHome_loader ? 'opacity-5 ' : '')}
@@ -288,12 +289,46 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
           </div>
         </div>
 
+        {this.currentBook_divider_render()}
+      </>
+    );
+  }
+
+  currentBook_empty_render() {
+    return (
+      <>
+        <div className="row mt-5 text-center">
+          <div className="col-12 ">
+            <h6 className="title text-capitalize mb-3">{Localization.book_from_your_library}</h6>
+          </div>
+          <div className="col-12">
+            <p className="text-capitalize">{Localization.your_recent_item_appear_manage_remove}</p>
+          </div>
+          <div className="col-12">
+            <NavLink to={`/library`} className="text-uppercase" >
+              {Localization.go_to_library}
+            </NavLink>
+          </div>
+        </div>
+
+        {this.currentBook_divider_render()}
+      </>
+    )
+  }
+
+  currentBook_divider_render() {
+    return (
+      <>
         <div className="latestBook-divider">
           <hr />
           <div className="slash">{'//'}</div>
         </div>
       </>
-    );
+    )
+  }
+
+  gotoReader(book_id: string) {
+    this.props.history.push(`/reader/${book_id}/reading`);
   }
 
   calc_read_percent_by_bookItem_in_lib(book_id: string): string {
