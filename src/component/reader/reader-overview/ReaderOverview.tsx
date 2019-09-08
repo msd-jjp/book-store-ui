@@ -17,7 +17,7 @@ import { IBook } from "../../../model/model.book";
 import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 import Slider, { Settings } from "react-slick";
 import Tooltip from 'rc-tooltip';
-import RcSlider, {Handle} from 'rc-slider';
+import RcSlider, { Handle } from 'rc-slider';
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -222,7 +222,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  handle(props:any){
+  handle(props: any) {
     const { value, dragging, index, ...restProps } = props;
     return (
       <Tooltip
@@ -237,12 +237,34 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     );
   };
 
+  onSliderChange(value: number) {
+    // log(value);
+    // this.setState({
+    //   value,
+    // });
+  }
+  onAfterChange(value: number) {
+    // console.log(value); //eslint-disable-line
+  }
+
   slider_render() {
     return (
       <>
-        <div>
-          <RcSlider min={0} max={20} reverse defaultValue={3} handle={(p)=>this.handle(p)} />
-        </div>
+        {/* <div> */}
+        <RcSlider
+          min={0}
+          max={20}
+          reverse
+          defaultValue={3}
+          handle={(p) => this.handle(p)}
+          onChange={(v) => this.onSliderChange(v)}
+          onAfterChange={(v) => this.onAfterChange(v)}
+        // value={this.state.value}
+        // step={20} 
+        // onBeforeChange={log}
+        // disabled
+        />
+        {/* </div> */}
       </>
     )
   }
