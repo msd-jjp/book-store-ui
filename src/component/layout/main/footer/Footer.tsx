@@ -8,10 +8,12 @@ import { TInternationalization } from "../../../../config/setup";
 import { IUser } from "../../../../model/model.user";
 import { BaseComponent } from "../../../_base/BaseComponent";
 import { CmpUtility } from "../../../_base/CmpUtility";
+import { History } from "history";
 
 export interface IProps {
     internationalization: TInternationalization;
     logged_in_user?: IUser | null;
+    history: History;
 }
 
 class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
@@ -22,15 +24,19 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
             this.props.logged_in_user.person &&
             this.props.logged_in_user.person.current_book
         ) {
-            let current_book = this.props.logged_in_user.person.current_book;
-            let current_book_img = (current_book.images && current_book.images.length && this.getImageUrl(current_book.images[0]))
-                ||
-                this.defaultBookImagePath;
+            const current_book = this.props.logged_in_user.person.current_book;
+            const current_book_img = CmpUtility.getBook_firstImg(current_book);
 
             return (
                 <>
                     <div className="item text-center selected-book">
-                        <NavLink to="/dashboard" className="nav-link" activeClassName="active pointer-events-none">
+                        {/* NavLink */}
+                        <div
+                            // to="/dashboard"
+                            className="nav-link-- cursor-pointer"
+                            // activeClassName="active pointer-events-none"
+                            onClick={() => this.gotoReader(current_book.id)}
+                        >
                             <div className="img-scaffolding-container">
                                 <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="book" />
 
@@ -40,13 +46,16 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
                                     onError={e => CmpUtility.bookImageOnError(e)}
                                 />
                             </div>
-                            {/* <img src={current_book_img} alt="selected-book" onError={e => this.bookImageOnError(e)} /> */}
-                        </NavLink>
+                        </div>
                     </div>
                 </>
             )
         }
 
+    }
+
+    gotoReader(book_id: string) {
+        this.props.history.push(`/reader/${book_id}/reading`);
     }
 
     render() {

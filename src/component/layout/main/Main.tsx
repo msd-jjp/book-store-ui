@@ -136,7 +136,7 @@ class LayoutMainComponent extends React.Component<IProps> {
                             </div>
                         </div>
                     </main>
-                    <LayoutMainFooter />
+                    <LayoutMainFooter {...this.props} />
                 </div>
             </>
         )
