@@ -300,6 +300,9 @@ interface ILocalization extends LocalizedStringsMethods {
     drag_and_drop: string;
     choose_image: string;
     n_min_left_in_chapter: string;
+    book_from_your_library: string;
+    your_recent_item_appear_manage_remove: string;
+    go_to_library: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
