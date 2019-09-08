@@ -68,6 +68,23 @@
     height: 3rem;
     align-items: center;
     padding: 0 0.5rem;
+    .footer-slider {
+      width: 100%;
+      margin: 0 2rem;
+
+      .rc-slider {
+        .rc-slider-rail {
+          height: 2px;
+        }
+        .rc-slider-track {
+          height: 2px;
+        }
+        .rc-slider-handle {
+          border-width: 1px;
+          margin-top: -6px;
+        }
+      }
+    }
   }
 }
 

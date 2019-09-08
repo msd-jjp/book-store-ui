@@ -16,6 +16,8 @@ import { Dropdown } from "react-bootstrap";
 import { IBook } from "../../../model/model.book";
 import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 import Slider, { Settings } from "react-slick";
+import Tooltip from 'rc-tooltip';
+import RcSlider, {Handle} from 'rc-slider';
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -220,6 +222,31 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
   }
 
+  handle(props:any){
+    const { value, dragging, index, ...restProps } = props;
+    return (
+      <Tooltip
+        prefixCls="rc-slider-tooltip"
+        overlay={value}
+        visible={dragging}
+        placement="top"
+        key={index}
+      >
+        <Handle value={value} {...restProps} />
+      </Tooltip>
+    );
+  };
+
+  slider_render() {
+    return (
+      <>
+        <div>
+          <RcSlider min={0} max={20} reverse defaultValue={3} handle={(p)=>this.handle(p)} />
+        </div>
+      </>
+    )
+  }
+
   overview_footer_render() {
     return (
       <>
@@ -229,7 +256,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
               onClick={() => { }}
             ></i>
           </div>
-          <div className="slider">slider</div>
+          <div className="footer-slider">{this.slider_render()}</div>
           <div className="audio">
             <i className="fa fa-headphones p-2 cursor-pointer"
               onClick={() => { }}
