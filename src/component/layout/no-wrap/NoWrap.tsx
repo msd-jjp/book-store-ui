@@ -54,7 +54,7 @@ class LayoutNoWrapComponent extends React.Component<IProps> {
         return (
             <>
                 <div className="layout-nowrap-wrapper">
-                    <main className="main mx-3">
+                    <main className="mx-3">
                         <div className="row">
                             <div className="col-lg-4 offset-lg-4 col-md-8 offset-md-2">
                                 {this.props.children}

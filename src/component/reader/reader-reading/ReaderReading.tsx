@@ -12,12 +12,10 @@ import { Localization } from "../../../config/localization/localization";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { PersonService } from "../../../service/service.person";
 import { action_user_logged_in } from "../../../redux/action/user";
-import { Dropdown } from "react-bootstrap";
+// import { Dropdown } from "react-bootstrap";
 import { IBook } from "../../../model/model.book";
 import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 import Slider, { Settings } from "react-slick";
-import Tooltip from 'rc-tooltip';
-import RcSlider, { Handle } from 'rc-slider';
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -34,7 +32,7 @@ interface IState {
   book: IBook | undefined;
 }
 
-class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
+class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   private book_id: string = '';
 
   state = {
@@ -67,10 +65,10 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // beforeChange: () => this.dragging = true,
     // afterChange: () => this.dragging = false,
     // lazyLoad: true,
-    className: "center",
-    centerMode: true,
+    // className: "center",
+    // centerMode: true,
     // infinite: true,
-    centerPadding: "60px", // 4rem, 60px
+    // centerPadding: "60px", // 4rem, 60px
   };
 
   constructor(props: IProps) {
@@ -112,78 +110,19 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     });
   }
 
-  overview_header_render() {
-    return (
-      <div className="overview-header">
-        <div className="row">
-          <div className="col-12">
-            <div className="icon-wrapper">
-              <i className="fa fa-arrow-left-app text-dark p-2 cursor-pointer"
-                onClick={() => this.goBack()}
-              ></i>
-
-              <i className="fa fa-bars text-dark p-2 cursor-pointer"></i>
-
-              <div className="float-right">
-                <i className="fa fa-search text-dark p-2 cursor-pointer"></i>
-                <i className="fa fa-font text-dark p-2 cursor-pointer"></i>
-                <i className="fa fa-file-text-o text-dark p-2 cursor-pointer"></i>
-                <i className="fa fa-bookmark-o text-dark p-2 cursor-pointer"></i>
-
-                <Dropdown className="d-inline-block menu-dd">
-                  <Dropdown.Toggle
-                    as="i"
-                    id="dropdown-collection-menu"
-                    className="icon fa fa-ellipsis-v text-dark p-2 no-default-icon">
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu className="dropdown-menu-right border-0 rounded-0 shadow2">
-
-                    <Dropdown.Item
-                      className="text-capitalize"
-                    >
-                      {Localization.recommend_this_book}
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      className="text-capitalize"
-                    >
-                      {Localization.share_progress}
-                    </Dropdown.Item>
-
-                    {/* <Dropdown.Item
-                    as={NavLink}
-                    to={`/collection-update/${this.collectionTitle}`}
-                    className="text-capitalize"
-                  >{Localization.add_to_collection}</Dropdown.Item>
-                  <Dropdown.Item
-                    className="text-capitalize"
-                    onClick={() => this.openModal_downloadCollection()}
-                  >{Localization.download_collection}</Dropdown.Item> */}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   getBookTitle(): string {
     const book: IBook | undefined = this.state.book;
     if (!book) return '';
     return book!.title;
   }
 
-  overview_body_render() {
+  reading_body_render() {
     return (
       <>
-        <div className="overview-body my-3--">
-          <h5 className="book-title mt-3 text-center">{this.getBookTitle()}</h5>
-
+        <div className="reading-body">
           {this.carousel_render()}
 
-          <div className="page-location text-center">477 {Localization.of} 4436 . 11%</div>
+          {/* <div className="page-location text-center">location 477 of 4436 . 11%</div> */}
         </div>
       </>
     )
@@ -216,7 +155,10 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                         alt="book"
                       />
                     </div>
-                    <div className="page-number">456</div>
+                    <div className="item-footer">
+                      <div>{Localization.formatString(Localization.n_min_left_in_chapter, 2)}</div>
+                      <div>15%</div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -228,81 +170,18 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   onPageClicked() {
-    this.gotoReader_reading(this.book_id);
+    this.gotoReader_overview(this.book_id);
   }
 
-  gotoReader_reading(book_id: string) {
+  gotoReader_overview(book_id: string) {
     // if (this.props.history.length) {
     //   this.props.history.goBack();
+    //   // this.props.history.push(`/reader/${book_id}/overview`);
+
+    //   if(this.props.history.action === 'POP'){}
+    //   this.props.history.action = 'POP';
     // }
-    this.props.history.push(`/reader/${book_id}/reading`);
-  }
-
-  handle(props: any) {
-    const { value, dragging, index, ...restProps } = props;
-    return (
-      <Tooltip
-        prefixCls="rc-slider-tooltip"
-        overlay={value}
-        visible={dragging}
-        placement="top"
-        key={index}
-      >
-        <Handle value={value} {...restProps} />
-      </Tooltip>
-    );
-  };
-
-  onSliderChange(value: number) {
-    // log(value);
-    // this.setState({
-    //   value,
-    // });
-  }
-  onAfterChange(value: number) {
-    // console.log(value); //eslint-disable-line
-  }
-
-  slider_render() {
-    return (
-      <>
-        {/* <div> */}
-        <RcSlider
-          min={0}
-          max={20}
-          reverse
-          defaultValue={3}
-          handle={(p) => this.handle(p)}
-          onChange={(v) => this.onSliderChange(v)}
-          onAfterChange={(v) => this.onAfterChange(v)}
-        // value={this.state.value}
-        // step={20} 
-        // onBeforeChange={log}
-        // disabled
-        />
-        {/* </div> */}
-      </>
-    )
-  }
-
-  overview_footer_render() {
-    return (
-      <>
-        <div className="overview-footer">
-          <div className="change-view">
-            <i className="fa fa-th p-2 cursor-pointer"
-              onClick={() => { }}
-            ></i>
-          </div>
-          <div className="footer-slider">{this.slider_render()}</div>
-          <div className="audio">
-            <i className="fa fa-headphones p-2 cursor-pointer"
-              onClick={() => { }}
-            ></i>
-          </div>
-        </div>
-      </>
-    )
+    this.props.history.push(`/reader/${book_id}/overview`);
   }
 
   goBack() {
@@ -315,10 +194,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       <>
         <div className="row">
           <div className="col-12 px-0">
-            <div className="reader-overview-wrapper mt-3-- mb-5--">
-              {this.overview_header_render()}
-              {this.overview_body_render()}
-              {this.overview_footer_render()}
+            <div className="reader-reading-wrapper">
+              {this.reading_body_render()}
+              {/* {this.reading_footer_render()} */}
             </div>
           </div>
         </div>
@@ -344,4 +222,4 @@ const state2props = (state: redux_state) => {
   };
 };
 
-export const ReaderOverview = connect(state2props, dispatch2props)(ReaderOverviewComponent);
+export const ReaderReading = connect(state2props, dispatch2props)(ReaderReadingComponent);
