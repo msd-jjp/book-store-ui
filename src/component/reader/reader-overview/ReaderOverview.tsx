@@ -15,6 +15,7 @@ import { action_user_logged_in } from "../../../redux/action/user";
 import { Dropdown } from "react-bootstrap";
 import { IBook } from "../../../model/model.book";
 import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
+import Slider, { Settings } from "react-slick";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -39,6 +40,36 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   };
 
   private _personService = new PersonService();
+  sliderSetting: Settings = {
+    dots: false,
+    accessibility: false,
+    // swipe: false,
+    infinite: false,
+    // className: "center2",
+    //centerPadding: "60px",
+    // centerPadding: '40px',
+    slidesToShow: 1,
+    swipeToSlide: true,
+    // rtl: false, // this.props.internationalization.rtl,
+    // rtl: this.props.internationalization.rtl,
+    // adaptiveHeight: true,
+    // slidesToScroll: 1,
+
+    speed: 100, // 200, // 200,
+    // touchThreshold: 100000000,
+    // useCSS: false,
+    // useTransform: false,
+
+    // swipe: false,
+    // initialSlide: 5,
+    // beforeChange: () => this.dragging = true,
+    // afterChange: () => this.dragging = false,
+    // lazyLoad: true,
+    className: "center",
+    centerMode: true,
+    // infinite: true,
+    centerPadding: "60px", // 4rem, 60px
+  };
 
   constructor(props: IProps) {
     super(props);
@@ -140,21 +171,53 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   overview_body_render() {
     return (
       <>
-        <div className="overview-body my-3">
-          <h5 className="mt-3 text-center">{this.getBookTitle()}</h5>
+        <div className="overview-body my-3--">
+          <h5 className="book-title mt-3 text-center">{this.getBookTitle()}</h5>
 
           {this.carousel_render()}
 
-          <div className="text-center">location 477 of 4436 . 11%</div>
+          <div className="page-location text-center">location 477 of 4436 . 11%</div>
         </div>
       </>
     )
   }
 
   carousel_render() {
-    return (
-      'carousel'
-    )
+    if (true) {
+
+      let initialSlide = 0;
+      if (this.props.internationalization.rtl) {
+        // initialSlide = bookList.length - 1 - 2;
+        // bookList = [...bookList].reverse();
+      }
+
+      return (
+        <>
+          <div className="app-carousel">
+            <Slider {...this.sliderSetting} initialSlide={initialSlide}>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((page, pageIndex) => (
+                <div
+                  key={pageIndex}
+                  className="item-wrapper"
+                // onClick={() => this.gotoBookDetail(book.id)}
+                >
+                  <div className="item">
+                    <div className="page-img-wrapper">
+                      <img
+                        className="page-img"
+                        src={`/static/media/img/sample-book-page/page-${pageIndex + 1}.jpg`}
+                        alt="book"
+                      />
+                    </div>
+                    <div className="page-number">456</div>
+                  </div>
+                </div>
+              ))}
+            </Slider>
+          </div>
+        </>
+      );
+    }
   }
 
   overview_footer_render() {
@@ -185,12 +248,15 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   render() {
     return (
       <>
-        <div className="reader-overview-wrapper mt-3-- mb-5">
-          {this.overview_header_render()}
-          {this.overview_body_render()}
-          {this.overview_footer_render()}
+        <div className="row">
+          <div className="col-12 px-0">
+            <div className="reader-overview-wrapper mt-3-- mb-5--">
+              {this.overview_header_render()}
+              {this.overview_body_render()}
+              {this.overview_footer_render()}
+            </div>
+          </div>
         </div>
-
         <ToastContainer {...this.getNotifyContainerConfig()} />
       </>
     );
