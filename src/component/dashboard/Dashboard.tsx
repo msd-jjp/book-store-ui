@@ -215,12 +215,13 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         <div className="latestBook-wrapper row mt-3">
           <div className="col-4 book-img-wrapper">
             <div className="img-scaffolding-container cursor-pointer" onClick={() => this.gotoReader(current_book!.id)}>
-              <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="book" />
+              <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="book" data-loading="lazy" />
 
               <img src={current_book_img}
                 alt="book"
                 className="book-img center-el-in-box"
                 onError={e => CmpUtility.bookImageOnError(e)}
+                data-loading="lazy"
               />
             </div>
             {/* <img className="" src={current_book_img} alt="book" onError={e => this.bookImageOnError(e)} /> */}
@@ -394,12 +395,13 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                   onClick={() => this.gotoBookDetail(book.id)}
                 >
                   <div className="img-container">
-                    <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
+                    <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" data-loading="lazy" />
 
                     <img src={CmpUtility.getBook_firstImg(book)}
                       alt="book"
                       className="book-img center-el-in-box"
                       onError={e => CmpUtility.bookImageOnError(e)}
+                      data-loading="lazy"
                     />
                   </div>
                   {/* <img
@@ -439,7 +441,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
             {list.map((_no: number, bookIndex) => (
               <div key={bookIndex} className="item">
                 <div className="img-container">
-                  <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
+                  <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" data-loading="lazy" />
 
                   {/* <img src={CmpUtility.getBook_firstImg(book)}
                       alt="book"
@@ -467,7 +469,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         <div className="app-carousel app-carousel-error" key="app-carousel-error">
           <Slider {...this.sliderSetting}>
             <div className="item">
-              <img src={this.defaultBookImagePath} alt="book" />
+              <img src={this.defaultBookImagePath} alt="book" data-loading="lazy" />
             </div>
           </Slider>
           <span className="item-error-wrapper">

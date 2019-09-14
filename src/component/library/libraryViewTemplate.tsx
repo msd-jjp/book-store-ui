@@ -37,12 +37,13 @@ export function libraryItem_viewList_render(
             <div className="item-wrapper row" onClick={() => onItemSelect(item)}>
                 <div className="img-wrapper-- col-4">
                     <div className="img-container">
-                        <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
+                        <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" data-loading="lazy" />
 
                         <img src={book_img}
                             alt="book"
                             className="lib-img center-el-in-box"
                             onError={e => CmpUtility.bookImageOnError(e)}
+                            data-loading="lazy"
                         />
                     </div>
                 </div>
@@ -79,12 +80,13 @@ export function libraryItem_viewGrid_render(
         <div className="col-4 p-align-inverse-0 mb-3">
             <div className="item-wrapper" onClick={() => onItemSelect(item)}>
                 <div className="img-container">
-                    <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
+                    <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" data-loading="lazy" />
 
                     <img src={book_img}
                         alt="book"
                         className="lib-img center-el-in-box"
                         onError={e => CmpUtility.bookImageOnError(e)}
+                        data-loading="lazy"
                     />
                 </div>
 

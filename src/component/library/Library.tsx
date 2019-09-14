@@ -502,7 +502,8 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                 <div className="item-wrapper">
                                                     <div className="cursor-pointer" onClick={() => this.gotoCollection(collection.title)}>
                                                         <img src={this.defaultBookImagePath}
-                                                            className="item-size" alt="" onError={e => this.bookImageOnError(e)} />
+                                                            className="item-size" alt="" 
+                                                            onError={e => this.bookImageOnError(e)} data-loading="lazy" />
 
                                                         <div className="collection-detail p-2">
                                                             <div className="collection-detail-inner">
@@ -518,13 +519,15 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                                             return (
                                                                                 <div className="col-6 book p-align-inverse-0 mb-2" key={imgUrl_index}>
                                                                                     <div className={"img-container " + (imgUrl ? '' : 'empty')}>
-                                                                                        <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
+                                                                                        <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" 
+                                                                                        alt="book" data-loading="lazy" />
                                                                                         {
                                                                                             imgUrl ?
                                                                                                 <img src={imgUrl}
                                                                                                     alt="book"
                                                                                                     className="book-img center-el-in-box"
                                                                                                     onError={e => this.bookImageOnError(e)}
+                                                                                                    data-loading="lazy"
                                                                                                 />
                                                                                                 : ''
                                                                                         }
@@ -568,7 +571,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                             <div className="item-wrapper uncollected">
                                                 <div className="cursor-pointer" onClick={() => this.gotoCollection('uncollected', true)}>
                                                     <img src={this.defaultBookImagePath}
-                                                        className="item-size" alt="" onError={e => this.bookImageOnError(e)} />
+                                                        className="item-size" alt="" onError={e => this.bookImageOnError(e)} data-loading="lazy" />
 
                                                     <div className="collection-detail p-2">
                                                         <div className="collection-detail-inner">

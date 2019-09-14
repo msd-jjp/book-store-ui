@@ -328,6 +328,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                                             alt="book"
                                             onError={e => this.bookImageOnError(e)}
                                             className="center-el-in-box"
+                                            data-loading="lazy"
                                         />
                                     </div>
                                     <span className="writer-name text-capitalize" title={firstWriterFullName}>
@@ -404,7 +405,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                             return (
                                 <div className="carousel-item" key={bookIndex}>
                                     <div className="img-wrapper">
-                                        <img src={this.defaultBookImagePath} alt="book" />
+                                        <img src={this.defaultBookImagePath} alt="book" data-loading="lazy" />
                                         <span className="item-loader-wrapper">
                                             <div className="spinner-grow item-loader">
                                                 <span className="sr-only">{Localization.loading_with_dots}</span>
@@ -430,7 +431,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                     <div className="carousel-item-wrapper mb-4">
                         <div className="carousel-item">
                             <div className="img-wrapper">
-                                <img src={this.defaultBookImagePath} alt="book" />
+                                <img src={this.defaultBookImagePath} alt="book" data-loading="lazy" />
                             </div>
                             <span className="writer-name text-capitalize"></span>
                             <div className="clearfix"></div>
