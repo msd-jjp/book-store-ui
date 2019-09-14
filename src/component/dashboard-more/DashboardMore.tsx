@@ -184,6 +184,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                                 }
                                 alt="avatar"
                                 onError={e => this.personImageOnError(e)}
+                                data-loading="lazy"
                             />
                             <span>{this.getPersonFullName(this.props.logged_in_user!.person)}</span>
                         </li>
@@ -198,13 +199,13 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
 
                             <ul className="flag-list list-group list-group-horizontal list-group-flush__ text-center  p-0">
                                 <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('fa')}>
-                                    <img src="/static/media/img/flag/ir.png" alt="فارسی" width="50px" />
+                                    <img src="/static/media/img/flag/ir.png" alt="فارسی" width="50px" data-loading="lazy" />
                                 </button>
                                 <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('en')}>
-                                    <img src="/static/media/img/flag/us.png" alt="english" width="50px" />
+                                    <img src="/static/media/img/flag/us.png" alt="english" width="50px" data-loading="lazy" />
                                 </button>
                                 <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('ar')}>
-                                    <img src="/static/media/img/flag/ar.png" alt="العربیه" width="50px" />
+                                    <img src="/static/media/img/flag/ar.png" alt="العربیه" width="50px" data-loading="lazy" />
                                 </button>
                             </ul>
                         </li>
