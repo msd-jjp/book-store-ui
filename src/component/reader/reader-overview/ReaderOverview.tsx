@@ -18,6 +18,7 @@ import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 import Slider, { Settings } from "react-slick";
 import Tooltip from 'rc-tooltip';
 import RcSlider, { Handle } from 'rc-slider';
+import { NavLink } from "react-router-dom";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -143,6 +144,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                       className="text-capitalize"
                     >
                       {Localization.recommend_this_book}
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      className="text-capitalize"
+                      as={NavLink} to={`/store`}
+                    >
+                      {Localization.shop_in_store}
                     </Dropdown.Item>
                     <Dropdown.Item
                       className="text-capitalize"

@@ -303,6 +303,7 @@ interface ILocalization extends LocalizedStringsMethods {
     book_from_your_library: string;
     your_recent_item_appear_manage_remove: string;
     go_to_library: string;
+    shop_in_store: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
