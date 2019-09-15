@@ -18,6 +18,7 @@ import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { OrderService } from "../../service/service.order";
 import { Store2 } from "../../redux/store";
 import { PriceService } from "../../service/service.price";
+import { CmpUtility } from "../_base/CmpUtility";
 // import { IBook } from "../../model/model.book";
 
 interface IProps {
@@ -229,12 +230,23 @@ class CartComponent extends BaseComponent<IProps, IState> {
                             <i className="fa fa-times"></i>
                           </button>
 
-                          <div className="item-img-wrapper mr-3" onClick={() => this.gotoBookDetail(book.id)}>
-                            <img src={book_image}
+                          <div className="item-img-wrapper mr-3 cursor-pointer" onClick={() => this.gotoBookDetail(book.id)}>
+                            {/* <img src={book_image}
                               alt="book"
                               className="item-img img-thumbnail rounded center-el-in-box"
                               onError={e => this.bookImageOnError(e)}
-                            />
+                            /> */}
+
+                            <div className="img-scaffolding-container">
+                              <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="book" data-loading="lazy" />
+
+                              <img src={book_image}
+                                alt="book"
+                                className="book-img center-el-in-box"
+                                onError={e => CmpUtility.bookImageOnError(e)}
+                                data-loading="lazy"
+                              />
+                            </div>
                           </div>
 
                           <div className="item-title mr-3">
