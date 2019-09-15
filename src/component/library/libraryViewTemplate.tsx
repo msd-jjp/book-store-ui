@@ -7,6 +7,8 @@ export function calc_read_percent(item: ILibrary): string {
     let read = 0;
     let total = 0;
 
+    if (!item) return '0%';
+
     if (item.book.type === BOOK_TYPES.Audio) {
         read = item.status.read_duration;
         total = +item.book.duration;
