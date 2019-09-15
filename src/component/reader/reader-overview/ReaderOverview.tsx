@@ -35,9 +35,10 @@ interface IProps {
 
 interface IState {
   book: IBook | undefined;
-  virtualData: {
+  virtualData: { // todo change to swiperVirtualData
     slides: any[],
   },
+  RcSlider_value: number | undefined;
 }
 
 class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
@@ -48,6 +49,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     virtualData: {
       slides: [],
     },
+    RcSlider_value: undefined,
   };
 
   private _personService = new PersonService();
@@ -225,6 +227,15 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           /* do something */
           console.log('click');
         },
+        slideChange: function () {
+          /* do something */
+          console.log('swiperChange --> call set_RcSlider_value');
+          const activeIndex = self.swiper_obj && self.swiper_obj!.activeIndex;
+          if (activeIndex) {
+            self.set_RcSlider_value(activeIndex + 1);
+            // self.setState({ ...self.state, RcSlider_value: activeIndex });
+          }
+        },
 
       }
     });
@@ -361,12 +372,17 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // this.setState({
     //   value,
     // });
-    // console.log(value);
+    console.log('onSliderChange', value);
+    this.set_RcSlider_value(value);
+  }
+  set_RcSlider_value(value: number) {
+    if (value === this.state.RcSlider_value) return;
+    this.setState({ ...this.state, RcSlider_value: value });
   }
   onAfterChange(value: number) {
-    console.log(value); //eslint-disable-line
+    console.log(value, 'RcSlider change call swiper_obj!.slideTo'); //eslint-disable-line
     // if (value < 10)
-    this.swiper_obj!.slideTo(value);
+    this.swiper_obj!.slideTo(value - 1);
   }
 
   slider_render() {
@@ -381,7 +397,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           handle={(p) => this.handle(p)}
           onChange={(v) => this.onSliderChange(v)}
           onAfterChange={(v) => this.onAfterChange(v)}
-        // value={this.state.value}
+          value={this.state.RcSlider_value}
         // step={20} 
         // onBeforeChange={log}
         // disabled
