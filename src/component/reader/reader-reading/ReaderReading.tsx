@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { redux_state } from "../../../redux/app_state";
@@ -16,6 +16,8 @@ import { action_user_logged_in } from "../../../redux/action/user";
 import { IBook } from "../../../model/model.book";
 import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 import Slider, { Settings } from "react-slick";
+import Swiper from 'swiper';
+import { Virtual } from 'swiper/dist/js/swiper.esm';
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -30,6 +32,9 @@ interface IProps {
 
 interface IState {
   book: IBook | undefined;
+  virtualData: {
+    slides: any[],
+  },
 }
 
 class ReaderReadingComponent extends BaseComponent<IProps, IState> {
@@ -37,6 +42,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
   state = {
     book: undefined, // this.getBookFromLibrary(this.book_id),
+    virtualData: {
+      slides: [],
+    },
   };
 
   private _personService = new PersonService();
@@ -70,6 +78,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     // infinite: true,
     // centerPadding: "60px", // 4rem, 60px
   };
+  swiper_obj: Swiper | undefined;
 
   constructor(props: IProps) {
     super(props);
@@ -81,6 +90,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   componentDidMount() {
     this.updateUserCurrentBook_client();
     this.updateUserCurrentBook_server();
+    this.initSwiper();
   }
 
   updateUserCurrentBook_client() {
@@ -116,11 +126,56 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     return book!.title;
   }
 
+  initSwiper() {
+    const self = this;
+    // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
+    // this.swiper_obj && this.swiper_obj.destroy(true, true);
+    let slides = [];
+    for (var i = 0; i < 10; i += 1) {
+      slides.push({ name: 'Slide_' + (i + 1), id: i + 1 });
+    }
+    this.swiper_obj = new Swiper('.swiper-container', {
+      // ...
+      virtual: {
+        slides: slides, // self.state.slides,
+        renderExternal(data: Virtual) {
+          // assign virtual slides data
+          self.setState({
+            virtualData: data,
+          });
+        }
+      },
+      on: {
+        doubleTap: function () {
+          /* do something */
+          console.log('doubleTap');
+        },
+        tap: function () {
+          /* do something */
+          console.log('tap');
+          self.onPageClicked();
+        },
+        click: function () {
+          /* do something */
+          console.log('click');
+        },
+
+      }
+    });
+    // activeIndex && this.gotoIndex(activeIndex);
+
+
+    // this.swiper_obj.on('touchMove', function(){
+    //     console.log('touchMove');
+    // })
+  }
+
   reading_body_render() {
     return (
       <>
         <div className="reading-body">
-          {this.carousel_render()}
+          {/* {this.carousel_render()} */}
+          {this.swiper_render()}
 
           {/* <div className="page-location text-center">location 477 of 4436 . 11%</div> */}
         </div>
@@ -128,7 +183,50 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  carousel_render() {
+  swiper_render() {
+    if (true) {
+      const vrtData: any = this.state.virtualData;
+
+      let offset_dir = 'left';
+      let swiper_dir = '';
+      if (this.props.internationalization.rtl) {
+        offset_dir = 'right';
+        swiper_dir = 'rtl';
+      }
+
+      return (
+        <>
+          <div className="app-swiper">
+            <div className="swiper-container" dir={swiper_dir}>
+              <div className="swiper-wrapper">
+                {vrtData.slides.map((slide: any, index: any) => (
+                  <Fragment key={slide.id}>
+                    <div className="swiper-slide" style={{ [offset_dir]: `${vrtData.offset}px` }}>
+                      <div className="item" >
+                        <div className="page-img-wrapper">
+                          <img
+                            className="page-img"
+                            src={`/static/media/img/sample-book-page/page-${slide.id}.jpg`}
+                            alt="book"
+                          />
+                        </div>
+                        <div className="item-footer">
+                          <div>{Localization.formatString(Localization.n_min_left_in_chapter, 2)}</div>
+                          <div>15%</div>
+                        </div>
+                      </div>
+                    </div>
+                  </Fragment>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
+  }
+
+  carousel_render_DELETE_ME() {
     if (true) {
 
       let initialSlide = 0;
