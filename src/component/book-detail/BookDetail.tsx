@@ -26,6 +26,7 @@ import { ICartItems, ICartItem } from "../../redux/action/cart/cartAction";
 import { action_add_to_cart, action_remove_from_cart } from "../../redux/action/cart";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { CmpUtility } from "../_base/CmpUtility";
+import { Utility } from "../../asset/script/utility";
 // import { IPerson } from "../../model/model.person";
 
 
@@ -573,7 +574,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         <>
           <div
             className="add-to-list-- btn btn-link-- p-align-0 mt-n2 text-system--"
-            // onClick={() => { this.cartList_remove_book(book) }}
+          // onClick={() => { this.cartList_remove_book(book) }}
           >
             {Localization.exist_in_library}
             <i className="fa fa-book"></i>
@@ -635,7 +636,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                     initialRating={book.rate}
                     readonly
                   />
-                  <span className="ml-2">{Localization.formatString(Localization.n_out_of_m_stars, book.rate, 5)}</span>
+                  <span className="ml-2">{Localization.formatString(
+                    Localization.n_out_of_m_stars,
+                    Utility.round_num_decimals(book.rate), 5
+                  )}</span>
                 </div>
               </div>
 

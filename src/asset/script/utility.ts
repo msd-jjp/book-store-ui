@@ -58,4 +58,16 @@ export abstract class Utility {
         }
     }
 
+    static round_num_decimals(float: number, fixed: number = 2): number {
+        if (!float) return 0;
+        const pfixed = Math.pow(10, fixed);
+        return Math.round(float * pfixed) / pfixed;
+    }
+
+    static noRound_num_decimals(float: number, fixed: number = 2): number {
+        if (!float) return 0;
+        const pfixed = Math.pow(10, fixed);
+        return Math.trunc(float * pfixed) / pfixed; // === parseInt(value) === ~~value
+    }
+
 }
