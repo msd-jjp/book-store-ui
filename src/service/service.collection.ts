@@ -21,11 +21,11 @@ export class CollectionService extends BaseService {
         return this.axiosTokenInstance.get('/collections');
     }
     get_byTitle(title: string): Promise<IAPI_Response<IBook>> {
-        return this.axiosTokenInstance.get(`/collections/title/${title}`);
+        return this.axiosTokenInstance.post(`/collections/collection`, { title });
     }
 
     rename(currentTitle: string, newTitle: string): Promise<IAPI_ResponseList<any>> {
-        return this.axiosTokenInstance.put(`/collections/${currentTitle}`, { title: newTitle });
+        return this.axiosTokenInstance.put(`/collections`, { title: currentTitle, new_title: newTitle });
     }
     // get_byId(id: string): Promise<IAPI_Response<IBook>> {
     //     return this.axiosTokenInstance.get(`/collections/${id}`);
@@ -46,7 +46,7 @@ export class CollectionService extends BaseService {
         });
     }
     remove(title: string) {
-        return this.axiosTokenInstance.delete(`/collections/title/${title}`);
+        return this.axiosTokenInstance.delete(`/collections/collection`, { data: { title } });
     }
     remove_byId(id: string) { // admin
         return this.axiosTokenInstance.delete(`/collections/${id}`);
