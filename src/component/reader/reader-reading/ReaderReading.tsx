@@ -171,6 +171,35 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     // })
   }
 
+  getActivePage(): number {
+    const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
+    console.log('activeIndex', activeIndex);
+    return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : 0;
+  }
+
+  calc_current_read_percent(): string {
+    let read = this.getActivePage();
+    let total = this.book_page_length || 0;
+
+    if (total) {
+      return Math.floor(((read || 0) * 100) / +total) + '%';
+    } else {
+      return '0%';
+    }
+  }
+
+  calc_current_read_timeLeft(): number {
+    let read = this.getActivePage();
+    let total = this.book_page_length || 0; // todo: get chapter not all book.
+    let min_per_page = 1;
+
+    if (total) {
+      return (total - read + 1) * min_per_page;
+    } else {
+      return 0;
+    }
+  }
+
   reading_body_render() {
     return (
       <>
@@ -212,8 +241,8 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
                           />
                         </div>
                         <div className="item-footer">
-                          <div>{Localization.formatString(Localization.n_min_left_in_chapter, 2)}</div>
-                          <div>15%</div>
+                          <div>{Localization.formatString(Localization.n_min_left_in_chapter, this.calc_current_read_timeLeft())}</div>
+                          <div>{this.calc_current_read_percent()}</div>
                         </div>
                       </div>
                     </div>
