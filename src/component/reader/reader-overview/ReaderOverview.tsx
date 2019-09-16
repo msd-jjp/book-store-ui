@@ -53,7 +53,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   };
 
   private _personService = new PersonService();
-  sliderSetting: Settings = {
+  private sliderSetting: Settings = {
     dots: false,
     accessibility: false,
     // swipe: false,
@@ -83,7 +83,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // infinite: true,
     centerPadding: "60px", // 4rem, 60px
   };
-  swiper_obj: Swiper | undefined;
+  private swiper_obj: Swiper | undefined;
+  private book_page_length = 2500;
 
   constructor(props: IProps) {
     super(props);
@@ -199,7 +200,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
     // this.swiper_obj && this.swiper_obj.destroy(true, true);
     let slides = [];
-    for (var i = 0; i < 10; i += 1) {
+    for (var i = 0; i < this.book_page_length; i += 1) { // 10
       slides.push({ name: 'Slide_' + (i + 1), id: i + 1 });
     }
     this.swiper_obj = new Swiper('.swiper-container', {
@@ -213,6 +214,22 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           });
         }
       },
+      
+      
+      // slidesPerView: 'auto',
+      // centeredSlides: true,
+      // spaceBetween: 330,
+      // slidesPerView: 'auto',
+      // centeredSlides: true,
+      // spaceBetween: 30,
+      // slidesPerView: 1,
+      // spaceBetween: 30,
+      // centeredSlides: true,
+      // slidesPerView: 3,
+      // spaceBetween: 30,
+      // freeMode: true,
+
+
       on: {
         doubleTap: function () {
           /* do something */
@@ -247,6 +264,23 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // })
   }
 
+  getActivePage(): number {
+    const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
+    console.log('activeIndex', activeIndex);
+    return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : 0;
+  }
+
+  calc_current_read_percent(): string {
+    let read = this.getActivePage();
+    let total = this.book_page_length || 0;
+
+    if (total) {
+      return Math.floor(((read || 0) * 100) / +total) + '%';
+    } else {
+      return '0%';
+    }
+  }
+
   overview_body_render() {
     return (
       <>
@@ -256,7 +290,13 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           {/* {this.carousel_render()} */}
           {this.swiper_render()}
 
-          <div className="page-location text-center">477 {Localization.of} 4436 . 11%</div>
+          <div className="page-location text-center text-muted">
+            {this.getActivePage()}&nbsp;
+            {Localization.of}&nbsp;
+            {this.book_page_length}&nbsp;
+            <i className="font-size-01 fa fa-circle"></i>&nbsp;
+            {this.calc_current_read_percent()}
+          </div>
         </div>
       </>
     )
@@ -289,7 +329,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                             alt="book"
                           />
                         </div>
-                        <div className="page-number">456</div>
+                        <div className="page-number text-muted">{slide.id}</div>
                       </div>
                     </div>
                   </Fragment>
@@ -386,12 +426,15 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   slider_render() {
+    const maxVal = this.book_page_length; // 10
+    if (!maxVal) return;
+
     return (
       <>
         {/* <div> */}
         <RcSlider
           min={1}
-          max={10}
+          max={maxVal}
           reverse
           defaultValue={1}
           handle={(p) => this.handle(p)}

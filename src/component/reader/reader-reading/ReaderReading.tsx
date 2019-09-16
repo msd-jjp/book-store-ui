@@ -79,6 +79,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     // centerPadding: "60px", // 4rem, 60px
   };
   swiper_obj: Swiper | undefined;
+  private book_page_length = 2500;
 
   constructor(props: IProps) {
     super(props);
@@ -131,7 +132,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
     // this.swiper_obj && this.swiper_obj.destroy(true, true);
     let slides = [];
-    for (var i = 0; i < 10; i += 1) {
+    for (var i = 0; i < this.book_page_length; i += 1) { // 10
       slides.push({ name: 'Slide_' + (i + 1), id: i + 1 });
     }
     this.swiper_obj = new Swiper('.swiper-container', {
