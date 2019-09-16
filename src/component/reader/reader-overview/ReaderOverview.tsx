@@ -214,8 +214,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           });
         }
       },
-      
-      
+
+
       // slidesPerView: 'auto',
       // centeredSlides: true,
       // spaceBetween: 330,
@@ -392,6 +392,10 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this.props.history.replace(`/reader/${book_id}/reading`);
   }
 
+  gotoReader_scroll(book_id: string) {
+    this.props.history.replace(`/reader/${book_id}/scroll`);
+  }
+
   handle(props: any) {
     const { value, dragging, index, ...restProps } = props;
     return (
@@ -454,13 +458,13 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     return (
       <>
         <div className="overview-footer">
-          <div className="change-view">
+          <div className="change-view--">
             <i className="fa fa-th p-2 cursor-pointer"
-              onClick={() => { }}
+              onClick={() => this.gotoReader_scroll(this.book_id)}
             ></i>
           </div>
           <div className="footer-slider">{this.slider_render()}</div>
-          <div className="audio">
+          <div className="audio--">
             <i className="fa fa-headphones p-2 cursor-pointer"
               onClick={() => { }}
             ></i>
