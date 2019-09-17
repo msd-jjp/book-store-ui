@@ -85,6 +85,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   };
   private swiper_obj: Swiper | undefined;
   private book_page_length = 2500;
+  private book_active_page = 372;
 
   constructor(props: IProps) {
     super(props);
@@ -94,37 +95,42 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   componentDidMount() {
-    this.updateUserCurrentBook_client();
-    this.updateUserCurrentBook_server();
+    // this.updateUserCurrentBook_client();
+    this.setBook_byId(this.book_id);
+    // this.updateUserCurrentBook_server();
     this.initSwiper();
   }
 
-  updateUserCurrentBook_client() {
-    let logged_in_user = { ...this.props.logged_in_user! };
-    if (!logged_in_user) return;
-    const book = this.getBookFromLibrary(this.book_id);
-    logged_in_user.person.current_book = book;
-    this.props.onUserLoggedIn(logged_in_user);
+  // updateUserCurrentBook_client() {
+  //   let logged_in_user = { ...this.props.logged_in_user! };
+  //   if (!logged_in_user) return;
+  //   const book = this.getBookFromLibrary(this.book_id);
+  //   logged_in_user.person.current_book = book;
+  //   this.props.onUserLoggedIn(logged_in_user);
 
-    this.setState({ ...this.state, book: this.getBookFromLibrary(this.book_id) });
-  }
+  //   this.setState({ ...this.state, book: this.getBookFromLibrary(this.book_id) });
+  // }
 
   getBookFromLibrary(book_id: string): IBook {
     const lib = this.props.library.data.find(lib => lib.book.id === book_id);
     return (lib! || {}).book;
   }
 
-  async updateUserCurrentBook_server() {
-    if (!this.book_id) return;
-    if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
-
-    await this._personService.update(
-      { current_book_id: this.book_id },
-      this.props.logged_in_user!.person.id
-    ).catch(e => {
-      // this.handleError({ error: e.response });
-    });
+  setBook_byId(book_id: string){
+    this.setState({ ...this.state, book: this.getBookFromLibrary(book_id) });
   }
+
+  // async updateUserCurrentBook_server() {
+  //   if (!this.book_id) return;
+  //   if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
+
+  //   await this._personService.update(
+  //     { current_book_id: this.book_id },
+  //     this.props.logged_in_user!.person.id
+  //   ).catch(e => {
+  //     // this.handleError({ error: e.response });
+  //   });
+  // }
 
   overview_header_render() {
     return (
@@ -229,6 +235,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       // spaceBetween: 30,
       // freeMode: true,
 
+      initialSlide: self.book_active_page,
 
       on: {
         doubleTap: function () {
@@ -432,6 +439,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   slider_render() {
     const maxVal = this.book_page_length; // 10
     if (!maxVal) return;
+    const defaultValue = this.book_active_page || 1;
 
     return (
       <>
@@ -440,7 +448,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           min={1}
           max={maxVal}
           reverse
-          defaultValue={1}
+          defaultValue={defaultValue}
           handle={(p) => this.handle(p)}
           onChange={(v) => this.onSliderChange(v)}
           onAfterChange={(v) => this.onAfterChange(v)}

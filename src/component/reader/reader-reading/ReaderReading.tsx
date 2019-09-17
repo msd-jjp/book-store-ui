@@ -80,6 +80,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   };
   swiper_obj: Swiper | undefined;
   private book_page_length = 2500;
+  private book_active_page = 372;
 
   constructor(props: IProps) {
     super(props);
@@ -101,7 +102,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     logged_in_user.person.current_book = book;
     this.props.onUserLoggedIn(logged_in_user);
 
-    this.setState({ ...this.state, book: this.getBookFromLibrary(this.book_id) });
+    this.setState({ ...this.state, book: book }); // this.getBookFromLibrary(this.book_id)
   }
 
   getBookFromLibrary(book_id: string): IBook {
@@ -146,6 +147,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
           });
         }
       },
+      initialSlide: self.book_active_page,
       on: {
         doubleTap: function () {
           /* do something */
