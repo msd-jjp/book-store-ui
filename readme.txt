@@ -98,23 +98,27 @@ add price to book in category & store
 
 collection & library head request & get request
 
-----------------------------
+no book found in library (match your filter)
+no collection found
+no book found in collection (match your filter)
+
+====================================================================================
 
 buy history
 
 list buy history on click goto buy history detail.
 
-----------------------------
+====================================================================================
 
 share 
 	whats app , telegram , sms
 	
-----------------------------
+====================================================================================
 
 notification (r&d)
 	even if close
 	
-----------------------------
+====================================================================================
 
 ====================================================================================
 
@@ -142,5 +146,9 @@ if not login layout main(noWrap) push '/login' to history
 ====================================================================================
 
 upload progress bar if file size big (use https://github.com/fkhadra/react-toastify#use-a-controlled-progress-bar)
+
+====================================================================================
+
+add read symbol to 100% readed book (instead of 100%) like kindle;
 
 ====================================================================================
