@@ -1,4 +1,8 @@
+// eslint-disable-next-line import/no-webpack-loader-syntax
+// import * as workerPath from "worker-loader!./worker/reader.worker";
 import myWorker from './worker/reader.worker';
+// import MyWorkerss = require('worker-loader!./worker/reader.worker');
+
 
 interface IReaderWorker extends Worker{
 
