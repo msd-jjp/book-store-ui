@@ -38,7 +38,9 @@ export function getBookSlideList_mock(): {
 
 
     let bookTree = getBookTree_mock();
-    bookTree.chapter_list.forEach(chapter => {
+
+    bookTree.chapter_list.forEach((chapter, chapter_index) => {
+        debugger;
         slideList.push({
             id: AppGuid.generate(),
             isTitle: true,
@@ -46,7 +48,7 @@ export function getBookSlideList_mock(): {
             pages: []
         });
         chapter.pages.forEach((page, page_index) => {
-            let slide_index: any = Math.floor(page_index / 3) + 1;
+            let slide_index: any = Math.floor(page_index * chapter_index / 3) + 1;
             if (slideList[slide_index]) {
                 slideList[slide_index].pages.push(page);
             } else {
@@ -59,35 +61,8 @@ export function getBookSlideList_mock(): {
             }
 
 
-            // if (page_index === 0) {
-            //     // slideList.push({
-            //     //     isTitle: true,
-            //     //     chapterTitle: chapter.title,
-            //     //     pages: []
-            //     // });
-            //     slideList.push({
-            //         isTitle: false,
-            //         chapterTitle: chapter.title,
-            //         pages: [page]
-            //     });
-            // }/* else if (page_index ===1) {
-            //     slideList.push({
-            //             isTitle: false,
-            //             chapterTitle: chapter.title,
-            //             pages: [page]
-            //         });
-            //     // let slide_index:any = Math.floor(page_index/3);
-            //     // page[slide_index]=page[slide_index] ||[]
-            // } */else {
-            //     let slide_index: any = Math.floor(page_index / 3) + 1;
-            //     slideList[slide_index].pages.push(page);
-            // }
         });
-        // slideList.push({
-        //     isTitle: true,
-        //     chapterTitle: chapter.title,
-        //     pages: []
-        // });
+
 
     });
 

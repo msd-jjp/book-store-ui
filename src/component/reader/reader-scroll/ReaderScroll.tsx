@@ -169,6 +169,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       spaceBetween: 130,
       // direction: 'vertical',
       // slidesPerView: 'auto',
+      slidesPerView: 3,
       freeMode: true,
       // scrollbar: {
       //   el: '.swiper-scrollbar',
