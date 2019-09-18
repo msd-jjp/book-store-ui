@@ -9,18 +9,24 @@ export abstract class BaseWorker {
 
 
             if (typeof (Worker) === "undefined") return;
-            let wrk = await import('../asset/script/worker.reader');
+            // let wrk = await import('../asset/script/worker.reader');
             debugger;
             // return new Worker(URL.createObjectURL(new Blob([`(${(wrk.onmessage || '').toString()})(e=null)`])));
-            return new Worker(URL.createObjectURL(new Blob([(wrk.onmessage || '').toString()])));
+            // return new Worker(URL.createObjectURL(new Blob([(wrk.onmessage || '').toString()])));
             return new Worker(
                 this.worker_url,
                 // { type: 'classic' }
             );
         })
     }
-
     init(): Worker | undefined {
+        if (typeof (Worker) === "undefined") return;
+        // return new Worker(
+        //     this.worker_url,
+        //     // { type: 'classic' }
+        // );
+    }
+    init5(): Worker | undefined {
         if (typeof (Worker) === "undefined") return;
         return new Worker(
             this.worker_url,

@@ -81,27 +81,20 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   async test_worker() {
-    // const _window: any = window;
-    // if (_window.Worker) {
-    // const myWorker = new Worker("/static/webworker/reader/reader.js");
-    const _readerWorker/* :Worker */ = await new ReaderWorker().init();
-
+    const _readerWorker = await new ReaderWorker().init();
     if (!_readerWorker) return;
-    console.log(_readerWorker);
 
     setTimeout(() => {
-      _readerWorker.postMessage({ data: [53, 10], store: Store2.getState().library });
-      console.log('main:', { lib: Store2.getState().library, cart: Store2.getState().cart });
-    }, 1000);
+      _readerWorker.postMessage({
+        book_id: this.book_id,
+        library: Store2.getState().library
+      });
+    }, 0);
 
-    _readerWorker.onmessage = function (e) {
-      // result.textContent = e.data;
-      console.log('Message received from worker', e);
+    _readerWorker.onmessage = function (e: MessageEvent) {
+      console.log('main: Message received from worker', e);
       _readerWorker.terminate();
     }
-    // } else {
-    //   console.log('Your browser doesn\'t support web workers.')
-    // }
   }
 
   componentDidMount() {
@@ -119,7 +112,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
     setTimeout(() => {
       this.test_worker();
-    }, 3000);
+    }, 0);
   }
 
 
