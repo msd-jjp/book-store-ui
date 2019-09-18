@@ -5,7 +5,7 @@
       "dom",
       "dom.iterable",
       "esnext",
-      "webworker","es5", "scripthost","es6"
+      "webworker","es5", "scripthost","es6","webworker.importscripts"
     ],
     "allowJs": true,
     "skipLibCheck": true,

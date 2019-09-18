@@ -1,12 +1,24 @@
 import { BaseWorker } from "../worker.base";
-// import * as workerPath from "file-loader?name=[name].js!./worker";
+// eslint-disable-next-line import/no-webpack-loader-syntax
+// import * as workerPath from "file-loader?name=[name].js!./worker.js";
+import myWorker from './reader.worker';
 
 export class ReaderWorker extends BaseWorker {
     constructor() {
         super();
         // this.handler = this.handler.bind(this);
     }
-    worker_url = '/static/webworker/reader/worker.reader.js';
+    // worker_url = '/static/webworker/reader/worker.reader.js';
+    worker_url = '/static/webworker/reader/worker.reader.webworker.js';
+    init(): Worker | undefined {
+        console.log('--------------override----------');
+        if (typeof (Worker) === "undefined") return;
+        // let vsd: any = myWorker;
+        // return new vsd();
+        return new (myWorker as  any)();
+        // return new myWorker(); //new (myWorker as  any)();
+    }
+
     // worker_url = workerPath;
     handler(e: MessageEvent) {
         if (!e) {

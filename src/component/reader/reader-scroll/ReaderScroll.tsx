@@ -18,6 +18,7 @@ import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 import Swiper from 'swiper';
 import { Virtual } from 'swiper/dist/js/swiper.esm';
 import { ReaderWorker } from "../../../webworker/reader/worker.reader";
+import { Store2 } from "../../../redux/store";
 // import { readerWorker } from '../../../webworker/reader/reader';
 // import { WebWorkerSetup } from "../../../webworker/workerSetup";
 
@@ -89,7 +90,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     console.log(_readerWorker);
 
     setTimeout(() => {
-      _readerWorker.postMessage([53, 10]);
+      _readerWorker.postMessage({ data: [53, 10], store: Store2.getState().library });
+      console.log('main:', { lib: Store2.getState().library, cart: Store2.getState().cart });
     }, 1000);
 
     _readerWorker.onmessage = function (e) {

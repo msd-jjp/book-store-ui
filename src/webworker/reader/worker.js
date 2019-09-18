@@ -1,4 +1,9 @@
-// export const sample = 
+// if( 'function' === typeof importScripts) {
+    
+ 
+
+    // importScripts && importScripts('./worker');
+
 onmessage = async function (e) { // : MessageEvent
     console.log('Worker: Message received from main script');
     let result = e.data[0] * e.data[1];
@@ -15,6 +20,7 @@ onmessage = async function (e) { // : MessageEvent
     }
 }
 
+// }
 function waitOnMe(timer = 500) {
     return new Promise((res, rej) => {
         setTimeout(function () {
