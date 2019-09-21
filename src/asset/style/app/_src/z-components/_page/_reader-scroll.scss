@@ -40,47 +40,60 @@
         // height:auto !important;
         // padding: 0 4rem;
         .swiper-wrapper {
-        height: 100%;
+          height: 100%;
 
           .swiper-slide {
             height: auto !important;
           }
         }
       }
-      // .item-wrapper {
-      // height: 100%;
 
-      .item {
-        // height: 100%;
+      .item-wrapper {
         display: flex;
-        // flex-direction: column;
         flex-wrap: wrap;
-        align-items: center;
-        border: 1px solid #ddd;
-        margin: 0 1rem;
-        padding: 0.25rem;
+        // align-items: center;
+        // border: 1px solid #ddd;
+        // margin: 0 1rem;
+        // padding: 0.25rem;
         justify-content: space-between;
 
-        .page-img-wrapper {
-          max-width: 100%;
-          // max-height: calc(100% - 2rem);
-          height: calc(100% - 2rem);
-          width: 100%;
-          background-color: #eaffff;
-          text-align: center;
-          padding: 1rem;
-          .page-img {
+        .item {
+          // width: 100px;
+          // height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          border: 1px solid #ddd;
+          margin: 0 1rem;
+          padding: 0.25rem;
+          justify-content: space-between;
+          flex: 1;
+
+          .page-img-wrapper {
             max-width: 100%;
-            max-height: 100%;
-            display: inline-block;
+            // max-height: calc(100% - 2rem);
+            height: calc(100% - 2rem);
+            width: 100%;
+            background-color: #eaffff;
+            text-align: center;
+            padding: 1rem;
+            .page-img {
+              max-width: 100%;
+              max-height: 100%;
+              display: inline-block;
+            }
           }
-        }
-        .page-number {
-          border-top: 1px solid #ddd;
-          width: 100%;
-          text-align: center;
-          margin-top: 0.25rem;
-          padding-top: 0.25rem;
+          .page-number {
+            border-top: 1px solid #ddd;
+            width: 100%;
+            text-align: center;
+            margin-top: 0.25rem;
+            padding-top: 0.25rem;
+          }
+
+          &.active {
+            border-color: app-color(dark);
+          }
         }
       }
       // }

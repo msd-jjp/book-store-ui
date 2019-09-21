@@ -147,9 +147,9 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     // let slides = [];
 
     this.swiper_obj = new Swiper('.swiper-container', {
-      // ...
       virtual: {
-        slides: slides, // self.state.slides,
+        cache: true,
+        slides: slides,
         renderExternal(data: Virtual) {
           // assign virtual slides data
           self.setState({
@@ -166,22 +166,24 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       // direction: 'vertical',
       // slidesPerView: undefined,
       autoHeight: true,
-      spaceBetween: 130,
+      spaceBetween: 32,
       // direction: 'vertical',
       // slidesPerView: 'auto',
-      slidesPerView: 3,
+      slidesPerView: 10, // 3
       freeMode: true,
+      // centeredSlides: true,
       // scrollbar: {
       //   el: '.swiper-scrollbar',
       // },
       // mousewheel: true,
+      keyboard: true,
 
 
       on: {
         tap: function () {
           /* do something */
           console.log('tap');
-          self.onPageClicked();
+          self.onSlideClicked();
         },
 
 
@@ -198,7 +200,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   reading_body_render() {
     return (
       <>
-        <div className="scroll-body">
+        <div className="scroll-body mx-3">
           {this.swiper_render()}
         </div>
       </>
@@ -217,48 +219,57 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  swiper_item_render(slide: { id: string; chapterTitle: string; isTitle: boolean; pages: string[] },
+  swiper_item_render(
+    slide: { id: string; chapterTitle: string; isTitle: boolean; pages: { url: string; number: number }[] },
     offset: any
   ) {
     if (slide.isTitle) {
       return (
         <>
           <div className="swiper-slide" style={{ top: `${offset}px` }}>
-            <div className="item" >
-              <h3 className="chapterTitle">{slide.chapterTitle}</h3>
+            <div className="item-- text-center d-block-- my-4" >
+              <h3 className="chapterTitle--">{slide.chapterTitle}</h3>
+            </div>
+          </div>
+        </>
+      )
+
+    } else {
+      const slide_pages = [...slide.pages];
+      if (slide_pages.length < 3) {
+        for (let i = 0; i < 3 - slide_pages.length; i++) {
+          slide_pages.push({ number: -1, url: '' });
+        }
+      }
+      return (
+        <>
+          <div className="swiper-slide" style={{ top: `${offset}px` }}>
+            <div className="item-wrapper" >
+              {slide_pages.map((pg, pg_index) => {
+                return (
+                  <Fragment key={pg_index}>
+                    <div className={
+                      "item " +
+                      ((pg.number === this.book_active_page) ? 'active ' : '') +
+                      ((pg.number === -1) ? 'invisible' : '')
+                    } onClick={() => this.onPageClicked()}>
+                      <div className="page-img-wrapper">
+                        <img
+                          className="page-img"
+                          src={pg.url}
+                          alt="book"
+                        />
+                      </div>
+                      <div className="page-number text-muted">{pg.number}</div>
+                    </div>
+                  </Fragment>
+                )
+              })}
             </div>
           </div>
         </>
       )
     }
-    return (
-      <>
-        <div className="swiper-slide" style={{ top: `${offset}px` }}>
-          <div className="item" >
-            {slide.pages.map((pg, pg_index) => {
-              return (
-                <Fragment key={pg_index}>
-                  <div style={{
-                    width: '100px',
-                    height: '100px',
-                  }}>
-                    <img
-                      style={{
-                        width: '100px',
-                        height: '100px',
-                      }}
-                      className=""
-                      src={pg}
-                      alt=""
-                    />
-                  </div>
-                </Fragment>
-              )
-            })}
-          </div>
-        </div>
-      </>
-    )
   }
 
   swiper_render() {
@@ -278,7 +289,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
             <div className="swiper-container" >
               <div className="swiper-wrapper">
                 {vrtData.slides.map((
-                  slide: { id: string; chapterTitle: string; isTitle: boolean; pages: string[] },
+                  slide: { id: string; chapterTitle: string; isTitle: boolean; pages: { url: string; number: number }[] },
                   index: any) => (
                     <Fragment key={slide.id}>
                       {this.swiper_item_render(slide, vrtData.offset)}
@@ -294,7 +305,17 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     }
   }
 
+  private swiperTaped = false;
+  onSlideClicked() {
+    this.swiperTaped = true;
+    setTimeout(() => { this.swiperTaped = false; }, 0);
+  }
+
   onPageClicked() {
+    if (!this.swiperTaped) return;
+    debugger;
+    // todo store active page number
+    // make sure redux (reader) updated before chnage route.
     this.gotoReader_reading(this.book_id);
   }
 
