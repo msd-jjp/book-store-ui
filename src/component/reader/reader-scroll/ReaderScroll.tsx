@@ -35,9 +35,10 @@ interface IProps {
 
 interface IState {
   book: IBook | undefined;
-  virtualData: {
-    slides: any[],
-  },
+  // virtualData: {
+  //   slides: any[];
+  // },
+  swiper_slides: any[];
 }
 
 class ReaderScrollComponent extends BaseComponent<IProps, IState> {
@@ -45,9 +46,10 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
   state = {
     book: undefined, // this.getBookFromLibrary(this.book_id),
-    virtualData: {
-      slides: [],
-    },
+    // virtualData: {
+    //   slides: [],
+    // },
+    swiper_slides: []
   };
 
   private _personService = new PersonService();
@@ -82,21 +84,21 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     const _readerWorker = await new ReaderWorker().init();
     if (!_readerWorker) return;
 
-    // setTimeout(() => {
     _readerWorker.postMessage({
       // book_id: this.book_id,
       // library: Store2.getState().library
       book_active_page: this.book_active_page
     });
-    // }, 0);
 
     _readerWorker.onmessage = (e: MessageEvent) => {
       console.log('main: Message received from worker', e);
-      // let slides = [];
-      // for (var i = 0; i < this.book_page_length; i += 1) { // 10
-      //   slides.push({ name: 'Slide_' + (i + 1), id: i + 1 });
-      // }
-      this.initSwiper(e.data.bookSlideList, e.data.active_slide);
+      this.setState(
+        { ...this.state, swiper_slides: e.data.bookSlideList },
+        () => {
+          this.initSwiper(e.data.bookSlideList, e.data.active_slide);
+        }
+      );
+      // this.initSwiper(e.data.bookSlideList, e.data.active_slide);
 
       _readerWorker.terminate();
     }
@@ -140,6 +142,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   //   });
   // }
 
+
+
   initSwiper(slides: any[] = [], initialSlide: number = 0) {
     const self = this;
     // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
@@ -147,16 +151,23 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     // let slides = [];
 
     this.swiper_obj = new Swiper('.swiper-container', {
-      virtual: {
-        cache: true,
-        slides: slides,
-        renderExternal(data: Virtual) {
-          // assign virtual slides data
-          self.setState({
-            virtualData: data,
-          });
-        }
-      },
+
+      // virtual: {
+      //   cache: true,
+      //   slides: slides,
+      //   renderExternal(data: Virtual) {
+      //     // assign virtual slides data
+      //     self.setState({
+      //       virtualData: data,
+      //     });
+      //   },
+      //   // renderSlide(slide: any, index: any) {
+      //   //   console.log(slide, index);
+      //   //   // self.setState({
+      //   //   //   virtualData: slide,
+      //   //   // });
+      //   // },
+      // },
 
       initialSlide: initialSlide,
       direction: 'vertical',
@@ -168,15 +179,27 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       autoHeight: true,
       spaceBetween: 32,
       // direction: 'vertical',
-      // slidesPerView: 'auto',
-      slidesPerView: 10, // 3
+      slidesPerView: 'auto',
+      // slidesPerView: 10, // 3
       freeMode: true,
-      // centeredSlides: true,
+      centeredSlides: true,
       // scrollbar: {
       //   el: '.swiper-scrollbar',
       // },
       // mousewheel: true,
       keyboard: true,
+      // effect: 'flip',
+      // normalizeSlideIndex: true,
+      // speed: 30,
+      // virtualTranslate:true,
+      roundLengths: true,
+      // watchOverflow: true,
+      centerInsufficientSlides: true,
+      grabCursor: true,
+      simulateTouch: true,
+      observer: true,
+      observeParents: true,
+      // init:
 
 
       on: {
@@ -185,7 +208,10 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           console.log('tap');
           self.onSlideClicked();
         },
-
+        init: function () {
+          console.log('init');
+          // todo: stop page loader
+        },
 
       }
     });
@@ -221,14 +247,15 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
   swiper_item_render(
     slide: { id: string; chapterTitle: string; isTitle: boolean; pages: { url: string; number: number }[] },
-    offset: any
+    // offset: any
   ) {
     if (slide.isTitle) {
       return (
         <>
-          <div className="swiper-slide" style={{ top: `${offset}px` }}>
+          {/* <div className="swiper-slide" style={{ top: `${offset}px` }}> */}
+          <div className="swiper-slide" >
             <div className="item-- text-center d-block-- my-4" >
-              <h3 className="chapterTitle--">{slide.chapterTitle}</h3>
+              <h3 className="chapterTitle-- font-weight-normal">{slide.chapterTitle}</h3>
             </div>
           </div>
         </>
@@ -243,7 +270,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       }
       return (
         <>
-          <div className="swiper-slide" style={{ top: `${offset}px` }}>
+          {/* <div className="swiper-slide" style={{ top: `${offset}px` }}> */}
+          <div className="swiper-slide" >
             <div className="item-wrapper" >
               {slide_pages.map((pg, pg_index) => {
                 return (
@@ -274,7 +302,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
   swiper_render() {
     if (true) {
-      const vrtData: any = this.state.virtualData;
+      // const vrtData: any = this.state.virtualData;
+      const swiper_slides: any = this.state.swiper_slides;
 
       // let offset_dir = 'top';
       // let swiper_dir = '';
@@ -288,11 +317,12 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           <div className="app-swiper">
             <div className="swiper-container" >
               <div className="swiper-wrapper">
-                {vrtData.slides.map((
+                {/* {vrtData.slides.map(( */}
+                {swiper_slides.map((
                   slide: { id: string; chapterTitle: string; isTitle: boolean; pages: { url: string; number: number }[] },
                   index: any) => (
                     <Fragment key={slide.id}>
-                      {this.swiper_item_render(slide, vrtData.offset)}
+                      {this.swiper_item_render(slide/* , vrtData.offset */)}
                     </Fragment>
                   ))}
               </div>
