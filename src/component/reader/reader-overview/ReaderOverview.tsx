@@ -116,7 +116,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     return (lib! || {}).book;
   }
 
-  setBook_byId(book_id: string){
+  setBook_byId(book_id: string) {
     this.setState({ ...this.state, book: this.getBookFromLibrary(book_id) });
   }
 
@@ -235,7 +235,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       // spaceBetween: 30,
       // freeMode: true,
 
-      initialSlide: self.book_active_page,
+      initialSlide: self.book_active_page - 1,
 
       on: {
         doubleTap: function () {
