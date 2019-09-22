@@ -3,7 +3,7 @@ import { Localization } from '../../../config/localization/localization';
 
 interface InputProps {
     defaultValue?: any;
-    onChange: (value: any, isValid: boolean) => void;
+    onChange?: (value: any, isValid: boolean) => void;
     elRef?: (elName: HTMLInputElement | HTMLTextAreaElement) => void;
     pattern?: RegExp;
     patternName?: 'password' | 'number' | 'email';
@@ -65,7 +65,7 @@ class Input extends React.Component<InputProps, InputState> {
             (!this.isEmpty(this.props.defaultValue) || !this.isEmpty(props.defaultValue))
         ) {
             this.setValidate(props.defaultValue);
-            this.props.onChange(props.defaultValue, this.handleValidate(props.defaultValue));
+            this.props.onChange && this.props.onChange(props.defaultValue, this.handleValidate(props.defaultValue));
         }
 
         /* if (this.handleValidate(props.defaultValue) !== this.handleValidate(this.props.defaultValue)) {
@@ -81,7 +81,7 @@ class Input extends React.Component<InputProps, InputState> {
     }
     handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         this.setValidate(event.target.value);
-        this.props.onChange(event.target.value, this.handleValidate(event.target.value));
+        this.props.onChange && this.props.onChange(event.target.value, this.handleValidate(event.target.value));
     }
     onBlur() {
         this.setState({ ...this.state, touched: true });
