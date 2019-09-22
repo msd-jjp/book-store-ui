@@ -219,7 +219,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
 
               <img src={current_book_img}
                 alt="book"
-                className="book-img center-el-in-box"
+                className="main-img center-el-in-box"
                 onError={e => CmpUtility.bookImageOnError(e)}
                 data-loading="lazy"
               />

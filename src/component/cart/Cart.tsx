@@ -242,7 +242,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
 
                               <img src={book_image}
                                 alt="book"
-                                className="book-img center-el-in-box"
+                                className="main-img center-el-in-box"
                                 onError={e => CmpUtility.bookImageOnError(e)}
                                 data-loading="lazy"
                               />

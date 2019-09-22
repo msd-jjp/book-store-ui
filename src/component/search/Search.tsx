@@ -138,7 +138,8 @@ class SearchComponent extends BaseComponent<IProps, IState> {
                             <div className="book-title">{book.title}</div>
                             <span className="book-writer text-muted py-2 small">{writerName}</span>
                             <span className="book-progress mr-2 small">7%</span>
-                            <span className="book-volume small">789.3 kb</span>
+                            {/* todo: size */}
+                            {/* <span className="book-volume small">789.3 kb</span> */}
                             <i className="fa fa-check-circle downloaded-icon"></i>
                         </div>
                     </div>
