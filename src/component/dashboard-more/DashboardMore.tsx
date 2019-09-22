@@ -186,7 +186,13 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                                 onError={e => this.personImageOnError(e)}
                                 data-loading="lazy"
                             />
-                            <span>{this.getPersonFullName(this.props.logged_in_user!.person)}</span>
+                            <span>
+                                {this.props.logged_in_user!.username}
+                                &nbsp;
+                                <small>
+                                    ({this.getPersonFullName(this.props.logged_in_user!.person)})
+                                </small>
+                            </span>
                         </li>
 
                         <li className="more-item list-group-item p-align-0">

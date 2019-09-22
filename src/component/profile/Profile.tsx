@@ -326,8 +326,20 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
             <div className="col-12">
               <div className="template-box--">
 
-                {/* start give data by inputs */}
                 <div className="row">
+                  <div className="col-md-12 mb-3">
+                    <h6 className="text-center">
+                      <span className="text-muted">{Localization.username}:</span>&nbsp;
+                      <span className="word-break-break-all">
+                        {this.props.logged_in_user ? this.props.logged_in_user.username : ''}
+                      </span>
+                    </h6>
+                    {/* <Input
+                      label={Localization.username}
+                      defaultValue={this.props.logged_in_user ? this.props.logged_in_user.username : ''}
+                      readOnly
+                    /> */}
+                  </div>
                   <div className="col-md-6">
                     <Input
                       onChange={(value, isValid) => this.handleInputChange(value, isValid, "name")}
@@ -348,12 +360,12 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
                   </div>
                   <div className="col-md-12">
                     <Input
-                      onChange={(value, isValid) => this.handleInputChange(value, isValid, "cell_no")}
+                      // onChange={(value, isValid) => this.handleInputChange(value, isValid, "cell_no")}
                       label={Localization.mobile}
-                      placeholder={Localization.mobile}
+                      // placeholder={Localization.mobile}
                       defaultValue={this.state.person.cell_no.value}
                       pattern={AppRegex.mobile}
-                      patternError={Localization.validation.mobileFormat}
+                      // patternError={Localization.validation.mobileFormat}
                       readOnly
                     />
                   </div>
