@@ -158,15 +158,16 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
           console.log('tap');
           self.onPageClicked();
         },
-        click: function () {
-          /* do something */
-          console.log('click');
+        // click: function () {
+        //   /* do something */
+        //   console.log('click');
+        // },
+        slideChange: function () {
+          console.log('swiperChange --> active_page_number:', self.getActivePage());
         },
-
       }
     });
     // activeIndex && this.gotoIndex(activeIndex);
-
 
     // this.swiper_obj.on('touchMove', function(){
     //     console.log('touchMove');
@@ -175,7 +176,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
   getActivePage(): number {
     const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
-    console.log('activeIndex', activeIndex);
+    console.log('getActivePage:', activeIndex);
     return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : 0;
   }
 
