@@ -25,6 +25,10 @@ export function calc_read_percent(item: ILibrary): string {
     }
 }
 
+export function is_libBook_downloaded(item: ILibrary): boolean {
+    return true;
+}
+
 export function libraryItem_viewList_render(
     item: ILibrary,
     onItemSelect: (item: ILibrary) => any,
@@ -55,7 +59,7 @@ export function libraryItem_viewList_render(
                     <span className="book-progress mr-2 small">{calc_read_percent(item)}</span>
                     {/* todo: size */}
                     {/* <span className="book-volume small">789.3 kb</span> */}
-                    <i className="fa fa-check-circle downloaded-icon"></i>
+                    <i className={"fa fa-check-circle downloaded-icon " + (is_libBook_downloaded(item) ? '' : 'd-none')}></i>
                 </div>
 
                 <div className={
@@ -98,7 +102,7 @@ export function libraryItem_viewGrid_render(
                     </div>
                     <div className="bp-state-arrow" />
                 </div>
-                <div className="book-download">
+                <div className={"book-download " + (is_libBook_downloaded(item) ? '' : 'd-none')}>
                     <i className="fa fa-check" />
                 </div>
 
