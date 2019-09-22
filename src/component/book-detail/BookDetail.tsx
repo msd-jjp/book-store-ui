@@ -229,10 +229,14 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         <section className="book-detail">
           <div className="row">
             <div className="col-5">
-              <div className="book-image-wrapper">
+              <div className="img-scaffolding-container">
+                <img src={CmpUtility.bookSizeImagePath} alt="book" className="img-scaffolding" data-loading="lazy" />
+                <img src={book_image} alt="book" onError={e => CmpUtility.bookImageOnError(e)} className="main-img center-el-in-box" />
+              </div>
+              {/* <div className="book-image-wrapper">
                 <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
                 <img src={book_image} alt="book" onError={e => this.bookImageOnError(e)} className="book-img center-el-in-box" />
-              </div>
+              </div> */}
             </div>
             <div className="book-info-wrapper col-7 p-align-0">
               <h5>{book.title}</h5>
@@ -398,7 +402,16 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                       <div className="row author-profile py-4">
                         <div className="col-4">
                           <div className="ml-3">
-                            <img src={ab_writer_image} alt="avatar" />
+                            <div className="img-scaffolding-container bg-transparent">
+                              <img src={CmpUtility.avatarSizeImagePath} className="img-scaffolding" alt="" data-loading="lazy" />
+                              <img src={ab_writer_image}
+                                alt="avatar"
+                                className="main-img center-el-in-box radius-50percent"
+                                data-loading="lazy"
+                                onError={e => CmpUtility.personImageOnError(e)}
+                              />
+                            </div>
+                            {/* <img src={ab_writer_image} alt="avatar" /> */}
                           </div>
                         </div>
                         <div className="col-8 p-align-0">
