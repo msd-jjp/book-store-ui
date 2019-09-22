@@ -12,12 +12,17 @@ import { ToastContainer } from 'react-toastify';
 import { IBook } from '../../model/model.book';
 import { BOOK_ROLES } from '../../enum/Book';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
+import { CmpUtility } from '../_base/CmpUtility';
+import { ILibrary } from '../../model/model.library';
+import { ILibrary_schema } from '../../redux/action/library/libraryAction';
+import { calc_read_percent, is_libBook_downloaded } from '../library/libraryViewTemplate';
 
 interface IProps {
     internationalization: TInternationalization;
     history: History;
     token: IToken;
     match: any;
+    library: ILibrary_schema;
 }
 interface IState {
     bookList: IBook[] | undefined;
@@ -112,41 +117,52 @@ class SearchComponent extends BaseComponent<IProps, IState> {
     }
 
     book_item_render(book: IBook) {
-        let book_img =
-            (book.images && book.images.length && this.getImageUrl(book.images[0]))
-            ||
-            this.defaultBookImagePath;
-        let writerList = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
-        // let name = writerList && writerList.length && writerList[0].person.name;
-        // let last_name = writerList && writerList.length && writerList[0].person.last_name;
-        let writerName = ''; // name + " " + last_name;
-        if(writerList && writerList.length){
-            writerName = this.getPersonFullName(writerList[0].person);
+        let book_img = CmpUtility.getBook_firstImg(book);
+        let writerName = CmpUtility.getBook_role_fisrt_fullName(book, BOOK_ROLES.Writer);
+        let libItem = this.getItemFromLibrary_byBookId(book.id);
+        let read_percent = '';
+        let is_downloaded = false;
+        if (libItem) {
+            read_percent = calc_read_percent(libItem);
+            is_downloaded = is_libBook_downloaded(libItem);
         }
-        
 
         return (
             <>
                 <div className="book-list-item pb-2 mb-2">
                     <div className="row">
-                        <div className="img-wrapper col-4" onClick={() => this.gotoBookDetail(book.id)}>
-                            <div>
-                                <img src={book_img} alt="book" onError={e => this.bookImageOnError(e)} />
+                        <div className="img-wrapper-- col-4" onClick={() => this.gotoBookDetail(book.id)}>
+                            <div className="img-scaffolding-container">
+                                <img src={CmpUtility.bookSizeImagePath}
+                                    className="img-scaffolding" alt="book" data-loading="lazy" />
+
+                                <img src={book_img}
+                                    alt="book"
+                                    className="main-img center-el-in-box"
+                                    onError={e => CmpUtility.bookImageOnError(e)}
+                                    data-loading="lazy"
+                                />
                             </div>
                         </div>
                         <div className="detail-wrapper col-8 p-align-0">
                             <div className="book-title">{book.title}</div>
                             <span className="book-writer text-muted py-2 small">{writerName}</span>
-                            <span className="book-progress mr-2 small">7%</span>
+                            <span className="book-progress mr-2 small">{read_percent}</span>
                             {/* todo: size */}
                             {/* <span className="book-volume small">789.3 kb</span> */}
-                            <i className="fa fa-check-circle downloaded-icon"></i>
+                            <i className={"fa fa-check-circle downloaded-icon " + (is_downloaded ? '' : 'd-none')}></i>
                         </div>
                     </div>
                 </div>
             </>
         )
     }
+
+    getItemFromLibrary_byBookId(book_id: string): ILibrary | undefined {
+        const lib = this.props.library.data.find(lib => lib.book.id === book_id);
+        return lib;
+    }
+
     newReleaseBook_render() {
         if (this.state.bookList && (this.state.bookList! || []).length) {
             return (
@@ -228,7 +244,8 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         internationalization: state.internationalization,
-        token: state.token
+        token: state.token,
+        library: state.library,
     }
 }
 
