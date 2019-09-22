@@ -308,4 +308,5 @@ export const en = {
     your_recent_item_appear_manage_remove: 'your recent item will appear here. you can manage or remove it anytime.',
     go_to_library: 'go to library',
     shop_in_store: 'shop in store',
+    sure_you_want_log_out: 'are you sure you want to log out?',
 }

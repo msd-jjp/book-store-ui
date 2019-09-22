@@ -35,11 +35,13 @@ interface IProps {
 
 interface IState {
     modal_appInfo_show: boolean;
+    modal_logout_show: boolean;
 }
 
 class DashboardMoreComponent extends BaseComponent<IProps, IState> {
     state = {
         modal_appInfo_show: false,
+        modal_logout_show: false,
     }
     change(lang: string) {
         // debugger;
@@ -85,6 +87,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.history.push('/login');
     }
 
+    //#region modal_appInfo
     openModal_appInfo() {
         this.setState({ ...this.state, modal_appInfo_show: true });
     }
@@ -125,6 +128,35 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
             </>
         )
     }
+    //#endregion
+
+    //#region modal_logout
+    openModal_logout() {
+        this.setState({ ...this.state, modal_logout_show: true });
+    }
+
+    closeModal_logout() {
+        this.setState({ ...this.state, modal_logout_show: false });
+    }
+
+    modal_logout_render() {
+        return (
+            <>
+                <Modal show={this.state.modal_logout_show} onHide={() => this.closeModal_logout()} centered>
+                    <Modal.Body>{Localization.sure_you_want_log_out}</Modal.Body>
+                    <Modal.Footer className="pt-0 border-top-0">
+                        <button className="btn btn-warning btn-sm" onClick={() => this.logout()}>
+                            {Localization.log_out}
+                        </button>
+                        <button className="btn btn-light btn-sm" onClick={() => this.closeModal_logout()}>
+                            {Localization.close}
+                        </button>
+                    </Modal.Footer>
+                </Modal>
+            </>
+        )
+    }
+    //#endregion
 
     gotoCart() {
         this.props.history.push('/cart');
@@ -226,7 +258,8 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <span className="text text-capitalize">{Localization.help_feedback}</span>
                         </li>
 
-                        <li className="more-item list-group-item p-align-0" onClick={() => this.logout()}>
+                        <li className="more-item list-group-item p-align-0"
+                            onClick={() => this.openModal_logout()}>
                             <i className="icon fa fa-sign-out mr-3"></i>
                             <span className="text text-capitalize">{Localization.log_out}</span>
                         </li>
@@ -234,6 +267,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                 </div>
 
                 {this.modal_appInfo_render()}
+                {this.modal_logout_render()}
             </>
         )
     }

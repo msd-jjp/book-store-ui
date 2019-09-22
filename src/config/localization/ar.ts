@@ -308,4 +308,5 @@ export const ar = {
     your_recent_item_appear_manage_remove: 'کتاب اخیر شما در اینجا ظاهر می شود. شما می توانید آن را در هر زمان مدیریت یا حذف کنید. ',
     go_to_library: 'رفتن به کتابخانه',
     shop_in_store: 'خرید از فروشگاه',
+    sure_you_want_log_out: 'آیا برای خروج از برنامه مطمئن هستید؟',
 }

@@ -304,6 +304,7 @@ interface ILocalization extends LocalizedStringsMethods {
     your_recent_item_appear_manage_remove: string;
     go_to_library: string;
     shop_in_store: string;
+    sure_you_want_log_out: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
