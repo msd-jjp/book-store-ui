@@ -245,7 +245,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         tap: function () {
           /* do something */
           console.log('tap');
-          self.onPageClicked();
+          // self.onPageClicked();
+          self.onSlideClicked();
         },
         click: function () {
           /* do something */
@@ -328,7 +329,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                 {vrtData.slides.map((slide: any, index: any) => (
                   <Fragment key={slide.id}>
                     <div className="swiper-slide" style={{ [offset_dir]: `${vrtData.offset}px` }}>
-                      <div className="item" >
+                      <div className="item cursor-pointer " onClick={() => this.onPageClicked(slide.id)}>
                         <div className="page-img-wrapper">
                           <img
                             className="page-img"
@@ -368,7 +369,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                   className="item-wrapper"
                 // onClick={() => this.gotoBookDetail(book.id)}
                 >
-                  <div className="item" onClick={() => this.onPageClicked()}>
+                  <div className="item" 
+                  // onClick={() => this.onPageClicked()}
+                  >
                     <div className="page-img-wrapper">
                       <img
                         className="page-img"
@@ -387,7 +390,18 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  onPageClicked() {
+  private swiperTaped = false;
+  onSlideClicked() {
+    this.swiperTaped = true;
+    setTimeout(() => { this.swiperTaped = false; }, 0);
+  }
+
+  onPageClicked(pg_number: number) {
+    if (!this.swiperTaped) return;
+    // debugger;
+    console.log('pg_number: ', pg_number);
+    // todo store active page number
+    // make sure redux (reader) updated before chnage route.
     this.gotoReader_reading(this.book_id);
   }
 
@@ -447,7 +461,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         <RcSlider
           min={1}
           max={maxVal}
-          reverse
+          reverse={this.props.internationalization.rtl}
           defaultValue={defaultValue}
           handle={(p) => this.handle(p)}
           onChange={(v) => this.onSliderChange(v)}
