@@ -39,6 +39,7 @@ interface IState {
   //   slides: any[];
   // },
   swiper_slides: any[];
+  page_loading: boolean;
 }
 
 class ReaderScrollComponent extends BaseComponent<IProps, IState> {
@@ -49,7 +50,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     // virtualData: {
     //   slides: [],
     // },
-    swiper_slides: []
+    swiper_slides: [],
+    page_loading: true,
   };
 
   private _personService = new PersonService();
@@ -209,14 +211,18 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           self.onSlideClicked();
         },
         init: function () {
-          console.log('init');
+          console.log('init swiper, stop page loader here...');
           // todo: stop page loader
+          // self.swiper_obj && self.swiper_obj.slideTo(3);
+          setTimeout(() => {
+            self.swiper_obj && self.swiper_obj.slideTo(initialSlide);
+            self.setState({ page_loading: false });
+          }, 500);
         },
 
       }
     });
     // activeIndex && this.gotoIndex(activeIndex);
-
 
     // this.swiper_obj.on('touchMove', function(){
     //     console.log('touchMove');
@@ -227,7 +233,19 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     return (
       <>
         <div className="scroll-body mx-3">
+
           {this.swiper_render()}
+
+          <div className={
+            "lds-roller-wrapper gutter-0 "
+            + (this.state.page_loading ? '' : 'd-none')
+          }>
+            <div className="lds-roller">
+              <div></div><div></div><div></div><div></div>
+              <div></div><div></div><div></div><div></div>
+            </div>
+          </div>
+
         </div>
       </>
     )
@@ -280,7 +298,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
                       "item " +
                       ((pg.number === this.book_active_page) ? 'active ' : '') +
                       ((pg.number === -1) ? 'invisible' : '')
-                    } onClick={() => this.onPageClicked()}>
+                    } onClick={() => this.onPageClicked(pg.number)}>
                       <div className="page-img-wrapper">
                         <img
                           className="page-img"
@@ -341,9 +359,10 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     setTimeout(() => { this.swiperTaped = false; }, 0);
   }
 
-  onPageClicked() {
+  onPageClicked(pg_number: number) {
     if (!this.swiperTaped) return;
-    debugger;
+    // debugger;
+    console.log('pg_number: ', pg_number);
     // todo store active page number
     // make sure redux (reader) updated before chnage route.
     this.gotoReader_reading(this.book_id);
