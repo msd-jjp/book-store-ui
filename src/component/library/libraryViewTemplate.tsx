@@ -2,10 +2,13 @@ import { ILibrary } from "../../model/model.library";
 import { BOOK_TYPES, BOOK_ROLES } from "../../enum/Book";
 import React from 'react';
 import { CmpUtility } from "../_base/CmpUtility";
+import { Localization } from "../../config/localization/localization";
 
 export function calc_read_percent(item: ILibrary): string {
     let read = 0;
     let total = 0;
+
+    // return '100%';
 
     if (!item) return '0%';
 
@@ -37,6 +40,7 @@ export function libraryItem_viewList_render(
     const book_img = CmpUtility.getBook_firstImg(item.book);
     // const writerName = CmpUtility.getBook_firstWriterFullName(item.book);
     const writerName = CmpUtility.getBook_role_fisrt_fullName(item.book, BOOK_ROLES.Writer);
+    const read_percent = calc_read_percent(item);
 
     return (
         <div className="view-list-item pb-2 mb-2" >
@@ -56,7 +60,9 @@ export function libraryItem_viewList_render(
                 <div className="detail-wrapper col-8 p-align-0">
                     <div className="book-title">{item.book.title}</div>
                     <span className="book-writer text-muted py-2 small">{writerName}</span>
-                    <span className="book-progress mr-2 small">{calc_read_percent(item)}</span>
+                    <span className={"book-progress mr-2 small " + (read_percent === '100%' ? 'badge badge-dark' : '')}>
+                        {read_percent === '100%' ? Localization.readed_ : read_percent}
+                    </span>
                     {/* todo: size */}
                     {/* <span className="book-volume small">789.3 kb</span> */}
                     <i className={"fa fa-check-circle downloaded-icon " + (is_libBook_downloaded(item) ? '' : 'd-none')}></i>
@@ -81,6 +87,7 @@ export function libraryItem_viewGrid_render(
     isItemSelected: (item: ILibrary) => any
 ): JSX.Element {
     const book_img = CmpUtility.getBook_firstImg(item.book);
+    const read_percent = calc_read_percent(item);
 
     return (
         <div className="col-4 p-align-inverse-0 mb-3">
@@ -96,11 +103,12 @@ export function libraryItem_viewGrid_render(
                     />
                 </div>
 
-                <div className="book-progress-state">
+                <div className={"book-progress-state " + (read_percent === '100%' ? 'progress-complete' : '')}>
                     <div className="bp-state-number">
-                        <div className="text">{calc_read_percent(item)}</div>
+                        <div className="text">{read_percent}</div>
                     </div>
                     <div className="bp-state-arrow" />
+                    <div className="progress-complete-label">{Localization.readed_}</div>
                 </div>
                 <div className={"book-download " + (is_libBook_downloaded(item) ? '' : 'd-none')}>
                     <i className="fa fa-check" />

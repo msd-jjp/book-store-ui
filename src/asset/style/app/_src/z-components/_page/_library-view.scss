@@ -7,20 +7,7 @@
     background-color: #f3f3f3;
     cursor: pointer;
     position: relative;
-
-    // .img-container_DELETE_ME {
-    //   position: relative;
-    //   overflow: hidden;
-
-    //   .img-view-scaffolding {
-    //     visibility: hidden;
-    //     max-width: 100%;
-    //   }
-    //   .lib-img {
-    //     max-width: 100%;
-    //     max-height: 100%;
-    //   }
-    // }
+    overflow: hidden;
 
     .book-progress-state {
       position: absolute;
@@ -50,6 +37,36 @@
         border-left: 0.8rem solid transparent;
         border-right: 0.8rem solid transparent;
         border-top: 0.6rem solid rgba(0, 0, 0, 0.6);
+      }
+      .progress-complete-label {
+        display: none;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+      }
+
+      &.progress-complete {
+        top: 35%;
+        width: 100%;
+        body:not(.rtl) & {
+          right: -15%;
+          transform-origin: right;
+          @include prefix(transform, rotate(45deg));
+        }
+        body.rtl & {
+          left: -15%;
+          transform-origin: left;
+          @include prefix(transform, rotate(-45deg));
+        }
+
+        .bp-state-number,
+        .bp-state-arrow {
+          display: none;
+        }
+        .progress-complete-label {
+          display: block;
+        }
       }
     }
     .book-download {
@@ -124,25 +141,7 @@
         }
       }
     }
-    // .img-container_DELETE_ME {
-    //   position: relative;
-    //   overflow: hidden;
-    //   background-color: #f3f3f3;
 
-    //   .img-view-scaffolding {
-    //     visibility: hidden;
-    //     max-width: 100%;
-    //   }
-    //   .lib-img {
-    //     max-width: 100%;
-    //     max-height: 100%;
-    //   }
-    // }
-    // .img-wrapper---------- {
-    //   img {
-    //     max-width: 100%;
-    //   }
-    // }
     .detail-wrapper {
       .book-title {
         font-weight: 500;
@@ -182,18 +181,3 @@
     }
   }
 }
-
-// .img-scaffolding-container {
-//   position: relative;
-//   overflow: hidden;
-//   background-color: #f3f3f3;
-
-//   .img-scaffolding {
-//     visibility: hidden;
-//     max-width: 100%;
-//   }
-//   .book-img {
-//     max-width: 100%;
-//     max-height: 100%;
-//   }
-// }

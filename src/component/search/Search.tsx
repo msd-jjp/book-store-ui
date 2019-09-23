@@ -147,7 +147,9 @@ class SearchComponent extends BaseComponent<IProps, IState> {
                         <div className="detail-wrapper col-8 p-align-0">
                             <div className="book-title">{book.title}</div>
                             <span className="book-writer text-muted py-2 small">{writerName}</span>
-                            <span className="book-progress mr-2 small">{read_percent}</span>
+                            <span className={"book-progress mr-2 small " + (read_percent === '100%' ? 'badge badge-dark' : '')}>
+                                {read_percent === '100%' ? Localization.readed_ : read_percent}
+                            </span>
                             {/* todo: size */}
                             {/* <span className="book-volume small">789.3 kb</span> */}
                             <i className={"fa fa-check-circle downloaded-icon " + (is_downloaded ? '' : 'd-none')}></i>

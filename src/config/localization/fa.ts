@@ -312,4 +312,5 @@ export const fa = {
     go_to_library: 'رفتن به کتابخانه',
     shop_in_store: 'خرید از فروشگاه',
     sure_you_want_log_out: 'آیا برای خروج از برنامه مطمئن هستید؟',
+    readed_: 'خوانده شده',
 }
