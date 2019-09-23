@@ -1,6 +1,7 @@
 .reader-overview-wrapper {
   height: 100vh;
   overflow: hidden;
+  position: relative;
 
   .overview-header {
     background: white;
@@ -79,6 +80,84 @@
           margin-top: -6px;
         }
       }
+    }
+  }
+
+  .overview-sidebar-backdrop {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    background: #00000066;
+  }
+  .overview-sidebar {
+    position: absolute;
+    top: 0;
+    // right: 0;
+    bottom: 0;
+    width: 200px;
+    // background: white;
+    // background-color: #fafbfa;
+    background-color: #fdffff;
+    z-index: 1;
+    // box-shadow: -2px 0px 5px 0px #e6e6e6;
+    @include box-shadow(-2px 0px 5px 0px #e6e6e6);
+    // transform: translateX(210px);
+    // transition: transform 0.3s;
+    // @include prefix(transform, translateX(210px));
+    @include transition(transform 0.3s);
+    body:not(.rtl) & {
+      left: 0;
+      @include prefix(transform, translateX(-210px));
+    }
+    body.rtl & {
+      right: 0;
+      @include prefix(transform, translateX(210px));
+    }
+
+    .overview-sidebar-header {
+      height: 3rem;
+      // box-shadow: 0 2px 5px 0px #e6e6e6;
+      @include box-shadow(0 2px 5px 0px #e6e6e6);
+      // padding: 0 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .overview-sidebar-body {
+      .item {
+        border-bottom: 1px solid #ddd;
+        .book-main-detail {
+          .book-title-writer-wrapper {
+            display: flex;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+
+            // .book-title {
+            //   max-height: 3rem;
+            //   overflow: hidden;
+            //   overflow-wrap: break-word;
+            //   text-overflow: ellipsis;
+            //   white-space: nowrap;
+            // }
+            // .book-writer {
+            //   max-height: 3rem;
+            //   overflow: hidden;
+            //   overflow-wrap: break-word;
+            //   text-overflow: ellipsis;
+            //   white-space: nowrap;
+            // }
+          }
+        }
+      }
+    }
+
+    &.open {
+      // transform: translateX(0);
+      @include prefix(transform, translateX(0) !important);
     }
   }
 }

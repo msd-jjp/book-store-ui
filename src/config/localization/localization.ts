@@ -306,6 +306,7 @@ interface ILocalization extends LocalizedStringsMethods {
     shop_in_store: string;
     sure_you_want_log_out: string;
     readed_: string;
+    close_book: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

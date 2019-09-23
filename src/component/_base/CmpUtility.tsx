@@ -37,6 +37,16 @@ export abstract class CmpUtility {
         return (name + last_name).trim();
     }
 
+    static getPersonFullName_reverse_with_comma(person: IPerson, isPersian = false): string {
+        let name = person.name || '';
+        let last_name = person.last_name || '';
+        if (last_name && name) {
+            const comma = isPersian ? '،' : ',';
+            last_name = last_name + comma + ' ';
+        }
+        return (last_name + name); // .trim();
+    }
+
     static getBook_firstImg(book: IBook): string {
         const img_path =
             (book.images && book.images.length && CmpUtility.getImageUrl(book.images[0]))
@@ -56,16 +66,15 @@ export abstract class CmpUtility {
         return fullName;
     }
 
-    // static getBook_firstWriterFullName(book: IBook): string {
-    //     const writerList = book.roles.filter(
-    //         r => r.role === BOOK_ROLES.Writer
-    //     );
-
-    //     let writerName = '';
-    //     if (writerList && writerList.length && writerList[0].person) {
-    //         writerName = CmpUtility.getPersonFullName(writerList[0].person);
-    //     }
-    //     return writerName;
-    // }
+    static getBook_role_fisrt_fullName_reverse_with_comma(book: IBook, role: BOOK_ROLES, isPersian?: boolean): string {
+        const roleList = book.roles.filter(
+            r => r.role === BOOK_ROLES[role]
+        );
+        let fullName = '';
+        if (roleList && roleList.length && roleList[0].person) {
+            fullName = CmpUtility.getPersonFullName_reverse_with_comma(roleList[0].person, isPersian);
+        }
+        return fullName;
+    }
 
 }

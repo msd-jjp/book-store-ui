@@ -310,4 +310,5 @@ export const en = {
     shop_in_store: 'shop in store',
     sure_you_want_log_out: 'are you sure you want to log out?',
     readed_: 'read',
+    close_book: 'close book',
 }

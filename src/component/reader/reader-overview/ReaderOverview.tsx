@@ -21,6 +21,8 @@ import RcSlider, { Handle } from 'rc-slider';
 import { NavLink } from "react-router-dom";
 import Swiper from 'swiper';
 import { Virtual } from 'swiper/dist/js/swiper.esm';
+import { CmpUtility } from "../../_base/CmpUtility";
+import { BOOK_ROLES } from "../../../enum/Book";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -39,6 +41,7 @@ interface IState {
     slides: any[],
   },
   RcSlider_value: number | undefined;
+  is_sidebar_open: boolean;
 }
 
 class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
@@ -50,6 +53,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       slides: [],
     },
     RcSlider_value: undefined,
+    is_sidebar_open: false,
   };
 
   private _personService = new PersonService();
@@ -142,7 +146,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                 onClick={() => this.goBack()}
               ></i>
 
-              <i className="fa fa-bars text-dark p-2 cursor-pointer"></i>
+              <i className="fa fa-bars text-dark p-2 cursor-pointer"
+                onClick={() => this.showSidebar()}
+              ></i>
 
               <div className="float-right">
                 <i className="fa fa-search text-dark p-2 cursor-pointer"></i>
@@ -497,6 +503,71 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     )
   }
 
+  showSidebar() {
+    this.setState({ is_sidebar_open: true });
+  }
+
+  hideSidebar() {
+    this.setState({ is_sidebar_open: false });
+  }
+
+  overview_sidebar_render() {
+    return (
+      <>
+        <div
+          className={"overview-sidebar-backdrop " + (this.state.is_sidebar_open ? '' : 'd-none')}
+          onClick={() => this.hideSidebar()}
+        ></div>
+
+        <div className={"overview-sidebar " + (this.state.is_sidebar_open ? 'open' : 'd-none--')}>
+          <div className="overview-sidebar-header cursor-pointer px-2"
+            onClick={() => this.goBack()}
+          >
+            <i className="fa fa-arrow-left-app mr-3 mt-n1"></i>
+            <span className="text-capitalize">{Localization.close_book}</span>
+          </div>
+
+          <div className="overview-sidebar-body">
+            <div className="item px-2 py-3">
+              {this.sidebar_book_main_detail_render()}
+            </div>
+          </div>
+
+        </div>
+      </>
+    )
+  }
+
+  sidebar_book_main_detail_render() {
+    if (!this.state.book) return;
+    const book_title = this.getBookTitle();
+    const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName_reverse_with_comma(
+      this.state.book!,
+      BOOK_ROLES.Writer,
+      this.props.internationalization.flag === 'fa'
+    );
+    const book_img = CmpUtility.getBook_firstImg(this.state.book!);
+
+    return (
+      <>
+        <div className="book-main-detail row">
+          <div className="col-4">
+            <div className="img-scaffolding-container">
+              <img src={CmpUtility.bookSizeImagePath} alt="book" className="img-scaffolding" data-loading="lazy" />
+              <img src={book_img} alt="book" onError={e => CmpUtility.bookImageOnError(e)} className="main-img center-el-in-box" />
+            </div>
+          </div>
+          <div className="col-8 p-align-0">
+            <div className="book-title-writer-wrapper">
+              <div className="book-title">{book_title}</div>
+              <div className="book-writer">{firstWriterFullName}</div>
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
   goBack() {
     if (this.props.history.length > 1) { this.props.history.goBack(); }
     else { this.props.history.push(`/dashboard`); }
@@ -511,6 +582,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
               {this.overview_header_render()}
               {this.overview_body_render()}
               {this.overview_footer_render()}
+              {this.overview_sidebar_render()}
             </div>
           </div>
         </div>
