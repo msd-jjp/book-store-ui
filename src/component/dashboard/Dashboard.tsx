@@ -209,30 +209,34 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
     const current_book_img = CmpUtility.getBook_firstImg(current_book);
     const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(current_book, BOOK_ROLES.Writer);
+    const read_percent = this.calc_read_percent_by_bookItem_in_lib(current_book.id);
 
     return (
       <>
         <div className="latestBook-wrapper row mt-3">
-          <div className="col-4 book-img-wrapper">
-            <div className="img-scaffolding-container cursor-pointer" onClick={() => this.gotoReader(current_book!.id)}>
-              <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="book" data-loading="lazy" />
+          <div className="col-4">
+            <div className="book-img-wrapper">
+              <div className="img-scaffolding-container cursor-pointer" onClick={() => this.gotoReader(current_book!.id)}>
+                <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="book" data-loading="lazy" />
 
-              <img src={current_book_img}
-                alt="book"
-                className="main-img center-el-in-box"
-                onError={e => CmpUtility.bookImageOnError(e)}
-                data-loading="lazy"
-              />
-            </div>
-            {/* <img className="" src={current_book_img} alt="book" onError={e => this.bookImageOnError(e)} /> */}
-            <div className="book-progress-state">
-              <div className="bp-state-number">
-                <div className="text">{this.calc_read_percent_by_bookItem_in_lib(current_book.id)}</div>
+                <img src={current_book_img}
+                  alt="book"
+                  className="main-img center-el-in-box"
+                  onError={e => CmpUtility.bookImageOnError(e)}
+                  data-loading="lazy"
+                />
               </div>
-              <div className="bp-state-arrow" />
-            </div>
-            <div className="book-download">
-              <i className="fa fa-check" />
+              {/* <img className="" src={current_book_img} alt="book" onError={e => this.bookImageOnError(e)} /> */}
+              <div className={"book-progress-state " + (read_percent === '100%' ? 'progress-complete' : '')}>
+                <div className="bp-state-number">
+                  <div className="text">{read_percent}</div>
+                </div>
+                <div className="bp-state-arrow" />
+                <div className="progress-complete-label">{Localization.readed_}</div>
+              </div>
+              <div className="book-download">
+                <i className="fa fa-check" />
+              </div>
             </div>
           </div>
           <div className="col-8 book-detail-wrapper p-align-0">
