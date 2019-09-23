@@ -212,6 +212,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this.swiper_obj = new Swiper('.swiper-container', {
       // ...
       virtual: {
+        cache: true,
         slides: slides, // self.state.slides,
         renderExternal(data: Virtual) {
           // assign virtual slides data
@@ -225,7 +226,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       // slidesPerView: 'auto',
       // centeredSlides: true,
       // spaceBetween: 330,
-      // slidesPerView: 'auto',
+      // slidesPerView: 10,
       // centeredSlides: true,
       // spaceBetween: 30,
       // slidesPerView: 1,
@@ -369,7 +370,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                   className="item-wrapper"
                 // onClick={() => this.gotoBookDetail(book.id)}
                 >
-                  <div className="item" 
+                  <div className="item"
                   // onClick={() => this.onPageClicked()}
                   >
                     <div className="page-img-wrapper">
@@ -400,7 +401,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     if (!this.swiperTaped) return;
     // debugger;
     console.log('pg_number: ', pg_number);
-    // todo store active page number
+    // TODO store active page number
     // make sure redux (reader) updated before chnage route.
     this.gotoReader_reading(this.book_id);
   }

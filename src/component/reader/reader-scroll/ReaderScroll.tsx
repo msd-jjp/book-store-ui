@@ -214,10 +214,16 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           console.log('init swiper, stop page loader here...');
           // todo: stop page loader
           // self.swiper_obj && self.swiper_obj.slideTo(3);
-          setTimeout(() => {
-            self.swiper_obj && self.swiper_obj.slideTo(initialSlide);
-            self.setState({ page_loading: false });
-          }, 500);
+
+          // console.log('swiper_obj1:', self.swiper_obj);
+          // setTimeout(() => {
+          //   console.log('swiper_obj2:', self.swiper_obj);
+          //   self.swiper_obj && self.swiper_obj.slideTo(initialSlide);
+          //   self.setState({ page_loading: false });
+          // }, 500);
+
+          // self.swiper_slideTo_initialSlide(initialSlide);
+          self.swiper_solid_slideTo_initialSlide(initialSlide);
         },
 
       }
@@ -227,6 +233,50 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     // this.swiper_obj.on('touchMove', function(){
     //     console.log('touchMove');
     // })
+  }
+
+  swiper_solid_slideTo_initialSlide(initialSlide: number) {
+    setTimeout(() => {
+      this.swiper_obj && this.swiper_obj.slideTo(initialSlide, undefined, false);
+      this.setState({ page_loading: false });
+    }, 500);
+    setTimeout(() => {
+      this.swiper_obj && this.swiper_obj.slideTo(initialSlide, undefined, false);
+    }, 1000);
+  }
+
+  /* _DELETE_ME */
+  swiper_slideTo_initialSlide(initialSlide: number) {
+    const maximum_wait = 1000;
+    let waiting = 0;
+
+    const goto_slide = () => {
+      setTimeout(() => {
+
+        console.log(
+          'swiper_obj2: ', this.swiper_obj,
+          ' --------------- ',
+          'waiting: ', waiting,
+          ' --------------- ',
+          'initialSlide: ', initialSlide
+        );
+
+        if (this.swiper_obj) {
+          this.swiper_obj.slideTo(initialSlide);
+          this.setState({ page_loading: false });
+        } else {
+          if (waiting >= maximum_wait) {
+            this.setState({ page_loading: false });
+          } else {
+            waiting = waiting + 100;
+            goto_slide();
+          }
+        }
+
+      }, waiting);
+    };
+
+    goto_slide();
   }
 
   reading_body_render() {
