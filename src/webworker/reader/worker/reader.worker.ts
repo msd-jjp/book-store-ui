@@ -9,6 +9,7 @@ export default onmessage = async function (e) {
     if (e.data.book_active_page) {
         active_slide = calc_active_slide(bookSlideList, e.data.book_active_page)
     }
+    // console.log('casc ', round_n());
     postMessage({ bookSlideList, active_slide });
 }
 
@@ -18,9 +19,17 @@ export default onmessage = async function (e) {
 //     });
 // }
 
+export class SampleMockClass {
+    static async getBookSlideList() {
+        return new Promise(res => {
+            res(getBookSlideList_mock());
+        });
+    }
+}
 
 
-async function getBookSlideList() {
+
+export async function getBookSlideList() {
     return new Promise(res => {
         res(getBookSlideList_mock());
     });

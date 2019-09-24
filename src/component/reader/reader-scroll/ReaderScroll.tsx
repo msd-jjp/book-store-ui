@@ -20,7 +20,6 @@ import Swiper from 'swiper';
 import { ReaderWorker } from "../../../webworker/reader/worker.reader";
 // import { Store2 } from "../../../redux/store";
 // import { readerWorker } from '../../../webworker/reader/reader';
-// import { WebWorkerSetup } from "../../../webworker/workerSetup";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -83,7 +82,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
 
   async getData_readerWorker() {
-    const _readerWorker = await new ReaderWorker().init();
+    const _readerWorker = await new ReaderWorker().init(this.props.token);
     if (!_readerWorker) return;
 
     _readerWorker.postMessage({
@@ -107,22 +106,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   componentDidMount() {
-    // setTimeout(() => {
-    //   this.initSwiper();
-    // }, 3000);
-    // this.initSwiper();
-
-    // setTimeout(() => {
-    //   if (!this.swiper_obj) return;
-    //   console.log('ssssssssss')
-    //   this.swiper_obj!.params.slidesPerView = 'auto';
-    //   this.swiper_obj!.update();
-    // }, 3000);
-
     this.getData_readerWorker();
-    // setTimeout(() => {
-
-    // }, 0);
   }
 
 
@@ -137,14 +121,6 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     if (!book) return '';
     return book!.title;
   }
-
-  // getBookTree(): Promise<any> {
-  //   return new Promise((res, rej) => {
-  //     res(this.book_tree);
-  //   });
-  // }
-
-
 
   initSwiper(slides: any[] = [], initialSlide: number = 0) {
     const self = this;
@@ -211,7 +187,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           self.onSlideClicked();
         },
         init: function () {
-          console.log('init swiper, stop page loader here...');
+          // console.log('init swiper, stop page loader here...');
           // todo: stop page loader
           // self.swiper_obj && self.swiper_obj.slideTo(3);
 

@@ -1,4 +1,7 @@
 import { AppGuid } from "../../../asset/script/guid";
+// import { Store2 } from "../../../redux/store";
+import { LibraryService } from "../../../service/service.library";
+import { IToken } from "../../../model/model.token";
 
 interface IBookTree { chapter_list: { title: string; pages: string[] }[] }
 interface IBookSlide {
@@ -9,6 +12,8 @@ interface IBookSlide {
 }
 
 export function getBookTree_mock(): IBookTree {
+    // SampleFetch.fetchLibrary();
+
     const book_tree: IBookTree = {
         chapter_list: [],
     };
@@ -113,5 +118,30 @@ export function calc_active_slide(bookSlideList: IBookSlide[] | any, book_active
             break;
         }
     }
+    // console.log(Store_cart());
     return activeSlide;
+}
+
+// function Store_cart() {
+//     // return Store2.getState().cart;
+// }
+
+export class SampleFetch {
+    private static _libraryService = new LibraryService();
+
+    // constructor(token: IToken) {
+    //     SampleFetch._libraryService.setToken(token);
+    // }
+
+    static setToken(token: IToken){
+        SampleFetch._libraryService.setToken(token);
+    }
+
+    static async fetchLibrary(token: IToken) {
+        SampleFetch.setToken(token);
+        
+        await this._libraryService.getAll().then(res => {
+            console.log(res.data);
+        }).catch(error => { console.log(error.response); });
+    }
 }
