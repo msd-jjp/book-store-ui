@@ -18,6 +18,8 @@ import { ICartItems } from '../../redux/action/cart/cartAction';
 import { action_clear_cart } from '../../redux/action/cart';
 import { action_clear_library } from '../../redux/action/library';
 import { action_clear_collections } from '../../redux/action/collection';
+import moment_jalaali from "moment-jalaali";
+import moment from 'moment';
 
 interface IProps {
     logged_in_user?: IUser | null;
@@ -36,12 +38,20 @@ interface IProps {
 interface IState {
     modal_appInfo_show: boolean;
     modal_logout_show: boolean;
+    sync: {
+        syncing: boolean;
+        lastSynced: number | undefined;
+    };
 }
 
 class DashboardMoreComponent extends BaseComponent<IProps, IState> {
     state = {
         modal_appInfo_show: false,
         modal_logout_show: false,
+        sync: {
+            syncing: false,
+            lastSynced: 1569323258125
+        }
     }
     change(lang: string) {
         // debugger;
@@ -166,17 +176,59 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.history.push('/profile');
     }
 
+    convert_timestamp_to_format(timestamp: number) {
+        if (this.props.internationalization.flag === 'fa') {
+            // moment_jalaali.locale('en');
+            moment_jalaali.loadPersian({ usePersianDigits: false });
+            return moment_jalaali(timestamp).format('jYYYY/jM/jD h:m A');
+
+        } else {
+            // moment_jalaali.locale('en');
+            // moment_jalaali.loadPersian({ usePersianDigits: false });
+            moment.locale('en');
+            return moment(timestamp).format('YYYY/M/D h:m A');
+        }
+    }
+
+    async onSync_clicked() {
+        this.setState({ sync: { ...this.state.sync, syncing: true } });
+        await this.waitOnMe(2000);
+        // const date = new Date().toLocaleString();
+        // const date = this.convert_timestamp_to_format(new Date().getTime());
+        const date = new Date().getTime();
+        this.setState({ sync: { ...this.state.sync, syncing: false, lastSynced: date } });
+    }
+
     render() {
 
         return (
             <>
                 <div className="dashboard-more-wrapper">
                     <ul className="more-list list-group list-group-flush">
-                        <li className="more-item list-group-item p-align-0 cursor-pointer">
-                            <div className="icon-wrapper mr-3"><i className="fa fa-refresh"></i></div>
+                        <li className="more-item list-group-item p-align-0 cursor-pointer"
+                            onClick={() => this.onSync_clicked()}
+                        >
+                            <div className="icon-wrapper mr-3">
+                                <i className={"fa fa-refresh " + (this.state.sync.syncing ? 'fa-spin' : '')}></i>
+                            </div>
                             <div className="wrapper d-inline">
                                 <span className="text">{Localization.sync}</span>
-                                <span className="sub-text d-block text-muted">Last synced on 06/12/2019, 11:25 AM</span>
+                                <span className="sub-text d-block text-muted">
+                                    {/* '06/12/2019, 11:25 AM' */}
+                                    {
+                                        this.state.sync.syncing ?
+                                            Localization.syncing_with_dots :
+                                            (
+                                                this.state.sync.lastSynced ?
+                                                    (
+                                                        Localization.last_synced_on +
+                                                        ' ' +
+                                                        this.convert_timestamp_to_format(this.state.sync.lastSynced!)
+                                                    ) :
+                                                    ''
+                                            )
+                                    }
+                                </span>
                             </div>
                         </li>
                         {/* <li className="more-item list-group-item p-align-0">

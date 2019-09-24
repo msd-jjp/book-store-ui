@@ -155,6 +155,9 @@ interface ILocalization extends LocalizedStringsMethods {
     add_to_list: string;
     log_out: string;
     sync: string;
+    syncing: string;
+    syncing_with_dots: string;
+    last_synced_on: string;
     read_listen_with_audible: string;
     book_update: string;
     reading_insights: string;

@@ -143,19 +143,19 @@ export const fa = {
     reset_password: 'تغییر رمز عبور',
     add_to_list: 'به لیست اضافه کن',
     log_out: 'خروج',
-
     sync: 'همگام سازی',
+    syncing: 'در حال همگام سازی',
+    syncing_with_dots: 'در حال همگام سازی...',
+    last_synced_on:'آخرین همگام سازی در',
     read_listen_with_audible: 'خواندن و گوش دادن با صدا',
     book_update: 'بروزرسانی کتاب',
     reading_insights: 'خواندن عمیق',
     settings: 'تنظیمات',
     info: 'اطلاعات',
     help_feedback: 'کمک و بازخورد',
-
     about_bookstore_edition: 'درباره نسخه کتابفروشی',
     Length: 'اندازه',
     pages: 'صفحه',
-
     from_the_editor: 'از ویراستار',
     about_this_item: 'درباره این محصول',
 
