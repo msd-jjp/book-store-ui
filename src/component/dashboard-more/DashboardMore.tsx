@@ -172,8 +172,8 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
             <>
                 <div className="dashboard-more-wrapper">
                     <ul className="more-list list-group list-group-flush">
-                        <li className="more-item list-group-item p-align-0 d-flex align-items-center">
-                            <i className="icon fa fa-refresh mr-3"></i>
+                        <li className="more-item list-group-item p-align-0 cursor-pointer">
+                            <div className="icon-wrapper mr-3"><i className="fa fa-refresh"></i></div>
                             <div className="wrapper d-inline">
                                 <span className="text">{Localization.sync}</span>
                                 <span className="sub-text d-block text-muted">Last synced on 06/12/2019, 11:25 AM</span>
@@ -183,8 +183,8 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <i className="icon fa fa-headphones mr-3"></i>
                             <span className="text text-capitalize">{Localization.read_listen_with_audible}</span>
                         </li> */}
-                        <li className="more-item list-group-item p-align-0" onClick={() => this.gotoCart()}>
-                            <i className="icon fa fa-shopping-cart mr-3"></i>
+                        <li className="more-item list-group-item p-align-0 cursor-pointer" onClick={() => this.gotoCart()}>
+                            <div className="icon-wrapper mr-3"><i className="fa fa-shopping-cart"></i></div>
                             <span className="text text-capitalize">
                                 {Localization.shopping_cart}
                                 {this.props.cart.length
@@ -205,8 +205,8 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <i className="icon fa fa-free-code-camp mr-3"></i>
                             <span className="text text-capitalize">{Localization.reading_insights}</span>
                         </li> */}
-                        <li className="more-item list-group-item p-align-0" onClick={() => this.gotoProfile()}>
-                            <i className="icon fa fa-user-circle-o mr-3"></i>
+                        <li className="more-item list-group-item p-align-0 cursor-pointer" onClick={() => this.gotoProfile()}>
+                            <div className="icon-wrapper mr-3"><i className="fa fa-user-circle-o"></i></div>
                             <span className="text text-capitalize mr-3">{Localization.profile}</span>
                             <img className="w-50px h-50px radius-50px mr-3"
                                 src={
@@ -228,39 +228,38 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                         </li>
 
                         <li className="more-item list-group-item p-align-0">
-                            <i className="icon fa fa-cog mr-3"></i>
+                            <div className="icon-wrapper mr-3"><i className="fa fa-cog"></i></div>
                             <span className="text text-capitalize">{Localization.settings}</span>
                         </li>
 
                         <li className="more-item list-group-item p-align-0 flag">
-                            <i className="icon fa fa-flag mr-3"></i>
-
+                            <div className="icon-wrapper mr-3"><i className="fa fa-flag"></i></div>
                             <ul className="flag-list list-group list-group-horizontal list-group-flush__ text-center  p-0">
                                 <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('fa')}>
-                                    <img src="/static/media/img/flag/ir.png" alt="فارسی" width="50px" data-loading="lazy" />
+                                    <img src="/static/media/img/flag/ir.png" alt="فارسی" data-loading="lazy" />
                                 </button>
                                 <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('en')}>
-                                    <img src="/static/media/img/flag/us.png" alt="english" width="50px" data-loading="lazy" />
+                                    <img src="/static/media/img/flag/us.png" alt="english" data-loading="lazy" />
                                 </button>
                                 <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('ar')}>
-                                    <img src="/static/media/img/flag/ar.png" alt="العربیه" width="50px" data-loading="lazy" />
+                                    <img src="/static/media/img/flag/ar.png" alt="العربیه" data-loading="lazy" />
                                 </button>
                             </ul>
                         </li>
 
-                        <li className="more-item list-group-item p-align-0"
+                        <li className="more-item list-group-item p-align-0 cursor-pointer"
                             onClick={() => this.openModal_appInfo()}>
-                            <i className="icon fa fa-info-circle mr-3"></i>
+                            <div className="icon-wrapper mr-3"><i className="fa fa-info-circle"></i></div>
                             <span className="text text-capitalize">{Localization.info}</span>
                         </li>
                         <li className="more-item list-group-item p-align-0">
-                            <i className="icon fa fa-twitch mr-3"></i>
+                            <div className="icon-wrapper mr-3"><i className="fa fa-twitch"></i></div>
                             <span className="text text-capitalize">{Localization.help_feedback}</span>
                         </li>
 
-                        <li className="more-item list-group-item p-align-0"
+                        <li className="more-item list-group-item p-align-0 cursor-pointer"
                             onClick={() => this.openModal_logout()}>
-                            <i className="icon fa fa-sign-out mr-3"></i>
+                            <i className="icon-wrapper mr-3"><i className="fa fa-sign-out"></i></i>
                             <span className="text text-capitalize">{Localization.log_out}</span>
                         </li>
                     </ul>

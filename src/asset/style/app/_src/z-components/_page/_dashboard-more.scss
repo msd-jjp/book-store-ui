@@ -4,11 +4,14 @@
     .more-item {
       background-color: transparent;
       border-bottom: 1px solid rgb(224, 224, 224);
-      cursor: pointer;
+      // cursor: pointer;
+      display: flex;
+      align-items: center;
 
-      .icon {
+      .icon-wrapper {
         font-size: 1.3rem;
         width: 2rem;
+        display: flex;
       }
       .text {
         font-weight: 500;
