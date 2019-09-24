@@ -17,7 +17,7 @@ import { IBook } from "../../../model/model.book";
 import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 import Swiper from 'swiper';
 // import { Virtual } from 'swiper/dist/js/swiper.esm';
-import { ReaderWorker } from "../../../webworker/reader/worker.reader";
+import { ReaderWorker } from "../../../webworker/reader-worker/ReaderWorker"; // .reader";
 // import { Store2 } from "../../../redux/store";
 // import { readerWorker } from '../../../webworker/reader/reader';
 
