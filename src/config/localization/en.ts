@@ -311,4 +311,5 @@ export const en = {
     sure_you_want_log_out: 'are you sure you want to log out?',
     readed_: 'read',
     close_book: 'close book',
+    goto: 'go to',
 }

@@ -314,4 +314,5 @@ export const fa = {
     sure_you_want_log_out: 'آیا برای خروج از برنامه مطمئن هستید؟',
     readed_: 'خوانده شده',
     close_book: 'بستن کتاب',
+    goto: 'برو به',
 }

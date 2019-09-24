@@ -515,7 +515,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     return (
       <>
         <div
-          className={"overview-sidebar-backdrop " + (this.state.is_sidebar_open ? '' : 'd-none')}
+          className={"overview-sidebar-backdrop " + (this.state.is_sidebar_open ? 'open' : 'd-none--')}
           onClick={() => this.hideSidebar()}
         ></div>
 
@@ -530,6 +530,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           <div className="overview-sidebar-body">
             <div className="item px-2 py-3">
               {this.sidebar_book_main_detail_render()}
+            </div>
+            <div className="item px-2 py-3 text-capitalize cursor-pointer">
+              {Localization.goto}
             </div>
           </div>
 
