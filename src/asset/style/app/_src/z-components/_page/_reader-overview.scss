@@ -104,8 +104,9 @@
     width: 250px;
     background-color: #fdffff;
     z-index: 1;
-    @include box-shadow(-2px 0px 5px 0px #e6e6e6);
+    @include box-shadow(-2px 0px 5px 0px #7d7d7d); // e6e6e6
     @include transition(transform 0.3s);
+    overflow: hidden;
     body:not(.rtl) & {
       left: 0;
       @include prefix(transform, translateX(-260px));
