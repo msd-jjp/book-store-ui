@@ -21,7 +21,7 @@ export class ReaderWorker extends BaseWorker {
         this._worker.postMessage(data);
     }
 
-    onmessage(fn: (data: { bookSlideList: any[], active_slide: number }) => void) {
+    onmessage(fn: (data: { bookSlideList: any[], active_slide: number | undefined }) => void) {
         if (!this._worker) return;
         this._worker.onmessage = (e: MessageEvent) => {
             fn(e.data);

@@ -83,7 +83,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     this._readerWorker.onmessage((data) => { this.onReceive_data_from_worker(data) });
   }
 
-  onReceive_data_from_worker(data: { bookSlideList: any[]; active_slide: number; }) {
+  onReceive_data_from_worker(data: { bookSlideList: any[]; active_slide: number | undefined; }) {
     console.log('main: Message received from worker', data);
 
     this.setState(
