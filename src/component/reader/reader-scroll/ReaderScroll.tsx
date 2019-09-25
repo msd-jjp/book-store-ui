@@ -58,58 +58,43 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   swiper_obj: Swiper | undefined;
   private book_page_length = 2500;
   private book_active_page = 372;
-  // private book_tree: {
-  //   chapter_list: {
-  //     title: string;
-  //     pages: string[];
-  //   }[];
-  // } = {
-  //     chapter_list: [],
-  //   };
-  // private swiper_slide_list: {
-  //   isTitle: boolean;
-  //   chapterTitle: string;
-  //   pages: number[];
-  // }[] | undefined;
 
   constructor(props: IProps) {
     super(props);
 
     this._personService.setToken(this.props.token);
     this.book_id = this.props.match.params.bookId;
-    // this.generate_book_tree_mock();
-  }
-
-
-  async getData_readerWorker() {
-    const _readerWorker = await new ReaderWorker().init(this.props.token);
-    if (!_readerWorker) return;
-
-    _readerWorker.postMessage({
-      // book_id: this.book_id,
-      // library: Store2.getState().library
-      book_active_page: this.book_active_page
-    });
-
-    _readerWorker.onmessage = (e: MessageEvent) => {
-      console.log('main: Message received from worker', e);
-      this.setState(
-        { ...this.state, swiper_slides: e.data.bookSlideList },
-        () => {
-          this.initSwiper(e.data.bookSlideList, e.data.active_slide);
-        }
-      );
-      // this.initSwiper(e.data.bookSlideList, e.data.active_slide);
-
-      _readerWorker.terminate();
-    }
   }
 
   componentDidMount() {
     this.getData_readerWorker();
   }
 
+  private _readerWorker: ReaderWorker | undefined;
+  getData_readerWorker() {
+    this._readerWorker = new ReaderWorker();
+    if (!this._readerWorker) return;
 
+    this._readerWorker.postMessage({
+      book_active_page: this.book_active_page
+    });
+
+    // this._readerWorker.onmessage(this.onReceive_data_from_worker.bind(this));
+    this._readerWorker.onmessage((data) => { this.onReceive_data_from_worker(data) });
+  }
+
+  onReceive_data_from_worker(data: { bookSlideList: any[]; active_slide: number; }) {
+    console.log('main: Message received from worker', data);
+
+    this.setState(
+      { ...this.state, swiper_slides: data.bookSlideList },
+      () => {
+        this.initSwiper(data.bookSlideList, data.active_slide);
+      }
+    );
+
+    this._readerWorker!.terminate();
+  }
 
   getBookFromLibrary(book_id: string): IBook {
     const lib = this.props.library.data.find(lib => lib.book.id === book_id);

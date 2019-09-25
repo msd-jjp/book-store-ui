@@ -12,17 +12,6 @@ export default onmessage = async function (e) {
 }
 
 // export default onmessage as any;
+// export default onmessage as typeof Worker;
 // export default {} as typeof Worker & (new () => Worker);
-
-// export default class RWorker {
-//     static async onmessage(e: any) {
-//         // if (!e.data.book_id || !e.data.library) return;
-//         // if (!e.data.book_active_page) return;
-//         let bookSlideList = await ReaderUtils.getBookSlideList();
-//         let active_slide: number | undefined;
-//         if (e.data.book_active_page) {
-//             active_slide = ReaderUtils.calc_active_slide(bookSlideList, e.data.book_active_page)
-//         }
-//         postMessage({ bookSlideList, active_slide });
-//     }
-// }
+// export default {} as typeof Worker; // & (new () => Worker);

@@ -1,23 +1,31 @@
 import readerWorker from './reader.worker';
-import { IToken } from '../../model/model.token';
 import { BaseWorker } from '../worker.base';
-import { Store2 } from '../../redux/store';
-// const readerWorker = require('./reader.worker');
 
 export class ReaderWorker extends BaseWorker {
-    // constructor(){
-    //     if (typeof (Worker) === "undefined") return;
-    //     return new (myWorker as  any)();
-    // }
+    
+    protected _worker: Worker | undefined;
 
-    init(token: IToken): Worker | undefined {
-        if (typeof (Worker) === "undefined") return;
-        console.log(this.Store_cart());
-        return new (readerWorker as any)();
+    constructor() {
+        super();
+        this.init();
     }
 
-    Store_cart() {
-        return Store2.getState().cart;
+    protected init() {
+        if (typeof (Worker) !== "undefined") {
+            this._worker = new (readerWorker as any)();
+        }
+    }
+
+    postMessage(data: { book_active_page: number }) {
+        if (!this._worker) return;
+        this._worker.postMessage(data);
+    }
+
+    onmessage(fn: (data: { bookSlideList: any[], active_slide: number }) => void) {
+        if (!this._worker) return;
+        this._worker.onmessage = (e: MessageEvent) => {
+            fn(e.data);
+        };
     }
 
 }

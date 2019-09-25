@@ -1,8 +1,20 @@
 export abstract class BaseWorker {
-    // abstract postMessage: Worker['postMessage'];
-    // abstract onmessage: Worker['onmessage'];
-    // abstract worker_url: string;
-    // abstract handler(ev: MessageEvent): void;
+    protected abstract _worker: Worker | undefined;
 
-    protected abstract init(...p:any): Worker | undefined;
+    constructor() {
+        if (typeof (Worker) === "undefined") {
+            console.error('your browser is not support web worker.');
+        }
+    }
+
+    protected abstract init(...p: any): void;
+
+    protected abstract postMessage(...arg: any): void;
+
+    protected abstract onmessage(fn: (...arg: any) => void): void;
+
+    terminate() {
+        if (!this._worker) return;
+        this._worker.terminate();
+    }
 }
