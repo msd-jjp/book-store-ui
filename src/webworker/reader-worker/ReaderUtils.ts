@@ -126,6 +126,14 @@ export class ReaderUtils {
             res(ReaderUtils.getBookSlideList_mock());
         });
     }
+
+    static forLoop(n = 1000000) {
+        let count = 0;
+        for (let i = 0; i < n; i++) {
+            count++;
+        }
+        console.log('count:', count.toLocaleString());
+    }
 }
 
 

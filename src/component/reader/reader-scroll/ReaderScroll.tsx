@@ -96,6 +96,10 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     this._readerWorker!.terminate();
   }
 
+  componentWillUnmount() {
+    if (this._readerWorker) { this._readerWorker.terminate(); }
+  }
+
   getBookFromLibrary(book_id: string): IBook {
     const lib = this.props.library.data.find(lib => lib.book.id === book_id);
     return (lib! || {}).book;

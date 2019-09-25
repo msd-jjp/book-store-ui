@@ -8,6 +8,7 @@ export default onmessage = async function (e) {
     if (e.data.book_active_page) {
         active_slide = ReaderUtils.calc_active_slide(bookSlideList, e.data.book_active_page)
     }
+    // ReaderUtils.forLoop(5000000000);
     postMessage({ bookSlideList, active_slide });
 }
 

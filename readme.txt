@@ -154,3 +154,8 @@ upload progress bar if file size big (use https://github.com/fkhadra/react-toast
 add read symbol to 100% readed book (instead of 100%) like kindle;
 
 ====================================================================================
+
+goBack bug in /collection & readerOverview :
+https://github.com/ReactTraining/history/issues/573
+
+====================================================================================
