@@ -63,35 +63,41 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
         return (
             <>
                 <footer className="footer fixed-bottom">
-                    <div className="footer-menu d-flex justify-content-between mx-2">
-                        <div className="item text-center">
-                            <NavLink to="/dashboard" className="nav-link text-dark" activeClassName="active pointer-events-none">
-                                <i className="fa fa-home"></i>
-                                <div className="clearfix"></div>
-                                <span className="text">{Localization.home}</span>
-                            </NavLink>
-                        </div>
-                        <div className="item text-center">
-                            <NavLink to="/library" className="nav-link text-dark" activeClassName="active pointer-events-none">
-                                <i className="fa fa-leanpub"></i>
-                                <div className="clearfix"></div>
-                                <span className="text">{Localization.library}</span>
-                            </NavLink>
-                        </div>
-                        {this.currentBook_render()}
-                        <div className="item text-center">
-                            <NavLink to="/store" className="nav-link text-dark" activeClassName="active pointer-events-none">
-                                <i className="fa fa-shopping-cart"></i>
-                                <div className="clearfix"></div>
-                                <span className="text">{Localization.store}</span>
-                            </NavLink>
-                        </div>
-                        <div className="item text-center">
-                            <NavLink to="/dashboard-more" className="nav-link text-dark" activeClassName="active pointer-events-none">
-                                <i className="fa fa-list-ul"></i>
-                                <div className="clearfix"></div>
-                                <span className="text">{Localization.more}</span>
-                            </NavLink>
+                    <div className="row">
+                        <div className="col-lg-4 offset-lg-4 col-md-8 offset-md-2">
+
+                            <div className="footer-menu d-flex justify-content-between mx-2">
+                                <div className="item text-center">
+                                    <NavLink to="/dashboard" className="nav-link text-dark" activeClassName="active pointer-events-none">
+                                        <i className="fa fa-home"></i>
+                                        <div className="clearfix"></div>
+                                        <span className="text">{Localization.home}</span>
+                                    </NavLink>
+                                </div>
+                                <div className="item text-center">
+                                    <NavLink to="/library" className="nav-link text-dark" activeClassName="active pointer-events-none">
+                                        <i className="fa fa-leanpub"></i>
+                                        <div className="clearfix"></div>
+                                        <span className="text">{Localization.library}</span>
+                                    </NavLink>
+                                </div>
+                                {this.currentBook_render()}
+                                <div className="item text-center">
+                                    <NavLink to="/store" className="nav-link text-dark" activeClassName="active pointer-events-none">
+                                        <i className="fa fa-shopping-cart"></i>
+                                        <div className="clearfix"></div>
+                                        <span className="text">{Localization.store}</span>
+                                    </NavLink>
+                                </div>
+                                <div className="item text-center">
+                                    <NavLink to="/dashboard-more" className="nav-link text-dark" activeClassName="active pointer-events-none">
+                                        <i className="fa fa-list-ul"></i>
+                                        <div className="clearfix"></div>
+                                        <span className="text">{Localization.more}</span>
+                                    </NavLink>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </footer>

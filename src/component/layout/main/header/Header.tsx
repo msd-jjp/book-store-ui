@@ -91,47 +91,53 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
         return (
             <>
                 <header className="header fixed-top">
-                    <div className="row mb-2 mx-2 align-items-center header-inner">
-                        <div className="col-10-- col-md-10 col-sm-8 col-6">
-                            <div className="input-group">
-                                <div className="input-group-prepend">
-                                    <span className="input-group-text search-icon" onClick={() => this.handleSearchIcon()}>
-                                        <i className="fa fa-search"></i>
-                                    </span>
-                                </div>
-                                <input
-                                    className="form-control search-input"
-                                    type="text"
-                                    defaultValue={this.state.search_query}
-                                    placeholder={Localization.search}
-                                    onKeyUp={(e) => this.handleSearchKeyUp(e)}
-                                    onChange={e => this.handleSearchChange(e)}
-                                />
-                            </div>
-                        </div>
-                        <div className="col-2-- col-md-2 col-sm-4 col-6">
-                            <div className="bellcontainer">
-                                {/* fa-bell-o */}
-                                <i className={"fa fa-wifi bell  cursor-pointer " +
-                                    (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'text-danger' : '')
-                                }
-                                    onClick={() => BaseService.check_network_status()}
-                                ></i>
+                    <div className="row">
+                        <div className="col-lg-4 offset-lg-4 col-md-8 offset-md-2">
 
-                                <i className="fa fa-shopping-cart bell ml-3 cursor-pointer"
-                                    title={Localization.shopping_cart}
-                                    onClick={() => this.gotoCart()}
-                                ></i>
-                                {
-                                    this.props.cart.length ?
-                                        <small className="font-weight-bold cursor-pointer"
+                            <div className="row mb-2 mx-2 align-items-center header-inner">
+                                <div className="col-10-- col-md-10 col-sm-8 col-6">
+                                    <div className="input-group">
+                                        <div className="input-group-prepend">
+                                            <span className="input-group-text search-icon" onClick={() => this.handleSearchIcon()}>
+                                                <i className="fa fa-search"></i>
+                                            </span>
+                                        </div>
+                                        <input
+                                            className="form-control search-input"
+                                            type="text"
+                                            defaultValue={this.state.search_query}
+                                            placeholder={Localization.search}
+                                            onKeyUp={(e) => this.handleSearchKeyUp(e)}
+                                            onChange={e => this.handleSearchChange(e)}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="col-2-- col-md-2 col-sm-4 col-6">
+                                    <div className="bellcontainer">
+                                        {/* fa-bell-o */}
+                                        <i className={"fa fa-wifi bell  cursor-pointer " +
+                                            (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'text-danger' : '')
+                                        }
+                                            onClick={() => BaseService.check_network_status()}
+                                        ></i>
+
+                                        <i className="fa fa-shopping-cart bell ml-3 cursor-pointer"
                                             title={Localization.shopping_cart}
                                             onClick={() => this.gotoCart()}
-                                        >({this.props.cart.length})</small>
-                                        : ''
-                                }
+                                        ></i>
+                                        {
+                                            this.props.cart.length ?
+                                                <small className="font-weight-bold cursor-pointer"
+                                                    title={Localization.shopping_cart}
+                                                    onClick={() => this.gotoCart()}
+                                                >({this.props.cart.length})</small>
+                                                : ''
+                                        }
 
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 </header>
