@@ -124,7 +124,7 @@ notification (r&d)
 
 ====================================================================================
 
-cmp search check library book exist (progress & downloaded)
+
 
 ====================================================================================
 
@@ -136,7 +136,7 @@ use icon for book type(in cart, dashboard image small icon in corner, store, det
 
 ====================================================================================
 
-set id for toaster --> if it is open, don't open another one or force close before open another.
+set id for toaster --> if it is open, don't open another one or force close before open another. (like cmp cart)
 
 ====================================================================================
 
@@ -151,11 +151,15 @@ upload progress bar if file size big (use https://github.com/fkhadra/react-toast
 
 ====================================================================================
 
-add read symbol to 100% readed book (instead of 100%) like kindle;
+
 
 ====================================================================================
 
 goBack bug in /collection & readerOverview :
 https://github.com/ReactTraining/history/issues/573
+
+====================================================================================
+
+replace react-slick with swiper in dashboard & store; 
 
 ====================================================================================
