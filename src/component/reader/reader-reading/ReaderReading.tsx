@@ -15,7 +15,7 @@ import { action_user_logged_in } from "../../../redux/action/user";
 // import { Dropdown } from "react-bootstrap";
 import { IBook } from "../../../model/model.book";
 import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
-import Slider, { Settings } from "react-slick";
+// import Slider, { Settings } from "react-slick";
 import Swiper from 'swiper';
 import { Virtual } from 'swiper/dist/js/swiper.esm';
 
@@ -48,36 +48,36 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   };
 
   private _personService = new PersonService();
-  sliderSetting: Settings = {
-    dots: false,
-    accessibility: false,
-    // swipe: false,
-    infinite: false,
-    // className: "center2",
-    //centerPadding: "60px",
-    // centerPadding: '40px',
-    slidesToShow: 1,
-    swipeToSlide: true,
-    // rtl: false, // this.props.internationalization.rtl,
-    // rtl: this.props.internationalization.rtl,
-    // adaptiveHeight: true,
-    // slidesToScroll: 1,
+  // sliderSetting: Settings = {
+  //   dots: false,
+  //   accessibility: false,
+  //   // swipe: false,
+  //   infinite: false,
+  //   // className: "center2",
+  //   //centerPadding: "60px",
+  //   // centerPadding: '40px',
+  //   slidesToShow: 1,
+  //   swipeToSlide: true,
+  //   // rtl: false, // this.props.internationalization.rtl,
+  //   // rtl: this.props.internationalization.rtl,
+  //   // adaptiveHeight: true,
+  //   // slidesToScroll: 1,
 
-    speed: 100, // 200, // 200,
-    // touchThreshold: 100000000,
-    // useCSS: false,
-    // useTransform: false,
+  //   speed: 100, // 200, // 200,
+  //   // touchThreshold: 100000000,
+  //   // useCSS: false,
+  //   // useTransform: false,
 
-    // swipe: false,
-    // initialSlide: 5,
-    // beforeChange: () => this.dragging = true,
-    // afterChange: () => this.dragging = false,
-    // lazyLoad: true,
-    // className: "center",
-    // centerMode: true,
-    // infinite: true,
-    // centerPadding: "60px", // 4rem, 60px
-  };
+  //   // swipe: false,
+  //   // initialSlide: 5,
+  //   // beforeChange: () => this.dragging = true,
+  //   // afterChange: () => this.dragging = false,
+  //   // lazyLoad: true,
+  //   // className: "center",
+  //   // centerMode: true,
+  //   // infinite: true,
+  //   // centerPadding: "60px", // 4rem, 60px
+  // };
   swiper_obj: Swiper | undefined;
   private book_page_length = 2500;
   private book_active_page = 372;
@@ -259,46 +259,46 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  carousel_render_DELETE_ME() {
-    if (true) {
+  // carousel_render_DELETE_ME() {
+  //   if (true) {
 
-      let initialSlide = 0;
-      if (this.props.internationalization.rtl) {
-        // initialSlide = bookList.length - 1 - 2;
-        // bookList = [...bookList].reverse();
-      }
+  //     let initialSlide = 0;
+  //     if (this.props.internationalization.rtl) {
+  //       // initialSlide = bookList.length - 1 - 2;
+  //       // bookList = [...bookList].reverse();
+  //     }
 
-      return (
-        <>
-          <div className="app-carousel">
-            <Slider {...this.sliderSetting} initialSlide={initialSlide}>
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((page, pageIndex) => (
-                <div
-                  key={pageIndex}
-                  className="item-wrapper"
-                // onClick={() => this.gotoBookDetail(book.id)}
-                >
-                  <div className="item" onClick={() => this.onPageClicked()}>
-                    <div className="page-img-wrapper">
-                      <img
-                        className="page-img"
-                        src={`/static/media/img/sample-book-page/page-${pageIndex + 1}.jpg`}
-                        alt="book"
-                      />
-                    </div>
-                    <div className="item-footer">
-                      <div>{Localization.formatString(Localization.n_min_left_in_chapter, 2)}</div>
-                      <div>15%</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </Slider>
-          </div>
-        </>
-      );
-    }
-  }
+  //     return (
+  //       <>
+  //         <div className="app-carousel">
+  //           <Slider {...this.sliderSetting} initialSlide={initialSlide}>
+  //             {[1, 2, 3, 4, 5, 6, 7, 8].map((page, pageIndex) => (
+  //               <div
+  //                 key={pageIndex}
+  //                 className="item-wrapper"
+  //               // onClick={() => this.gotoBookDetail(book.id)}
+  //               >
+  //                 <div className="item" onClick={() => this.onPageClicked()}>
+  //                   <div className="page-img-wrapper">
+  //                     <img
+  //                       className="page-img"
+  //                       src={`/static/media/img/sample-book-page/page-${pageIndex + 1}.jpg`}
+  //                       alt="book"
+  //                     />
+  //                   </div>
+  //                   <div className="item-footer">
+  //                     <div>{Localization.formatString(Localization.n_min_left_in_chapter, 2)}</div>
+  //                     <div>15%</div>
+  //                   </div>
+  //                 </div>
+  //               </div>
+  //             ))}
+  //           </Slider>
+  //         </div>
+  //       </>
+  //     );
+  //   }
+  // }
 
   onPageClicked() {
     this.gotoReader_overview(this.book_id);
