@@ -1,5 +1,5 @@
 import { AppGuid } from "../../asset/script/guid";
-// import { Store2 } from "../../../redux/store";
+// import { Store2 } from "../../redux/store";
 // import { LibraryService } from "../../service/service.library";
 // import { IToken } from "../../model/model.token";
 
@@ -131,7 +131,7 @@ export class ReaderUtils {
 
 
 // function Store_cart() {
-//     // return Store2.getState().cart;
+//     return Store2.getState().cart;
 // }
 
 // export class SampleFetch {
