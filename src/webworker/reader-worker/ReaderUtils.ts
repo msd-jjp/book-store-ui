@@ -101,7 +101,7 @@ export class ReaderUtils {
 
         return slideList;
     }
-    static calc_active_slide(bookSlideList: IBookSlide[] | any, book_active_page: number) {
+    static calc_active_slide(bookSlideList: IBookSlide[], book_active_page: number) {
         let activeSlide = 0;
         for (let i = 0; i < bookSlideList.length; i++) {
             let current_slide = bookSlideList[i];
@@ -121,7 +121,7 @@ export class ReaderUtils {
         return activeSlide;
     }
 
-    static async getBookSlideList() {
+    static async getBookSlideList(): Promise<IBookSlide[]> {
         return new Promise(res => {
             res(ReaderUtils.getBookSlideList_mock());
         });

@@ -281,7 +281,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   getActivePage(): number {
     const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
-    console.log('activeIndex', activeIndex);
+    // console.log('activeIndex', activeIndex);
     return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : 0;
   }
 
