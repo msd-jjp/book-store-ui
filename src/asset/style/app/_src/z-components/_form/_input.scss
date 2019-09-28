@@ -16,6 +16,20 @@
     }
   }
 
+  // @each $color, $color-varient in $theme-colors {
+  //   &.input-border-#{$color} {
+  //     border-color: app-color($color);
+  //   }
+  // }
+
+  @each $color, $color-varient in $app-colors {
+    &.input-border-#{$color} {
+      input {
+        border-color: app-color($color);
+      }
+    }
+  }
+
   // label, .el-required, .el-tooltip {
   //   margin-#{$dir-mode-align-inverse}: .25rem; //@extend .mr-1;
   // }
