@@ -137,7 +137,6 @@ interface ILocalization extends LocalizedStringsMethods {
     more_by_writer: string;
     helen_hardet: string;
     it_will_be_launched_soon: string;
-
     read_now: string;
     view_in_store: string;
     add_to_collection: string;
@@ -169,7 +168,6 @@ interface ILocalization extends LocalizedStringsMethods {
     pages: string;
     from_the_editor: string;
     about_this_item: string;
-
     description: string;
     product_description: string;
     review: string;
@@ -311,6 +309,9 @@ interface ILocalization extends LocalizedStringsMethods {
     readed_: string;
     close_book: string;
     goto: string;
+    go: string;
+    enter_location: string;
+    you_are_reading_loaction_n: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

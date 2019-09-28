@@ -12,7 +12,7 @@ import { Localization } from "../../../config/localization/localization";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { PersonService } from "../../../service/service.person";
 import { action_user_logged_in } from "../../../redux/action/user";
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, Modal } from "react-bootstrap";
 import { IBook } from "../../../model/model.book";
 import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 // import Slider, { Settings } from "react-slick";
@@ -23,6 +23,9 @@ import Swiper from 'swiper';
 import { Virtual } from 'swiper/dist/js/swiper.esm';
 import { CmpUtility } from "../../_base/CmpUtility";
 import { BOOK_ROLES } from "../../../enum/Book";
+import { Input } from "../../form/input/Input";
+// import { BtnLoader } from "../../form/btn-loader/BtnLoader";
+import { AppRegex } from "../../../config/regex";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -42,6 +45,7 @@ interface IState {
   },
   RcSlider_value: number | undefined;
   is_sidebar_open: boolean;
+  modal_goto: { show: boolean; input: { value: any; isValid: boolean } };
 }
 
 class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
@@ -54,6 +58,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     },
     RcSlider_value: undefined,
     is_sidebar_open: false,
+    modal_goto: { show: false, input: { value: undefined, isValid: false } },
   };
 
   private _personService = new PersonService();
@@ -255,10 +260,10 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           // self.onPageClicked();
           self.onSlideClicked();
         },
-        click: function () {
-          /* do something */
-          console.log('click');
-        },
+        // click: function () {
+        //   /* do something */
+        //   console.log('click');
+        // },
         slideChange: function () {
           /* do something */
           console.log('swiperChange --> call set_RcSlider_value');
@@ -277,6 +282,11 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // this.swiper_obj.on('touchMove', function(){
     //     console.log('touchMove');
     // })
+  }
+
+  swiper_slideTo(value: number) {
+    if (this.getActivePage() - 1 === value) return;
+    this.swiper_obj && this.swiper_obj!.slideTo(value);
   }
 
   getActivePage(): number {
@@ -444,17 +454,23 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // this.setState({
     //   value,
     // });
-    console.log('onSliderChange', value);
+    // console.log('onSliderChange', value);
     this.set_RcSlider_value(value);
   }
   set_RcSlider_value(value: number) {
     if (value === this.state.RcSlider_value) return;
+    // console.log('set_RcSlider_value: ', value);
     this.setState({ ...this.state, RcSlider_value: value });
   }
   onAfterChange(value: number) {
-    console.log(value, 'RcSlider change call swiper_obj!.slideTo'); //eslint-disable-line
-    // if (value < 10)
-    this.swiper_obj!.slideTo(value - 1);
+    // console.log(value, 'RcSlider change call swiper_obj!.slideTo');
+    // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
+    // console.log('activeIndex: ', activeIndex, 'value: ', value);
+    // console.log('getActivePage: ', this.getActivePage(), 'value: ', value);
+    // if (this.getActivePage() === value) return;
+    console.log('RcSlider change swiper_obj slideTo: ', value - 1);
+    // this.swiper_obj!.slideTo(value - 1);
+    this.swiper_slideTo(value - 1);
   }
 
   slider_render() {
@@ -482,6 +498,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       </>
     )
   }
+
+
 
   overview_footer_render() {
     return (
@@ -531,7 +549,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
             <div className="item px-2 py-3">
               {this.sidebar_book_main_detail_render()}
             </div>
-            <div className="item px-2 py-3 text-capitalize cursor-pointer">
+            <div className="item px-2 py-3 text-capitalize cursor-pointer"
+              onClick={() => {
+                this.openModal_goto();
+                this.hideSidebar();
+              }}
+            >
               {Localization.goto}
             </div>
           </div>
@@ -576,6 +599,98 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     else { this.props.history.push(`/dashboard`); }
   }
 
+  //#region modal_goto
+  openModal_goto() {
+    this.setState({ ...this.state, modal_goto: { ...this.state.modal_goto, show: true } });
+  }
+
+  closeModal_goto() {
+    this.setState({ ...this.state, modal_goto: { ...this.state.modal_goto, show: false } });
+  }
+
+  modal_goto_render() {
+    return (
+      <>
+        <Modal show={this.state.modal_goto.show} onHide={() => this.closeModal_goto()} centered>
+          <Modal.Header
+            // closeButton
+            className="border-bottom-0 pb-0">
+            <Modal.Title className="text-capitalize font-weight-normal">
+              {Localization.enter_location + ` (1-${this.book_page_length})`}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="row">
+              <div className="col-12">
+                <p>{Localization.formatString(Localization.you_are_reading_loaction_n, this.book_active_page)}</p>
+              </div>
+              <div className="col-12">
+                <Input
+                  defaultValue={this.state.modal_goto.input.value}
+                  onChange={(val, isValid) => { this.handleModalGoto_inputChange(val, isValid) }}
+                  required
+                  hideError
+                  className="input-bordered-bottom"
+                  pattern={AppRegex.integer}
+                  validationFunc={(val) => this.goto_validation(val)}
+                  onKeyUp={(e) => this.handleModalGoto_keyUp(e)}
+                />
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer className="pt-0 border-top-0">
+            <button className="btn btn-danger btn-sm text-uppercase"
+              onClick={() => this.modal_goto_onGoto()}
+              disabled={!this.state.modal_goto.input.isValid}>
+              {Localization.go}
+            </button>
+            <button className="btn btn-light btn-sm text-uppercase" onClick={() => this.closeModal_goto()}>
+              {Localization.cancel}
+            </button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    )
+  }
+
+  handleModalGoto_inputChange(value: any, isValid: boolean) {
+    this.setState({
+      ...this.state,
+      modal_goto: {
+        ...this.state.modal_goto,
+        input: { value, isValid }
+      }
+    });
+  }
+
+  handleModalGoto_keyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      this.modal_goto_onGoto()
+    }
+  }
+
+  goto_validation(val: any): boolean {
+    if (val <= this.book_page_length && val >= 1) {
+      return true
+    }
+    return false;
+  }
+
+  async modal_goto_onGoto() {
+    if (!this.state.modal_goto.input.isValid) return;
+    this.closeModal_goto();
+    await this.waitOnMe(100);
+    this.set_RcSlider_value(+this.state.modal_goto.input.value!);
+    this.swiper_slideTo(+this.state.modal_goto.input.value! - 1);
+    this.setState({
+      ...this.state, modal_goto: {
+        ...this.state.modal_goto,
+        input: { value: undefined, isValid: false }
+      }
+    });
+  }
+  //#endregion
+
   render() {
     return (
       <>
@@ -589,6 +704,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
             </div>
           </div>
         </div>
+
+        {this.modal_goto_render()}
         <ToastContainer {...this.getNotifyContainerConfig()} />
       </>
     );

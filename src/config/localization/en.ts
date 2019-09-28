@@ -315,4 +315,7 @@ export const en = {
     readed_: 'read',
     close_book: 'close book',
     goto: 'go to',
+    go: 'go',
+    enter_location: 'enter location',
+    you_are_reading_loaction_n: 'you are currently reading at loaction {0}.',
 }

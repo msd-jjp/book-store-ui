@@ -146,7 +146,7 @@ export const fa = {
     sync: 'همگام سازی',
     syncing: 'در حال همگام سازی',
     syncing_with_dots: 'در حال همگام سازی...',
-    last_synced_on:'آخرین همگام سازی در',
+    last_synced_on: 'آخرین همگام سازی در',
     read_listen_with_audible: 'خواندن و گوش دادن با صدا',
     book_update: 'بروزرسانی کتاب',
     reading_insights: 'خواندن عمیق',
@@ -315,4 +315,7 @@ export const fa = {
     readed_: 'خوانده شده',
     close_book: 'بستن کتاب',
     goto: 'برو به',
+    go: 'برو',
+    enter_location: 'مکان را وارد کنید',
+    you_are_reading_loaction_n: 'شما اکنون مکان {0} را می خوانید.',
 }
