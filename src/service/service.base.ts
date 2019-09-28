@@ -65,19 +65,9 @@ export abstract class BaseService {
                 });
             }
 
-            // Logout user if token refresh didn't work or user is disabled
-            /* if (error.config.url == '/api/token/refresh' || error.response.message == 'Account is disabled.') {
-              
-              TokenStorage.clear();
-              router.push({ name: 'root' });
-        
-              return new Promise((resolve, reject) => {
-                reject(error);
-              });
-            } */
+            
 
             let authObj = Utility.get_decode_auth(Store2.getState().authentication)
-            // Try request again with new token
             return this.getTokenfromServer(authObj)
                 .then((token) => {
                     Store2.dispatch(action_set_token(token.data));
@@ -98,6 +88,9 @@ export abstract class BaseService {
 
                 })
                 .catch((error) => {
+                    if (error.response.data.msg === "invalid_username") {
+                        error.response.data['msg_ui'] = 'login_again';
+                    }
                     return new Promise((resolve, reject) => {
                         reject(error);
                     });
@@ -106,7 +99,7 @@ export abstract class BaseService {
     }
 
     getTokenfromServer(data: { username: string, password: string }): Promise<IAPI_Response<IToken>> {
-        let username_password_str = data.username + ":" + data.password;
+        let username_password_str = data.username + ":" + data.password; // + 'test';
         let hash = btoa(unescape(encodeURIComponent(username_password_str))); // btoa(token);
         let basic = "Basic " + hash;
 

@@ -25,6 +25,7 @@ export const fa = {
             your_collection_will_be_downloaded_continue: 'همه کتاب های این کلکسیون دانلود می شود.',
             file_could_not_be_uploaded: 'فایل قابل آپلود نیست.',
             one_img_upload_allowed_remove_existing_one: "تنها می توانید یک تصویر بارگذاری کنید، لطفا عکس فعلی را حذف کنید.",
+            login_again: 'مجددا وارد شوید',
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',

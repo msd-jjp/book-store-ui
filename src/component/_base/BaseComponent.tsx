@@ -103,6 +103,9 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
     }
 
     translateErrorMsg(errorData: { [key: string]: any, msg: any }) {
+        if(errorData.msg_ui){
+            return Localization.msg.ui[errorData.msg_ui];
+        }
         if (errorData.msg === 'msg4') {
             return Localization.formatString(Localization.msg.back.already_has_valid_key, errorData.time);
         } else {

@@ -35,6 +35,7 @@ interface ILocalization extends LocalizedStringsMethods {
             your_collection_will_be_downloaded_continue: string;
             file_could_not_be_uploaded: string;
             one_img_upload_allowed_remove_existing_one: string;
+            login_again: string;
         },
         back: {
             [key: string]: any; // todo

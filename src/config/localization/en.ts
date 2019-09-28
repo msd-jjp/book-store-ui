@@ -25,6 +25,7 @@ export const en = {
             your_collection_will_be_downloaded_continue: 'all the book in the collection will be downloaded.',
             file_could_not_be_uploaded: 'the file could not be uploaded.',
             one_img_upload_allowed_remove_existing_one: "one img upload allowed, remove existing one",
+            login_again: 'login again',
         },
         back: {
             user_already_exists: 'user already exists',
