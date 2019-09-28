@@ -630,7 +630,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                   onChange={(val, isValid) => { this.handleModalGoto_inputChange(val, isValid) }}
                   required
                   hideError
-                  className="input-bordered-bottom"
+                  className="input-bordered-bottom input-border-danger"
                   pattern={AppRegex.integer}
                   validationFunc={(val) => this.goto_validation(val)}
                   onKeyUp={(e) => this.handleModalGoto_keyUp(e)}
@@ -639,13 +639,13 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
             </div>
           </Modal.Body>
           <Modal.Footer className="pt-0 border-top-0">
-            <button className="btn btn-danger btn-sm text-uppercase"
+            <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_goto()}>
+              {Localization.cancel}
+            </button>
+            <button className="btn btn-danger-- text-danger btn-sm text-uppercase min-w-70px"
               onClick={() => this.modal_goto_onGoto()}
               disabled={!this.state.modal_goto.input.isValid}>
               {Localization.go}
-            </button>
-            <button className="btn btn-light btn-sm text-uppercase" onClick={() => this.closeModal_goto()}>
-              {Localization.cancel}
             </button>
           </Modal.Footer>
         </Modal>

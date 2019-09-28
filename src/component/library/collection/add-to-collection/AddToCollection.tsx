@@ -96,7 +96,7 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
                                             onChange={(val, isValid) => { this.handleNewCollectionInputChange(val, isValid) }}
                                             required
                                             hideError
-                                            className="input-bordered-bottom"
+                                            className="input-bordered-bottom input-border-success"
                                         />
                                     </div>
 
@@ -141,11 +141,11 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <button className="btn btn-light btn-sm text-uppercase" onClick={() => this.closeModal()}>
+                        <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal()}>
                             {Localization.cancel}
                         </button>
                         <BtnLoader
-                            btnClassName="btn btn-success btn-sm text-uppercase"
+                            btnClassName="btn btn-success-- text-primary btn-sm text-uppercase min-w-70px"
                             loading={this.state.addToCollections_loader}
                             onClick={() => this.add_toCollections()}
                             disabled={!this.props.book || !this.props.book.id || !this.state.selected_collection_list.length}

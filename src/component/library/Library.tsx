@@ -502,7 +502,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                 <div className="item-wrapper">
                                                     <div className="cursor-pointer" onClick={() => this.gotoCollection(collection.title)}>
                                                         <img src={this.defaultBookImagePath}
-                                                            className="item-size" alt="" 
+                                                            className="item-size" alt=""
                                                             onError={e => this.bookImageOnError(e)} data-loading="lazy" />
 
                                                         <div className="collection-detail p-2">
@@ -519,8 +519,8 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                                             return (
                                                                                 <div className="col-6 book p-align-inverse-0 mb-2" key={imgUrl_index}>
                                                                                     <div className={"img-container " + (imgUrl ? '' : 'empty')}>
-                                                                                        <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" 
-                                                                                        alt="book" data-loading="lazy" />
+                                                                                        <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding"
+                                                                                            alt="book" data-loading="lazy" />
                                                                                         {
                                                                                             imgUrl ?
                                                                                                 <img src={imgUrl}
@@ -788,7 +788,12 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                             onChange={(val, isValid) => { this.handleNewCollectionInputChange(val, isValid) }}
                                             required
                                             hideError
-                                            className="input-bordered-bottom"
+                                            className={
+                                                "input-bordered-bottom " +
+                                                (this.modal_saveCollection_mode === 'create'
+                                                    ? 'input-border-success' :
+                                                    'input-border-primary')
+                                            }
                                         />
                                     </div>
                                 </div>
@@ -796,13 +801,13 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                         </div>
                     </Modal.Body>
                     <Modal.Footer className="border-top-0 pt-0">
-                        <button className="btn btn-light btn-sm text-uppercase" onClick={() => this.closeModal_createCollections()}>
+                        <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_createCollections()}>
                             {Localization.cancel}
                         </button>
                         {
                             this.modal_saveCollection_mode === 'create' ?
                                 <BtnLoader
-                                    btnClassName="btn btn-success btn-sm text-uppercase"
+                                    btnClassName="btn btn-success-- text-success btn-sm text-uppercase min-w-70px"
                                     loading={this.state.modal_createCollections.loader}
                                     disabled={
                                         !this.state.modal_createCollections.newCollectionTitle.isValid
@@ -819,7 +824,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                 </BtnLoader>
                                 :
                                 <BtnLoader
-                                    btnClassName="btn btn-primary btn-sm text-uppercase"
+                                    btnClassName="btn btn-primary-- text-primary btn-sm text-uppercase min-w-70px"
                                     loading={this.state.modal_createCollections.loader}
                                     disabled={
                                         !this.state.modal_createCollections.newCollectionTitle.isValid
