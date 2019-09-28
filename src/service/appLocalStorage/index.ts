@@ -6,6 +6,7 @@ import { IBook } from '../../model/model.book';
 import { IComment } from '../../model/model.comment';
 import { AxiosResponse } from 'axios';
 import { BOOK_ROLES } from '../../enum/Book';
+import { ParseApi } from './ParseApi';
 
 type TCollectionName = 'clc_book' | 'clc_comment';
 type TCollectionData = IBook | IComment;
@@ -109,31 +110,7 @@ export class appLocalStorage {
     }
 
     static storeUsefullResponse(response: AxiosResponse<any>) {
-        if (response.config.url === "/api/books/_search" || response.config.url === "/api/books/search-phrase") {
-            // debugger;
-            // if (response.config.data) {
-            //     // let data = JSON.parse(response.config.data);
-            // }
-            appLocalStorage.addDataToCollection('clc_book', response.data.result);
-
-        } else if (response.config.url
-            && response.config.url.includes('/api/books/')
-            && response.config.method === "get") {
-
-            // debugger;
-            appLocalStorage.addDataToCollection('clc_book', response.data);
-        }
-        else if (response.config.url && response.config.url.includes('/api/comments/book/')) {
-            appLocalStorage.addDataToCollection('clc_comment', response.data.result);
-
-        }
-        else if (response.config.url &&
-            response.config.url.includes('/api/comments/') &&
-            response.config.method === "delete") {
-
-            const id = response.config.url.replace('/api/comments/', '');
-            appLocalStorage.removeFromCollection("clc_comment", id);
-        }
+        ParseApi.parseResponse(response);
     }
 
     static addDataToCollection(collectionName: TCollectionName, data: TCollectionData[] | TCollectionData) {
