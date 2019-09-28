@@ -125,6 +125,14 @@ export class appLocalStorage {
         }
         else if (response.config.url && response.config.url.includes('/api/comments/book/')) {
             appLocalStorage.addDataToCollection('clc_comment', response.data.result);
+
+        }
+        else if (response.config.url &&
+            response.config.url.includes('/api/comments/') &&
+            response.config.method === "delete") {
+
+            const id = response.config.url.replace('/api/comments/', '');
+            appLocalStorage.removeFromCollection("clc_comment", id);
         }
     }
 
