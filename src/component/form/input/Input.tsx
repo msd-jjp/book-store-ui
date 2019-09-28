@@ -20,6 +20,7 @@ interface InputProps {
     hideError?: boolean;
     hideErrorMsg?: boolean;
     className?: string;
+    onKeyUp?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 /* interface IProps_input extends InputProps {
     type?: 'text' | 'password';
@@ -164,6 +165,7 @@ class Input extends React.Component<InputProps, InputState> {
                             placeholder={this.props.placeholder}
                             readOnly={this.props.readOnly}
                             disabled={this.props.disabled}
+                            onKeyUp={(e) => this.props.onKeyUp && this.props.onKeyUp(e)}
                         />
                         :
                         <textarea
