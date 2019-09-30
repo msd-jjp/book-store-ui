@@ -106,34 +106,9 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
         this.props.history.push(`/book-detail/${bookId}`);
     }
     card_render(book: IBook, bookIndex: any) {
-        // let book_img =
-        //     (book.images && book.images.length && this.getImageUrl(book.images[0]))
-        //     ||
-        //     this.defaultBookImagePath;
-
         const book_img = CmpUtility.getBook_firstImg(book);
         const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(book, BOOK_ROLES.Writer);
         const firstPressFullName = CmpUtility.getBook_role_fisrt_fullName(book, BOOK_ROLES.Press);
-
-        // let writerList = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
-        // // let name = writerList && writerList.length && writerList[0].person.name;
-        // // let last_name = writerList && writerList.length && writerList[0].person.last_name;
-        // // let writerName = name + " " + last_name;
-        // let writerName = '';
-        // if (writerList && writerList.length && writerList[0] && writerList[0].person) {
-        //     writerName = this.getPersonFullName(writerList[0].person);
-        // }
-
-        // let pressList: IBook['roles'] = book.roles.filter(
-        //     r => r.role === BOOK_ROLES.Press
-        // );
-        // let first_press: IBook['roles'][0];
-        // let first_press_fullname;
-        // if (pressList && pressList.length) {
-        //     first_press = pressList[0];
-        //     first_press_fullname = (first_press.person.name || '') + ' ' + (first_press.person.last_name || '');
-        // }
-
 
         return (
             <>
@@ -155,7 +130,6 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                                         onError={e => CmpUtility.bookImageOnError(e)}
                                     />
                                 </div>
-                                {/* <img src={book_img} alt="book" onError={e => this.bookImageOnError(e)} /> */}
                             </div>
                         </div>
                     </div>
@@ -191,7 +165,7 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                         <div className="kc-data-story-content">
                             <div className="kc-data-story-mini-content">
                                 <div className="kc-mini-data-story-heading-container">
-                                    <div className="data-story-mini-icon data-story-icon-primary"></div>
+                                    {/* <div className="data-story-mini-icon data-story-icon-primary"></div> */}
                                     {/* <span className="kc-rank-card-bar-heading">{Localization.customer_reviews}</span> */}
                                     <span className="kc-rank-card-bar-heading">{Localization.customer_vote_s}</span>
                                 </div>
