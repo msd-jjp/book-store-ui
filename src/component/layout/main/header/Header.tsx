@@ -95,7 +95,7 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
                         <div className="col-lg-4 offset-lg-4 col-md-8 offset-md-2">
 
                             <div className="row mb-2 mx-2 align-items-center header-inner">
-                                <div className="col-10-- col-md-10 col-sm-8 col-6">
+                                <div className="col-10-- col-md-10-- col-md-8 col-sm-8 col-6">
                                     <div className="input-group">
                                         <div className="input-group-prepend">
                                             <span className="input-group-text search-icon" onClick={() => this.handleSearchIcon()}>
@@ -112,7 +112,7 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
                                         />
                                     </div>
                                 </div>
-                                <div className="col-2-- col-md-2 col-sm-4 col-6">
+                                <div className="col-2-- col-md-2-- col-md-4 col-sm-4 col-6">
                                     <div className="bellcontainer">
                                         {/* fa-bell-o */}
                                         <i className={"fa fa-wifi bell  cursor-pointer " +
