@@ -38,13 +38,13 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
                             onClick={() => this.gotoReader(current_book.id)}
                         >
                             <div className="img-scaffolding-container">
-                                <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="book" data-loading="lazy" />
+                                <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
 
                                 <img src={current_book_img}
                                     alt="book"
                                     className="main-img center-el-in-box"
                                     onError={e => CmpUtility.bookImageOnError(e)}
-                                    data-loading="lazy"
+                                    loading="lazy"
                                 />
                             </div>
                         </div>

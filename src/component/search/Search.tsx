@@ -134,13 +134,14 @@ class SearchComponent extends BaseComponent<IProps, IState> {
                         <div className="img-wrapper-- col-4" onClick={() => this.gotoBookDetail(book.id)}>
                             <div className="img-scaffolding-container">
                                 <img src={CmpUtility.bookSizeImagePath}
-                                    className="img-scaffolding" alt="book" data-loading="lazy" />
+                                    className="img-scaffolding" alt="" />
 
                                 <img src={book_img}
                                     alt="book"
                                     className="main-img center-el-in-box"
                                     onError={e => CmpUtility.bookImageOnError(e)}
-                                    data-loading="lazy"
+                                    // data-loading="lazy"
+                                    loading="lazy"
                                 />
                             </div>
                         </div>

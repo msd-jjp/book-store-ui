@@ -230,8 +230,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <div className="row">
             <div className="col-5">
               <div className="img-scaffolding-container">
-                <img src={CmpUtility.bookSizeImagePath} alt="book" className="img-scaffolding" data-loading="lazy" />
-                <img src={book_image} alt="book" onError={e => CmpUtility.bookImageOnError(e)} className="main-img center-el-in-box" />
+                <img src={CmpUtility.bookSizeImagePath} alt="" className="img-scaffolding" />
+                <img src={book_image} alt="book" onError={e => CmpUtility.bookImageOnError(e)}
+                  className="main-img center-el-in-box" loading="lazy" />
               </div>
               {/* <div className="book-image-wrapper">
                 <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
@@ -403,11 +404,11 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                         <div className="col-4">
                           <div className="ml-3">
                             <div className="img-scaffolding-container bg-transparent">
-                              <img src={CmpUtility.avatarSizeImagePath} className="img-scaffolding" alt="" data-loading="lazy" />
+                              <img src={CmpUtility.avatarSizeImagePath} className="img-scaffolding" alt="" />
                               <img src={ab_writer_image}
                                 alt="avatar"
                                 className="main-img center-el-in-box radius-50percent"
-                                data-loading="lazy"
+                                loading="lazy"
                                 onError={e => CmpUtility.personImageOnError(e)}
                               />
                             </div>

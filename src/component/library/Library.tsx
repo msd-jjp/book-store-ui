@@ -503,7 +503,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                     <div className="cursor-pointer" onClick={() => this.gotoCollection(collection.title)}>
                                                         <img src={this.defaultBookImagePath}
                                                             className="item-size" alt=""
-                                                            onError={e => this.bookImageOnError(e)} data-loading="lazy" />
+                                                            onError={e => this.bookImageOnError(e)} />
 
                                                         <div className="collection-detail p-2">
                                                             <div className="collection-detail-inner">
@@ -511,23 +511,19 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                                     <div className="row pr-3">
                                                                         {/* {collection.books.slice(0, 4).map((sampleBook, sampleBook_index) => { */}
                                                                         {img_list_4.slice(0, 4).map((imgUrl, imgUrl_index) => {
-                                                                            // const book_img =
-                                                                            //     (sampleBook.images && sampleBook.images.length && this.getImageUrl(sampleBook.images[0]))
-                                                                            //     ||
-                                                                            //     this.defaultBookImagePath;
 
                                                                             return (
                                                                                 <div className="col-6 book p-align-inverse-0 mb-2" key={imgUrl_index}>
                                                                                     <div className={"img-container " + (imgUrl ? '' : 'empty')}>
                                                                                         <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding"
-                                                                                            alt="book" data-loading="lazy" />
+                                                                                            alt="" />
                                                                                         {
                                                                                             imgUrl ?
                                                                                                 <img src={imgUrl}
                                                                                                     alt="book"
                                                                                                     className="book-img center-el-in-box"
                                                                                                     onError={e => this.bookImageOnError(e)}
-                                                                                                    data-loading="lazy"
+                                                                                                    loading="lazy"
                                                                                                 />
                                                                                                 : ''
                                                                                         }
@@ -571,7 +567,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                             <div className="item-wrapper uncollected">
                                                 <div className="cursor-pointer" onClick={() => this.gotoCollection('uncollected', true)}>
                                                     <img src={this.defaultBookImagePath}
-                                                        className="item-size" alt="" onError={e => this.bookImageOnError(e)} data-loading="lazy" />
+                                                        className="item-size" alt="" onError={e => this.bookImageOnError(e)} />
 
                                                     <div className="collection-detail p-2">
                                                         <div className="collection-detail-inner">

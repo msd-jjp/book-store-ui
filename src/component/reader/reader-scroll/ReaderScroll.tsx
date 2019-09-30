@@ -319,6 +319,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
                           className="page-img"
                           src={pg.url}
                           alt="book"
+                          loading="lazy"
                         />
                       </div>
                       <div className="page-number text-muted">{pg.number}</div>

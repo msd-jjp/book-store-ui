@@ -241,6 +241,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
                             className="page-img"
                             src={`/static/media/img/sample-book-page/page-${slide.id}.jpg`}
                             alt="book"
+                            loading="lazy"
                           />
                         </div>
                         <div className="item-footer">

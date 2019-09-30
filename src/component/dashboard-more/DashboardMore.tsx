@@ -268,7 +268,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                                 }
                                 alt="avatar"
                                 onError={e => this.personImageOnError(e)}
-                                data-loading="lazy"
+                                loading="lazy"
                             />
                             <span>
                                 {this.props.logged_in_user!.username}
@@ -288,13 +288,13 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <div className="icon-wrapper mr-3"><i className="fa fa-flag"></i></div>
                             <ul className="flag-list list-group list-group-horizontal list-group-flush__ text-center  p-0">
                                 <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('fa')}>
-                                    <img src="/static/media/img/flag/ir.png" alt="فارسی" data-loading="lazy" />
+                                    <img src="/static/media/img/flag/ir.png" alt="فارسی" loading="lazy" />
                                 </button>
                                 <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('en')}>
-                                    <img src="/static/media/img/flag/us.png" alt="english" data-loading="lazy" />
+                                    <img src="/static/media/img/flag/us.png" alt="english" loading="lazy" />
                                 </button>
                                 <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('ar')}>
-                                    <img src="/static/media/img/flag/ar.png" alt="العربیه" data-loading="lazy" />
+                                    <img src="/static/media/img/flag/ar.png" alt="العربیه" loading="lazy" />
                                 </button>
                             </ul>
                         </li>

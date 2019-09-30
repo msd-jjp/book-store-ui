@@ -352,6 +352,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                             className="page-img"
                             src={`/static/media/img/sample-book-page/page-${slide.id}.jpg`}
                             alt="book"
+                            loading="lazy"
                           />
                         </div>
                         <div className="page-number text-muted">{slide.id}</div>
@@ -579,8 +580,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         <div className="book-main-detail row">
           <div className="col-4">
             <div className="img-scaffolding-container">
-              <img src={CmpUtility.bookSizeImagePath} alt="book" className="img-scaffolding" data-loading="lazy" />
-              <img src={book_img} alt="book" onError={e => CmpUtility.bookImageOnError(e)} className="main-img center-el-in-box" />
+              <img src={CmpUtility.bookSizeImagePath} alt="" className="img-scaffolding" />
+              <img src={book_img} alt="book" onError={e => CmpUtility.bookImageOnError(e)}
+                className="main-img center-el-in-box" loading="lazy" />
             </div>
           </div>
           <div className="col-8 p-align-0">

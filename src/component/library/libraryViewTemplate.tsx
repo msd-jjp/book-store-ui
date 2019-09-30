@@ -45,15 +45,15 @@ export function libraryItem_viewList_render(
     return (
         <div className="view-list-item pb-2 mb-2" >
             <div className="item-wrapper row" onClick={() => onItemSelect(item)}>
-                <div className="img-wrapper-- col-4">
-                    <div className="img-container-- img-scaffolding-container">
-                        <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding-- img-scaffolding" alt="book" data-loading="lazy" />
+                <div className="col-4">
+                    <div className="img-scaffolding-container">
+                        <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
 
                         <img src={book_img}
                             alt="book"
                             className="lib-img-- main-img center-el-in-box"
                             onError={e => CmpUtility.bookImageOnError(e)}
-                            data-loading="lazy"
+                            loading="lazy"
                         />
                     </div>
                 </div>
@@ -92,14 +92,14 @@ export function libraryItem_viewGrid_render(
     return (
         <div className="col-4 p-align-inverse-0 mb-3">
             <div className="item-wrapper" onClick={() => onItemSelect(item)}>
-                <div className="img-container-- img-scaffolding-container">
-                    <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding-- img-scaffolding" alt="book" data-loading="lazy" />
+                <div className="img-scaffolding-container">
+                    <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
 
                     <img src={book_img}
                         alt="book"
                         className="lib-img-- main-img center-el-in-box"
                         onError={e => CmpUtility.bookImageOnError(e)}
-                        data-loading="lazy"
+                        loading="lazy"
                     />
                 </div>
 
