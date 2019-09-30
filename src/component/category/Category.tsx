@@ -15,6 +15,7 @@ import { ToastContainer } from 'react-toastify';
 import { IAPI_ResponseList } from '../../service/service.base';
 import { IUser } from '../../model/model.user';
 import { CmpUtility } from '../_base/CmpUtility';
+import { Utility } from '../../asset/script/utility';
 
 export type category_routeParam_categoryType = 'tag' | 'genre' | 'custom';
 
@@ -205,7 +206,7 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
                                     />
 
                                     <div className="numeric-star-data">
-                                        <small className="text-uppercase">{book.rate} / {book.rate_no} {Localization.vote_s}</small>
+                                        <small className="text-uppercase">{Utility.round_num_decimals(book.rate)} / {book.rate_no} {Localization.vote_s}</small>
                                     </div>
                                 </div>
                             </div>
