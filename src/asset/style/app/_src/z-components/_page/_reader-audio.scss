@@ -1,0 +1,76 @@
+.reader-audio-wrapper {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+
+  .audio-header {
+    background: white;
+    height: 3rem;
+    @include box-shadow(0px 2px 5px 0px #e6e6e6);
+    padding: 0 0.5rem;
+
+    .icon-wrapper {
+      // line-height: 3rem;
+      // line-height: 3rem;
+      display: flex;
+      /* justify-content: space-between; */
+      align-items: center;
+      height: 3rem;
+
+      .go-back {
+        width: 2rem;
+        z-index: 1;
+      }
+
+      .book-title {
+        flex-grow: 1;
+
+        body:not(.rtl) & {
+          margin-left: -2rem;
+        }
+        body.rtl & {
+          margin-right: -2rem;
+        }
+      }
+
+      // .icon {
+      //   cursor: pointer;
+
+      //   &.disabled {
+      //     opacity: 0.5;
+      //     cursor: default;
+      //   }
+      // }
+    }
+  }
+
+  .audio-body {
+    height: calc(100% - 6rem);
+    overflow: hidden;
+    .book-title {
+      height: 1.5rem;
+    }
+
+    // .app-swiper {
+    //   height: calc(100% - 5rem);
+    //   overflow: hidden;
+    // }
+  }
+
+  .audio-footer {
+    display: flex;
+    justify-content: space-between;
+    height: 3rem;
+    align-items: center;
+    padding: 0 0.5rem;
+    background-color: aliceblue;
+  }
+}
+
+.reader-audio-wrapper {
+  .audio-body {
+    .app-swiper {
+      opacity: 1;
+    }
+  }
+}

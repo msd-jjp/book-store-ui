@@ -32,6 +32,7 @@ import { RouteLayoutNoWrap } from '../layout/no-wrap/NoWrap';
 import { ReaderOverview } from '../reader/reader-overview/ReaderOverview';
 import { ReaderReading } from '../reader/reader-reading/ReaderReading';
 import { ReaderScroll } from '../reader/reader-scroll/ReaderScroll';
+import { ReaderAudio } from '../reader/reader-audio/ReaderAudio';
 // import { action_set_network_status } from '../../redux/action/netwok-status';
 // import { Store2 } from '../../redux/store';
 
@@ -59,6 +60,7 @@ const appRoutes = (
       <RouteLayoutNoWrap path="/reader/:bookId/overview" component={ReaderOverview} />
       <RouteLayoutNoWrap path="/reader/:bookId/reading" component={ReaderReading} />
       <RouteLayoutNoWrap path="/reader/:bookId/scroll" component={ReaderScroll} />
+      <RouteLayoutNoWrap path="/reader/:bookId/audio" component={ReaderAudio} />
       {/* <RouteLayoutNoWrap path="reader/:bookId/reading" component={} /> */}
 
       <RouteLayoutMain component={NotFound} />
