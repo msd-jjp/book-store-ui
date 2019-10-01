@@ -27,6 +27,7 @@ import { AddToCollection } from './collection/add-to-collection/AddToCollection'
 import { IBook } from '../../model/model.book';
 import { libraryItem_viewGrid_render, libraryItem_viewList_render } from './libraryViewTemplate';
 import { CmpUtility } from '../_base/CmpUtility';
+import { BOOK_TYPES } from '../../enum/Book';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -406,7 +407,11 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         if (this.state.isLibrary_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
-            this.gotoReader(item.book.id);
+            let isAudio = false;
+            if (item.book.type === BOOK_TYPES.Audio) {
+                isAudio = true;
+            }
+            this.gotoReader(item.book.id, isAudio);
         }
     }
 
@@ -454,8 +459,12 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         this.setState({ ...this.state, library_data_selected: [] });
     }
 
-    gotoReader(book_id: string) {
-        this.props.history.push(`/reader/${book_id}/reading`);
+    gotoReader(book_id: string, isAudio = false) {
+        if (isAudio) {
+            this.props.history.push(`/reader/${book_id}/audio`);
+        } else {
+            this.props.history.push(`/reader/${book_id}/reading`);
+        }
     }
     //#endregion
 
