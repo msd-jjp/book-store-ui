@@ -17,6 +17,7 @@
     "@types/react-slick": "^0.23.4",
     "@types/redux-persist": "^4.3.1",
     "@types/swiper": "^4.4.5",
+    "@types/wavesurfer.js": "^2.0.2",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "font-awesome": "^4.7.0",
@@ -39,7 +40,8 @@
     "redux": "^4.0.1",
     "redux-persist": "^5.10.0",
     "swiper": "^4.5.1",
-    "typescript": "3.5.2"
+    "typescript": "3.5.2",
+    "wavesurfer.js": "^3.1.0"
   },
   "scripts": {
     "start": "react-app-rewired start",
