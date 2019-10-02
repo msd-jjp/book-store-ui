@@ -18,6 +18,7 @@ import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 import Swiper from 'swiper';
 // import { Virtual } from 'swiper/dist/js/swiper.esm';
 import { ReaderWorker } from "../../../webworker/reader-worker/ReaderWorker"; // .reader";
+import { ContentLoader } from "../../form/content-loader/ContentLoader";
 // import { Store2 } from "../../../redux/store";
 // import { readerWorker } from '../../../webworker/reader/reader';
 
@@ -251,7 +252,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
           {this.swiper_render()}
 
-          <div className={
+          {/* <div className={
             "lds-roller-wrapper gutter-0 "
             + (this.state.page_loading ? '' : 'd-none')
           }>
@@ -259,7 +260,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
               <div></div><div></div><div></div><div></div>
               <div></div><div></div><div></div><div></div>
             </div>
-          </div>
+          </div> */}
+          <ContentLoader gutterClassName="gutter-0" show={this.state.page_loading}></ContentLoader>
 
         </div>
       </>
