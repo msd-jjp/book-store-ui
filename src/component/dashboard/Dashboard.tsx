@@ -18,7 +18,7 @@ import { IBook } from "../../model/model.book";
 import { BookService } from "../../service/service.book";
 import { IToken } from "../../model/model.token";
 import { ToastContainer } from "react-toastify";
-import { BOOK_ROLES } from "../../enum/Book";
+import { BOOK_ROLES, BOOK_TYPES } from "../../enum/Book";
 import { NavLink } from "react-router-dom";
 import { AddToCollection } from "../library/collection/add-to-collection/AddToCollection";
 import { CmpUtility } from "../_base/CmpUtility";
@@ -216,7 +216,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         <div className="latestBook-wrapper row mt-3">
           <div className="col-4">
             <div className="book-img-wrapper">
-              <div className="img-scaffolding-container cursor-pointer" onClick={() => this.gotoReader(current_book!.id)}>
+              <div className="img-scaffolding-container cursor-pointer" onClick={() => this.before_gotoReader(current_book!)}>
                 <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
 
                 <img src={current_book_img}
@@ -250,7 +250,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
               <Button
                 variant="dark"
                 className="btn-read-now"
-                onClick={() => this.gotoReader(current_book!.id)}
+                onClick={() => this.before_gotoReader(current_book!)}
               >
                 {Localization.read_now}
               </Button>
@@ -332,8 +332,22 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  gotoReader(book_id: string) {
-    this.props.history.push(`/reader/${book_id}/reading`);
+  // gotoReader(book_id: string) {
+  //   this.props.history.push(`/reader/${book_id}/reading`);
+  // }
+  before_gotoReader(book: IBook) {
+    let isAudio = false;
+    if (book.type === BOOK_TYPES.Audio) {
+      isAudio = true;
+    }
+    this.gotoReader(book.id, isAudio);
+  }
+  gotoReader(book_id: string, isAudio = false) {
+    if (isAudio) {
+      this.props.history.push(`/reader/${book_id}/audio`);
+    } else {
+      this.props.history.push(`/reader/${book_id}/reading`);
+    }
   }
 
   calc_read_percent_by_bookItem_in_lib(book_id: string): string {

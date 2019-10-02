@@ -9,6 +9,8 @@ import { IUser } from "../../../../model/model.user";
 import { BaseComponent } from "../../../_base/BaseComponent";
 import { CmpUtility } from "../../../_base/CmpUtility";
 import { History } from "history";
+import { IBook } from "../../../../model/model.book";
+import { BOOK_TYPES } from "../../../../enum/Book";
 
 export interface IProps {
     internationalization: TInternationalization;
@@ -35,7 +37,8 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
                             // to="/dashboard"
                             className="nav-link-- cursor-pointer"
                             // activeClassName="active pointer-events-none"
-                            onClick={() => this.gotoReader(current_book.id)}
+                            // onClick={() => this.gotoReader(current_book.id)}
+                            onClick={() => this.before_gotoReader(current_book)}
                         >
                             <div className="img-scaffolding-container">
                                 <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
@@ -55,8 +58,22 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
 
     }
 
-    gotoReader(book_id: string) {
-        this.props.history.push(`/reader/${book_id}/reading`);
+    // gotoReader(book_id: string) {
+    //     this.props.history.push(`/reader/${book_id}/reading`);
+    // }
+    before_gotoReader(book: IBook) {
+        let isAudio = false;
+        if (book.type === BOOK_TYPES.Audio) {
+            isAudio = true;
+        }
+        this.gotoReader(book.id, isAudio);
+    }
+    gotoReader(book_id: string, isAudio = false) {
+        if (isAudio) {
+            this.props.history.push(`/reader/${book_id}/audio`);
+        } else {
+            this.props.history.push(`/reader/${book_id}/reading`);
+        }
     }
 
     render() {
