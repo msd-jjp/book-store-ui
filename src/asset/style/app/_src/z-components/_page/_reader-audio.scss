@@ -45,11 +45,13 @@
   }
 
   .audio-body {
-    height: calc(100% - 6rem);
+    height: calc(100% - 3rem - 5rem - 2px);
     overflow: hidden;
-    .book-title {
-      height: 1.5rem;
-    }
+    // .book-title {
+    //   height: 1.5rem;
+    // }
+
+    // .audio-control{}
 
     // .app-swiper {
     //   height: calc(100% - 5rem);
@@ -58,19 +60,58 @@
   }
 
   .audio-footer {
-    display: flex;
-    justify-content: space-between;
-    height: 3rem;
-    align-items: center;
+    // display: flex;
+    // justify-content: space-between;
+    // height: 3rem;
+    // align-items: center;
     padding: 0 0.5rem;
     background-color: aliceblue;
+    @include box-shadow(0px -2px 5px 0px #e6e6e6);
+    position: relative;
   }
 }
 
 .reader-audio-wrapper {
   .audio-body {
-    .app-swiper {
-      opacity: 1;
+    .playlist {
+      // height: 2rem;
+      height: calc(100% - (13rem + 2rem + 1rem + 1.5rem));
+      overflow-y: scroll;
+      .audio-list {
+        .audio-item {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          padding: 0.25rem 1rem;
+          font-size: 0.8rem;
+        }
+      }
+    }
+    .player {
+      height: 13rem + 2rem + 1rem + 1.5rem;
+      overflow: hidden;
+
+      // .waveform{}
+      .wave-timeline{
+        background-color: aliceblue;
+      }
+      // .current-time{}
+    }
+  }
+  .audio-footer {
+    .audio-control {
+      .action-btn {
+        display: flex;
+        padding: 1rem;
+        // border: 1px solid app-color(info);
+        border-radius: 50px;
+        // color: app-color(info);
+
+        i {
+          width: 1rem;
+          height: 1rem;
+        }
+      }
     }
   }
 }
