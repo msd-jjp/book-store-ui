@@ -180,7 +180,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             waveColor: '#A8DBA8',
             progressColor: '#3B8686',
             // backend: 'MediaElement',
-            height: 208,
+            // height: 208,
+            height: 320,
             barWidth: 1,
             cursorWidth: 1,
             cursorColor: '#4a74a5',
@@ -195,14 +196,19 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                     // unlabeledNotchColor:'ff0000',
                     // primaryColor:'09f311',
                     // secondaryColor:'#d131ef',
+                    // primaryColor:'#09f311',
+                    // secondaryColor:'#09f311',
+                    // secondaryColor:'#ff0000',
                     // primaryFontColor: '#0dc2f9',
+                    // primaryFontColor: '#ff0000',
                     // secondaryFontColor: '#f9d10d',
+                    // secondaryFontColor: '#ff0000',
                     // rtl: true,
                     // fontSize: 10,
                     // labelPadding: 0
                     // fontFamily: 'farsi',
                     // offset: 20,
-                    // height: 16,
+                    height: 16,
                 }),
                 CursorPlugin.create({
                     showTime: true,
@@ -240,7 +246,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             // this.toggleLoading();
             //show notification here...
             // alert(555);
-            const err_res = this.handleError({ error: e }); // {}
+            const err_res = this.handleError({ error: e, toastOptions: { toastId: 'player_error' } }); // {}
             this.setState({ error: err_res.body, loading: false });
             // console.error('error -->>', e);
         });
@@ -251,60 +257,51 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.wavesurfer.on('pause', () => {
             console.info('pause...');
             // this.wavesurfer!.params.container.style.opacity = 0.9;
-
         });
 
         this.wavesurfer.on('finish', () => {
             console.log('finish...');
-            // this.setCurrentSong((currentTrack + 1) % links.length);
             // this.gotoBegining();
+            // this.wavesurfer!.pause();
+            // this.pause();
+            this.after_pause();
         });
 
 
         this.wavesurfer.on('loading', showProgress);
         this.wavesurfer.on('destroy', hideProgress);
 
-        this.wavesurfer.on('audioprocess', () => {
-            this.updateTimer();
-            // console.log('audioprocess..');
-            // if (this.wavesurfer!.isPlaying()) {
-            //     const totalTime = this.wavesurfer!.getDuration(),
-            //         currentTime = this.wavesurfer!.getCurrentTime(),
-            //         remainingTime = totalTime - currentTime;
+        this.wavesurfer.on('audioprocess', () => { this.updateTimer(); });
+        this.wavesurfer.on('seek', () => { this.updateTimer(); });
 
-            //     const currentTime_i = ~~currentTime;
-            //     const min = Math.floor(currentTime_i / 60);
-            //     const sec = currentTime_i % 60;
-            //     const currentTime_s = min + ' : ' + sec;
-
-            //     document.getElementById('time-total')!.innerText = Math.round(totalTime * 1000) + '';
-            //     document.getElementById('time-current')!.innerText = currentTime_s; //Math.round(currentTime * 1000) + '';
-            //     document.getElementById('time-remaining')!.innerText = Math.round(remainingTime * 1000) + '';
-            // } else {
-            //     debugger;
-            // }
-        });
-        this.wavesurfer.on('seek', () => { this.updateTimer() });
+        this.updateTimer(0);
 
         this.load_file();
     }
 
-    // gotoSecond(s = 60) {
-    //     this.wavesurfer!.setCurrentTime(s);
-    // }
     gotoBegining() {
         this.wavesurfer!.setCurrentTime(0);
     }
 
-    // toggleLoading() {
-    //     console.log('toggleLoading...');
-    //     this.setState({ loading: !this.state.loading });
-    // }
+    // private togglePlay() {
+    //     this.wavesurfer!.playPause();
+    //     this.setState({ isPlaying: this.wavesurfer!.isPlaying() });
+    // };
 
-    togglePlay = () => {
-        this.wavesurfer!.playPause();
-        this.setState({ isPlaying: this.wavesurfer!.isPlaying() });
+    private play() {
+        this.wavesurfer!.play();
+        this.after_play();
     };
+    private pause() {
+        this.wavesurfer!.pause();
+        this.after_pause();
+    };
+    private after_play() {
+        this.setState({ isPlaying: true });
+    }
+    private after_pause() {
+        this.setState({ isPlaying: false });
+    }
 
     showLoader() {
         this.setState({ loading: true });
@@ -329,13 +326,19 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             this.load_file();
         });
         // this.wavesurfer!.load(url);
+        // console.log(this.wavesurfer!.getCurrentTime());
+        this.updateTimer(0);
     };
-    updateTimer() {
-        const formattedTime = this.secondsToTimestamp(this.wavesurfer!.getCurrentTime());
-        document.getElementById('time-current2')!.innerText = formattedTime;
-        // $('#waveform-time-indicator .time').text(formattedTime);
+    updateTimer(currentTime?: number) {
+        let formattedTime = '00:00:00';
+        if (currentTime || currentTime === 0) {
+            formattedTime = this.secondsToTimeFormatter(currentTime);
+        } else {
+            formattedTime = this.secondsToTimeFormatter(this.wavesurfer!.getCurrentTime());
+        }
+        document.getElementById('time-current')!.innerText = formattedTime;
     }
-    secondsToTimestamp(seconds: number) {
+    secondsToTimeFormatter(seconds: number) {
         seconds = Math.floor(seconds);
         let h: number | string = Math.floor(seconds / 3600);
         let m: number | string = Math.floor((seconds - (h * 3600)) / 60);
@@ -386,22 +389,22 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     playlist_render() {
         return (
             <>
-                <div className="row playlist mb-2">
-                    <div className="col-12">
-                        <div className="audio-list list-group list-group-flush">
-                            {this.state.playlist.map((url, url_index) => {
-                                return (
-                                    <Fragment key={url_index}>
-                                        <div className={"audio-item list-group-item "
-                                            + (this.state.active_item === url ? 'active' : '')}
-                                            onClick={() => this.setCurrentSong(url)}>
-                                            {url}
-                                        </div>
-                                    </Fragment>
-                                )
-                            })}
-                        </div>
+                <div className="row-- playlist mb-2 py-2">
+                    {/* <div className="col-12"> */}
+                    <div className="audio-list list-group list-group-flush">
+                        {this.state.playlist.map((url, url_index) => {
+                            return (
+                                <Fragment key={url_index}>
+                                    <div className={"audio-item list-group-item "
+                                        + (this.state.active_item === url ? 'active' : '')}
+                                        onClick={() => this.setCurrentSong(url)}>
+                                        {url}
+                                    </div>
+                                </Fragment>
+                            )
+                        })}
                     </div>
+                    {/* </div> */}
                 </div>
             </>
         )
@@ -411,7 +414,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         return (
             <>
                 <div className="progress" id="progress-bar" dir="ltr">
-                    <div className="progress-bar progress-bar-striped progress-bar-animated bg-info">0%</div>
+                    <div className="progress-bar progress-bar-striped progress-bar-animated bg-primary">0%</div>
                 </div>
             </>
         )
@@ -423,26 +426,22 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                 <div className="row player">
                     <div className="col-12 mb-2">
                         <ContentLoader gutterClassName="gutter-0" show={this.state.loading}></ContentLoader>
-                        {/* <div className={"lds-roller-wrapper gutter-0 " + (this.state.loading ? '' : 'd-none2')}>
-                            <div className="lds-roller">
-                                <div></div><div></div><div></div><div></div>
-                                <div></div><div></div><div></div><div></div>
-                            </div>
-                        </div> */}
-                        {/* <div className={this.state.loading ? '' : 'd-none'}>{Localization.loading_with_dots}</div> */}
                         <div className={this.state.error ? '' : 'd-none'}>
                             {this.state.error}
                             <div onClick={() => this.retry_loading()}>{Localization.retry}</div>
                         </div>
 
-                        <div id="waveform"></div>
-                        <div id="wave-timeline" className={this.state.loading ? 'd-none' : ''} ></div>
-
+                        <div className={`waveform-container ` + (this.state.isPlaying ? '' : 'is-pause')}>
+                            <div className="waveform-wrapper">
+                                <div id="waveform" className="waveform"></div>
+                            </div>
+                            <div id="wave-timeline" className={`wave-timeline ` + (this.state.loading ? 'd-none' : '')} ></div>
+                        </div>
                         {this.progress_bar_render()}
                     </div>
 
                     <div className="col-12">
-                        <div className="current-time text-system text-center" id="time-current2">00:00:00</div>
+                        <div className="current-time text-system text-center" id="time-current"></div>
                     </div>
                 </div>
             </>
@@ -479,11 +478,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                             </button>
 
                             <button className={"btn action-btn mx-2 btn-outline-info " + (this.state.isPlaying ? 'd-none' : '')}
-                                onClick={() => this.togglePlay()} disabled={this.state.loading}>
+                                onClick={() => this.play()} disabled={this.state.loading}>
                                 <i className="fa fa-play"></i>
                             </button>
                             <button className={"btn action-btn mx-2 btn-outline-info " + (this.state.isPlaying ? '' : 'd-none')}
-                                onClick={() => this.togglePlay()} disabled={this.state.loading}>
+                                onClick={() => this.pause()} disabled={this.state.loading}>
                                 <i className="fa fa-pause"></i>
                             </button>
 

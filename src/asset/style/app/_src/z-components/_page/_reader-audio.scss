@@ -77,6 +77,8 @@
       // height: 2rem;
       height: calc(100% - (13rem + 2rem + 1rem + 1.5rem));
       overflow-y: scroll;
+      background-color: aliceblue;
+
       .audio-list {
         .audio-item {
           overflow: hidden;
@@ -84,6 +86,10 @@
           text-overflow: ellipsis;
           padding: 0.25rem 1rem;
           font-size: 0.8rem;
+
+          &:not(.active) {
+            background-color: transparent;
+          }
         }
       }
     }
@@ -91,10 +97,24 @@
       height: 13rem + 2rem + 1rem + 1.5rem;
       overflow: hidden;
 
-      // .waveform{}
-      .wave-timeline{
-        background-color: aliceblue;
+      .waveform-container {
+        .waveform-wrapper {
+          // height: 6.5rem;
+          height: 10rem;
+          overflow: hidden;
+          position: relative;
+          // .waveform{}
+        }
+        // .wave-timeline {
+        //   background-color: aliceblue;
+        // }
+        &.is-pause {
+          opacity: 0.8;
+        }
       }
+
+      // .progress {
+      // }
       // .current-time{}
     }
   }
