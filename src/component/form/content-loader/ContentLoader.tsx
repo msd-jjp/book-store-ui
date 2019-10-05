@@ -2,7 +2,8 @@ import React from 'react';
 
 interface IProps {
     show?: boolean;
-    gutterClassName?: string;
+    gutterClassName?: 'gutter-15' | 'gutter-0';
+    colorClassName?: 'system';
 }
 
 export class ContentLoader extends React.PureComponent<IProps> {
@@ -14,7 +15,10 @@ export class ContentLoader extends React.PureComponent<IProps> {
     render() {
         return (
             <>
-                <div className={`lds-roller-wrapper ${this.props.gutterClassName} ` + (this.checkVisibility() ? '' : 'd-none')}>
+                <div className={
+                    `lds-roller-wrapper ${this.props.gutterClassName} lds-roller-${this.props.colorClassName} `
+                    + (this.checkVisibility() ? '' : 'd-none')
+                }>
                     <div className="lds-roller">
                         {this.loader_dots.map(dot => <div key={dot}></div>)}
                     </div>

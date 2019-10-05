@@ -491,7 +491,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             <>
                 <div className="row player">
                     <div className="col-12 mb-2">
-                        <ContentLoader gutterClassName="gutter-0" show={this.state.loading}></ContentLoader>
+                        <ContentLoader gutterClassName="gutter-0" colorClassName="system" show={this.state.loading}></ContentLoader>
                         <div className={this.state.error ? '' : 'd-none'}>
                             {this.state.error}
                             <div onClick={() => this.retry_loading()}>{Localization.retry}</div>

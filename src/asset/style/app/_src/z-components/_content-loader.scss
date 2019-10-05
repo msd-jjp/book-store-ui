@@ -44,7 +44,7 @@
 
     @for $i from 1 through 8 {
       &:nth-child(#{$i}) {
-        animation-delay: $i*-0.036s;
+        animation-delay: $i * -0.036s;
 
         /* &:after {
         } */
@@ -99,7 +99,18 @@
         left: 10px;
       }
     }
+  }
+}
 
+@each $color, $color-varient in $app-colors {
+  .lds-roller-wrapper.lds-roller-#{$color} {
+    .lds-roller {
+      div {
+        &:after {
+          background: app-color($color);
+        }
+      }
+    }
   }
 }
 
