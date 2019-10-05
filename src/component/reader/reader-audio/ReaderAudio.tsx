@@ -14,9 +14,20 @@ import { action_user_logged_in } from "../../../redux/action/user";
 import { IBook } from "../../../model/model.book";
 import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 //
-import WaveSurfer from 'wavesurfer.js';
+// import * as WaveSurferAll from 'wavesurfer.js';
+// import WaveSurfer from 'wavesurfer.js';
+// import ss from'wavesurfer.js/dist/wavesurfer';
+
+// const WaveSurfer = require('wavesurfer.min.js');
 import { Localization } from "../../../config/localization/localization";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
+// const WaveSurfer: any = {}; // = require('wavesurfer.js');
+// import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
+// import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline';
+// const WaveSurfer = WaveSurferAll.default;
+const WaveSurfer = require('wavesurfer.js/dist/wavesurfer');
+// import WaveSurfer from 'wavesurfer.js/src/wavesurfer';
+// const WaveSurfer = require('wavesurfer.js/src/wavesurfer');
 const TimelinePlugin = require('wavesurfer.js/dist/plugin/wavesurfer.timeline');
 const CursorPlugin = require('wavesurfer.js/dist/plugin/wavesurfer.cursor');
 
@@ -175,11 +186,13 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             progressDiv.style.display = 'none';
         };
 
-        const opt: WaveSurfer.WaveSurferParams = {
+        // const opt: any = { // WaveSurfer.WaveSurferParams = {
+        const wsParams: WaveSurfer.WaveSurferParams = {
             container: '#waveform',
             waveColor: '#A8DBA8',
             progressColor: '#3B8686',
             // backend: 'MediaElement',
+            // backend: 'WebAudio',
             // height: 208,
             height: 320,
             barWidth: 1,
@@ -224,16 +237,17 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                     // width: 1,
                 })
             ]
-        }
-        this.wavesurfer = WaveSurfer.create(opt);
-        this.wavesurfer.on('ready', () => {
+        };
+        this.wavesurfer = WaveSurfer.create(wsParams);
+        // this.wavesurfer = new WaveSurfer(opt);
+        this.wavesurfer!.on('ready', () => {
             // this.wavesurfer.play();
             console.log('ready...');
             hideProgress();
             // this.toggleLoading();
             this.hideLoader();
         });
-        this.wavesurfer.on('waveform-ready', () => {
+        this.wavesurfer!.on('waveform-ready', () => {
             console.log('waveform-ready...');
             hideProgress();
         })
@@ -242,7 +256,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // this.wavesurfer.load(music);
         // this.wavesurfer.load('https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Perseus-The%20Triumph%20Of%20Wit%20Over%20Suffering.mp3');
         // this.wavesurfer.loadBlob(music);
-        this.wavesurfer.on('error', (e) => {
+        this.wavesurfer!.on('error', (e: any) => {
             // this.toggleLoading();
             //show notification here...
             // alert(555);
@@ -251,15 +265,15 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             // console.error('error -->>', e);
         });
 
-        this.wavesurfer.on('play', function () {
+        this.wavesurfer!.on('play', function () {
             console.info('play...');
         });
-        this.wavesurfer.on('pause', () => {
+        this.wavesurfer!.on('pause', () => {
             console.info('pause...');
             // this.wavesurfer!.params.container.style.opacity = 0.9;
         });
 
-        this.wavesurfer.on('finish', () => {
+        this.wavesurfer!.on('finish', () => {
             console.log('finish...');
             // this.gotoBegining();
             // this.wavesurfer!.pause();
@@ -268,11 +282,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         });
 
 
-        this.wavesurfer.on('loading', showProgress);
-        this.wavesurfer.on('destroy', hideProgress);
+        this.wavesurfer!.on('loading', showProgress);
+        this.wavesurfer!.on('destroy', hideProgress);
 
-        this.wavesurfer.on('audioprocess', () => { this.updateTimer(); });
-        this.wavesurfer.on('seek', () => { this.updateTimer(); });
+        this.wavesurfer!.on('audioprocess', () => { this.updateTimer(); });
+        this.wavesurfer!.on('seek', () => { this.updateTimer(); });
 
         this.updateTimer(0);
 
