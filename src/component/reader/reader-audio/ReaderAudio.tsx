@@ -17,7 +17,7 @@ import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 import { Localization } from "../../../config/localization/localization";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { Dropdown } from "react-bootstrap";
-import RcSlider, { Handle } from 'rc-slider';
+import RcSlider from 'rc-slider';
 //
 // import * as WaveSurferAll from 'wavesurfer.js';
 // import WaveSurfer from 'wavesurfer.js';
@@ -107,6 +107,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private book_active_page = 372;
 
     private wavesurfer: WaveSurfer | undefined;
+    private _componentWillUnmount = false;
 
     constructor(props: IProps) {
         super(props);
@@ -120,6 +121,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.setBook_byId(this.book_id);
         this.updateUserCurrentBook_server();
         this.initAudio();
+    }
+    componentWillUnmount() {
+        // this._componentWillUnmount = true;
+        // this.wavesurfer!.xhr
     }
 
     updateUserCurrentBook_client() {
@@ -186,7 +191,12 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         const progressDiv: any = document.querySelector('#progress-bar');
         const progressBar = progressDiv!.querySelector('.progress-bar');
 
-        const showProgress = (percent: number) => {
+        const showProgress = (percent: number, xhr: XMLHttpRequest) => {
+            // if (this._componentWillUnmount) {
+            //     console.log('abort.........', xhr)
+            //     xhr && xhr.abort();
+            //     return;
+            // }
             console.log('showProgress...');
             progressDiv!.style.display = 'block';
             progressBar!.style.width = percent + '%';
@@ -201,7 +211,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // const opt: any = { // WaveSurfer.WaveSurferParams = {
         const wsParams: WaveSurfer.WaveSurferParams = {
             container: '#waveform',
-            waveColor: '#01aaa480' , //'#A8DBA8',
+            waveColor: '#01aaa480', //'#A8DBA8',
             progressColor: '#01aaa4', // '#3B8686',
             // backend: 'MediaElement',
             // backend: 'WebAudio',
@@ -262,6 +272,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.wavesurfer!.on('waveform-ready', () => {
             console.log('waveform-ready...');
             hideProgress();
+            this.hideLoader();
         })
         // this.wavesurfer.load('example/media/demo.wav');
         // this.toggleLoading();
@@ -346,14 +357,22 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.load_file();
     }
 
-    private setCurrentSong(url: string) {
+    private setCurrentSong(url: string, scrollIntoView = false) {
         // this.toggleLoading();
         this.setState({ loading: true, active_item: url, isPlaying: false }, () => {
             this.load_file();
+
+            if (scrollIntoView) {
+                const active_audio_item = document.querySelector('.audio-item.active');
+                if (active_audio_item) {
+                    active_audio_item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
         });
         // this.wavesurfer!.load(url);
         // console.log(this.wavesurfer!.getCurrentTime());
         this.updateTimer(0);
+
     };
     private updateTimer(currentTime?: number) {
         let formattedTime = '00:00:00';
@@ -383,7 +402,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             new_index = active_item_index - 1;
         }
         if (new_index < 0) return;
-        this.setCurrentSong(this.state.playlist[new_index]);
+        this.setCurrentSong(this.state.playlist[new_index], true);
     }
     private stepForward() {
         const active_item_index = this.state.playlist.indexOf(this.state.active_item);
@@ -394,7 +413,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // if (active_item_index === new_index) return;
         // if (new_index === 0 && loop === false) return;
         if (new_index === 0) return;
-        this.setCurrentSong(this.state.playlist[new_index]);
+        this.setCurrentSong(this.state.playlist[new_index], true);
     }
     private backward() {
         const currentTime = this.wavesurfer!.getCurrentTime();
@@ -425,9 +444,19 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                         {this.state.playlist.map((url, url_index) => {
                             return (
                                 <Fragment key={url_index}>
-                                    <div className={"audio-item list-group-item "
-                                        + (this.state.active_item === url ? 'active' : '')}
-                                        onClick={() => this.setCurrentSong(url)}>
+                                    <div className={
+                                        "audio-item list-group-item "
+                                        + (this.state.active_item === url ? 'active' : '')
+                                        + ' '
+                                        + (this.state.loading ? 'disabled' : '')
+                                    }
+                                        onClick={() => this.setCurrentSong(url)}
+                                    // disabled={this.state.loading}
+                                    >
+                                        {
+                                            this.state.active_item === url ?
+                                                <i className="fa fa-music mr-2"></i> : ''
+                                        }
                                         {url}
                                     </div>
                                 </Fragment>
@@ -511,12 +540,13 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             vol_class = 'fa-volume-down';
         }
         // return 'fa-volume-off';
-        let mute_class = '';
+        // let mute_class = '';
         if (this.state.volume.mute) {
-            mute_class = 'text-danger';
+            vol_class = 'fa-volume-off is-muted';
+            // mute_class = 'text-danger';
         }
 
-        return vol_class + ' ' + mute_class;
+        return vol_class; // + ' ' + mute_class;
     }
 
     private audio_volume_render() {
