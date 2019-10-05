@@ -13,14 +13,18 @@ import { PersonService } from "../../../service/service.person";
 import { action_user_logged_in } from "../../../redux/action/user";
 import { IBook } from "../../../model/model.book";
 import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
+
+import { Localization } from "../../../config/localization/localization";
+import { ContentLoader } from "../../form/content-loader/ContentLoader";
+import { Dropdown } from "react-bootstrap";
+import RcSlider, { Handle } from 'rc-slider';
 //
 // import * as WaveSurferAll from 'wavesurfer.js';
 // import WaveSurfer from 'wavesurfer.js';
 // import ss from'wavesurfer.js/dist/wavesurfer';
 
 // const WaveSurfer = require('wavesurfer.min.js');
-import { Localization } from "../../../config/localization/localization";
-import { ContentLoader } from "../../form/content-loader/ContentLoader";
+
 // const WaveSurfer: any = {}; // = require('wavesurfer.js');
 // import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 // import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline';
@@ -49,6 +53,10 @@ interface IState {
     playlist: string[];
     isPlaying: boolean;
     active_item: string;
+    volume: {
+        val: number;
+        mute: boolean;
+    };
 }
 
 class ReaderAudioComponent extends BaseComponent<IProps, IState> {
@@ -87,6 +95,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         playlist: this.playlist,
         isPlaying: false,
         active_item: this.playlist[0],
+        volume: {
+            val: 1,
+            mute: false
+        }
     };
 
     private _personService = new PersonService();
@@ -189,15 +201,15 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // const opt: any = { // WaveSurfer.WaveSurferParams = {
         const wsParams: WaveSurfer.WaveSurferParams = {
             container: '#waveform',
-            waveColor: '#A8DBA8',
-            progressColor: '#3B8686',
+            waveColor: '#01aaa480' , //'#A8DBA8',
+            progressColor: '#01aaa4', // '#3B8686',
             // backend: 'MediaElement',
             // backend: 'WebAudio',
             // height: 208,
             height: 320,
             barWidth: 1,
             cursorWidth: 1,
-            cursorColor: '#4a74a5',
+            cursorColor: '#015e5b', // '#4a74a5',
 
             // responsive: true,
             // rtl: true,
@@ -317,24 +329,24 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.setState({ isPlaying: false });
     }
 
-    showLoader() {
+    private showLoader() {
         this.setState({ loading: true });
     }
-    hideLoader() {
+    private hideLoader() {
         this.setState({ loading: false });
     }
 
-    load_file() {
+    private load_file() {
         // this.showLoader();
         this.setState({ loading: true, error: undefined });
         this.wavesurfer!.load(this.state.active_item);
     }
 
-    retry_loading() {
+    private retry_loading() {
         this.load_file();
     }
 
-    setCurrentSong(url: string) {
+    private setCurrentSong(url: string) {
         // this.toggleLoading();
         this.setState({ loading: true, active_item: url, isPlaying: false }, () => {
             this.load_file();
@@ -343,7 +355,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // console.log(this.wavesurfer!.getCurrentTime());
         this.updateTimer(0);
     };
-    updateTimer(currentTime?: number) {
+    private updateTimer(currentTime?: number) {
         let formattedTime = '00:00:00';
         if (currentTime || currentTime === 0) {
             formattedTime = this.secondsToTimeFormatter(currentTime);
@@ -352,7 +364,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
         document.getElementById('time-current')!.innerText = formattedTime;
     }
-    secondsToTimeFormatter(seconds: number) {
+    private secondsToTimeFormatter(seconds: number) {
         seconds = Math.floor(seconds);
         let h: number | string = Math.floor(seconds / 3600);
         let m: number | string = Math.floor((seconds - (h * 3600)) / 60);
@@ -364,7 +376,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         return h + ':' + m + ':' + s;
     }
 
-    stepBackward() {
+    private stepBackward() {
         const active_item_index = this.state.playlist.indexOf(this.state.active_item);
         let new_index = -1;
         if (active_item_index > -1 && active_item_index - 1 >= 0) {
@@ -373,7 +385,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         if (new_index < 0) return;
         this.setCurrentSong(this.state.playlist[new_index]);
     }
-    stepForward() {
+    private stepForward() {
         const active_item_index = this.state.playlist.indexOf(this.state.active_item);
         let new_index = 0;
         if (active_item_index > -1 && active_item_index + 1 <= this.state.playlist.length - 1) {
@@ -384,7 +396,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         if (new_index === 0) return;
         this.setCurrentSong(this.state.playlist[new_index]);
     }
-    backward() {
+    private backward() {
         const currentTime = this.wavesurfer!.getCurrentTime();
         let seekTo = 0;
         if (currentTime - 30 > 0) {
@@ -392,7 +404,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
         this.wavesurfer!.setCurrentTime(seekTo);
     }
-    forward() {
+    private forward() {
         // const totalTime = this.wavesurfer!.getDuration();
         const currentTime = this.wavesurfer!.getCurrentTime();
         // const remainingTime = totalTime - currentTime;
@@ -400,7 +412,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.wavesurfer!.setCurrentTime(currentTime + 30);
     }
 
-    playlist_render() {
+    private setPlayerVolume(vol: number) {
+        this.wavesurfer!.setVolume(vol);
+    }
+
+    private playlist_render() {
         return (
             <>
                 <div className="row-- playlist mb-2 py-2">
@@ -424,17 +440,17 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         )
     }
 
-    progress_bar_render() {
+    private progress_bar_render() {
         return (
             <>
                 <div className="progress" id="progress-bar" dir="ltr">
-                    <div className="progress-bar progress-bar-striped progress-bar-animated bg-primary">0%</div>
+                    <div className="progress-bar progress-bar-striped progress-bar-animated bg-system">0%</div>
                 </div>
             </>
         )
     }
 
-    player_render() {
+    private player_render() {
         return (
             <>
                 <div className="row player">
@@ -462,7 +478,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         )
     }
 
-    audio_body_render() {
+    private audio_body_render() {
         return (
             <>
                 <div className="audio-body py-2">
@@ -473,7 +489,71 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         )
     }
 
-    audio_footer_render() {
+    private onSliderChange(value: number) {
+
+        // this.setState({ volume: { val: value, mute: value === 0 ? true : false } }, () => {
+        this.setState({ volume: { val: value, mute: false } }, () => {
+            this.wavesurfer!.setMute(false);
+            this.setPlayerVolume(value);
+            // this.wavesurfer!.setMute(false);
+
+            // console.log('cas', this.wavesurfer!.getMute(), this.wavesurfer!.getVolume(), value);
+        });
+        // console.log('cas 2', this.wavesurfer!.getMute(), this.wavesurfer!.getVolume(), value);
+
+    }
+
+    volume_icon_render(): string {
+        let vol_class = 'fa-volume-off';
+        if (this.state.volume.val >= .5) {
+            vol_class = 'fa-volume-up';
+        } else if (this.state.volume.val < .5 && this.state.volume.val !== 0) {
+            vol_class = 'fa-volume-down';
+        }
+        // return 'fa-volume-off';
+        let mute_class = '';
+        if (this.state.volume.mute) {
+            mute_class = 'text-danger';
+        }
+
+        return vol_class + ' ' + mute_class;
+    }
+
+    private audio_volume_render() {
+        return (
+            <>
+                {this.slider_render()}
+                <div className="toggle-mute cursor-pointer" onClick={() => this.toggleMute()}>
+                    <i className={"fa " + this.volume_icon_render()}></i>
+                </div>
+            </>
+        )
+    }
+    toggleMute() {
+        this.wavesurfer!.toggleMute();
+        this.setState({ volume: { ...this.state.volume, mute: this.wavesurfer!.getMute() } });
+    }
+    private slider_render() {
+        return (
+            <>
+                <div className="rc-slider-wrapper mb-3">
+                    <RcSlider
+                        className="rc-slider-system"
+                        min={0}
+                        max={1}
+                        vertical
+                        defaultValue={this.state.volume.val}
+                        onChange={(v) => this.onSliderChange(v)}
+                        value={this.state.volume.val}
+                        step={.01}
+                        disabled={this.state.loading}
+                    />
+                </div>
+            </>
+        )
+    }
+
+    private audio_footer_render() {
         return (
             <>
                 <div className="audio-footer">
@@ -482,32 +562,50 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                             "audio-control col-12 mb-3-- py-3 d-flex justify-content-center "
                             // + (this.state.loading ? 'opacity-5sss' : '')
                         } dir="ltr">
-                            <button className="btn action-btn mx-2 btn-outline-info"
+                            <button className="btn action-btn mx-2 btn-outline-system"
                                 onClick={() => this.stepBackward()} disabled={this.state.loading}>
                                 <i className="fa fa-step-backward"></i>
                             </button>
-                            <button className="btn action-btn mx-2 btn-outline-info"
+                            <button className="btn action-btn mx-2 btn-outline-system"
                                 onClick={() => this.backward()} disabled={this.state.loading}>
                                 <i className="fa fa-backward"></i>
                             </button>
 
-                            <button className={"btn action-btn mx-2 btn-outline-info " + (this.state.isPlaying ? 'd-none' : '')}
+                            <button className={"btn action-btn mx-2 btn-outline-system " + (this.state.isPlaying ? 'd-none' : '')}
                                 onClick={() => this.play()} disabled={this.state.loading}>
                                 <i className="fa fa-play"></i>
                             </button>
-                            <button className={"btn action-btn mx-2 btn-outline-info " + (this.state.isPlaying ? '' : 'd-none')}
+                            <button className={"btn action-btn mx-2 btn-outline-system " + (this.state.isPlaying ? '' : 'd-none')}
                                 onClick={() => this.pause()} disabled={this.state.loading}>
                                 <i className="fa fa-pause"></i>
                             </button>
 
-                            <button className="btn action-btn mx-2 btn-outline-info"
+                            <button className="btn action-btn mx-2 btn-outline-system"
                                 onClick={() => this.forward()} disabled={this.state.loading}>
                                 <i className="fa fa-forward"></i>
                             </button>
-                            <button className="btn action-btn mx-2 btn-outline-info"
+                            <button className="btn action-btn mx-2 btn-outline-system"
                                 onClick={() => this.stepForward()} disabled={this.state.loading}>
                                 <i className="fa fa-step-forward"></i>
                             </button>
+
+                            <div className="volume-dd-container">
+                                <Dropdown className="volume-dd" drop="up">
+                                    <Dropdown.Toggle
+                                        as="button"
+                                        id="dropdown-volume-btn"
+                                        className="btn action-btn mx-2-- action-btn-volume"
+                                        disabled={this.state.loading}
+                                    >
+                                        <i className={"fa " + this.volume_icon_render()}></i>
+                                    </Dropdown.Toggle>
+
+                                    <Dropdown.Menu className="border-0 rounded-0-- shadow2">
+                                        {this.audio_volume_render()}
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -515,7 +613,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         )
     }
 
-    goBack() {
+    private goBack() {
         if (this.props.history.length > 1) { this.props.history.goBack(); }
         else { this.props.history.push(`/dashboard`); }
     }

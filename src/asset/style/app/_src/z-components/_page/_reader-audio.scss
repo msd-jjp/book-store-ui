@@ -78,7 +78,7 @@
       // height: calc(100% - (13rem + 2rem + 1rem + 1.5rem));
       height: calc(100% - 0.5rem - (13rem));
       overflow-y: scroll;
-      background-color: aliceblue;
+      // background-color: aliceblue;
 
       .audio-list {
         .audio-item {
@@ -90,6 +90,10 @@
 
           &:not(.active) {
             background-color: transparent;
+          }
+          &.active {
+            background-color: app-color(system);
+            border-color: app-color(system);
           }
         }
       }
@@ -111,7 +115,7 @@
         //   background-color: aliceblue;
         // }
         &.is-pause {
-          opacity: 0.8;
+          opacity: 0.7;
         }
       }
 
@@ -132,6 +136,44 @@
         i {
           width: 1rem;
           height: 1rem;
+        }
+      }
+      .volume-dd-container {
+        position: absolute;
+        body.rtl & {
+          right: 1rem;
+        }
+        body:not(.rtl) & {
+          left: 1rem;
+        }
+        .volume-dd {
+          .action-btn-volume {
+            padding: 0.75rem;
+            i {
+              width: 1.5rem;
+              height: 1.5rem;
+              font-size: 1.5rem;
+            }
+            &:after {
+              display: none;
+            }
+          }
+          .dropdown-menu {
+            min-width: 3rem;
+            padding: 1rem 0;
+            .rc-slider-wrapper {
+              display: flex;
+              justify-content: center;
+              height: 10rem;
+              // .rc-slider {
+              //   height: 10rem;
+              // }
+            }
+            .toggle-mute {
+              display: flex;
+              justify-content: center;
+            }
+          }
         }
       }
     }
