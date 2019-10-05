@@ -8,9 +8,28 @@
   &:hover {
     border-color: app-color("primary");
   }
-  &:active, &:focus {
+  &:active,
+  &:focus {
     border-color: darken(app-color("primary"), 15);
     box-shadow: 0 0 5px darken(app-color("primary"), 15);
     cursor: grabbing;
+  }
+}
+
+@each $color, $color-varient in $app-colors {
+  .rc-slider.rc-slider-#{$color} {
+    .rc-slider-track {
+      background-color: app-color($color);
+    }
+    .rc-slider-handle {
+      &:hover {
+        border-color: app-color($color);
+      }
+      &:active,
+      &:focus {
+        border-color: darken(app-color($color), 15);
+        box-shadow: 0 0 5px darken(app-color($color), 15);
+      }
+    }
   }
 }
