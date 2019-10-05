@@ -108,12 +108,19 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
     private wavesurfer: WaveSurfer | undefined;
     private _componentWillUnmount = false;
+    private is_small_media = false;
 
     constructor(props: IProps) {
         super(props);
 
         this._personService.setToken(this.props.token);
         this.book_id = this.props.match.params.bookId;
+    }
+
+    componentWillMount() {
+        if (window.innerWidth < 500) {
+            this.is_small_media = true;
+        }
     }
 
     componentDidMount() {
@@ -566,12 +573,12 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private slider_render() {
         return (
             <>
-                <div className="rc-slider-wrapper mb-3">
+                <div className="rc-slider-wrapper mb-3--">
                     <RcSlider
                         className="rc-slider-system"
                         min={0}
                         max={1}
-                        vertical
+                        vertical={!this.is_small_media}
                         defaultValue={this.state.volume.val}
                         onChange={(v) => this.onSliderChange(v)}
                         value={this.state.volume.val}
@@ -619,8 +626,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                                 <i className="fa fa-step-forward"></i>
                             </button>
 
-                            <div className="volume-dd-container">
-                                <Dropdown className="volume-dd" drop="up">
+                            <div className={"volume-dd-container " + (this.is_small_media ? 'is-small-media' : '')}>
+                                <Dropdown className="volume-dd " drop={this.is_small_media ? 'left' : 'up'}>
                                     <Dropdown.Toggle
                                         as="button"
                                         id="dropdown-volume-btn"
