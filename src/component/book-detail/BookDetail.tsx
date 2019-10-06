@@ -672,21 +672,21 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
         <div className="section-separator my-2"></div>
 
-        <div className="my-3">
+        <div className={"my-3 " + (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'd-none' : '')}>
           <div className="write-review my-3__ py-2__ mx-1" onClick={() => this.toggleWriteComment()}>
-            <div className="p-3 p-align-inverse-0">
-              <div className="row">
-                <div className="col-10">
-                  <h6 className="text-uppercase mb-0">{Localization.write_a_review}</h6>
-                </div>
-                <div className="col-2">
-                  <i className={
-                    "fa fa-angle-down__ fa-2x book-detail-bordered-box-icon " +
-                    (this.state.is_writeCommentBox_open ? 'fa-angle-up' : 'fa-angle-down') +
-                    ' ' +
-                    (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'fa-wifi text-danger' : '')
-                  }></i>
-                </div>
+            <div className="p-3---p-align-inverse-0 px-3 py-2">
+              <div className="row-- d-flex justify-content-between align-items-center">
+                {/* <div className="col-10"> */}
+                <h6 className="text-uppercase mb-0">{Localization.write_a_review}</h6>
+                {/* </div> */}
+                {/* <div className="col-2"> */}
+                <i className={
+                  "fa fa-angle-down__ fa-2x book-detail-bordered-box-icon--- " +
+                  (this.state.is_writeCommentBox_open ? 'fa-angle-up' : 'fa-angle-down') +
+                  ' ' +
+                  (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'fa-wifi text-danger' : '')
+                }></i>
+                {/* </div> */}
               </div>
             </div>
           </div>
@@ -835,7 +835,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                       }
                     </span>
                   }
-                  <div className="comment-feedback row__ mt-1 pt-1">
+                  <div className={
+                    "comment-feedback row__ mt-1 pt-1 "
+                    + (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'd-none' : '')
+                  }>
                     {
                       bk_cmt.liked_by_user
                         ?
@@ -1027,17 +1030,17 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       return (
         <>
           <div className="section-separator my-2"></div>
-          <div className="all-review mx-3_ my-3__ py-2 px-1 " onClick={() => this.loadMoreComments()}>
-            <div className="row">
-              <div className="col-10">
-                <h6 className="font-weight-bold text-capitalize">
+          <div className="all-review mx-3_ my-3__ py-2-- py-1 px-1 " onClick={() => this.loadMoreComments()}>
+            <div className="row-- d-flex justify-content-between align-items-center">
+              {/* <div className="col-10"> */}
+                <h6 className="font-weight-bold text-capitalize mb-0">
                   {/* {Localization.formatString(Localization.see_all_n_reviews, 127)} */}
                   {Localization.more_reviews}
                 </h6>
-              </div>
-              <div className="col-2">
+              {/* </div> */}
+              {/* <div className="col-2"> */}
                 <i className={
-                  "fa fa-angle-down__ fa-2x book-detail-bordered-box-icon " +
+                  "fa fa-angle-down__ fa-2x book-detail-bordered-box-icon-- " +
                   (
                     this.state.comment_actions.loadComments.btnLoader
                       ?
@@ -1047,7 +1050,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   )
                 }
                 ></i>
-              </div>
+              {/* </div> */}
             </div>
           </div>
         </>
