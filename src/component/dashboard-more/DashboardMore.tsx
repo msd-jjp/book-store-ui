@@ -20,6 +20,7 @@ import { action_clear_library } from '../../redux/action/library';
 import { action_clear_collections } from '../../redux/action/collection';
 import moment_jalaali from "moment-jalaali";
 import moment from 'moment';
+import { CmpUtility } from '../_base/CmpUtility';
 
 interface IProps {
     logged_in_user?: IUser | null;
@@ -261,11 +262,12 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <div className="icon-wrapper mr-3"><i className="fa fa-user-circle-o"></i></div>
                             <span className="text text-capitalize mr-3">{Localization.profile}</span>
                             <img className="w-50px h-50px radius-50px mr-3"
-                                src={
-                                    (this.props.logged_in_user!.person.image) ?
-                                        this.getImageUrl(this.props.logged_in_user!.person.image)
-                                        : this.defaultPersonImagePath
-                                }
+                                // src={
+                                //     (this.props.logged_in_user!.person.image) ?
+                                //         this.getImageUrl(this.props.logged_in_user!.person.image)
+                                //         : this.defaultPersonImagePath
+                                // }
+                                src={CmpUtility.getPerson_avatar(this.props.logged_in_user!.person)}
                                 alt="avatar"
                                 onError={e => this.personImageOnError(e)}
                                 loading="lazy"

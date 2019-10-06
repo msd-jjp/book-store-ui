@@ -752,9 +752,11 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         <>
           {(this.state.book_comments! || []).map((bk_cmt: IComment, index) => {
 
-            let cmt_person_fullName = (bk_cmt.person.name || '') + ' ' + (bk_cmt.person.last_name || '');
-            let cmt_person_image = bk_cmt.person.image ? this.getImageUrl(bk_cmt.person.image) :
-              "/static/media/img/icon/avatar.png";
+            let cmt_person_fullName = CmpUtility.getPersonFullName(bk_cmt.person);
+            // (bk_cmt.person.name || '') + ' ' + (bk_cmt.person.last_name || '');
+            let cmt_person_image = CmpUtility.getPerson_avatar(bk_cmt.person);
+            // bk_cmt.person.image ? this.getImageUrl(bk_cmt.person.image) :
+            //   "/static/media/img/icon/avatar.png";
             let like_loader_obj: any = { ...this.state.comment_actions.like_loader_obj };
             let unlike_loader_obj: any = { ...this.state.comment_actions.unlike_loader_obj };
 
@@ -769,7 +771,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   <div className="row">
                     <div className="col-1 mr-3">
                       <div className="img">
-                        <img src={cmt_person_image} alt="avatar" />
+                        <img src={cmt_person_image} alt="avatar"
+                          onError={e => CmpUtility.personImageOnError(e)}
+                          loading="lazy" />
                       </div>
                     </div>
                     <span className="pt-2 ml-3 mr-1">{cmt_person_fullName}</span>

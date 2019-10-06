@@ -288,7 +288,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             console.log('waveform-ready...');
             hideProgress();
             this.hideLoader();
-        })
+        });
         // this.wavesurfer.load('example/media/demo.wav');
         // this.toggleLoading();
         // this.wavesurfer.load(music);
