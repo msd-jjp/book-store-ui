@@ -132,6 +132,14 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     componentWillUnmount() {
         // this._componentWillUnmount = true;
         // this.wavesurfer!.xhr
+        console.log('wavesurfer!.destroy');
+        try {
+            this.wavesurfer!.cancelAjax();
+            this.wavesurfer!.destroy();
+        } catch (e) {
+            // note Firefox bug
+            console.error('componentWillUnmount wavesurfer!.destroy', e);
+        }
     }
 
     updateUserCurrentBook_client() {
@@ -221,7 +229,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             waveColor: '#01aaa480', //'#A8DBA8',
             progressColor: '#01aaa4', // '#3B8686',
             // backend: 'MediaElement',
-            // backend: 'WebAudio',
+            backend: 'WebAudio',
             // height: 208,
             height: 320,
             barWidth: 1,
@@ -287,12 +295,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // this.wavesurfer.load('https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Perseus-The%20Triumph%20Of%20Wit%20Over%20Suffering.mp3');
         // this.wavesurfer.loadBlob(music);
         this.wavesurfer!.on('error', (e: any) => {
-            // this.toggleLoading();
-            //show notification here...
-            // alert(555);
+            if (e.name === "AbortError") { return; }
             const err_res = this.handleError({ error: e, toastOptions: { toastId: 'player_error' } }); // {}
             this.setState({ error: err_res.body, loading: false });
-            // console.error('error -->>', e);
+            console.error('error -->>', e);
         });
 
         this.wavesurfer!.on('play', function () {
@@ -300,7 +306,6 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         });
         this.wavesurfer!.on('pause', () => {
             console.info('pause...');
-            // this.wavesurfer!.params.container.style.opacity = 0.9;
         });
 
         this.wavesurfer!.on('finish', () => {
@@ -308,7 +313,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             // this.gotoBegining();
             // this.wavesurfer!.pause();
             // this.pause();
-            this.after_pause();
+            // this.after_pause();
+            this.stop();
         });
 
 
@@ -323,7 +329,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.load_file();
     }
 
-    gotoBegining() {
+    private gotoBegining() {
         this.wavesurfer!.setCurrentTime(0);
     }
 
@@ -331,7 +337,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     //     this.wavesurfer!.playPause();
     //     this.setState({ isPlaying: this.wavesurfer!.isPlaying() });
     // };
-
+    private stop() {
+        this.wavesurfer!.stop();
+        this.after_pause();
+    };
     private play() {
         this.wavesurfer!.play();
         this.after_play();
@@ -357,7 +366,13 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private load_file() {
         // this.showLoader();
         this.setState({ loading: true, error: undefined });
+        // try {
+        // console.log(this.wavesurfer!.cancelAjax);
+        // console.log(this.wavesurfer!.load);
+        this.wavesurfer!.cancelAjax();
+        // this.wavesurfer!.load(this.state.active_item, undefined, 'auto', 560000);
         this.wavesurfer!.load(this.state.active_item);
+        // } catch (e) { console.log('load_file', e); }
     }
 
     private retry_loading() {
@@ -367,7 +382,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private setCurrentSong(url: string, scrollIntoView = false) {
         // this.toggleLoading();
         this.setState({ loading: true, active_item: url, isPlaying: false }, () => {
+            // try {
             this.load_file();
+            // } catch (e) { console.log('setCurrentSong', e) }
 
             if (scrollIntoView) {
                 const active_audio_item = document.querySelector('.audio-item.active');
@@ -379,8 +396,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // this.wavesurfer!.load(url);
         // console.log(this.wavesurfer!.getCurrentTime());
         this.updateTimer(0);
-
-    };
+    }
+    private _current_time = '';
     private updateTimer(currentTime?: number) {
         let formattedTime = '00:00:00';
         if (currentTime || currentTime === 0) {
@@ -388,7 +405,12 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         } else {
             formattedTime = this.secondsToTimeFormatter(this.wavesurfer!.getCurrentTime());
         }
+        if (this._current_time === formattedTime) {
+            return;
+        }
+        this._current_time = formattedTime;
         document.getElementById('time-current')!.innerText = formattedTime;
+        // console.log(formattedTime);
     }
     private secondsToTimeFormatter(seconds: number) {
         seconds = Math.floor(seconds);
@@ -422,20 +444,24 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         if (new_index === 0) return;
         this.setCurrentSong(this.state.playlist[new_index], true);
     }
+    private backward_forward_step = 10;
     private backward() {
         const currentTime = this.wavesurfer!.getCurrentTime();
         let seekTo = 0;
-        if (currentTime - 30 > 0) {
-            seekTo = currentTime - 30;
+        if (currentTime - this.backward_forward_step > 0) {
+            seekTo = currentTime - this.backward_forward_step;
         }
         this.wavesurfer!.setCurrentTime(seekTo);
     }
     private forward() {
-        // const totalTime = this.wavesurfer!.getDuration();
+        const totalTime = this.wavesurfer!.getDuration();
         const currentTime = this.wavesurfer!.getCurrentTime();
         // const remainingTime = totalTime - currentTime;
+        if (currentTime + this.backward_forward_step >= totalTime && this.wavesurfer!.isPlaying) {
+            this.stop();
+        }
 
-        this.wavesurfer!.setCurrentTime(currentTime + 30);
+        this.wavesurfer!.setCurrentTime(currentTime + this.backward_forward_step);
     }
 
     private setPlayerVolume(vol: number) {
@@ -479,7 +505,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private progress_bar_render() {
         return (
             <>
-                <div className="progress" id="progress-bar" dir="ltr">
+                <div className="progress mt-n3 mx-2" id="progress-bar" dir="ltr">
                     <div className="progress-bar progress-bar-striped progress-bar-animated bg-system">0%</div>
                 </div>
             </>
@@ -491,7 +517,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             <>
                 <div className="row player">
                     <div className="col-12 mb-2">
-                        <ContentLoader gutterClassName="gutter-0" colorClassName="system" show={this.state.loading}></ContentLoader>
+                        <ContentLoader gutterClassName="gutter-15" colorClassName="system" show={this.state.loading}></ContentLoader>
                         <div className={this.state.error ? '' : 'd-none'}>
                             {this.state.error}
                             <div onClick={() => this.retry_loading()}>{Localization.retry}</div>
