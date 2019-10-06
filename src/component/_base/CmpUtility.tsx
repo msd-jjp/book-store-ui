@@ -9,6 +9,7 @@ export abstract class CmpUtility {
     static defaultBookImagePath = "/static/media/img/icon/default-book.png";
     static brokenBookImagePath = "/static/media/img/icon/broken-book.png";
     static bookSizeImagePath = "/static/media/img/icon/book-size.png";
+    static defaultAvatarImagePath = "/static/media/img/icon/avatar.png";
     static avatarSizeImagePath = "/static/media/img/icon/avatar.png";
     static brokenAvatarImagePath = "/static/media/img/icon/broken-avatar.png";
 
@@ -52,6 +53,14 @@ export abstract class CmpUtility {
             (book.images && book.images.length && CmpUtility.getImageUrl(book.images[0]))
             ||
             CmpUtility.defaultBookImagePath;
+        return img_path;
+    }
+
+    static getPerson_avatar(person: IPerson): string {
+        const img_path =
+            (person.image && CmpUtility.getImageUrl(person.image))
+            ||
+            CmpUtility.defaultAvatarImagePath;
         return img_path;
     }
 
