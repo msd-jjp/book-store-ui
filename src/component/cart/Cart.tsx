@@ -305,6 +305,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
                       <h3>{Localization.your_shopping_cart_is_empty}!</h3>
                       <img src="/static/media/img/icon/empty-shopping-cart.svg"
                         className="w-200px"
+                        loading="lazy"
                         alt="empty shopping cart" />
                     </div>
                   </>
