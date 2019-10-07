@@ -14,10 +14,10 @@ export class LayoutMainNotFound extends React.PureComponent { // React.Component
     render() {
         return (
             <>
-                <div className="layout-main-not-found mt-3">
+                <div className="layout-main-not-found mt-3 mb-5">
                     <div className="row">
                         <div className="col-12 text-center">
-                            <h1 className="text-danger">{Localization.page_not_found}</h1>
+                            <h1 className="text-muted">{Localization.page_not_found}</h1>
                             {/* <img src="/static/media/img/icon/empty-shopping-cart.svg"
                                 className="w-200px"
                                 alt={Localization.page_not_found}
