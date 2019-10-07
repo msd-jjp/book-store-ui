@@ -322,4 +322,7 @@ export const fa = {
     purchase_history: 'تاریخچه خرید',
     purchase_date: 'تاریخ خرید',
     page_not_found: 'صفحه یافت نشد',
+    detail: 'جزئیات',
+    count: 'تعداد',
+    unit_price: 'قیمت واحد',
 }

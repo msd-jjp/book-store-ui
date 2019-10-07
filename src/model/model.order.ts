@@ -13,4 +13,6 @@ export interface IOrderItem extends BaseModel {
     book: IBook;
     count: number;
     order: IOrder;
+    net_price: number;
+    unit_price: number;
 }

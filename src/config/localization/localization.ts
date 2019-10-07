@@ -316,6 +316,9 @@ interface ILocalization extends LocalizedStringsMethods {
     purchase_history: string;
     purchase_date: string;
     page_not_found: string;
+    detail: string;
+    count: string;
+    unit_price: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

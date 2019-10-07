@@ -7,15 +7,16 @@ import { TInternationalization } from "../../config/setup";
 import { BaseComponent } from "../_base/BaseComponent";
 import { History } from "history";
 import { IToken } from "../../model/model.token";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { Localization } from "../../config/localization/localization";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { action_user_logged_in } from "../../redux/action/user";
 import { OrderService } from "../../service/service.order";
 import { BtnLoader } from "../form/btn-loader/BtnLoader";
-import { IOrder } from "../../model/model.order";
+import { IOrder, IOrderItem } from "../../model/model.order";
 import moment from 'moment';
 import moment_jalaali from 'moment-jalaali';
+import { Modal } from "react-bootstrap";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -35,6 +36,14 @@ interface IState {
   pager_offset: number;
   pager_limit: number;
   loadMoreBtnLoader: boolean;
+
+  modal_orderItems: {
+    show: boolean;
+    orderItems: IOrderItem[] | undefined;
+    order: IOrder | undefined;
+    loading: boolean;
+    errorText: string | undefined;
+  };
 }
 
 class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
@@ -47,6 +56,14 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
     pager_offset: 0,
     pager_limit: 10,
     loadMoreBtnLoader: false,
+
+    modal_orderItems: {
+      show: false,
+      orderItems: undefined,
+      order: undefined,
+      loading: false,
+      errorText: undefined
+    }
   };
 
   private _orderService = new OrderService();
@@ -88,41 +105,170 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  order_list_render() {
+  private async fetchOrderItems(order_id: string) {
+    let res = await this._orderService.getOrderItems(order_id).catch(error => {
+      let errorMsg = this.handleError({ error: error.response });
+      this.setState({
+        ...this.state,
+        modal_orderItems: {
+          ...this.state.modal_orderItems,
+          loading: false,
+          orderItems: undefined,
+          errorText: errorMsg.body
+        }
+      });
+    });
+    // debugger;
+    if (res) {
+      if (res.data.result) {
+        this.setState({
+          ...this.state,
+          modal_orderItems: {
+            ...this.state.modal_orderItems,
+            loading: false,
+            orderItems: res.data.result,
+            errorText: undefined
+          }
+        });
+      }
+    }
+  }
+
+  private order_list_render() {
     return (
       <>
-        <div className="order-list-wrapper mt-3__">
-          {(this.state.orderList || []).map((book: IOrder, orderIndex) => (
-            <Fragment key={orderIndex}>
-              {this.item_render(book)}
-            </Fragment>
-          ))}
+        <div className="order-list-wrapper mt-3__ table-responsive">
+          <table className="table text-center table-striped table-borderless table-hover">
+            <thead className="thead-dark">
+              <tr>
+                <th>#</th>
+                <th>{Localization.purchase_date}</th>
+                <th>{Localization.total_price}</th>
+                <th>{Localization.detail}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(this.state.orderList || []).map((order: IOrder, orderIndex) => (
+                <Fragment key={orderIndex}>
+                  <tr>
+                    <td>{orderIndex + 1}</td>
+                    <td>
+                      {order.modification_date ? this.getTimestampToDate(order.modification_date) : ''}
+                      <div className="d-sm-none"></div>
+                      {
+                        order.modification_date ?
+                          <small>&nbsp;({order.modification_date ? this.getFromNowDate(order.modification_date) : ''})</small>
+                          : ''
+                      }
+                    </td>
+                    <td>{order.total_price ? order.total_price.toLocaleString() : ''}</td>
+                    <td><i className="fa fa-bars cursor-pointer" onClick={() => this.openModal_orderItems(order)}></i></td>
+                  </tr>
+                </Fragment>
+              ))}
+            </tbody>
+          </table>
         </div>
       </>
     )
   }
 
-  item_render(order: IOrder) {
+  //#region modal_orderItems
+  private openModal_orderItems(order: IOrder) {
+    this.setState({
+      ...this.state, modal_orderItems: {
+        show: true,
+        orderItems: undefined,
+        order,
+        loading: true,
+        errorText: undefined
+      }
+    });
+    this.fetchOrderItems(order.id);
+  }
+
+  private closeModal_orderItems() {
+    this.setState({
+      ...this.state, modal_orderItems: {
+        show: false,
+        orderItems: undefined,
+        order: undefined,
+        loading: false,
+        errorText: undefined
+      }
+    });
+  }
+
+  private modal_orderItems_render() {
+    const modalOrder: IOrder | undefined = this.state.modal_orderItems.order;
     return (
       <>
-        <div className="item-wrapper mb-3">
-          <div>
-            {Localization.purchase_date}:
-            <span>{order.modification_date ? this.getTimestampToDate(order.modification_date) : ''}</span>
-            ,
-            <span>{order.modification_date ? this.getFromNowDate(order.modification_date) : ''}</span>
-          </div>
-
-          <div>
-            {Localization.total_price}:
-            {order.total_price ? order.total_price.toLocaleString() : ''}
-          </div>
-        </div>
+        <Modal show={this.state.modal_orderItems.show} onHide={() => this.closeModal_orderItems()} centered>
+          {
+            modalOrder ?
+              <Modal.Header closeButton className="border-bottom-0 pb-0">
+                <div className="modal-title h6">
+                  {Localization.purchase_date}:&nbsp;
+            {modalOrder!.modification_date ? this.getTimestampToDate(modalOrder!.modification_date) : ''}
+                  {/* <div className="d-sm-none"></div> */}
+                  {
+                    modalOrder!.modification_date ?
+                      <small>&nbsp;({modalOrder!.modification_date ? this.getFromNowDate(modalOrder!.modification_date) : ''})</small>
+                      : ''
+                  }
+                  <div className="clearfix"></div>
+                  {Localization.total_price}:&nbsp;{modalOrder!.total_price ? modalOrder!.total_price.toLocaleString() : ''}
+                </div>
+              </Modal.Header> : ''
+          }
+          <Modal.Body>
+            <div className="order-list-wrapper mt-3__ table-responsive">
+              <table className="table text-center table-striped table-borderless table-hover table-sm">
+                <caption>{
+                  this.state.modal_orderItems.loading ? Localization.loading_with_dots :
+                    this.state.modal_orderItems.errorText ?
+                      <div>
+                        <div>{this.state.modal_orderItems.errorText}</div>
+                        <div onClick={() => this.fetchOrderItems((this.state.modal_orderItems.order! as IOrder).id)}>{Localization.retry}</div>
+                      </div> : ''
+                }</caption>
+                <thead className="thead-dark">
+                  <tr>
+                    <th>#</th>
+                    <th>{Localization.title}</th>
+                    <th>{Localization.count}</th>
+                    <th>{Localization.unit_price}</th>
+                    <th>{Localization.total_price}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(this.state.modal_orderItems.orderItems! as Array<IOrderItem> || []).map((orderItem: IOrderItem, orderItemIndex) => (
+                    <Fragment key={orderItemIndex}>
+                      <tr>
+                        <td>{orderItemIndex + 1}</td>
+                        <td>{orderItem.book.title}</td>
+                        <td>{orderItem.count}</td>
+                        <td>{orderItem.unit_price}</td>
+                        <td>{orderItem.net_price}</td>
+                      </tr>
+                    </Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Modal.Body>
+          <Modal.Footer className="pt-0 border-top-0">
+            <button className="btn btn-light btn-sm" onClick={() => this.closeModal_orderItems()}>
+              {Localization.close}
+            </button>
+          </Modal.Footer>
+        </Modal>
       </>
     )
   }
+  //#endregion
 
-  getTimestampToDate(timestamp: number) {
+  private getTimestampToDate(timestamp: number) {
     if (this.props.internationalization.flag === "fa") {
       return moment_jalaali(timestamp * 1000).locale("en").format('jYYYY/jM/jD');
     } else {
@@ -130,7 +276,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  newReleaseOrder_render() {
+  private orderListWrapper_render() {
     if (this.state.orderList && (this.state.orderList! || []).length) {
       return (
         <>
@@ -160,7 +306,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  loadMoreOrder_render() {
+  private loadMoreOrder_render() {
     if (
       this.state.newOrderList && (this.state.newOrderList! || []).length
       &&
@@ -180,7 +326,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
       );
     }
   }
-  loadMoreOrder() {
+  private loadMoreOrder() {
     this.setState(
       { ...this.state, pager_offset: this.state.pager_offset + this.state.pager_limit },
       this.fetchUserOrders
@@ -196,10 +342,11 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
 
             </div>
           </div> */}
-          {this.newReleaseOrder_render()}
+          {this.orderListWrapper_render()}
           {this.loadMoreOrder_render()}
         </div>
 
+        {this.modal_orderItems_render()}
         <ToastContainer {...this.getNotifyContainerConfig()} />
       </>
     );

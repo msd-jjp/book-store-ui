@@ -322,4 +322,7 @@ export const en = {
     purchase_history: 'purchase history',
     purchase_date: 'purchase date',
     page_not_found: 'page not found',
+    detail: 'detail',
+    count: 'count',
+    unit_price: 'unit price',
 }
