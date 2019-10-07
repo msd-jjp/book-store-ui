@@ -313,6 +313,8 @@ interface ILocalization extends LocalizedStringsMethods {
     go: string;
     enter_location: string;
     you_are_reading_loaction_n: string;
+    purchase_history: string;
+    page_not_found: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

@@ -319,4 +319,6 @@ export const en = {
     go: 'go',
     enter_location: 'enter location',
     you_are_reading_loaction_n: 'you are currently reading at loaction {0}.',
+    purchase_history: 'purchase history',
+    page_not_found: 'page not found',
 }

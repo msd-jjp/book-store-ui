@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect, HashRouter } from 're
 import { Dashboard } from '../dashboard/Dashboard';
 import { Login } from '../login/Login';
 import { Register } from '../register/Register';
-import NotFound from '../layout/main/not-found/NotFound';
+import { LayoutMainNotFound } from '../layout/main/not-found/NotFound';
 import { RouteLayoutMain } from '../layout/main/Main';
 import { RouteLayoutAccount } from '../layout/account/Account';
 import { TInternationalization } from '../../config/setup';
@@ -63,7 +63,7 @@ const appRoutes = (
       <RouteLayoutNoWrap path="/reader/:bookId/audio" component={ReaderAudio} />
       {/* <RouteLayoutNoWrap path="reader/:bookId/reading" component={} /> */}
 
-      <RouteLayoutMain component={NotFound} />
+      <RouteLayoutMain component={LayoutMainNotFound} />
 
     </Switch>
   </HashRouter>

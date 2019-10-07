@@ -319,4 +319,6 @@ export const fa = {
     go: 'برو',
     enter_location: 'مکان را وارد کنید',
     you_are_reading_loaction_n: 'شما اکنون مکان {0} را می خوانید.',
+    purchase_history: 'تاریخچه خرید',
+    page_not_found: 'صفحه یافت نشد',
 }
