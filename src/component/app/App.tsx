@@ -33,6 +33,7 @@ import { ReaderOverview } from '../reader/reader-overview/ReaderOverview';
 import { ReaderReading } from '../reader/reader-reading/ReaderReading';
 import { ReaderScroll } from '../reader/reader-scroll/ReaderScroll';
 import { ReaderAudio } from '../reader/reader-audio/ReaderAudio';
+import { PurchaseHistory } from '../purchase-history/PurchaseHistory';
 // import { action_set_network_status } from '../../redux/action/netwok-status';
 // import { Store2 } from '../../redux/store';
 
@@ -52,6 +53,7 @@ const appRoutes = (
       <RouteLayoutMain path="/collection/:collectionTitle/:isUncollected?" component={Collection} />
       <RouteLayoutMain path="/collection-update/:collectionTitle" component={CollectionUpdate} />
       <RouteLayoutMain path="/profile" component={Profile} />
+      <RouteLayoutMain path="/purchase-history" component={PurchaseHistory} />
 
       <RouteLayoutAccount path="/login" component={Login} />
       <RouteLayoutAccount path="/register" component={Register} />

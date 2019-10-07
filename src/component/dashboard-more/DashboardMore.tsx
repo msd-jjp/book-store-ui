@@ -200,6 +200,10 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.setState({ sync: { ...this.state.sync, syncing: false, lastSynced: date } });
     }
 
+    gotoPurchaseHistory() {
+        this.props.history.push('/purchase-history');
+    }
+
     render() {
 
         return (
@@ -249,6 +253,11 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                                     : ''
                                 }
                             </span>
+                        </li>
+                        <li className="more-item list-group-item p-align-0 cursor-pointer"
+                            onClick={() => this.gotoPurchaseHistory()}>
+                            <div className="icon-wrapper mr-3"><i className="fa fa-money"></i></div>
+                            <span className="text text-capitalize">{Localization.purchase_history}</span>
                         </li>
                         {/* <li className="more-item list-group-item p-align-0">
                             <i className="icon fa fa-leanpub mr-3"></i>

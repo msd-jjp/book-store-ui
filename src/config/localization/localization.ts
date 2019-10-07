@@ -314,6 +314,7 @@ interface ILocalization extends LocalizedStringsMethods {
     enter_location: string;
     you_are_reading_loaction_n: string;
     purchase_history: string;
+    purchase_date: string;
     page_not_found: string;
 }
 
