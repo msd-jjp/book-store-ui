@@ -2,6 +2,12 @@ import React from 'react';
 import { Localization } from '../../../../config/localization/localization';
 
 export class LayoutMainNotFound extends React.PureComponent { // React.Component
+    componentDidMount() {
+        document.title = Localization.page_not_found;
+    }
+    componentWillUnmount() {
+        document.title = Localization.app_title;
+    }
     onGifLoaded(e: React.SyntheticEvent<HTMLImageElement, Event>) {
         e.currentTarget.style.zIndex = '0'
     }
