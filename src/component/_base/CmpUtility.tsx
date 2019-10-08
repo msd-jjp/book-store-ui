@@ -1,6 +1,6 @@
 import { IPerson } from "../../model/model.person";
 import { IBook } from "../../model/model.book";
-import { BOOK_ROLES } from "../../enum/Book";
+import { BOOK_ROLES, BOOK_TYPES } from "../../enum/Book";
 
 // import React from 'react';
 
@@ -84,6 +84,17 @@ export abstract class CmpUtility {
             fullName = CmpUtility.getPersonFullName_reverse_with_comma(roleList[0].person, isPersian);
         }
         return fullName;
+    }
+
+    static gotoTop() {
+        window.scrollTo(0, 0);
+    }
+
+    static getBookTypeIconUrl(bookType: BOOK_TYPES, reverseColor = true) {
+        const iconPath = "/static/media/img/icon/book-type/";
+        const iconFileName = bookType.toLowerCase().replace('_', '-');
+        const postFix = reverseColor ? '-o' : '';
+        return (iconPath + iconFileName + postFix + '.svg');
     }
 
 }
