@@ -325,4 +325,5 @@ export const fa = {
     detail: 'جزئیات',
     count: 'تعداد',
     unit_price: 'قیمت واحد',
+    type: 'نوع',
 }

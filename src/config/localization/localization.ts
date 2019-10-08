@@ -319,6 +319,7 @@ interface ILocalization extends LocalizedStringsMethods {
     detail: string;
     count: string;
     unit_price: string;
+    type: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

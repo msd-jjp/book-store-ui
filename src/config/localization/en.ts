@@ -325,4 +325,5 @@ export const en = {
     detail: 'detail',
     count: 'count',
     unit_price: 'unit price',
+    type: 'type',
 }
