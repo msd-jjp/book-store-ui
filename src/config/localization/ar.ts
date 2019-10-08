@@ -2,12 +2,12 @@ export const ar = {
     login: "تسجيل الدخول",
     register: "تسجيل",
     sign_in: 'تسجيل الدخول',
-    app_title: 'فروشگاه کتاب',
-    app_title_: 'عنوان برنامه',
-    app_logo: 'فروشگاه کتاب',
-    brand_name: 'فروشگاه کتاب',
-    sign_in_bookstore_account: 'با حساب فروشگاه کتاب خود داخل شوید',
-    forgot_password: 'رمز عبورتان را فراموش کردید؟',
+    app_title: 'متجر الكتب',
+    app_title_: 'عنوان التطبيق',
+    app_logo: 'متجر الكتب',
+    brand_name: 'متجر الكتب',
+    sign_in_bookstore_account: 'تسجيل الدخول باستخدام حساب متجر الكتب الخاص بك',
+    forgot_password: 'هل نسيت كلمة مرورك؟',
     msg: {
         ui: {
             msg1: 'عملیات با موفقیت انجام شد.',
