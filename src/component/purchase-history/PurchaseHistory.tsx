@@ -17,6 +17,8 @@ import { IOrder, IOrderItem } from "../../model/model.order";
 import moment from 'moment';
 import moment_jalaali from 'moment-jalaali';
 import { Modal } from "react-bootstrap";
+import { BOOK_TYPES } from "../../enum/Book";
+import { CmpUtility } from "../_base/CmpUtility";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -86,10 +88,12 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
       this.state.pager_limit,
       this.state.pager_offset,
       {
+        person_id: this.props.logged_in_user!.person.id,
+        status: 'Invoiced'
       }
     ).catch(error => {
 
-      let errorMsg = this.handleError({ error: error.response });
+      let errorMsg = this.handleError({ error: error.response, toastOptions: { toastId: 'fetchUserOrders_error' } });
       this.setState({ ...this.state, orderError: errorMsg.body, loadMoreBtnLoader: false });
     });
     // debugger;
@@ -105,9 +109,18 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  private async fetchOrderItems(order_id: string) {
-    let res = await this._orderService.getOrderItems(order_id).catch(error => {
-      let errorMsg = this.handleError({ error: error.response });
+  private async fetchOrderItems(order: IOrder) {
+    this.setState({
+      ...this.state, modal_orderItems: {
+        show: true,
+        orderItems: undefined,
+        order,
+        loading: true,
+        errorText: undefined
+      }
+    });
+    let res = await this._orderService.getOrderItems(order.id).catch(error => {
+      let errorMsg = this.handleError({ error: error.response, toastOptions: { toastId: 'fetchOrderItems_error' } });
       this.setState({
         ...this.state,
         modal_orderItems: {
@@ -139,7 +152,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
       <>
         <div className="order-list-wrapper mt-3__ table-responsive">
           <table className="table text-center table-striped table-borderless table-hover">
-            <thead className="thead-dark">
+            <thead className="thead-dark-- bg-system text-white">
               <tr>
                 <th>#</th>
                 <th>{Localization.purchase_date}</th>
@@ -162,7 +175,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
                       }
                     </td>
                     <td>{order.total_price ? order.total_price.toLocaleString() : ''}</td>
-                    <td><i className="fa fa-bars cursor-pointer" onClick={() => this.openModal_orderItems(order)}></i></td>
+                    <td><i className="fa fa-info-circle ---bars cursor-pointer" onClick={() => this.openModal_orderItems(order)}></i></td>
                   </tr>
                 </Fragment>
               ))}
@@ -173,18 +186,22 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
     )
   }
 
+  private gotoBookDetail(bookId: string) {
+    this.props.history.push(`/book-detail/${bookId}`);
+  }
+
   //#region modal_orderItems
   private openModal_orderItems(order: IOrder) {
-    this.setState({
-      ...this.state, modal_orderItems: {
-        show: true,
-        orderItems: undefined,
-        order,
-        loading: true,
-        errorText: undefined
-      }
-    });
-    this.fetchOrderItems(order.id);
+    // this.setState({
+    //   ...this.state, modal_orderItems: {
+    //     show: true,
+    //     orderItems: undefined,
+    //     order,
+    //     loading: true,
+    //     errorText: undefined
+    //   }
+    // });
+    this.fetchOrderItems(order);
   }
 
   private closeModal_orderItems() {
@@ -207,9 +224,10 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
           {
             modalOrder ?
               <Modal.Header closeButton className="border-bottom-0 pb-0">
-                <div className="modal-title h6">
-                  {Localization.purchase_date}:&nbsp;
-            {modalOrder!.modification_date ? this.getTimestampToDate(modalOrder!.modification_date) : ''}
+                <div className="modal-title h6 text-muted">
+                  {Localization.purchase_date}:
+                  &nbsp;
+                  {modalOrder!.modification_date ? this.getTimestampToDate(modalOrder!.modification_date) : ''}
                   {/* <div className="d-sm-none"></div> */}
                   {
                     modalOrder!.modification_date ?
@@ -222,23 +240,31 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
               </Modal.Header> : ''
           }
           <Modal.Body>
-            <div className="order-list-wrapper mt-3__ table-responsive">
-              <table className="table text-center table-striped table-borderless table-hover table-sm">
-                <caption>{
-                  this.state.modal_orderItems.loading ? Localization.loading_with_dots :
-                    this.state.modal_orderItems.errorText ?
-                      <div>
-                        <div>{this.state.modal_orderItems.errorText}</div>
-                        <div onClick={() => this.fetchOrderItems((this.state.modal_orderItems.order! as IOrder).id)}>{Localization.retry}</div>
-                      </div> : ''
-                }</caption>
-                <thead className="thead-dark">
+            <div className="order-list-wrapper table-responsive">
+              <table className="table text-center table-striped table-borderless table-hover table-sm mb-0">
+                <caption className={
+                  'px-2 text-center ' +
+                  ((this.state.modal_orderItems.loading || this.state.modal_orderItems.errorText) ?
+                    '' : 'd-none')
+                }>{
+                    this.state.modal_orderItems.loading ? Localization.loading_with_dots :
+                      this.state.modal_orderItems.errorText ?
+                        <>
+                          <div className="text-danger">{this.state.modal_orderItems.errorText}</div>
+                          <button className="btn btn-light" onClick={() => this.fetchOrderItems(this.state.modal_orderItems.order! as IOrder)}>
+                            {Localization.retry}&nbsp;
+                          <i className="fa fa-refresh"></i>
+                          </button>
+                        </> : ''
+                  }</caption>
+                <thead className="thead-dark-- bg-info text-white">
                   <tr>
                     <th>#</th>
-                    <th>{Localization.title}</th>
-                    <th>{Localization.count}</th>
-                    <th>{Localization.unit_price}</th>
-                    <th>{Localization.total_price}</th>
+                    <th className="min-w-100px max-w-250px white-space-nowrap">{Localization.title}</th>
+                    <th className="white-space-nowrap">{Localization.type}</th>
+                    <th className="white-space-nowrap">{Localization.count}</th>
+                    <th className="white-space-nowrap">{Localization.unit_price}</th>
+                    <th className="white-space-nowrap">{Localization.total_price}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -246,10 +272,23 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
                     <Fragment key={orderItemIndex}>
                       <tr>
                         <td>{orderItemIndex + 1}</td>
-                        <td>{orderItem.book.title}</td>
+                        <td className="text-nowrap-ellipsis max-w-250px">
+                          <span className="text-info cursor-pointer" onClick={() => this.gotoBookDetail(orderItem.book.id)}>
+                            {orderItem.book.title}
+                          </span>
+                        </td>
+                        {/* <td>{Localization.book_type_list[orderItem.book.type as BOOK_TYPES]}</td> */}
+                        <td>
+                          <img src={CmpUtility.getBookTypeIconUrl(orderItem.book.type as BOOK_TYPES)}
+                            className="max-w-100"
+                            loading="lazy"
+                            title={Localization.book_type_list[orderItem.book.type as BOOK_TYPES]}
+                            alt={Localization.book_type_list[orderItem.book.type as BOOK_TYPES]}
+                          />
+                        </td>
                         <td>{orderItem.count}</td>
-                        <td>{orderItem.unit_price}</td>
-                        <td>{orderItem.net_price}</td>
+                        <td>{orderItem.unit_price ? orderItem.unit_price.toLocaleString() : ''}</td>
+                        <td>{orderItem.net_price ? orderItem.net_price.toLocaleString() : ''}</td>
                       </tr>
                     </Fragment>
                   ))}
@@ -294,7 +333,10 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
       return (
         <>
           <div>{this.state.orderError}</div>
-          <div onClick={() => this.fetchUserOrders()}>{Localization.retry}</div>
+          <button className="btn btn-light" onClick={() => this.fetchUserOrders()}>
+            {Localization.retry}&nbsp;
+            <i className="fa fa-refresh"></i>
+          </button>
         </>
       );
     } else {
@@ -315,10 +357,9 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
       return (
         <>
           <BtnLoader
-            btnClassName="btn btn-light btn-block text-capitalize mt-4"
+            btnClassName="btn btn-light btn-block text-capitalize mt-4--"
             loading={this.state.loadMoreBtnLoader}
             onClick={() => this.loadMoreOrder()}
-          // disabled={!this.state.isFormValid}
           >
             {Localization.load_more}
           </BtnLoader>
@@ -337,11 +378,6 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
     return (
       <>
         <div className="purchase-history-wrapper mt-3 mb-5">
-          {/* <div className="row">
-            <div className="col-12">
-
-            </div>
-          </div> */}
           {this.orderListWrapper_render()}
           {this.loadMoreOrder_render()}
         </div>

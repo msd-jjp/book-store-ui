@@ -220,8 +220,8 @@ class CartComponent extends BaseComponent<IProps, IState> {
 
                       book.price = book.price || 0;
 
-                      const book_type: any = book.type;
-                      const book_type_str: BOOK_TYPES = book_type;
+                      // const book_type: any = book.type;
+                      // const book_type_str: BOOK_TYPES = book_type;
 
                       return (<Fragment key={index}>
 
@@ -254,7 +254,13 @@ class CartComponent extends BaseComponent<IProps, IState> {
                           </div>
 
                           <div className="item-type mr-3">
-                            {Localization.book_type_list[book_type_str]}
+                            {/* {Localization.book_type_list[book_type_str]} */}
+                            <img src={CmpUtility.getBookTypeIconUrl(book.type as BOOK_TYPES)}
+                              className="max-w-100"
+                              loading="lazy"
+                              title={Localization.book_type_list[book.type as BOOK_TYPES]}
+                              alt={Localization.book_type_list[book.type as BOOK_TYPES]}
+                            />
                           </div>
 
                           <div className="item-count-wrapper text-center mr-3">
