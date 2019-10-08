@@ -79,6 +79,7 @@
       height: calc(100% - 0.5rem - (13rem));
       overflow-y: scroll;
       // background-color: aliceblue;
+      background-color: #dddddd14;
 
       .audio-list {
         .audio-item {
@@ -102,6 +103,7 @@
       // height: 13rem + 2rem + 1rem + 1.5rem;
       height: 13rem;
       overflow: hidden;
+      background-color: #dddddd14;
 
       .waveform-container {
         padding: 0 0.5rem;
