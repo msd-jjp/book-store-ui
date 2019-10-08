@@ -1,8 +1,10 @@
 import React from 'react';
 import { Localization } from '../../../../config/localization/localization';
+import { CmpUtility } from '../../../_base/CmpUtility';
 
 export class LayoutMainNotFound extends React.PureComponent { // React.Component
     componentDidMount() {
+        CmpUtility.gotoTop();
         document.title = Localization.page_not_found;
     }
     componentWillUnmount() {
@@ -18,11 +20,6 @@ export class LayoutMainNotFound extends React.PureComponent { // React.Component
                     <div className="row">
                         <div className="col-12 text-center">
                             <h1 className="text-muted">{Localization.page_not_found}</h1>
-                            {/* <img src="/static/media/img/icon/empty-shopping-cart.svg"
-                                className="w-200px"
-                                alt={Localization.page_not_found}
-                                loading="lazy"
-                            /> */}
                             <figure>
                                 <img className="img-base"
                                     src="/static/media/img/icon/404-page.png"
