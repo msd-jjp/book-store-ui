@@ -671,11 +671,11 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                     </Modal.Header>
                     <Modal.Body>{Localization.msg.ui.your_collection_will_be_removed_continue}</Modal.Body>
                     <Modal.Footer className="border-top-0 pt-0">
-                        <button className="btn btn-light btn-sm" onClick={() => this.closeModal_removeCollection()}>
+                        <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_removeCollection()}>
                             {Localization.cancel}
                         </button>
                         <BtnLoader
-                            btnClassName="btn btn-danger btn-sm"
+                            btnClassName="btn btn-danger-- text-danger btn-sm text-uppercase min-w-70px"
                             loading={this.state.modal_removeCollections.loader}
                             onClick={() => this.removeCollection(this.collection_title_to_remove!)}
                             disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
@@ -983,11 +983,11 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                     </Modal.Header>
                     <Modal.Body>{Localization.msg.ui.your_collection_will_be_downloaded_continue}</Modal.Body>
                     <Modal.Footer className="border-top-0 pt-0">
-                        <button className="btn btn-light btn-sm" onClick={() => this.closeModal_downloadCollection()}>
+                        <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_downloadCollection()}>
                             {Localization.cancel}
                         </button>
                         <BtnLoader
-                            btnClassName="btn btn-system btn-sm"
+                            btnClassName="btn btn-system-- text-system btn-sm text-uppercase min-w-70px"
                             loading={this.state.modal_downloadCollections.loader}
                             onClick={() => this.downloadCollection(this.collection_title_to_download!)}
                         >

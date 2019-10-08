@@ -131,7 +131,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                         </div>
                     </Modal.Body>
                     <Modal.Footer className="pt-0 border-top-0">
-                        <button className="btn btn-light btn-sm" onClick={() => this.closeModal_appInfo()}>
+                        <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_appInfo()}>
                             {Localization.close}
                         </button>
                     </Modal.Footer>
@@ -156,10 +156,10 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                 <Modal show={this.state.modal_logout_show} onHide={() => this.closeModal_logout()} centered>
                     <Modal.Body>{Localization.sure_you_want_log_out}</Modal.Body>
                     <Modal.Footer className="pt-0 border-top-0">
-                        <button className="btn btn-warning btn-sm" onClick={() => this.logout()}>
+                        <button className="btn btn-warning-- text-warning btn-sm text-uppercase min-w-70px" onClick={() => this.logout()}>
                             {Localization.log_out}
                         </button>
-                        <button className="btn btn-light btn-sm" onClick={() => this.closeModal_logout()}>
+                        <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_logout()}>
                             {Localization.close}
                         </button>
                     </Modal.Footer>

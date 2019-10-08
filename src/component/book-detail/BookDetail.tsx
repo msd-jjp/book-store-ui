@@ -983,11 +983,11 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           </Modal.Header> */}
           <Modal.Body>{Localization.msg.ui.your_comment_will_be_removed_continue}</Modal.Body>
           <Modal.Footer className="border-top-0 pt-0">
-            <button className="btn btn-light btn-sm" onClick={() => this.closeModal_removeComment()}>
+            <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_removeComment()}>
               {Localization.close}
             </button>
             <BtnLoader
-              btnClassName="btn btn-danger btn-sm"
+              btnClassName="btn btn-danger-- text-danger btn-sm text-uppercase min-w-70px"
               loading={this.state.modal_removeComment.loader}
               onClick={() => this.removeCommentById(this.comment_id_to_remove!)}
             >
