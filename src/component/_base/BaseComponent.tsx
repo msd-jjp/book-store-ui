@@ -4,7 +4,7 @@ import { Localization } from '../../config/localization/localization';
 import { toast, ToastOptions, ToastContainerProps } from 'react-toastify';
 //
 import moment from 'moment';
-// import moment_jalaali from "moment-jalaali";
+import moment_jalaali from "moment-jalaali";
 import 'moment/locale/fa';
 import 'moment/locale/ar';
 import { Utility } from '../../asset/script/utility';
@@ -103,7 +103,7 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
     }
 
     translateErrorMsg(errorData: { [key: string]: any, msg: any }) {
-        if(errorData.msg_ui){
+        if (errorData.msg_ui) {
             return Localization.msg.ui[errorData.msg_ui];
         }
         if (errorData.msg === 'msg4') {
@@ -156,7 +156,7 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         return this.image_pre_url + '/' + imageId;
     }
 
-    getFromNowDate(timestamp: number): string {
+    protected getFromNowDate(timestamp: number): string {
         moment.locale(this.props.internationalization.flag);
         return moment.unix(timestamp).fromNow();
     }
@@ -166,6 +166,20 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         let date = moment_jalaali(jDate, 'jYYYY/jM/jD');
         return +date.format('x');
     } */
+
+    protected timestamp_to_fullFormat(timestamp: number): string {
+        if (this.props.internationalization.flag === 'fa') {
+            // moment_jalaali.locale('en');
+            moment_jalaali.loadPersian({ usePersianDigits: false });
+            return moment_jalaali(timestamp).format('jYYYY/jM/jD h:m A');
+
+        } else {
+            // moment_jalaali.locale('en');
+            // moment_jalaali.loadPersian({ usePersianDigits: false });
+            moment.locale('en');
+            return moment(timestamp).format('YYYY/M/D h:m A');
+        }
+    }
 
     isDeviceMobileOrTablet(): boolean {
         return Utility.mobileAndTabletcheck();
