@@ -7,7 +7,7 @@ import { Store2 } from '../../redux/store';
 import { action_set_library_data } from '../../redux/action/library';
 import { action_set_collections_data } from '../../redux/action/collection';
 
-export class FetchIntervalWorker extends BaseWorker {
+export class SyncWorker extends BaseWorker {
 
     protected _worker: Worker | undefined;
     private _libraryService = new LibraryService();

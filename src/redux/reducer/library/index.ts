@@ -3,7 +3,7 @@ import { ILibraryAction, ILibrary_schema } from "../../action/library/libraryAct
 import { LIBRARY_VIEW } from "../../../enum/Library";
 // import { LIBRARY_VIEW } from "../../../component/library/Library";
 
-let library_schema_reset = {
+const library_schema_reset: ILibrary_schema = {
     view: LIBRARY_VIEW.grid,
     data: [],
     data_version: undefined,

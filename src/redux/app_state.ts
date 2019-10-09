@@ -5,6 +5,7 @@ import { NETWORK_STATUS } from '../enum/NetworkStatus';
 import { ICartItems } from './action/cart/cartAction';
 import { ILibrary_schema } from './action/library/libraryAction';
 import { ICollection_schema } from './action/collection/collectionAction';
+import { ISync_schema } from './action/sync/syncAction';
 
 export interface redux_state {
     logged_in_user: IUser | null;
@@ -15,4 +16,5 @@ export interface redux_state {
     cart: ICartItems;
     library: ILibrary_schema;
     collection: ICollection_schema;
+    sync: ISync_schema;
 }
