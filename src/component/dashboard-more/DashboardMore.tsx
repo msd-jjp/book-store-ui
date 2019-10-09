@@ -8,9 +8,7 @@ import { TInternationalization } from '../../config/setup';
 import { action_change_app_flag } from '../../redux/action/internationalization';
 import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
-// import { NavLink } from 'react-router-dom';
 import { action_remove_token } from '../../redux/action/token';
-
 import { History } from 'history';
 import { action_remove_authentication } from '../../redux/action/authentication';
 import { Modal } from 'react-bootstrap';
@@ -18,9 +16,11 @@ import { ICartItems } from '../../redux/action/cart/cartAction';
 import { action_clear_cart } from '../../redux/action/cart';
 import { action_clear_library } from '../../redux/action/library';
 import { action_clear_collections } from '../../redux/action/collection';
-import moment_jalaali from "moment-jalaali";
-import moment from 'moment';
 import { CmpUtility } from '../_base/CmpUtility';
+import { action_reset_sync } from '../../redux/action/sync';
+import { ISync_schema } from '../../redux/action/sync/syncAction';
+import { SyncWorker } from '../../webworker/sync-worker/SyncWorker';
+import { IToken } from '../../model/model.token';
 
 interface IProps {
     logged_in_user?: IUser | null;
@@ -34,27 +34,36 @@ interface IProps {
     clear_cart: () => any;
     clear_library: () => any;
     clear_collections: () => any;
+    sync: ISync_schema;
+    reset_sync: () => any;
+    token: IToken;
 }
 
 interface IState {
     modal_appInfo_show: boolean;
     modal_logout_show: boolean;
-    sync: {
-        syncing: boolean;
-        lastSynced: number | undefined;
-    };
+    // sync: {
+    //     syncing: boolean;
+    //     lastSynced: number | undefined;
+    // };
 }
 
 class DashboardMoreComponent extends BaseComponent<IProps, IState> {
     state = {
         modal_appInfo_show: false,
         modal_logout_show: false,
-        sync: {
-            syncing: false,
-            lastSynced: 1569323258125
-        }
+        // sync: {
+        //     syncing: false,
+        //     lastSynced: 1569323258125
+        // }
     }
-    change(lang: string) {
+    private _syncWorker = new SyncWorker(this.props.token);
+
+    componentWillUnmount() {
+        this._syncWorker.terminate();
+    }
+
+    private change(lang: string) {
         // debugger;
         if (lang === 'fa') {
             // if (!this.props.internationalization.rtl) {
@@ -87,7 +96,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         }
 
     }
-    logout() {
+    private logout() {
         // debugger;
         this.props.do_logout();
         this.props.remove_token();
@@ -95,6 +104,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.clear_cart();
         this.props.clear_library();
         this.props.clear_collections();
+        this.props.reset_sync();
         this.props.history.push('/login');
     }
 
@@ -160,7 +170,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             {Localization.log_out}
                         </button>
                         <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_logout()}>
-                            {Localization.close}
+                            {Localization.cancel}
                         </button>
                     </Modal.Footer>
                 </Modal>
@@ -169,38 +179,19 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
     }
     //#endregion
 
-    gotoCart() {
+    private gotoCart() {
         this.props.history.push('/cart');
     }
 
-    gotoProfile() {
+    private gotoProfile() {
         this.props.history.push('/profile');
     }
 
-    convert_timestamp_to_format(timestamp: number) {
-        if (this.props.internationalization.flag === 'fa') {
-            // moment_jalaali.locale('en');
-            moment_jalaali.loadPersian({ usePersianDigits: false });
-            return moment_jalaali(timestamp).format('jYYYY/jM/jD h:m A');
-
-        } else {
-            // moment_jalaali.locale('en');
-            // moment_jalaali.loadPersian({ usePersianDigits: false });
-            moment.locale('en');
-            return moment(timestamp).format('YYYY/M/D h:m A');
-        }
+    private async onSync_clicked() {
+        this._syncWorker.postMessage('start_visible');
     }
 
-    async onSync_clicked() {
-        this.setState({ sync: { ...this.state.sync, syncing: true } });
-        await this.waitOnMe(2000);
-        // const date = new Date().toLocaleString();
-        // const date = this.convert_timestamp_to_format(new Date().getTime());
-        const date = new Date().getTime();
-        this.setState({ sync: { ...this.state.sync, syncing: false, lastSynced: date } });
-    }
-
-    gotoPurchaseHistory() {
+    private gotoPurchaseHistory() {
         this.props.history.push('/purchase-history');
     }
 
@@ -214,21 +205,21 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             onClick={() => this.onSync_clicked()}
                         >
                             <div className="icon-wrapper mr-3">
-                                <i className={"fa fa-refresh " + (this.state.sync.syncing ? 'fa-spin' : '')}></i>
+                                <i className={"fa fa-refresh " + (this.props.sync.isSyncing_visible ? 'fa-spin' : '')}></i>
                             </div>
                             <div className="wrapper d-inline">
                                 <span className="text">{Localization.sync}</span>
                                 <span className="sub-text d-block text-muted">
                                     {/* '06/12/2019, 11:25 AM' */}
                                     {
-                                        this.state.sync.syncing ?
+                                        this.props.sync.isSyncing_visible ?
                                             Localization.syncing_with_dots :
                                             (
-                                                this.state.sync.lastSynced ?
+                                                this.props.sync.syncDate ?
                                                     (
                                                         Localization.last_synced_on +
                                                         ' ' +
-                                                        this.convert_timestamp_to_format(this.state.sync.lastSynced!)
+                                                        this.timestamp_to_fullFormat(this.props.sync.syncDate!)
                                                     ) :
                                                     ''
                                             )
@@ -344,6 +335,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
         clear_cart: () => dispatch(action_clear_cart()),
         clear_library: () => dispatch(action_clear_library()),
         clear_collections: () => dispatch(action_clear_collections()),
+        reset_sync: () => dispatch(action_reset_sync()),
     }
 }
 
@@ -351,7 +343,9 @@ const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
         internationalization: state.internationalization,
-        cart: state.cart
+        cart: state.cart,
+        sync: state.sync,
+        token: state.token
     }
 }
 

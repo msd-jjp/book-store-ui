@@ -7,3 +7,10 @@ export function action_set_sync(data: ISync_schema): ISyncAction {
         payload: data
     }
 }
+
+export function action_reset_sync(): ISyncAction {
+    return {
+        type: EACTIONS.RESET_SYNC,
+        payload: undefined
+    }
+}

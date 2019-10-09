@@ -1,7 +1,8 @@
 
-export interface IReceiveData {
+// export interface IReceiveData {
 
-}
+// }
+export type IReceiveData = 'start' |'start_visible' | 'stop'| 'check';
 
 export interface ISendData {
 

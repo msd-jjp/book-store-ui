@@ -11,7 +11,9 @@ const sync_reset: ISync_schema = {
 export function reducer(state: ISync_schema, action: ISyncAction): ISync_schema {
     switch (action.type) {
         case EACTIONS.SET_SYNC:
-            return action.payload;
+            return action.payload as ISync_schema;
+        case EACTIONS.RESET_SYNC:
+            return sync_reset;
     }
     if (state) { return state; }
     return sync_reset;
