@@ -2,7 +2,7 @@ import React from 'react';
 // import { NavLink } from 'react-router-dom';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { action_user_logged_out } from '../../../../redux/action/user';
+// import { action_user_logged_out } from '../../../../redux/action/user';
 import { redux_state } from '../../../../redux/app_state';
 import { Localization } from '../../../../config/localization/localization';
 import { History } from "history";
@@ -148,7 +148,7 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
-        do_logout: () => dispatch(action_user_logged_out()),
+        // do_logout: () => dispatch(action_user_logged_out()),
         // set_network_status: (network_status: NETWORK_STATUS) => dispatch(action_set_network_status(network_status)),
     }
 }

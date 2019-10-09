@@ -97,4 +97,12 @@ export abstract class CmpUtility {
         return (iconPath + iconFileName + postFix + '.svg');
     }
 
+    static waitOnMe(timer: number = 500): Promise<boolean> {
+        return new Promise((res, rej) => {
+            setTimeout(function () {
+                res(true);
+            }, timer);
+        });
+    }
+
 }
