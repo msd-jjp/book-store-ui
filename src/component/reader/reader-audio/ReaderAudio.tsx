@@ -20,7 +20,9 @@ import { Dropdown } from "react-bootstrap";
 import RcSlider from 'rc-slider';
 //
 // import * as WaveSurferAll from 'wavesurfer.js';
+//
 // import WaveSurfer from 'wavesurfer.js';
+//
 // import ss from'wavesurfer.js/dist/wavesurfer';
 
 // const WaveSurfer = require('wavesurfer.min.js');
@@ -29,7 +31,9 @@ import RcSlider from 'rc-slider';
 // import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 // import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline';
 // const WaveSurfer = WaveSurferAll.default;
+//
 const WaveSurfer = require('wavesurfer.js/dist/wavesurfer');
+//
 // import WaveSurfer from 'wavesurfer.js/src/wavesurfer';
 // const WaveSurfer = require('wavesurfer.js/src/wavesurfer');
 const TimelinePlugin = require('wavesurfer.js/dist/plugin/wavesurfer.timeline');
