@@ -5,7 +5,7 @@ const sync_reset: ISync_schema = {
     syncDate: undefined,
     isSyncing_hidden: false,
     isSyncing_visible: false,
-    errorText: undefined
+    errorList: []
 };
 
 export function reducer(state: ISync_schema, action: ISyncAction): ISync_schema {

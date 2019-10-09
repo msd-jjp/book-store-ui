@@ -7,9 +7,10 @@ import { Store2 } from '../../redux/store';
 import { action_set_sync } from '../../redux/action/sync';
 
 import { CmpUtility } from '../../component/_base/CmpUtility';
+import { AxiosError } from 'axios';
 interface ISyncStatusItem {
     inProgress: boolean;
-    error: any;
+    error: AxiosError | undefined;
 }
 
 interface ISyncStatus {
@@ -32,7 +33,7 @@ export class SyncWorker extends BaseWorker {
         this._collectionService.setToken(token);
         // this.init();
 
-        this.reset_syncStatus(false);
+        this.reset_syncStatus(/* false */);
     }
 
     protected init() {
@@ -60,13 +61,13 @@ export class SyncWorker extends BaseWorker {
     onmessage() { }
 
     private async startSyncing(visible = false) {
-        this.reset_syncStatus(true);
+        this.reset_syncStatus();
 
         Store2.dispatch(action_set_sync({
             ...Store2.getState().sync,
             isSyncing_hidden: true,
             isSyncing_visible: visible,
-            errorText: undefined
+            errorList: []
         }));
 
         this.isAccessChanged();
@@ -74,18 +75,18 @@ export class SyncWorker extends BaseWorker {
         this.whichComment_isRemoved();
     }
 
-    reset_syncStatus(inProgress: boolean) {
+    reset_syncStatus(/* inProgress: boolean */) {
         this._syncStatus = {
             isAccessChanged: {
-                inProgress: inProgress,
+                inProgress: false, // inProgress,
                 error: undefined
             },
             whichBook_isRemoved: {
-                inProgress: inProgress,
+                inProgress: false, // inProgress,
                 error: undefined
             },
             whichComment_isRemoved: {
-                inProgress: inProgress,
+                inProgress: false, // inProgress,
                 error: undefined
             },
         };
@@ -94,13 +95,27 @@ export class SyncWorker extends BaseWorker {
     afterActionFinished() {
         const inProgressList = Object.keys(this._syncStatus).filter((k) => (this._syncStatus as any)[k].inProgress === true);
         if (!inProgressList.length) {
-            debugger;
-            Store2.dispatch(action_set_sync({
-                syncDate: new Date().getTime(),
-                isSyncing_hidden: false,
-                isSyncing_visible: false,
-                errorText: undefined
-            }));
+            const errorList_key = Object.keys(this._syncStatus).filter((k) => (this._syncStatus as any)[k].error !== undefined);
+            const errorList = errorList_key.map(k => (this._syncStatus as any)[k].error);
+            // debugger;
+            if (errorList.length) {
+                // debugger;
+                // const _errorList: any = errorList;
+                Store2.dispatch(action_set_sync({
+                    // syncDate: new Date().getTime(),
+                    ...Store2.getState().sync,
+                    isSyncing_hidden: false,
+                    isSyncing_visible: false,
+                    errorList: errorList
+                }));
+            } else {
+                Store2.dispatch(action_set_sync({
+                    syncDate: new Date().getTime(),
+                    isSyncing_hidden: false,
+                    isSyncing_visible: false,
+                    errorList: []
+                }));
+            }
         }
     }
 
@@ -111,9 +126,15 @@ export class SyncWorker extends BaseWorker {
      * check if user access updated?
      */
     async isAccessChanged() {
-        await CmpUtility.waitOnMe(1000);
+        this._syncStatus.isAccessChanged.inProgress = true;
+        this._syncStatus.isAccessChanged.error = undefined;
+        // await CmpUtility.waitOnMe(1000);
+        await this._libraryService.getAll().catch((e: AxiosError) => {
+            this._syncStatus.isAccessChanged.error = e;
+        })
         this._syncStatus.isAccessChanged.inProgress = false;
-        console.log('isAccessChanged compeleted.');
+        // this._syncStatus.isAccessChanged.error = undefined;
+        // console.log('isAccessChanged compeleted.');
         this.afterActionFinished();
     }
 
@@ -121,8 +142,10 @@ export class SyncWorker extends BaseWorker {
      * send all existing books id list, and wait for list of id that is removed.
      */
     async whichBook_isRemoved() {
+        this._syncStatus.whichBook_isRemoved.inProgress = true;
         await CmpUtility.waitOnMe(1500);
         this._syncStatus.whichBook_isRemoved.inProgress = false;
+        this._syncStatus.whichBook_isRemoved.error = undefined;
         console.log('whichBook_isRemoved compeleted.');
         this.afterActionFinished();
     }
@@ -131,8 +154,10 @@ export class SyncWorker extends BaseWorker {
      * send all existing comments id list, and wait for list of id that is removed.
      */
     async whichComment_isRemoved() {
+        this._syncStatus.whichComment_isRemoved.inProgress = true;
         await CmpUtility.waitOnMe(200);
         this._syncStatus.whichComment_isRemoved.inProgress = false;
+        this._syncStatus.whichComment_isRemoved.error = undefined;
         console.log('whichComment_isRemoved compeleted.');
         this.afterActionFinished();
     }

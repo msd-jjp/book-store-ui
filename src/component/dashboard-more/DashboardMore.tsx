@@ -195,6 +195,34 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.history.push('/purchase-history');
     }
 
+    private sync_subText_render() {
+        if (this.props.sync.isSyncing_visible) {
+            return Localization.syncing_with_dots;
+        } else if (this.props.sync.errorList.length) {
+            return this.handleError({ error: this.props.sync.errorList[0].response, notify: false }).body;
+        } else if (this.props.sync.syncDate) {
+            return Localization.last_synced_on + ' ' + this.timestamp_to_fullFormat(this.props.sync.syncDate!);
+        }
+        return;
+        // return (
+        //     <>
+        //         {
+        //             this.props.sync.isSyncing_visible ?
+        //                 Localization.syncing_with_dots :
+        //                 (
+        //                     this.props.sync.syncDate ?
+        //                         (
+        //                             Localization.last_synced_on +
+        //                             ' ' +
+        //                             this.timestamp_to_fullFormat(this.props.sync.syncDate!)
+        //                         ) :
+        //                         ''
+        //                 )
+        //         }
+        //     </>
+        // )
+    }
+
     render() {
 
         return (
@@ -210,20 +238,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <div className="wrapper d-inline">
                                 <span className="text">{Localization.sync}</span>
                                 <span className="sub-text d-block text-muted">
-                                    {/* '06/12/2019, 11:25 AM' */}
-                                    {
-                                        this.props.sync.isSyncing_visible ?
-                                            Localization.syncing_with_dots :
-                                            (
-                                                this.props.sync.syncDate ?
-                                                    (
-                                                        Localization.last_synced_on +
-                                                        ' ' +
-                                                        this.timestamp_to_fullFormat(this.props.sync.syncDate!)
-                                                    ) :
-                                                    ''
-                                            )
-                                    }
+                                    {this.sync_subText_render()}
                                 </span>
                             </div>
                         </li>

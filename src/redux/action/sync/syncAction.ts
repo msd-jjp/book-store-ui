@@ -1,5 +1,6 @@
 import { Action } from "redux";
 import { EACTIONS } from "../../ActionEnum";
+import { AxiosError } from "axios";
 
 export interface ISync_schema {
     /** latest sync date*/
@@ -9,7 +10,7 @@ export interface ISync_schema {
     /** true if user clicked syncing*/
     isSyncing_visible: boolean;
     /** if syncing occurs an error*/
-    errorText: string | undefined;
+    errorList: AxiosError[];
 }
 
 export interface ISyncAction extends Action<EACTIONS> {
