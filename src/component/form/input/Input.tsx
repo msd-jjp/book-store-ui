@@ -22,16 +22,6 @@ interface InputProps {
     className?: string;
     onKeyUp?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
-/* interface IProps_input extends InputProps {
-    type?: 'text' | 'password';
-    elRef?: (elName: HTMLInputElement) => void;
-}
-interface IProps_textarea extends InputProps {
-    is_textarea?: boolean;
-    textarea_rows?: number;
-    elRef?: (elName: HTMLTextAreaElement) => void;
-}
-type IProps = IProps_input | IProps_textarea; */
 
 interface InputState {
     invalid?: boolean;
@@ -57,9 +47,6 @@ class Input extends React.Component<InputProps, InputState> {
         this.setValidate(this.props.defaultValue);
     }
     componentWillReceiveProps(props: InputProps) {
-        // this.setValidate(props.defaultValue);
-
-        // if (this.handleValidate(props.defaultValue) !== this.handleValidate(this.props.defaultValue)) {
         if (
             (this.handleValidate(props.defaultValue) !== !this.state.invalid)
             &&
@@ -68,21 +55,15 @@ class Input extends React.Component<InputProps, InputState> {
             this.setValidate(props.defaultValue);
             this.props.onChange && this.props.onChange(props.defaultValue, this.handleValidate(props.defaultValue));
         }
-
-        /* if (this.handleValidate(props.defaultValue) !== this.handleValidate(this.props.defaultValue)) {
-            this.setValidate(props.defaultValue);
-        }
-        if (props.defaultValue !== this.props.defaultValue) {
-            this.props.onChange(props.defaultValue, this.handleValidate(props.defaultValue));
-        } */
     }
     isEmpty(val: any): boolean {
         if (val || val === 0) { return false }
         return true;
     }
     handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-        this.setValidate(event.target.value);
-        this.props.onChange && this.props.onChange(event.target.value, this.handleValidate(event.target.value));
+        const e_target_value = event.target.value;
+        this.setValidate(e_target_value);
+        this.props.onChange && this.props.onChange(e_target_value, this.handleValidate(e_target_value));
     }
     onBlur() {
         this.setState({ ...this.state, touched: true });
