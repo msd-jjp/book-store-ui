@@ -164,7 +164,10 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         return (
             <>
                 <Modal show={this.state.modal_logout_show} onHide={() => this.closeModal_logout()} centered>
-                    <Modal.Body>{Localization.sure_you_want_log_out}</Modal.Body>
+                    <Modal.Body>
+                        <p className="mb-1">{Localization.msg.ui.logout_erase_user_data_warning}</p>
+                        <p className="mb-0">{Localization.sure_you_want_log_out}</p>
+                    </Modal.Body>
                     <Modal.Footer className="pt-0 border-top-0">
                         <button className="btn btn-warning-- text-warning btn-sm text-uppercase min-w-70px" onClick={() => this.logout()}>
                             {Localization.log_out}
@@ -199,7 +202,13 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         if (this.props.sync.isSyncing_visible) {
             return Localization.syncing_with_dots;
         } else if (this.props.sync.errorList.length) {
-            return this.handleError({ error: this.props.sync.errorList[0].response, notify: false }).body;
+            return (
+                <>
+                    <span>{Localization.msg.ui.sync_error}</span>&nbsp;
+                    <small>({Localization.retry}&nbsp;<i className="fa fa-refresh"></i>)</small>
+                </>
+            );
+            // return this.handleError({ error: this.props.sync.errorList[0].response, notify: false }).body;
         } else if (this.props.sync.syncDate) {
             return Localization.last_synced_on + ' ' + this.timestamp_to_fullFormat(this.props.sync.syncDate!);
         }
