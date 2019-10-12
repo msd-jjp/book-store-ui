@@ -13,6 +13,7 @@ import { TInternationalization, Setup } from "../../config/setup";
 
 import { History } from "history";
 import { AppRegex } from "../../config/regex";
+import { FixNumber } from "../form/fix-number/FixNumber";
 
 type TInputType = 'password' | 'code' | 'mobile' | 'confirmPassword';
 enum FORGOT_PASSWORD_STEP {
@@ -178,7 +179,7 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
           </h3>
           <div className="account-form">
             <div className="input-wrapper__">
-              <Input
+              <FixNumber
                 defaultValue={this.state.mobile.value}
                 onChange={(val, isValid) => {
                   this.handleInputChange(val, isValid, "mobile");
@@ -224,7 +225,7 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
           </h3>
           <div className="account-form">
             <div className="input-wrapper">
-              <Input
+              <FixNumber
                 key={'forgot-password_code'}
                 defaultValue={this.state.code.value}
                 onChange={(val, isValid) => {

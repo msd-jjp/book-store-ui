@@ -15,6 +15,7 @@ import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { Localization } from '../../config/localization/localization';
 
 import { History } from 'history';
+import { FixNumber } from '../form/fix-number/FixNumber';
 
 enum REGISTER_STEP {
     submit_mobile = 'submit_mobile',
@@ -183,7 +184,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                     <h3 className="desc mt-4">{Localization.register_your_mobile_number}</h3>
                     <div className="account-form">
                         <div className="input-wrapper__">
-                            <Input
+                            <FixNumber
                                 defaultValue={this.state.mobile.value}
                                 onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'mobile') }}
                                 pattern={AppRegex.mobile}
@@ -303,7 +304,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
 
                     <div className="account-form">
                         <div className="input-wrapper__">
-                            <Input
+                            <FixNumber
                                 key={'register_code'}
                                 defaultValue={this.state.code.value}
                                 onChange={(val, isValid) => { this.handleInputChange(val, isValid, 'code') }}
