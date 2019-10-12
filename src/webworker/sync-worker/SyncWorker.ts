@@ -8,6 +8,7 @@ import { action_set_sync } from '../../redux/action/sync';
 
 import { CmpUtility } from '../../component/_base/CmpUtility';
 import { AxiosError } from 'axios';
+import { OrderService } from '../../service/service.order';
 interface ISyncStatusItem {
     inProgress: boolean;
     error: AxiosError | undefined;
@@ -26,6 +27,7 @@ export class SyncWorker extends BaseWorker {
     private _syncStatus!: ISyncStatus;
     private _libraryService = new LibraryService();
     private _collectionService = new CollectionService();
+    private _orderService = new OrderService();
 
     constructor(token: IToken) {
         super();
@@ -129,9 +131,9 @@ export class SyncWorker extends BaseWorker {
         this._syncStatus.isAccessChanged.inProgress = true;
         this._syncStatus.isAccessChanged.error = undefined;
         // await CmpUtility.waitOnMe(1000);
-        await this._libraryService.getAll().catch((e: AxiosError) => {
+        await this._collectionService.getAll().catch((e: AxiosError) => { // _libraryService
             this._syncStatus.isAccessChanged.error = e;
-        })
+        });
         this._syncStatus.isAccessChanged.inProgress = false;
         // this._syncStatus.isAccessChanged.error = undefined;
         // console.log('isAccessChanged compeleted.');
@@ -143,10 +145,13 @@ export class SyncWorker extends BaseWorker {
      */
     async whichBook_isRemoved() {
         this._syncStatus.whichBook_isRemoved.inProgress = true;
-        await CmpUtility.waitOnMe(1500);
-        this._syncStatus.whichBook_isRemoved.inProgress = false;
         this._syncStatus.whichBook_isRemoved.error = undefined;
-        console.log('whichBook_isRemoved compeleted.');
+        // await CmpUtility.waitOnMe(1500);
+        await this._orderService.search(10, 0).catch((e: AxiosError) => {
+            this._syncStatus.whichBook_isRemoved.error = e;
+        });
+        this._syncStatus.whichBook_isRemoved.inProgress = false;
+        // console.log('whichBook_isRemoved compeleted.');
         this.afterActionFinished();
     }
 
