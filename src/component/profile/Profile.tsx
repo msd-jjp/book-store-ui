@@ -18,6 +18,7 @@ import { AppRegex } from "../../config/regex";
 import { UploadService } from "../../service/service.upload";
 import { action_user_logged_in } from "../../redux/action/user";
 import { IPerson } from "../../model/model.person";
+import { FixNumber } from "../form/fix-number/FixNumber";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -370,7 +371,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
                     />
                   </div>
                   <div className="col-md-6">
-                    <Input
+                    <FixNumber
                       onChange={(value, isValid) => this.handleInputChange(value, isValid, 'email')}
                       label={Localization.email}
                       placeholder={Localization.email}
@@ -380,7 +381,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
                     />
                   </div>
                   <div className="col-md-6">
-                    <Input
+                    <FixNumber
                       onChange={(value, isValid) => this.handleInputChange(value, isValid, "phone")}
                       label={Localization.phone}
                       placeholder={Localization.phone}
