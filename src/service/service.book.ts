@@ -19,7 +19,7 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.get(`/books/${bookId}`);
     }
 
-    bookByWriter(data: { book_id: string, writer: string }): Promise<IAPI_ResponseList<IBook>> {
+    bookByWriter(data: { book_id: string, person_id: string }): Promise<IAPI_ResponseList<IBook>> { // writer
         return this.search({ limit: 10, offset: 0, filter: data });
     }
 

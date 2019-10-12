@@ -181,7 +181,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, byWriterBookError: undefined });
 
     let res = await this._bookService
-      .bookByWriter({ writer: person_id, book_id: book_id })
+      .bookByWriter({ person_id: person_id, book_id: book_id }) // writer
       .catch(error => {
         // this.handleError({ error: error.response });
         let errorMsg = this.handleError({

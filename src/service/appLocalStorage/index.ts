@@ -209,7 +209,7 @@ export class appLocalStorage {
         } else if (filter.genre) {
             return book.genre.includes(filter.genre);
 
-        } else if (filter.writer) { // todo: && filter.book_id
+        } else if (filter.person_id) { // todo: && filter.book_id // writer
             if (filter.book_id) {
                 if (book.id === filter.book_id) {
                     return false;
@@ -218,7 +218,7 @@ export class appLocalStorage {
             let hasThisWriter = false;
             let writers = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
             for (let i = 0; i < writers.length; i++) {
-                if (writers[i].person.id === filter.writer) {
+                if (writers[i].person.id === filter.person_id) { // writer
                     hasThisWriter = true;
                     break;
                 }
