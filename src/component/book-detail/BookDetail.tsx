@@ -133,7 +133,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, pageLoader: true }); // set in init state too.
 
     let res = await this._bookService.get(bookId).catch(error => {
-      const { body: errorText } = this.handleError({ error: error.response });
+      const { body: errorText } = this.handleError({ error: error.response, toastOptions: { toastId: 'fetchBook_error' } });
 
       this.setState({ ...this.state, pageLoader: false, errorText });
     });
@@ -165,7 +165,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       offset: this.state.comment_actions.loadComments.pager_offset
     }).catch(error => {
       // let res = await this._commentService.book_comments(bookId).catch(error => {
-      const { body: commentErrorText } = this.handleError({ error: error.response });
+      const { body: commentErrorText } = this.handleError({
+        error: error.response,
+        toastOptions: { toastId: 'fetchBook_comments_error' }
+      });
 
       this.setState({
         ...this.state,
@@ -260,7 +263,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 // fractions={2}
                 direction={this.props.internationalization.rtl ? 'rtl' : 'ltr'}
                 initialRating={book.rate}
-                onChange={(newRate) => this.bookRateChange(newRate, book.id)}
+                // onChange={(newRate) => this.bookRateChange(newRate, book.id)}
+                onClick={(newRate) => this.bookRateChange(newRate, book.id)}
                 readonly={this.props.network_status === NETWORK_STATUS.OFFLINE}
               />
               {
@@ -1033,23 +1037,23 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <div className="all-review mx-3_ my-3__ py-2-- py-1 px-1 " onClick={() => this.loadMoreComments()}>
             <div className="row-- d-flex justify-content-between align-items-center">
               {/* <div className="col-10"> */}
-                <h6 className="font-weight-bold text-capitalize mb-0">
-                  {/* {Localization.formatString(Localization.see_all_n_reviews, 127)} */}
-                  {Localization.more_reviews}
-                </h6>
+              <h6 className="font-weight-bold text-capitalize mb-0">
+                {/* {Localization.formatString(Localization.see_all_n_reviews, 127)} */}
+                {Localization.more_reviews}
+              </h6>
               {/* </div> */}
               {/* <div className="col-2"> */}
-                <i className={
-                  "fa fa-angle-down__ fa-2x book-detail-bordered-box-icon-- " +
-                  (
-                    this.state.comment_actions.loadComments.btnLoader
-                      ?
-                      'fa-spinner fa-spin'
-                      :
-                      'fa-angle-down'
-                  )
-                }
-                ></i>
+              <i className={
+                "fa fa-angle-down__ fa-2x book-detail-bordered-box-icon-- " +
+                (
+                  this.state.comment_actions.loadComments.btnLoader
+                    ?
+                    'fa-spinner fa-spin'
+                    :
+                    'fa-angle-down'
+                )
+              }
+              ></i>
               {/* </div> */}
             </div>
           </div>
@@ -1266,6 +1270,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
 
   async bookRateChange(newRate: number, book_id: string) {
+    // debugger;
     let res = await this._rateService.add(book_id, newRate).catch(error => {
       this.handleError({ error: error.response });
     });
