@@ -26,6 +26,8 @@ export const en = {
             file_could_not_be_uploaded: 'the file could not be uploaded.',
             one_img_upload_allowed_remove_existing_one: "one img upload allowed, remove existing one",
             login_again: 'login again',
+            sync_error: 'error occured while syncing',
+            logout_erase_user_data_warning: 'log out will erase all user information from this device.',
         },
         back: {
             user_already_exists: 'user already exists',

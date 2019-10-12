@@ -26,6 +26,8 @@ export const ar = {
             file_could_not_be_uploaded: 'فایل قابل آپلود نیست.',
             one_img_upload_allowed_remove_existing_one: "تنها می توانید یک تصویر بارگذاری کنید لطفا عکس فعلی را حذف کنید.",
             login_again: 'مجددا وارد شوید',
+            sync_error: 'هنگام همگام سازی خطایی روی داد',
+            logout_erase_user_data_warning: 'با خروج از برنامه، همه اطلاعات این کاربر، از این دستگاه حذف می شود.',
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',
