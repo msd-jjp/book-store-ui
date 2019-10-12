@@ -412,24 +412,17 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                   className="item"
                   onClick={() => this.gotoBookDetail(book.id)}
                 >
-                  <div className="img-container">
-                    <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="" />
+                  <div className="img-scaffolding-container">
+                    <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
 
                     <img src={CmpUtility.getBook_firstImg(book)}
                       alt="book"
-                      className="book-img center-el-in-box"
+                      className="main-img center-el-in-box"
                       onError={e => CmpUtility.bookImageOnError(e)}
                       loading="lazy"
                     />
                   </div>
-                  {/* <img
-                    src={
-                      (book.images && this.getImageUrl(book.images[0])) ||
-                      this.defaultBookImagePath
-                    }
-                    alt="book"
-                    onError={e => this.bookImageOnError(e)}
-                  /> */}
+
                   <span className="item-number">{bookIndex}</span>
                 </div>
               ))}
@@ -458,17 +451,10 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
           >
             {list.map((_no: number, bookIndex) => (
               <div key={bookIndex} className="item">
-                <div className="img-container">
-                  <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="" />
-
-                  {/* <img src={CmpUtility.getBook_firstImg(book)}
-                      alt="book"
-                      className="book-img center-el-in-box"
-                      onError={e => CmpUtility.bookImageOnError(e)}
-                    /> */}
+                <div className="img-scaffolding-container">
+                  <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
                 </div>
-                {/* <img src={this.defaultBookImagePath} alt="book" /> */}
-                <span className="item-loader-wrapper">
+                <span className="item-loader-wrapper center-el-in-box">
                   <div className="spinner-grow item-loader">
                     <span className="sr-only">{Localization.loading_with_dots}</span>
                   </div>
@@ -487,17 +473,19 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         <div className="app-carousel app-carousel-error" key="app-carousel-error">
           <Slider {...this.sliderSetting}>
             <div className="item">
-              <img src={this.defaultBookImagePath} alt="" />
-            </div>
-          </Slider>
-          <span className="item-error-wrapper">
-            <div className="item-error">
-              <div className="mb-2">{errorMsg}</div>
-              <div onClick={() => onClick()} className="cursor-pointer">
-                {Localization.retry} <i className="fa fa-refresh"></i>
+              <div className="img-scaffolding-container bg-transparent">
+                <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
               </div>
             </div>
-          </span>
+          </Slider>
+          <div className="center-el-in-box text-center">
+            {/* <div className="item-error--"> */}
+            <div className="mb-2">{errorMsg}</div>
+            <div onClick={() => onClick()} className="cursor-pointer">
+              {Localization.retry} <i className="fa fa-refresh"></i>
+            </div>
+            {/* </div> */}
+          </div>
         </div>
       </>
     );
