@@ -5,7 +5,7 @@ import loki, {
 import { IBook } from '../../model/model.book';
 import { IComment } from '../../model/model.comment';
 import { AxiosResponse } from 'axios';
-import { BOOK_ROLES } from '../../enum/Book';
+// import { BOOK_ROLES } from '../../enum/Book';
 import { ParseApi } from './ParseApi';
 
 type TCollectionName = 'clc_book' | 'clc_comment';
@@ -216,9 +216,15 @@ export class appLocalStorage {
                 }
             }
             let hasThisWriter = false;
-            let writers = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
+            /* let writers = book.roles.filter(r => r.role === BOOK_ROLES.Writer);
             for (let i = 0; i < writers.length; i++) {
                 if (writers[i].person.id === filter.writer) { // writer || person_id
+                    hasThisWriter = true;
+                    break;
+                }
+            } */
+            for (let i = 0; i < book.roles.length; i++) {
+                if (book.roles[i].person.id === filter.writer) { // writer || person_id
                     hasThisWriter = true;
                     break;
                 }
