@@ -311,23 +311,25 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <h5 className="text-uppercase">{Localization.about_this_item}</h5>
 
           {
-            (book.description || (writerList && writerList.length && writerList[0].person.bio)) &&
+            (book.description || (writerList && writerList.length && writerList[0].person.bio)) ?
 
-            <div className="book-detail-bordered-box py-2 px-3 border-bottom-0">
-              {/* <h5 className="font-weight-bold text-uppercase">{Localization.description}</h5> */}
-              <h5 className="font-weight-bold text-uppercase">{Localization.product_description}</h5>
-              <p className="font-weight-bold overflow-hidden white-space-pre-line">{book.description}</p>
+              <div className="book-detail-bordered-box py-2 px-3 border-bottom-0">
+                {/* <h5 className="font-weight-bold text-uppercase">{Localization.description}</h5> */}
+                <h5 className="font-weight-bold text-uppercase">{Localization.product_description}</h5>
+                <p className="font-weight-bold overflow-hidden white-space-pre-line">{book.description}</p>
 
-              {
-                (writerList && writerList.length && writerList[0].person.bio)
-                  ?
-                  <>
-                    <h5 className="my-2 text-uppercase">{Localization.about_the_author}</h5>
-                    <p>{writerList[0].person.bio}</p>
-                  </>
-                  : ''
-              }
-            </div>
+                {
+                  (writerList && writerList.length && writerList[0].person.bio)
+                    ?
+                    <>
+                      <h5 className="my-2 text-uppercase">{Localization.about_the_author}</h5>
+                      <p>{writerList[0].person.bio}</p>
+                    </>
+                    : ''
+                }
+              </div>
+
+              : ''
           }
 
           <div className="book-detail-bordered-box border-top-0__ pb-2 pt-4 px-3 mb-3">
