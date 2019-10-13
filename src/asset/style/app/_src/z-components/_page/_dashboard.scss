@@ -174,10 +174,54 @@
 
 .booklistCategory-wrapper {
   .booklist-wrapper {
+    margin-top: 1.5rem;
+
     .title {
       text-transform: uppercase;
     }
-    .app-carousel {
+    .app-swiper {
+      .swiper-container {
+        .swiper-wrapper {
+          .swiper-slide {
+            overflow: hidden;
+          }
+          .swiper-slide {
+            .book-type-icon {
+              width: 2rem;
+              position: absolute;
+              bottom: 0.5rem;
+              body.rtl & {
+                right: 0.5rem;
+              }
+              body:not(.rtl) & {
+                left: 0.5rem;
+              }
+            }
+          }
+        }
+      }
+      &.app-swiper-preLoad {
+        .item-loader-wrapper {
+          .item-loader {
+            width: 15rem; // 3rem;
+            height: 15rem; // 3rem;
+            color: #eaeaea;
+            animation-duration: 3s;
+          }
+        }
+      }
+
+      &.app-swiper-error {
+        background-color: #f5f5f5;
+        position: relative;
+
+        .error-box {
+          z-index: 1;
+        }
+      }
+    }
+
+    .app-carousel_DELETE_ME {
       .slick-slider {
         overflow: hidden;
         .slick-list {

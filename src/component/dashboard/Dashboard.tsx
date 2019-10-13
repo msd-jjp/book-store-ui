@@ -28,6 +28,7 @@ import { calc_read_percent } from "../library/libraryViewTemplate";
 import { ILibrary } from "../../model/model.library";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
+import Swiper from "swiper";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -106,11 +107,42 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this._personService.setToken(this.props.token);
+    this._bookService.setToken(this.props.token);
   }
 
   componentDidMount() {
-    this._bookService.setToken(this.props.token);
+    this.init_swiper();
     this.fetchAllData();
+  }
+
+  private swiper_obj: Swiper[] | Swiper | undefined;
+  private init_swiper() {
+    this.swiper_obj = new Swiper('.swiper-container', {
+      spaceBetween: 8,
+      slidesPerView: 3,
+      freeMode: true,
+      on: {
+        tap: () => {
+          console.log('tap');
+          this.onSlideClicked();
+        }
+      }
+    });
+  }
+  private reinit_swiper() {
+    if (!this.swiper_obj) return;
+    if (Array.isArray(this.swiper_obj)) {
+      this.swiper_obj.forEach(sw => {
+        sw.update();
+      });
+    } else {
+      this.swiper_obj.update();
+    }
+  }
+  private swiperTaped = false;
+  onSlideClicked() {
+    this.swiperTaped = true;
+    setTimeout(() => { this.swiperTaped = false; }, 0);
   }
 
   fetchAllData() {
@@ -142,43 +174,44 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   gotoBookDetail(bookId: string) {
+    if (!this.swiperTaped) return;
     this.props.history.push(`book-detail/${bookId}`);
   }
 
   async fetchRecomendedBook() {
-    this.setState({ ...this.state, recomendedBookError: undefined });
+    this.setState({ ...this.state, recomendedBookError: undefined }, () => { this.reinit_swiper() });
 
     let res = await this._bookService.recomended().catch(error => {
       let errorMsg = this.handleError({ error: error.response, notify: false });
-      this.setState({ ...this.state, recomendedBookError: errorMsg.body });
+      this.setState({ ...this.state, recomendedBookError: errorMsg.body }, () => { this.reinit_swiper() });
     });
     // debugger;
     if (res) {
       if (res.data.result /* && res.data.result.length */) {
-        this.setState({ ...this.state, recomendedBookList: res.data.result });
+        this.setState({ ...this.state, recomendedBookList: res.data.result }, () => { this.reinit_swiper() });
       }
     }
   }
 
   async fetchNewestBook() {
-    this.setState({ ...this.state, newReleaseBookError: undefined });
+    this.setState({ ...this.state, newReleaseBookError: undefined }, () => { this.reinit_swiper() });
 
     let res = await this._bookService.newest().catch(error => {
       // this.handleError({ error: error.response });
 
       let errorMsg = this.handleError({ error: error.response, notify: false });
-      this.setState({ ...this.state, newReleaseBookError: errorMsg.body });
+      this.setState({ ...this.state, newReleaseBookError: errorMsg.body }, () => { this.reinit_swiper() });
     });
     // debugger;
     if (res) {
       if (res.data.result /* && res.data.result.length */) {
-        this.setState({ ...this.state, newReleaseBookList: res.data.result });
+        this.setState({ ...this.state, newReleaseBookList: res.data.result }, () => { this.reinit_swiper() });
       }
     }
   }
 
   async fetchBookByWriter(person_id: string, book_id: string) {
-    this.setState({ ...this.state, byWriterBookError: undefined });
+    this.setState({ ...this.state, byWriterBookError: undefined }, () => { this.reinit_swiper() });
 
     let res = await this._bookService
       .bookByWriter({ writer: person_id, book_id: book_id }) // writer || person_id
@@ -188,12 +221,12 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
           error: error.response,
           notify: false
         });
-        this.setState({ ...this.state, byWriterBookError: errorMsg.body });
+        this.setState({ ...this.state, byWriterBookError: errorMsg.body }, () => { this.reinit_swiper() });
       });
     // debugger;
     if (res) {
       if (res.data.result /* && res.data.result.length */) {
-        this.setState({ ...this.state, byWriterBookList: res.data.result });
+        this.setState({ ...this.state, byWriterBookList: res.data.result }, () => { this.reinit_swiper() });
       }
     }
   }
@@ -332,9 +365,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  // gotoReader(book_id: string) {
-  //   this.props.history.push(`/reader/${book_id}/reading`);
-  // }
   before_gotoReader(book: IBook) {
     let isAudio = false;
     if (book.type === BOOK_TYPES.Audio) {
@@ -393,7 +423,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: false } });
   }
 
-  carousel_render(bookList: IBook[]) {
+  carousel_render_DELETE_ME(bookList: IBook[]) {
     if (bookList && bookList.length) {
 
       let initialSlide = 0;
@@ -433,7 +463,48 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  carousel_render_preLoad(slideCount: number = 3) {
+  carousel_render(bookList: IBook[]) {
+    if (bookList && bookList.length) {
+
+      return (
+        <>
+          <div className="app-swiper">
+            <div className="swiper-container" dir={this.props.internationalization.rtl ? 'rtl' : ''}>
+              <div className="swiper-wrapper">
+                {bookList.map((book: IBook, bookIndex) => (
+                  <div
+                    key={bookIndex}
+                    className="swiper-slide"
+                    onClick={() => this.gotoBookDetail(book.id)}
+                  >
+                    <div className="img-scaffolding-container">
+                      <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
+
+                      <img src={CmpUtility.getBook_firstImg(book)}
+                        alt="book"
+                        className="main-img center-el-in-box"
+                        onError={e => CmpUtility.bookImageOnError(e)}
+                        loading="lazy"
+                      />
+                    </div>
+
+                    <img src={CmpUtility.getBookTypeIconUrl(book.type as BOOK_TYPES)}
+                      className="book-type-icon"
+                      loading="lazy"
+                      title={Localization.book_type_list[book.type as BOOK_TYPES]}
+                      alt={Localization.book_type_list[book.type as BOOK_TYPES]}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      );
+    }
+  }
+
+  carousel_render_preLoad_DELETE_ME(slideCount: number = 3) {
     let list = [];
     for (let i = 0; i < slideCount; i++) { list.push(i); }
 
@@ -467,7 +538,35 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     );
   }
 
-  carousel_render_error(errorMsg: string, onClick: () => void) {
+  carousel_render_preLoad(slideCount: number = 3) {
+    let list = [];
+    for (let i = 0; i < slideCount; i++) { list.push(i); }
+
+    return (
+      <>
+        <div className="app-swiper app-swiper-preLoad">
+          <div className="swiper-container" dir={this.props.internationalization.rtl ? 'rtl' : ''}>
+            <div className="swiper-wrapper">
+              {list.map((_no: number, bookIndex) => (
+                <div key={bookIndex} className="swiper-slide">
+                  <div className="img-scaffolding-container">
+                    <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
+                  </div>
+                  <span className="item-loader-wrapper center-el-in-box">
+                    <div className="spinner-grow item-loader">
+                      <span className="sr-only">{Localization.loading_with_dots}</span>
+                    </div>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  carousel_render_error_DELETE_ME(errorMsg: string, onClick: () => void) {
     return (
       <>
         <div className="app-carousel app-carousel-error" key="app-carousel-error">
@@ -491,6 +590,30 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     );
   }
 
+  carousel_render_error(errorMsg: string, onClick: () => void) {
+    return (
+      <>
+        <div className="app-swiper app-swiper-error">
+          <div className="swiper-container" dir={this.props.internationalization.rtl ? 'rtl' : ''}>
+            <div className="swiper-wrapper">
+              <div className="swiper-slide">
+                <div className="img-scaffolding-container bg-transparent">
+                  <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="error-box center-el-in-box text-center">
+            <div className="mb-2">{errorMsg}</div>
+            <div onClick={() => onClick()} className="cursor-pointer">
+              {Localization.retry} <i className="fa fa-refresh"></i>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   recomendedBook_render() {
     if (!this.props.logged_in_user) {
       return;
@@ -498,7 +621,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     if (this.state.recomendedBookList && (this.state.recomendedBookList! || []).length) {
       return (
         <>
-          <div className="booklist-wrapper mt-3">
+          <div className="booklist-wrapper mt-3--">
             <h6 className="title">{Localization.recomended_for_you}</h6>
             {this.carousel_render(this.state.recomendedBookList!)}
           </div>
@@ -510,12 +633,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     } else if (this.state.recomendedBookError) {
       return (
         <>
-          <div className="booklist-wrapper mt-3">
+          <div className="booklist-wrapper mt-3--">
             <h6 className="title">{Localization.recomended_for_you}</h6>
-            {/* <div>{this.state.recomendedBookError}</div>
-            <div onClick={() => this.fetchRecomendedBook()}>
-              {Localization.retry}
-            </div> */}
             {this.carousel_render_error(
               this.state.recomendedBookError!,
               () => this.fetchRecomendedBook()
@@ -526,9 +645,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     } else {
       return (
         <>
-          <div className="booklist-wrapper mt-3">
+          <div className="booklist-wrapper mt-3--">
             <h6 className="title">{Localization.recomended_for_you}</h6>
-            {/* <div>{Localization.loading_with_dots}</div> */}
             {this.carousel_render_preLoad()}
           </div>
         </>
@@ -540,7 +658,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     if (this.state.newReleaseBookList && (this.state.newReleaseBookList! || []).length) {
       return (
         <>
-          <div className="booklist-wrapper mt-3">
+          <div className="booklist-wrapper mt-3--">
             <h6 className="title">{Localization.new_release_in_bookstore}</h6>
             {this.carousel_render(this.state.newReleaseBookList!)}
           </div>
@@ -552,7 +670,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     } else if (this.state.newReleaseBookError) {
       return (
         <>
-          <div className="booklist-wrapper mt-3">
+          <div className="booklist-wrapper mt-3--">
             <h6 className="title">{Localization.new_release_in_bookstore}</h6>
             {/* <div>{this.state.newReleaseBookError}</div> */}
             {/* <div onClick={() => this.fetchNewestBook()}>{Localization.retry}</div> */}
@@ -566,7 +684,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     } else {
       return (
         <>
-          <div className="booklist-wrapper mt-3">
+          <div className="booklist-wrapper mt-3--">
             <h6 className="title">{Localization.new_release_in_bookstore}</h6>
             {/* <div>{Localization.loading_with_dots}</div> */}
             {this.carousel_render_preLoad()}
@@ -601,7 +719,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     if (this.state.byWriterBookList && (this.state.byWriterBookList! || []).length) {
       return (
         <>
-          <div className="booklist-wrapper mt-3">
+          <div className="booklist-wrapper mt-3--">
             <h6 className="title">
               {Localization.formatString(
                 Localization.more_by_writer,
@@ -618,18 +736,13 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     } else if (this.state.byWriterBookError) {
       return (
         <>
-          <div className="booklist-wrapper mt-3">
+          <div className="booklist-wrapper mt-3--">
             <h6 className="title">
               {Localization.formatString(
                 Localization.more_by_writer,
                 writerFullName
               )}
             </h6>
-            {/* <div>{this.state.byWriterBookError}</div>
-            <div onClick={() =>
-              this.fetchBookByWriter(
-                this.fetchBookByWriter_writerId,
-                this.fetchBookByWriter_current_book_id)}>{Localization.retry}</div> */}
             {this.carousel_render_error(this.state.byWriterBookError!, () => {
               this.fetchBookByWriter(this.fetchBookByWriter_writerId, this.fetchBookByWriter_current_book_id)
             })}
@@ -639,14 +752,13 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     } else {
       return (
         <>
-          <div className="booklist-wrapper mt-3">
+          <div className="booklist-wrapper mt-3--">
             <h6 className="title">
               {Localization.formatString(
                 Localization.more_by_writer,
                 writerFullName
               )}
             </h6>
-            {/* <div>{Localization.loading_with_dots}</div> */}
             {this.carousel_render_preLoad()}
           </div>
         </>
@@ -664,7 +776,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       <>
         {this.currentBook_render()}
 
-        <div className="booklistCategory-wrapper mt-3">
+        <div className="booklistCategory-wrapper mt-3-- mt-n2">
           {this.recomendedBook_render()}
 
           {this.newReleaseBook_render()}
