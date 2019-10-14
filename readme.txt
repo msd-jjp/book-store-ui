@@ -164,3 +164,7 @@ https://github.com/ReactTraining/history/issues/573
 replace react-slick with swiper in dashboard & store; 
 
 ====================================================================================
+
+wavesurfer library replace require with import 
+
+====================================================================================

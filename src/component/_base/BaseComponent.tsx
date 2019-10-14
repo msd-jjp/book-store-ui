@@ -90,7 +90,7 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
 
         if (obj.notify) {
             // toast.configure(this.getNotifyContainerConfig());
-            const toastOptions = Object.assign((obj.toastOptions || {}), { autoClose: obj.timeout });
+            const toastOptions = Object.assign((obj.toastOptions || {}), { autoClose: obj.timeout, render: obj.body });
             if (toastOptions.toastId && toast.isActive(toastOptions.toastId)) {
                 toast.update(toastOptions.toastId, this.getNotifyConfig(toastOptions));
             } else {
