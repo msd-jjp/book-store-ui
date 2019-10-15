@@ -84,11 +84,11 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
   private async fetchUserOrders() {
     this.setState({ ...this.state, orderError: undefined, loadMoreBtnLoader: true });
 
-    let res = await this._orderService.search(
+    let res = await this._orderService.userOrder(
       this.state.pager_limit,
       this.state.pager_offset,
       {
-        person_id: this.props.logged_in_user!.person.id,
+        // person_id: this.props.logged_in_user!.person.id,
         status: 'Invoiced'
       }
     ).catch(error => {

@@ -22,6 +22,10 @@ export class OrderService extends BaseService {
         return this.axiosTokenInstance.post(`/orders/_search`, { limit, offset, filter });
     }
 
+    userOrder(limit: number, offset: number, filter?: Object): Promise<IAPI_ResponseList<IOrder>> {
+        return this.axiosTokenInstance.post(`/orders/user`, { limit, offset, filter });
+    }
+
     getOrderItems(order_id: string): Promise<IAPI_ResponseList<IOrderItem>> {
         return this.axiosTokenInstance.get(`/order-items/order/${order_id}`);
     }
