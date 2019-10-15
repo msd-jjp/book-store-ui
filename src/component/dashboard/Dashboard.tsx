@@ -268,7 +268,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 <div className="progress-complete-label">{Localization.readed_}</div>
               </div>
               <div className="book-download">
-                <i className="fa fa-check" />
+                <i className="fa fa-check-circle" />
               </div>
             </div>
           </div>

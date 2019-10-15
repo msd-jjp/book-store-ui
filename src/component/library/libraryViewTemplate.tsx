@@ -111,7 +111,7 @@ export function libraryItem_viewGrid_render(
                     <div className="progress-complete-label">{Localization.readed_}</div>
                 </div>
                 <div className={"book-download " + (is_libBook_downloaded(item) ? '' : 'd-none')}>
-                    <i className="fa fa-check" />
+                    <i className="fa fa-check-circle" />
                 </div>
 
                 <div className={

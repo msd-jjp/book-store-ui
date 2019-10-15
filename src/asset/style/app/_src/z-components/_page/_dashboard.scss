@@ -68,6 +68,7 @@
     .book-download {
       position: absolute;
       bottom: 0.5rem;
+      display: flex;
       body:not(.rtl) & {
         right: 0.5rem; // 1.5rem
       }
@@ -75,13 +76,14 @@
         left: 0.5rem; // 1.5rem
       }
       i {
-        width: 1.5rem;
-        height: 1.5rem;
-        background-color: rgba(0, 0, 0, 0.6);
-        border-radius: 50%;
-        color: white;
-        text-align: center;
-        padding-top: 0.2rem;
+        font-size: 1.5rem;
+        // width: 1.5rem;
+        // height: 1.5rem;
+        // background-color: rgba(0, 0, 0, 0.6);
+        // border-radius: 50%;
+        // color: white;
+        // text-align: center;
+        // padding-top: 0.2rem;
       }
     }
   }
