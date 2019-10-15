@@ -166,11 +166,11 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
                   <tr>
                     <td>{orderIndex + 1}</td>
                     <td>
-                      {order.modification_date ? this.getTimestampToDate(order.modification_date) : ''}
+                      {this.getOrderDate(order) ? this.getTimestampToDate(this.getOrderDate(order)!) : ''}
                       <div className="d-sm-none"></div>
                       {
-                        order.modification_date ?
-                          <small>&nbsp;({order.modification_date ? this.getFromNowDate(order.modification_date) : ''})</small>
+                        this.getOrderDate(order) ?
+                          <small>&nbsp;({this.getOrderDate(order) ? this.getFromNowDate(this.getOrderDate(order)!) : ''})</small>
                           : ''
                       }
                     </td>
@@ -184,6 +184,11 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
         </div>
       </>
     )
+  }
+
+  getOrderDate(order: IOrder): number | undefined {
+    return order.creation_date;
+    // return order.modification_date;
   }
 
   private gotoBookDetail(bookId: string) {
@@ -227,11 +232,11 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
                 <div className="modal-title h6 text-muted">
                   {Localization.purchase_date}:
                   &nbsp;
-                  {modalOrder!.modification_date ? this.getTimestampToDate(modalOrder!.modification_date) : ''}
+                  {this.getOrderDate(modalOrder!) ? this.getTimestampToDate(this.getOrderDate(modalOrder!)!) : ''}
                   {/* <div className="d-sm-none"></div> */}
                   {
-                    modalOrder!.modification_date ?
-                      <small>&nbsp;({modalOrder!.modification_date ? this.getFromNowDate(modalOrder!.modification_date) : ''})</small>
+                    this.getOrderDate(modalOrder!) ?
+                      <small>&nbsp;({this.getOrderDate(modalOrder!) ? this.getFromNowDate(this.getOrderDate(modalOrder!)!) : ''})</small>
                       : ''
                   }
                   <div className="clearfix"></div>
