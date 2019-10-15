@@ -24,7 +24,7 @@ import { AddToCollection } from "../library/collection/add-to-collection/AddToCo
 import { CmpUtility } from "../_base/CmpUtility";
 import { action_user_logged_in } from "../../redux/action/user";
 import { PersonService } from "../../service/service.person";
-import { calc_read_percent } from "../library/libraryViewTemplate";
+import { calc_read_percent, is_libBook_downloaded } from "../library/libraryViewTemplate";
 import { ILibrary } from "../../model/model.library";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
@@ -267,7 +267,13 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 <div className="bp-state-arrow" />
                 <div className="progress-complete-label">{Localization.readed_}</div>
               </div>
-              <div className="book-download">
+              {/* <div className="book-download">
+                <i className="fa fa-check-circle" />
+              </div> */}
+              <div className={
+                "book-download " +
+                (this.is_libCurrentBook_downloaded(this.getItemFromLibrary(current_book.id)) ? '' : 'd-none')
+              }>
                 <i className="fa fa-check-circle" />
               </div>
             </div>
@@ -384,9 +390,22 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     return calc_read_percent(this.getItemFromLibrary(book_id));
   }
 
+  private library_current_book_item!: ILibrary;
   getItemFromLibrary(book_id: string): ILibrary {
-    const lib = this.props.library.data.find(lib => lib.book.id === book_id);
-    return lib!;
+    if (!this.library_current_book_item) {
+      const lib = this.props.library.data.find(lib => lib.book.id === book_id);
+      this.library_current_book_item = lib!;
+    }
+    return this.library_current_book_item;
+    // return lib!;
+  }
+
+  private _is_libCurrentBook_downloaded: boolean | undefined;
+  private is_libCurrentBook_downloaded(item: ILibrary): boolean {
+    if (this._is_libCurrentBook_downloaded === undefined) {
+      this._is_libCurrentBook_downloaded = is_libBook_downloaded(item);
+    }
+    return this._is_libCurrentBook_downloaded;
   }
 
   //#region updateUserCurrentBook
