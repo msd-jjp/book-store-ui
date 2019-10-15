@@ -81,4 +81,25 @@ export abstract class Utility {
         return str;
     };
 
+    /**
+     * conver second duration to timer.
+     * @param second: duration in second, for example 1 hour = 3600 s.
+     * @returns it return time format like 35:06:53 (minute and second alwayes <= 59 & >=0)
+     */
+    static second_to_timer(second: number): string {
+        let hour = Math.floor(second / 3600);
+        let min = Math.floor((second - (hour * 3600)) / 60);
+        let sec = second - (min * 60) - (hour * 3600);
+
+        return `${Utility.convert_oneDigitNum_to_two(hour)}:${Utility.convert_oneDigitNum_to_two(min)}:${Utility.convert_oneDigitNum_to_two(sec)}`;
+    }
+
+    private static convert_oneDigitNum_to_two(number: number): string {
+        let num = number.toString();
+        if (number < 10) {
+            return '0' + num;
+        }
+        return num;
+    }
+
 }
