@@ -26,6 +26,8 @@ import { BOOK_ROLES } from "../../../enum/Book";
 import { Input } from "../../form/input/Input";
 // import { BtnLoader } from "../../form/btn-loader/BtnLoader";
 import { AppRegex } from "../../../config/regex";
+import { color, getFont, base64ToBuffer } from "../../../webworker/reader-engine/tools";
+import { book } from "../../../webworker/reader-engine/MsdBook";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -212,7 +214,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     return book!.title;
   }
 
-  initSwiper() {
+  async initSwiper() {
+    await this.createBook(this.bookFile);
     const self = this;
     // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
     // this.swiper_obj && this.swiper_obj.destroy(true, true);
@@ -327,6 +330,47 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     )
   }
 
+  private async createBook(bookFile: any) {
+    debugger;
+    const cWhite = color(255, 255, 255, 255);
+    const cBlack = color(255, 0, 0, 255);
+    // const cBlue = color(0, 0, 255, 255);
+    const font_arrayBuffer = await getFont('Zar.ttf');
+    const font = new Uint8Array(font_arrayBuffer);
+    debugger;
+    // const fontHeapPtr = copyBufferToHeap(font);
+    // const fontSize = 42;
+    const bookbuf = base64ToBuffer(bookFile.sampleBookFile);
+    this.bookInstance = new book(bookbuf, 500, 500, font, 30, cWhite, cBlack);
+    await CmpUtility.waitOnMe(3000);
+  }
+  private bookFile = require('../../../webworker/reader-engine/sampleBookFile');
+  private bookPage = require('../../../webworker/reader-engine/sampleBookPage');
+  private bookInstance!: book; // =  this.createBook(this.bookFile);
+
+  getPagePath(pageIndex: number) {
+    console.log('getPagePath', pageIndex);
+    return this.getPageRenderedPath(pageIndex);
+    // return this.bookInstance.renderNextPage();
+    // return this.bookPage.sampleBookPage;
+    // return `/static/media/img/sample-book-page/page-${pageIndex}.jpg`;
+  }
+  private _pageRenderedPath: any = {};
+  private getPageRenderedPath(pageIndex: number) {
+    if (this._pageRenderedPath[pageIndex]) {
+      return this._pageRenderedPath[pageIndex];
+    } else {
+      if (!this.bookInstance.areWeAtEnd()) {
+        this._pageRenderedPath[pageIndex] = this.bookInstance.renderNextPage();
+        return this._pageRenderedPath[pageIndex];
+      } else {
+        return;
+      }
+    }
+  }
+
+
+
   swiper_render() {
     if (true) {
       const vrtData: any = this.state.virtualData;
@@ -350,7 +394,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                         <div className="page-img-wrapper">
                           <img
                             className="page-img"
-                            src={`/static/media/img/sample-book-page/page-${slide.id}.jpg`}
+                            // src={`/static/media/img/sample-book-page/page-${slide.id}.jpg`}
+                            src={this.getPagePath(slide.id)}
                             alt="book"
                             loading="lazy"
                           />
