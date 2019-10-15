@@ -15,7 +15,7 @@ export class SearchAppStorage {
         return appLocalStorage.clc_book.chain()
             .where((book: IBook) => {
                 if (searchPayload.filter) {
-                    return appLocalStorage.search_by_query_book_filter(book, searchPayload);
+                    return SearchAppStorage.search_by_query_book_filter(book, searchPayload);
                 }
                 return false;
             })
@@ -26,7 +26,7 @@ export class SearchAppStorage {
             .data();
     }
 
-    static search_by_query_book_filter(
+    private static search_by_query_book_filter(
         book: IBook, searchData: { limit: number, offset: number, filter?: Object }
     ): boolean {
         // let book: IBook = { ...book };
@@ -77,7 +77,7 @@ export class SearchAppStorage {
             .data();
     }
 
-    static asc_sort_creation_date(obj1: TCollectionData, obj2: TCollectionData): number {
+    private static asc_sort_creation_date(obj1: TCollectionData, obj2: TCollectionData): number {
         if (obj1.creation_date === obj2.creation_date) return 0;
         if (obj1.creation_date > obj2.creation_date) return -1;
         if (obj1.creation_date < obj2.creation_date) return 1;
