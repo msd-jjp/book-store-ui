@@ -14,8 +14,6 @@ import { action_user_logged_in } from "../../redux/action/user";
 import { OrderService } from "../../service/service.order";
 import { BtnLoader } from "../form/btn-loader/BtnLoader";
 import { IOrder, IOrderItem } from "../../model/model.order";
-import moment from 'moment';
-import moment_jalaali from 'moment-jalaali';
 import { Modal } from "react-bootstrap";
 import { BOOK_TYPES } from "../../enum/Book";
 import { CmpUtility } from "../_base/CmpUtility";
@@ -166,7 +164,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
                   <tr>
                     <td>{orderIndex + 1}</td>
                     <td>
-                      {this.getOrderDate(order) ? this.getTimestampToDate(this.getOrderDate(order)!) : ''}
+                      {this.getOrderDate(order) ? this.timestamp_to_date(this.getOrderDate(order)!) : ''}
                       <div className="d-sm-none"></div>
                       {
                         this.getOrderDate(order) ?
@@ -232,7 +230,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
                 <div className="modal-title h6 text-muted">
                   {Localization.purchase_date}:
                   &nbsp;
-                  {this.getOrderDate(modalOrder!) ? this.getTimestampToDate(this.getOrderDate(modalOrder!)!) : ''}
+                  {this.getOrderDate(modalOrder!) ? this.timestamp_to_date(this.getOrderDate(modalOrder!)!) : ''}
                   {/* <div className="d-sm-none"></div> */}
                   {
                     this.getOrderDate(modalOrder!) ?
@@ -311,14 +309,6 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
     )
   }
   //#endregion
-
-  private getTimestampToDate(timestamp: number) {
-    if (this.props.internationalization.flag === "fa") {
-      return moment_jalaali(timestamp * 1000).locale("en").format('jYYYY/jM/jD');
-    } else {
-      return moment(timestamp * 1000).format('YYYY/MM/DD');
-    }
-  }
 
   private orderListWrapper_render() {
     if (this.state.orderList && (this.state.orderList! || []).length) {
