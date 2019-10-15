@@ -181,6 +181,16 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         }
     }
 
+    protected timestamp_to_date(timestamp: number) {
+        try {
+            if (this.props.internationalization.flag === "fa") {
+                return moment_jalaali(timestamp * 1000).locale("en").format('jYYYY/jM/jD');
+            } else {
+                return moment(timestamp * 1000).locale("en").format('YYYY/MM/DD');
+            }
+        } catch (e) { console.log(e) }
+    }
+
     isDeviceMobileOrTablet(): boolean {
         return Utility.mobileAndTabletcheck();
     }
