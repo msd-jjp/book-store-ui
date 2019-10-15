@@ -480,29 +480,45 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   * @param book_duration `book_duration` is in second.
   */
   book_duration_render(book_duration: string) {
-    let second = parseInt(book_duration);
-    let minute = Math.round((second / 60) * 100) / 100;
-    let hour = Math.round((minute / 60) * 100) / 100;
-
-    if (second < 60) {
-      return (
-        <>
-          {second} {Localization.second}
-        </>
-      )
-    } else if (minute < 60) {
-      return (
-        <>
-          {minute} {Localization.minute}
-        </>
-      )
-    } else {
-      return (
-        <>
-          {hour} {Localization.hour}
-        </>
-      )
+    // if (isNaN(+book_duration)) {
+    //   return book_duration;
+    // } else {
+    //   return Utility.second_to_timer(+book_duration);
+    // }
+    if (isNaN(+book_duration)) {
+      return book_duration;
     }
+
+    let time = '';
+    try {
+      time = Utility.second_to_timer(+book_duration);
+    } catch (e) { console.log(e); }
+    return time;
+
+
+    // let second = parseInt(book_duration);
+    // let minute = Math.round((second / 60) * 100) / 100;
+    // let hour = Math.round((minute / 60) * 100) / 100;
+
+    // if (second < 60) {
+    //   return (
+    //     <>
+    //       {second} {Localization.second}
+    //     </>
+    //   )
+    // } else if (minute < 60) {
+    //   return (
+    //     <>
+    //       {minute} {Localization.minute}
+    //     </>
+    //   )
+    // } else {
+    //   return (
+    //     <>
+    //       {hour} {Localization.hour}
+    //     </>
+    //   )
+    // }
   }
 
   wishList_actionBtn_render(book: IBook) {

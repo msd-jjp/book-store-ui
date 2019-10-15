@@ -188,7 +188,7 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
             } else {
                 return moment(timestamp * 1000).locale("en").format('YYYY/MM/DD');
             }
-        } catch (e) { console.log(e) }
+        } catch (e) { console.error('baseCMP method timestamp_to_date:', e) }
     }
 
     isDeviceMobileOrTablet(): boolean {
