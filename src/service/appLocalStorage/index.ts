@@ -1,37 +1,21 @@
-import loki, {
-    Collection, /* LokiFsAdapter, */ LokiLocalStorageAdapter/* , persistenceAdapters */
-    /* ,LokiIndexedAdapter */
-} from 'lokijs'
+import loki, { Collection, LokiLocalStorageAdapter } from 'lokijs';
 import { IBook } from '../../model/model.book';
 import { IComment } from '../../model/model.comment';
 import { AxiosResponse } from 'axios';
-// import { BOOK_ROLES } from '../../enum/Book';
 import { ParseApi } from './ParseApi';
 import { SearchAppStorage } from './SearchAppStorage';
 
-export type TCollectionName = 'clc_book' | 'clc_comment';
-export type TCollectionData = IBook | IComment;
+interface IBook_file_store {
+    id: IBook['id'];
+    file: Uint8Array; // todo: change to Uint8Array[] if audio book has multiple files.
+}
+export type TCollectionName = 'clc_book' | 'clc_comment' | 'clc_book_file';
+export type TCollectionData = IBook | IComment; // | IBook_file_store;
 
 export class appLocalStorage {
-    static model_collection_map = {
 
-    };
-
-    // static vsdv = new LokiIndexedAdapter();
-    // static idbAdapter2 = new LokiIndexedAdapter('DATABASETEST');
-    // idbAdapter = new LokiIndexedAdapter('loki');
     static idbAdapter = new LokiLocalStorageAdapter();
-    // static vdfvf = persistenceAdapters;
-
     static app_db = new loki('bookstore.db', {
-        /* autoload: true,
-        autosave: true,
-        // adapter: new adapter(),
-        adapter: new LokiFsAdapter(),
-        autosaveInterval: 10000,
-        autoloadCallback: appLocalStorage.initDB, */
-
-        // adapter: persistenceAdapters.fs,
         adapter: appLocalStorage.idbAdapter,
         // autoload: true,
         // autoloadCallback: appLocalStorage.initDB,
@@ -39,8 +23,9 @@ export class appLocalStorage {
         autosaveInterval: 4000
     });
     // app_db.save
-    static clc_book: Collection<IBook>; // = appLocalStorage.app_db.addCollection('clc_book');
-    static clc_comment: Collection<IComment>; // = appLocalStorage.app_db.addCollection('clc_comment');
+    static clc_book: Collection<IBook>;
+    static clc_comment: Collection<IComment>;
+    static clc_book_file: Collection<any>;
     constructor() {
         appLocalStorage.app_db.loadDatabase({}, (err: any) => {
             // debugger;
@@ -49,31 +34,6 @@ export class appLocalStorage {
     }
 
     static initDB() {
-        // debugger;
-        // let coll_list: TCollectionName[] = ['clc_book', 'clc_comment'];
-        // coll_list.forEach(coll => {
-        //     if (appLocalStorage.app_db.getCollection(coll) === null) {
-        //         appLocalStorage[coll] = appLocalStorage.app_db.addCollection(coll)
-        //     }
-        // });
-
-        /* appLocalStorage.clc_book = (appLocalStorage.app_db.getCollection('clc_book') === null) ?
-            appLocalStorage.app_db.addCollection('clc_book') :
-            appLocalStorage.app_db.getCollection('clc_book');
-
-        appLocalStorage.clc_comment = (appLocalStorage.app_db.getCollection('clc_comment') === null) ?
-            appLocalStorage.app_db.addCollection('clc_comment') :
-            appLocalStorage.app_db.getCollection('clc_comment'); */
-
-        // let coll_list: TCollectionName[] = ['clc_book', 'clc_comment'];
-        // coll_list.forEach((coll: TCollectionName) => {
-        //     if (this.app_db.getCollection(coll)) {
-        //         this[coll] = this.app_db.getCollection(coll);
-        //     } else {
-        //         this[coll] = this.app_db.addCollection(coll);
-        //     }
-        // });
-
         if (this.app_db.getCollection('clc_book')) {
             this.clc_book = this.app_db.getCollection('clc_book');
         } else {
@@ -86,6 +46,11 @@ export class appLocalStorage {
             this.clc_comment = this.app_db.addCollection('clc_comment');
         }
 
+        if (this.app_db.getCollection('clc_book_file')) {
+            this.clc_book_file = this.app_db.getCollection('clc_book_file');
+        } else {
+            this.clc_book_file = this.app_db.addCollection('clc_book_file');
+        }
     }
 
     static clearCollection(collectionName: TCollectionName) {
@@ -103,7 +68,6 @@ export class appLocalStorage {
     }
 
     static resetDB() {
-        // appLocalStorage.app_db.removeCollection;
         let coll_list: TCollectionName[] = ['clc_book', 'clc_comment'];
         coll_list.forEach((coll: TCollectionName) => {
             appLocalStorage.clearCollection(coll);
@@ -114,8 +78,7 @@ export class appLocalStorage {
         ParseApi.parseResponse(response);
     }
 
-    static addDataToCollection(collectionName: TCollectionName, data: TCollectionData[] | TCollectionData) {
-        // appLocalStorage.books.insert([{ name: 'Thor', rate: 1 }, { name: 'Loki', rate: 2 }]);
+    static addDataToCollection(collectionName: TCollectionName, data: TCollectionData[] | TCollectionData | IBook_file_store) {
         let coll: Collection<any> = appLocalStorage[collectionName];
 
         //todo: only update found one : here we search twice if found.
@@ -123,13 +86,10 @@ export class appLocalStorage {
             data.forEach(obj => {
                 let found = coll.findOne({ id: obj.id });
                 if (found) {
-                    // coll.autoupdate
                     coll.findAndUpdate({ id: obj.id }, oldObj => {
-                        // debugger;
                         return obj;
                     });
                 } else {
-                    // debugger;
                     coll.insert(obj);
                 }
             })
@@ -137,22 +97,16 @@ export class appLocalStorage {
             let found = coll.findOne({ id: data.id });
             if (found) {
                 coll.findAndUpdate({ id: data.id }, oldObj => {
-                    // debugger;
                     return data;
                 });
             } else {
-                // debugger;
                 coll.insert(data);
             }
         }
-
-
-        // coll.insert(data);
     }
 
     static findById = SearchAppStorage.findById;
     static search_by_query_book = SearchAppStorage.search_by_query_book;
-    // static search_by_query_book_filter = SearchAppStorage.search_by_query_book_filter;
     static search_by_query_comment = SearchAppStorage.search_by_query_comment;
     static search_by_phrase_book = SearchAppStorage.search_by_phrase_book;
 
