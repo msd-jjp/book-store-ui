@@ -3,6 +3,7 @@ import { BOOK_TYPES, BOOK_ROLES } from "../../enum/Book";
 import React from 'react';
 import { CmpUtility } from "../_base/CmpUtility";
 import { Localization } from "../../config/localization/localization";
+import { appLocalStorage } from "../../service/appLocalStorage";
 
 export function calc_read_percent(item: ILibrary): string {
     let read = 0;
@@ -29,7 +30,9 @@ export function calc_read_percent(item: ILibrary): string {
 }
 
 export function is_libBook_downloaded(item: ILibrary): boolean {
-    return true;
+    if (appLocalStorage.findById('clc_book_file', item.book.id))
+        return true;
+    return false;
 }
 
 export function libraryItem_viewList_render(
