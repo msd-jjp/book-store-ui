@@ -350,7 +350,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 : ''
             }
             <h6 className="font-weight-bold">
-              {Localization.publication_date}: <span> {book.pub_year}</span>
+              {Localization.publication_date}: <span> {book.pub_year ? this.timestamp_to_date(+book.pub_year) : ''}</span>
             </h6>
             <h6 className="font-weight-bold">
               {Localization.publisher}:&nbsp;
@@ -1354,9 +1354,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       return (
         <>
           <div>{this.state.errorText}</div>
-          <div onClick={() => this.fetchBook(this.bookId)}>
-            {Localization.retry}
-          </div>
+          <button className="btn btn-light" onClick={() => this.fetchBook(this.bookId)}>
+            {Localization.retry}&nbsp;
+            <i className="fa fa-refresh"></i>
+          </button>
         </>
       )
     }
