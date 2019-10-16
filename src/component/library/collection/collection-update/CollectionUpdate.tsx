@@ -6,7 +6,7 @@ import { IUser } from '../../../../model/model.user';
 import { TInternationalization } from '../../../../config/setup';
 import { BaseComponent } from '../../../_base/BaseComponent';
 import { Localization } from '../../../../config/localization/localization';
-import { IToken } from '../../../../model/model.token';
+// import { IToken } from '../../../../model/model.token';
 // import { BOOK_TYPES } from '../../../../enum/Book';
 import { ToastContainer } from 'react-toastify';
 import { Dropdown } from 'react-bootstrap';
@@ -23,7 +23,7 @@ import { libraryItem_viewGrid_render } from '../../libraryViewTemplate';
 export interface IProps {
     logged_in_user?: IUser | null;
     internationalization: TInternationalization;
-    token: IToken;
+    // token: IToken;
     history: History;
     match: any;
 
@@ -53,7 +53,7 @@ class CollectionUpdateComponent extends BaseComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        this._collectionService.setToken(this.props.token);
+        // this._collectionService.setToken(this.props.token);
         this.collectionTitle = this.props.match.params.collectionTitle;
     }
 
@@ -328,7 +328,7 @@ const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
         internationalization: state.internationalization,
-        token: state.token,
+        // token: state.token,
         library: state.library,
         collection: state.collection,
         network_status: state.network_status,

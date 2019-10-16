@@ -6,7 +6,7 @@ import { IUser } from "../../model/model.user";
 import { TInternationalization } from "../../config/setup";
 import { BaseComponent } from "../_base/BaseComponent";
 import { History } from "history";
-import { IToken } from "../../model/model.token";
+// import { IToken } from "../../model/model.token";
 import { ToastContainer } from "react-toastify";
 import { Localization } from "../../config/localization/localization";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
@@ -22,7 +22,7 @@ interface IProps {
   logged_in_user: IUser | null;
   internationalization: TInternationalization;
   history: History;
-  token: IToken;
+  // token: IToken;
   network_status: NETWORK_STATUS;
   onUserLoggedIn: (user: IUser) => void;
 }
@@ -68,11 +68,11 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
 
   private _orderService = new OrderService();
 
-  constructor(props: IProps) {
-    super(props);
+  // constructor(props: IProps) {
+  //   super(props);
 
-    this._orderService.setToken(this.props.token);
-  }
+  //   this._orderService.setToken(this.props.token);
+  // }
 
   componentDidMount() {
     this.gotoTop();
@@ -394,7 +394,7 @@ const state2props = (state: redux_state) => {
   return {
     logged_in_user: state.logged_in_user,
     internationalization: state.internationalization,
-    token: state.token,
+    // token: state.token,
     network_status: state.network_status,
   };
 };

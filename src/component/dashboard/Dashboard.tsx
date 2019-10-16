@@ -16,7 +16,7 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { History } from "history";
 import { IBook } from "../../model/model.book";
 import { BookService } from "../../service/service.book";
-import { IToken } from "../../model/model.token";
+// import { IToken } from "../../model/model.token";
 import { ToastContainer } from "react-toastify";
 import { BOOK_ROLES, BOOK_TYPES } from "../../enum/Book";
 import { NavLink } from "react-router-dom";
@@ -34,7 +34,7 @@ interface IProps {
   logged_in_user: IUser | null;
   internationalization: TInternationalization;
   history: History;
-  token: IToken;
+  // token: IToken;
   onUserLoggedIn: (user: IUser) => void;
   library: ILibrary_schema;
   network_status: NETWORK_STATUS;
@@ -104,11 +104,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   fetchBookByWriter_writerId!: string;
   fetchBookByWriter_current_book_id!: string;
 
-  constructor(props: IProps) {
-    super(props);
-    this._personService.setToken(this.props.token);
-    this._bookService.setToken(this.props.token);
-  }
+  // constructor(props: IProps) {
+  //   super(props);
+  //   // this._personService.setToken(this.props.token);
+  //   // this._bookService.setToken(this.props.token);
+  // }
 
   componentDidMount() {
     this.init_swiper();
@@ -832,7 +832,7 @@ const state2props = (state: redux_state) => {
   return {
     logged_in_user: state.logged_in_user,
     internationalization: state.internationalization,
-    token: state.token,
+    // token: state.token,
     library: state.library,
     network_status: state.network_status,
   };

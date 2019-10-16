@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { BaseComponent } from '../_base/BaseComponent';
 import { History } from "history";
 import { TInternationalization } from '../../config/setup';
-import { IToken } from '../../model/model.token';
+// import { IToken } from '../../model/model.token';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../redux/app_state';
@@ -22,7 +22,7 @@ export type category_routeParam_categoryType = 'tag' | 'genre' | 'custom';
 interface IProps {
     internationalization: TInternationalization;
     history: History;
-    token: IToken;
+    // token: IToken;
     match: any;
     logged_in_user: IUser | null;
 }
@@ -50,7 +50,7 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
 
     componentDidMount() {
         this.gotoTop();
-        this._bookService.setToken(this.props.token);
+        // this._bookService.setToken(this.props.token);
         // this.searchType = this.props.match.params.searchType;
         // this.searchValue = this.props.match.params.searchValue;
         this.setState({
@@ -340,7 +340,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         internationalization: state.internationalization,
-        token: state.token,
+        // token: state.token,
         logged_in_user: state.logged_in_user,
     }
 }

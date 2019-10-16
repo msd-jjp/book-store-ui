@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { BaseComponent } from '../_base/BaseComponent';
 import { History } from "history";
 import { TInternationalization } from '../../config/setup';
-import { IToken } from '../../model/model.token';
+// import { IToken } from '../../model/model.token';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../redux/app_state';
@@ -20,7 +20,7 @@ import { calc_read_percent, is_libBook_downloaded } from '../library/libraryView
 interface IProps {
     internationalization: TInternationalization;
     history: History;
-    token: IToken;
+    // token: IToken;
     match: any;
     library: ILibrary_schema;
 }
@@ -247,7 +247,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         internationalization: state.internationalization,
-        token: state.token,
+        // token: state.token,
         library: state.library,
     }
 }

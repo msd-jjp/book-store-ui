@@ -7,7 +7,7 @@ import { TInternationalization } from '../../../config/setup';
 import { BaseComponent } from '../../_base/BaseComponent';
 import { Localization } from '../../../config/localization/localization';
 // import { LibraryService } from '../../../service/service.library';
-import { IToken } from '../../../model/model.token';
+// import { IToken } from '../../../model/model.token';
 // import { CollectionService } from '../../../service/service.collection';
 // import { BOOK_TYPES, BOOK_ROLES } from '../../../enum/Book';
 import { ToastContainer } from 'react-toastify';
@@ -31,7 +31,7 @@ import { BOOK_TYPES } from '../../../enum/Book';
 export interface IProps {
     logged_in_user?: IUser | null;
     internationalization: TInternationalization;
-    token: IToken;
+    // token: IToken;
     history: History;
     match: any;
 
@@ -79,7 +79,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
         // this._libraryService.setToken(this.props.token);
-        this._collectionService.setToken(this.props.token);
+        // this._collectionService.setToken(this.props.token);
 
         this.collectionTitle = this.props.match.params.collectionTitle;
         this.isUncollected = (this.props.match.params.isUncollected === 'true');
@@ -669,7 +669,7 @@ const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
         internationalization: state.internationalization,
-        token: state.token,
+        // token: state.token,
         library: state.library,
         collection: state.collection,
         network_status: state.network_status,

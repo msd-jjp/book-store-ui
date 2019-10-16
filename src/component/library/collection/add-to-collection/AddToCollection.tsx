@@ -5,7 +5,7 @@ import { redux_state } from '../../../../redux/app_state';
 import { TInternationalization } from '../../../../config/setup';
 import { BaseComponent } from '../../../_base/BaseComponent';
 import { Localization } from '../../../../config/localization/localization';
-import { IToken } from '../../../../model/model.token';
+// import { IToken } from '../../../../model/model.token';
 import { ToastContainer } from 'react-toastify';
 import { Modal } from 'react-bootstrap';
 import { ICollection } from '../../../../model/model.collection';
@@ -18,7 +18,7 @@ import { IBook } from '../../../../model/model.book';
 
 export interface IProps {
     internationalization: TInternationalization;
-    token: IToken;
+    // token: IToken;
 
     collection: ICollection_schema;
     set_collections_data?: (data: ICollection[]) => any;
@@ -56,11 +56,11 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
 
     private _collectionService = new CollectionService();
 
-    constructor(props: IProps) {
-        super(props);
+    // constructor(props: IProps) {
+    //     super(props);
 
-        this._collectionService.setToken(this.props.token);
-    }
+    //     this._collectionService.setToken(this.props.token);
+    // }
 
     componentDidMount() {
     }
@@ -323,7 +323,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         internationalization: state.internationalization,
-        token: state.token,
+        // token: state.token,
         collection: state.collection,
     }
 }

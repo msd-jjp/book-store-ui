@@ -6,7 +6,7 @@ import { IUser } from "../../../model/model.user";
 import { TInternationalization } from "../../../config/setup";
 import { BaseComponent } from "../../_base/BaseComponent";
 import { History } from "history";
-import { IToken } from "../../../model/model.token";
+// import { IToken } from "../../../model/model.token";
 import { ToastContainer } from "react-toastify";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { PersonService } from "../../../service/service.person";
@@ -43,7 +43,7 @@ interface IProps {
     logged_in_user: IUser | null;
     internationalization: TInternationalization;
     history: History;
-    token: IToken;
+    // token: IToken;
     network_status: NETWORK_STATUS;
     onUserLoggedIn: (user: IUser) => void;
     match: any;
@@ -117,7 +117,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        this._personService.setToken(this.props.token);
+        // this._personService.setToken(this.props.token);
         this.book_id = this.props.match.params.bookId;
     }
 
@@ -714,7 +714,7 @@ const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
         internationalization: state.internationalization,
-        token: state.token,
+        // token: state.token,
         network_status: state.network_status,
         library: state.library,
     };

@@ -6,7 +6,7 @@ import { IUser } from "../../model/model.user";
 import { TInternationalization } from "../../config/setup";
 import { BaseComponent } from "../_base/BaseComponent";
 import { History } from "history";
-import { IToken } from "../../model/model.token";
+// import { IToken } from "../../model/model.token";
 import { ToastContainer } from "react-toastify";
 import { ICartItems, ICartItem } from "../../redux/action/cart/cartAction";
 import { action_add_to_cart, action_remove_from_cart, action_update_cart_item, action_clear_cart } from "../../redux/action/cart";
@@ -25,7 +25,7 @@ interface IProps {
   logged_in_user: IUser | null;
   internationalization: TInternationalization;
   history: History;
-  token: IToken;
+  // token: IToken;
   cart: ICartItems;
   add_to_cart: (cartItem: ICartItem) => any;
   remove_from_cart: (cartItem: ICartItem) => any;
@@ -50,12 +50,12 @@ class CartComponent extends BaseComponent<IProps, IState> {
   private _orderService = new OrderService();
   private _priceService = new PriceService();
 
-  constructor(props: IProps) {
-    super(props);
+  // constructor(props: IProps) {
+  //   super(props);
 
-    this._orderService.setToken(this.props.token);
-    this._priceService.setToken(this.props.token);
-  }
+  //   // this._orderService.setToken(this.props.token);
+  //   // this._priceService.setToken(this.props.token);
+  // }
 
 
   componentDidMount() {
@@ -377,7 +377,7 @@ const state2props = (state: redux_state) => {
   return {
     logged_in_user: state.logged_in_user,
     internationalization: state.internationalization,
-    token: state.token,
+    // token: state.token,
     cart: state.cart,
     network_status: state.network_status,
   };
