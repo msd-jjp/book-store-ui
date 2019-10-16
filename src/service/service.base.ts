@@ -35,10 +35,13 @@ export abstract class BaseService {
     get axiosTokenInstance(): AxiosInstance {
         // if (this._axiosTokenInstance) { return this._axiosTokenInstance; }
         let newAX_instance: AxiosInstance;
-        if (this.token && this.token.id) {
+        const token = Store2.getState().token;
+        // console.log('const token = Store2.getState().token;', token);
+        // if (this.token && this.token.id) {
+        if (token && token.id) {
             newAX_instance = axios.create({
                 baseURL: this.baseURL,
-                headers: { 'Content-Type': 'application/json', 'authorization': 'Bearer ' + this.token.id }
+                headers: { 'Content-Type': 'application/json', 'authorization': 'Bearer ' + token.id } // this.token.id
             });
         } else {
             newAX_instance = this.axiosInstance;
@@ -65,7 +68,7 @@ export abstract class BaseService {
                 });
             }
 
-            
+
 
             let authObj = Utility.get_decode_auth(Store2.getState().authentication)
             return this.getTokenfromServer(authObj)
