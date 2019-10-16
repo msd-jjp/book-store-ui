@@ -38,7 +38,7 @@ interface IProps {
     history: History;
     internationalization: TInternationalization;
     onSetToken: (token: IToken) => void;
-    token: IToken;
+    // token: IToken;
     onSetAuthentication: (auth: string) => void;
 }
 
@@ -76,7 +76,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
         if (res_token) {
             this.props.onSetAuthentication(Utility.get_encode_auth(authObj));
             this.props.onSetToken(res_token.data);
-            this._loginService.setToken(res_token.data);
+            // this._loginService.setToken(res_token.data);
 
             res_user = await this._loginService.profile().catch((error) => {
                 this.handleError({ error: error.response });
@@ -187,7 +187,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
 const state2props = (state: redux_state) => {
     return {
         internationalization: state.internationalization,
-        token: state.token
+        // token: state.token
     }
 }
 
