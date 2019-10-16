@@ -32,6 +32,7 @@ import { ReaderReading } from '../reader/reader-reading/ReaderReading';
 import { ReaderScroll } from '../reader/reader-scroll/ReaderScroll';
 import { ReaderAudio } from '../reader/reader-audio/ReaderAudio';
 import { PurchaseHistory } from '../purchase-history/PurchaseHistory';
+import { BookFileDownload } from '../book-file-download/BookFileDownload';
 
 const appRoutes = (
   <HashRouter>
@@ -140,6 +141,8 @@ class AppComponent extends React.Component<IProps, IState> {
         </Router>
 
         {this.modal_confirmReload_render()}
+
+        <BookFileDownload />
       </div>
     );
   }
