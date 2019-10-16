@@ -9,7 +9,7 @@ import { Localization } from '../../config/localization/localization';
 import Rating from 'react-rating';
 import { IBook } from '../../model/model.book';
 import { BookService } from '../../service/service.book';
-import { IToken } from '../../model/model.token';
+// import { IToken } from '../../model/model.token';
 import { History } from "history";
 import { BOOK_GENRE, BOOK_ROLES } from '../../enum/Book';
 import { category_routeParam_categoryType } from '../category/Category';
@@ -18,7 +18,7 @@ import { CmpUtility } from '../_base/CmpUtility';
 export interface IProps {
     logged_in_user?: IUser | null;
     internationalization: TInternationalization;
-    token: IToken;
+    // token: IToken;
     history: History;
 }
 
@@ -51,7 +51,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
     private wishListBookCarousel_el!: HTMLDivElement | null;
 
     componentDidMount() {
-        this._bookService.setToken(this.props.token);
+        // this._bookService.setToken(this.props.token);
         this.fetchAllData();
     }
 
@@ -101,7 +101,6 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         //         this.setState({ ...this.state, wishListBookList: res.data.result });
         //     }
         // }
-
         await this.waitOnMe(0);
         if (this.props.logged_in_user && this.props.logged_in_user.person.wish_list) {
             let w_list = this.props.logged_in_user.person.wish_list.slice(0, 10);
@@ -527,7 +526,7 @@ const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
         internationalization: state.internationalization,
-        token: state.token
+        // token: state.token
     }
 }
 
