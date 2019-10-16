@@ -20,6 +20,7 @@ import { CmpUtility } from '../_base/CmpUtility';
 import { action_reset_sync } from '../../redux/action/sync';
 import { ISync_schema } from '../../redux/action/sync/syncAction';
 import { SyncWorker } from '../../webworker/sync-worker/SyncWorker';
+import { BaseService } from '../../service/service.base';
 // import { IToken } from '../../model/model.token';
 
 interface IProps {
@@ -100,6 +101,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         // debugger;
         this.props.do_logout();
         this.props.remove_token();
+        BaseService.removeToken();
         this.props.remove_authentication();
         this.props.clear_cart();
         this.props.clear_library();
