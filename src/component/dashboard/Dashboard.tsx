@@ -387,21 +387,24 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   calc_read_percent_by_bookItem_in_lib(book_id: string): string {
-    return calc_read_percent(this.getItemFromLibrary(book_id));
+    const item = this.getItemFromLibrary(book_id);
+    if (item) return calc_read_percent(item);
+    else return '0%';
   }
 
-  private library_current_book_item!: ILibrary;
-  getItemFromLibrary(book_id: string): ILibrary {
+  private library_current_book_item: ILibrary | undefined;
+  getItemFromLibrary(book_id: string): ILibrary | undefined {
     if (!this.library_current_book_item) {
       const lib = this.props.library.data.find(lib => lib.book.id === book_id);
-      this.library_current_book_item = lib!;
+      this.library_current_book_item = lib;
     }
     return this.library_current_book_item;
     // return lib!;
   }
 
   private _is_libCurrentBook_downloaded: boolean | undefined;
-  private is_libCurrentBook_downloaded(item: ILibrary): boolean {
+  private is_libCurrentBook_downloaded(item: ILibrary | undefined): boolean {
+    if (!item) return false;
     if (this._is_libCurrentBook_downloaded === undefined) {
       this._is_libCurrentBook_downloaded = is_libBook_downloaded(item);
     }
