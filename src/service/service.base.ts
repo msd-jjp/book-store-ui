@@ -8,7 +8,6 @@ import { appLocalStorage } from './appLocalStorage';
 import { NETWORK_STATUS } from '../enum/NetworkStatus';
 import { action_set_network_status } from '../redux/action/netwok-status';
 
-
 export interface IAPI_ResponseList<T> {
     data: { result: T[] };
 }
@@ -18,7 +17,7 @@ export interface IAPI_Response<T> {
 
 export abstract class BaseService {
     baseURL = Setup.endpoint;
-    token: IToken | null | undefined;
+    private static token: IToken | null | undefined;
 
     axiosInstance: AxiosInstance = axios.create({
         baseURL: this.baseURL,
@@ -35,9 +34,15 @@ export abstract class BaseService {
     get axiosTokenInstance(): AxiosInstance {
         // if (this._axiosTokenInstance) { return this._axiosTokenInstance; }
         let newAX_instance: AxiosInstance;
-        const token = Store2.getState().token;
+        // const token = Store2.getState().token;
         // console.log('const token = Store2.getState().token;', token);
         // if (this.token && this.token.id) {
+        // if (token && token.id) {
+        let token = BaseService.token;
+        if (!BaseService.token || !BaseService.token.id) {
+            token = Store2.getState().token;
+            if (token) BaseService.setToken(token);
+        }
         if (token && token.id) {
             newAX_instance = axios.create({
                 baseURL: this.baseURL,
@@ -52,8 +57,12 @@ export abstract class BaseService {
         // return this._axiosTokenInstance;
     }
 
-    setToken(t: IToken) {
-        this.token = t;
+    private static setToken(t: IToken) {
+        BaseService.token = t;
+    }
+
+    static removeToken() {
+        BaseService.token = undefined;
     }
 
     set_401_interceptors(ax_instance: AxiosInstance) {
@@ -74,7 +83,7 @@ export abstract class BaseService {
             return this.getTokenfromServer(authObj)
                 .then((token) => {
                     Store2.dispatch(action_set_token(token.data));
-                    this.setToken(token.data);
+                    BaseService.setToken(token.data);
 
                     // New request with new token
                     const config = error.config;
