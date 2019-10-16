@@ -361,7 +361,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       return this._pageRenderedPath[pageIndex];
     } else {
       if (!this.bookInstance.areWeAtEnd()) {
+        console.time('renderNextPage');
         this._pageRenderedPath[pageIndex] = this.bookInstance.renderNextPage();
+        console.timeEnd('renderNextPage');
         return this._pageRenderedPath[pageIndex];
       } else {
         return;

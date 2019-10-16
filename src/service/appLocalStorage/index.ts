@@ -4,11 +4,19 @@ import { IComment } from '../../model/model.comment';
 import { AxiosResponse } from 'axios';
 import { ParseApi } from './ParseApi';
 import { SearchAppStorage } from './SearchAppStorage';
+import { StoreData } from './StoreData';
 
-interface IBook_file_store {
-    id: IBook['id'];
-    file: Uint8Array; // todo: change to Uint8Array[] if audio book has multiple files.
+interface IBook_file_store_sample {
+    id: '/^sampleFile-/';//IBook['id'];
+    // mainFile: Uint8Array; // todo: change to Uint8Array[] if audio book has multiple files.
+    sampleFile: Uint8Array;
 }
+interface IBook_file_store_main {
+    id: '/^mainFile-/';
+    mainFile: Uint8Array;
+    // sampleFile: Uint8Array;
+}
+export type IBook_file_store = IBook_file_store_sample | IBook_file_store_main;
 export type TCollectionName = 'clc_book' | 'clc_comment' | 'clc_book_file';
 export type TCollectionData = IBook | IComment; // | IBook_file_store;
 
@@ -29,7 +37,7 @@ export class appLocalStorage {
     constructor() {
         appLocalStorage.app_db.loadDatabase({}, (err: any) => {
             // debugger;
-        })
+        });
         appLocalStorage.initDB();
     }
 
@@ -78,32 +86,7 @@ export class appLocalStorage {
         ParseApi.parseResponse(response);
     }
 
-    static addDataToCollection(collectionName: TCollectionName, data: TCollectionData[] | TCollectionData | IBook_file_store) {
-        let coll: Collection<any> = appLocalStorage[collectionName];
-
-        //todo: only update found one : here we search twice if found.
-        if (Array.isArray(data)) {
-            data.forEach(obj => {
-                let found = coll.findOne({ id: obj.id });
-                if (found) {
-                    coll.findAndUpdate({ id: obj.id }, oldObj => {
-                        return obj;
-                    });
-                } else {
-                    coll.insert(obj);
-                }
-            })
-        } else {
-            let found = coll.findOne({ id: data.id });
-            if (found) {
-                coll.findAndUpdate({ id: data.id }, oldObj => {
-                    return data;
-                });
-            } else {
-                coll.insert(data);
-            }
-        }
-    }
+    static addDataToCollection =  StoreData.addDataToCollection;
 
     static findById = SearchAppStorage.findById;
     static search_by_query_book = SearchAppStorage.search_by_query_book;
