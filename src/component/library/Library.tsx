@@ -25,7 +25,7 @@ import { ICollection_schema } from '../../redux/action/collection/collectionActi
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { AddToCollection } from './collection/add-to-collection/AddToCollection';
 import { IBook } from '../../model/model.book';
-import { libraryItem_viewGrid_render, libraryItem_viewList_render } from './libraryViewTemplate';
+import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded } from './libraryViewTemplate';
 import { CmpUtility } from '../_base/CmpUtility';
 import { BOOK_TYPES } from '../../enum/Book';
 
@@ -407,6 +407,12 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         if (this.state.isLibrary_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
+            const isDownloaded = is_libBook_downloaded(item);
+            if (!isDownloaded) {
+                //
+                return;
+            }
+
             let isAudio = false;
             if (item.book.type === BOOK_TYPES.Audio) {
                 isAudio = true;

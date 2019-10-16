@@ -2,11 +2,18 @@ import { appLocalStorage, TCollectionName, TCollectionData } from ".";
 import { IBook } from "../../model/model.book";
 import { IComment } from "../../model/model.comment";
 
+// type TMainFileId = '/^mainFile-/i';// new RegExp('^' + 'mainFile-', 'i');
+// type vsdv = RegExp('/^mainFile-/i');
+
 export class SearchAppStorage {
     // static findById<TCollectionData>(collectionName: TCollectionName, id: string):TCollectionData |null{
     static findById(collectionName: TCollectionName, id: string): any {
         return appLocalStorage[collectionName].findOne({ id: id });
         // appLocalStorage.books.find({ $eq: { id: bookId } });
+    }
+
+    static findBookMainFileById(id: string): any {
+        return appLocalStorage['clc_book_file'].findOne({ id: id });
     }
 
     static search_by_query_book(

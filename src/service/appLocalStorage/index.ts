@@ -76,19 +76,25 @@ export class appLocalStorage {
     }
 
     static resetDB() {
-        let coll_list: TCollectionName[] = ['clc_book', 'clc_comment'];
+        let coll_list: TCollectionName[] = ['clc_book', 'clc_comment', 'clc_book_file'];
         coll_list.forEach((coll: TCollectionName) => {
             appLocalStorage.clearCollection(coll);
         });
+    }
+
+    static afterAppLogout() {
+        // appLocalStorage.resetDB() // todo: ask if need resetDB?
+        appLocalStorage.clearCollection('clc_book_file');
     }
 
     static storeUsefullResponse(response: AxiosResponse<any>) {
         ParseApi.parseResponse(response);
     }
 
-    static addDataToCollection =  StoreData.addDataToCollection;
+    static addDataToCollection = StoreData.addDataToCollection;
 
     static findById = SearchAppStorage.findById;
+    static findBookMainFileById = SearchAppStorage.findBookMainFileById;
     static search_by_query_book = SearchAppStorage.search_by_query_book;
     static search_by_query_comment = SearchAppStorage.search_by_query_comment;
     static search_by_phrase_book = SearchAppStorage.search_by_phrase_book;

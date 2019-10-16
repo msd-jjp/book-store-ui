@@ -30,7 +30,7 @@ export function calc_read_percent(item: ILibrary): string {
 }
 
 export function is_libBook_downloaded(item: ILibrary): boolean {
-    if (appLocalStorage.findById('clc_book_file', item.book.id))
+    if (appLocalStorage.findBookMainFileById('mainFile-' + item.book.id))
         return true;
     return false;
 }
