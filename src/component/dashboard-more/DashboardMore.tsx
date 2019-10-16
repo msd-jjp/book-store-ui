@@ -21,6 +21,7 @@ import { action_reset_sync } from '../../redux/action/sync';
 import { ISync_schema } from '../../redux/action/sync/syncAction';
 import { SyncWorker } from '../../webworker/sync-worker/SyncWorker';
 import { BaseService } from '../../service/service.base';
+import { appLocalStorage } from '../../service/appLocalStorage';
 // import { IToken } from '../../model/model.token';
 
 interface IProps {
@@ -107,6 +108,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.clear_library();
         this.props.clear_collections();
         this.props.reset_sync();
+        appLocalStorage.afterAppLogout();
         this.props.history.push('/login');
     }
 
