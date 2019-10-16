@@ -9,8 +9,6 @@ import { redux_state } from '../../../redux/app_state';
 import { IUser } from '../../../model/model.user';
 import { History } from "history";
 import { IToken } from '../../../model/model.token';
-import { FetchIntervalWorker } from '../../../webworker/fetch-interval-worker/FetchIntervalWorker';
-import { SyncWorker } from '../../../webworker/sync-worker/SyncWorker';
 
 export const RouteLayoutMain = ({ component: Component, ...rest }: { [key: string]: any }) => {
     // console.log("RouteLayout");
@@ -35,49 +33,7 @@ interface IProps {
 
 class LayoutMainComponent extends React.Component<IProps> {
 
-    private _fetchIntervalWorker = new FetchIntervalWorker(this.props.token);
-    private _syncWorker = new SyncWorker(this.props.token);
-
-    componentWillMount() {
-        // debugger;
-        if (!this.props.logged_in_user) {
-            this.props.history.push("/login");
-
-        } else {
-            this.start_fetchingData();
-            this._syncWorker.postMessage('check');
-        }
-    }
-
-    componentWillUnmount() {
-        this.stop_fetchingData();
-        this._fetchIntervalWorker.terminate();
-        this._syncWorker.terminate();
-    }
-
-    start_fetchingData() {
-        this._fetchIntervalWorker.postMessage({ type: 'start' });
-    }
-
-    stop_fetchingData() {
-        this._fetchIntervalWorker.postMessage({ type: 'stop' });
-    }
-
-    shouldComponentUpdate() {
-        // debugger;
-        if (!this.props.logged_in_user) {
-            this.props.history.push("/login");
-            return false;
-        }
-        return true;
-    }
     render() {
-        // debugger;
-        if (!this.props.logged_in_user) {
-            return (
-                <div></div>
-            );
-        }
         return (
             <>
                 <div className="layout-main-wrapper">

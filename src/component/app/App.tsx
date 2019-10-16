@@ -1,68 +1,48 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect, HashRouter } from 'react-router-dom';
-import { Dashboard } from '../dashboard/Dashboard';
 import { Login } from '../login/Login';
 import { Register } from '../register/Register';
-import { LayoutMainNotFound } from '../layout/main/not-found/NotFound';
-import { RouteLayoutMain } from '../layout/main/Main';
 import { RouteLayoutAccount } from '../layout/account/Account';
 import { TInternationalization } from '../../config/setup';
 import { Localization } from '../../config/localization/localization';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../redux/app_state';
-import { DashboardMore } from '../dashboard-more/DashboardMore';
-import { Store } from '../store/Store';
-import { Library } from '../library/Library';
-import { BookDetail } from '../book-detail/BookDetail';
 import { ForgotPassword } from '../forgot-password/ForgotPassword';
-import { Category } from '../category/Category';
-import { Search } from '../search/Search';
 import { appLocalStorage } from '../../service/appLocalStorage';
 import { AppInitService } from '../../service/service.app-init';
 import { BaseService } from '../../service/service.base';
 import { Modal } from 'react-bootstrap';
-import { Cart } from '../cart/Cart';
-import { Collection } from '../library/collection/Collection';
-import { CollectionUpdate } from '../library/collection/collection-update/CollectionUpdate';
-import { Profile } from '../profile/Profile';
-import { RouteLayoutNoWrap } from '../layout/no-wrap/NoWrap';
-import { ReaderOverview } from '../reader/reader-overview/ReaderOverview';
-import { ReaderReading } from '../reader/reader-reading/ReaderReading';
-import { ReaderScroll } from '../reader/reader-scroll/ReaderScroll';
-import { ReaderAudio } from '../reader/reader-audio/ReaderAudio';
-import { PurchaseHistory } from '../purchase-history/PurchaseHistory';
-import { BookFileDownload } from '../book-file-download/BookFileDownload';
+import { RouteLayoutValidUser } from '../layout/valid-user/ValidUser';
 
 const appRoutes = (
   <HashRouter>
     <Switch>
 
       <Route exact path="/" component={() => <Redirect to="/dashboard" />} />
-      <RouteLayoutMain exact path="/dashboard" component={Dashboard} />
-      <RouteLayoutMain path="/dashboard-more" component={DashboardMore} />
-      <RouteLayoutMain path="/store" component={Store} />
-      <RouteLayoutMain path="/library" component={Library} />
-      <RouteLayoutMain path="/book-detail/:bookId" component={BookDetail} />
-      <RouteLayoutMain path="/category/:searchType/:searchValue" component={Category} />
-      <RouteLayoutMain path="/search/:searchQuery" component={Search} />
-      <RouteLayoutMain path="/cart" component={Cart} />
-      <RouteLayoutMain path="/collection/:collectionTitle/:isUncollected?" component={Collection} />
-      <RouteLayoutMain path="/collection-update/:collectionTitle" component={CollectionUpdate} />
-      <RouteLayoutMain path="/profile" component={Profile} />
-      <RouteLayoutMain path="/purchase-history" component={PurchaseHistory} />
+      <RouteLayoutValidUser exact path="/dashboard" />
+      <RouteLayoutValidUser path="/dashboard-more" />
+      <RouteLayoutValidUser path="/store" />
+      <RouteLayoutValidUser path="/library" />
+      <RouteLayoutValidUser path="/book-detail/:bookId" />
+      <RouteLayoutValidUser path="/category/:searchType/:searchValue" />
+      <RouteLayoutValidUser path="/search/:searchQuery" />
+      <RouteLayoutValidUser path="/cart" />
+      <RouteLayoutValidUser path="/collection/:collectionTitle/:isUncollected?" />
+      <RouteLayoutValidUser path="/collection-update/:collectionTitle" />
+      <RouteLayoutValidUser path="/profile" />
+      <RouteLayoutValidUser path="/purchase-history" />
 
       <RouteLayoutAccount path="/login" component={Login} />
       <RouteLayoutAccount path="/register" component={Register} />
       <RouteLayoutAccount path="/forgot-password" component={ForgotPassword} />
 
-      <RouteLayoutNoWrap path="/reader/:bookId/overview" component={ReaderOverview} />
-      <RouteLayoutNoWrap path="/reader/:bookId/reading" component={ReaderReading} />
-      <RouteLayoutNoWrap path="/reader/:bookId/scroll" component={ReaderScroll} />
-      <RouteLayoutNoWrap path="/reader/:bookId/audio" component={ReaderAudio} />
-      {/* <RouteLayoutNoWrap path="reader/:bookId/reading" component={} /> */}
+      <RouteLayoutValidUser path="/reader/:bookId/overview" />
+      <RouteLayoutValidUser path="/reader/:bookId/reading" />
+      <RouteLayoutValidUser path="/reader/:bookId/scroll" />
+      <RouteLayoutValidUser path="/reader/:bookId/audio" />
 
-      <RouteLayoutMain component={LayoutMainNotFound} />
+      <RouteLayoutValidUser />
 
     </Switch>
   </HashRouter>
@@ -141,8 +121,6 @@ class AppComponent extends React.Component<IProps, IState> {
         </Router>
 
         {this.modal_confirmReload_render()}
-
-        <BookFileDownload />
       </div>
     );
   }

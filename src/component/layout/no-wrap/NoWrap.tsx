@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../../redux/app_state';
@@ -27,30 +26,7 @@ interface IProps {
 
 class LayoutNoWrapComponent extends React.Component<IProps> {
 
-    // constructor(props: IProps) {
-    //     super(props);
-    // }
-
-    componentWillMount() {
-        if (!this.props.logged_in_user) {
-            this.props.history.push("/login");
-        }
-    }
-
-    shouldComponentUpdate() {
-        if (!this.props.logged_in_user) {
-            this.props.history.push("/login");
-            return false;
-        }
-        return true;
-    }
-
     render() {
-        if (!this.props.logged_in_user) {
-            return (
-                <div></div>
-            );
-        }
         return (
             <>
                 <div className="layout-nowrap-wrapper">
