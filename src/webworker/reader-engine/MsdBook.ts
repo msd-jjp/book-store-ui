@@ -36,7 +36,10 @@ var msdreader = {
   getBookTotalAtoms: Module.cwrap('getBookTotalAtoms', 'number', ['number']),
   getBookProgress: Module.cwrap('getBookProgress', 'number', ['number']),
   gotoBookPosIndicator:
-      Module.cwrap('gotoBookPosIndicator', 'number', ['number', 'number'])
+      Module.cwrap('gotoBookPosIndicator', 'number', ['number', 'number']),
+  getBookPosIndicators:
+      Module.cwrap('getBookPosIndicators', 'number', ['number']),
+
 
 };
 
@@ -72,6 +75,10 @@ _arrayBufferToBase64(buffer: Uint8Array): string {
   }
   return window.btoa(binary);
 };
+export interface IBookPosIndicator {
+  group: number, atom: number
+}
+;
 export class book {
   fontHeapPtr: number;
   fontSize = 42;
@@ -182,7 +189,7 @@ export class book {
     let a = msdreader.getIndicatorPart(this.currentBookPosIndicator, 1);
     return {group: g, atom: a};
   }
-  gotoPos(indicator: {group: number, atom: number}) {
+  gotoPos(indicator: IBookPosIndicator) {
     // has memory leakage
     // be careful of using it
     if (this.renderedPagePtr) {
@@ -191,5 +198,40 @@ export class book {
     }
     this.currentBookPosIndicator = msdreader.gotoBookPosIndicator(
         indicator.group || 0, indicator.atom || 0)
+  }
+  getListOfPageIndicators(): Array<IBookPosIndicator> {
+    debugger;
+    let res = msdreader.getBookPosIndicators(this.bookRendererPtr);
+    let len = getDWORDSize(res);
+    let c = Math.floor((len - 4) / 8);
+    let pages = [];
+    for (let i = 0; i < c; i++) {
+      let g = getDWORDSize(res + 4 + i * 8);
+      let a = getDWORDSize(res + 4 + i * 8 + 4);
+      pages.push({group: g, atom: a})
+    }
+    msdreader.deleteBytePoniter(res);
+    return pages;
+  }
+  RenderSpecPage(pos: IBookPosIndicator): string {
+    let indic = msdreader.gotoBookPosIndicator(pos.group, pos.atom);
+    if (msdreader.is_last_atom(this.bookPtr, indic)) throw new Error('EOF');
+
+    let NextPage = msdreader.renderNextPage(this.bookRendererPtr, indic);
+    msdreader.deleteBookPosIndicator(indic);
+    if (this.renderedPagePtr) {
+      msdreader.deleteRenderedPage(this.renderedPagePtr);
+    }
+    this.lastBookPosIdicator = this.currentBookPosIndicator;
+    this.currentBookPosIndicator =
+        msdreader.getBookIndicatorPartOfPageResult(NextPage);
+    let img = msdreader.getImageofPageResult(NextPage);
+    let imageSize = getDWORDSize(img);
+    let pngData = extractFromHeapBytes(imageSize - 4, img + 4);
+    let pic = 'data:image/png;base64,' + _arrayBufferToBase64(pngData);
+    msdreader.deleteBytePoniter(img);
+    this.renderedPagePtr = NextPage;
+    return pic;
+
   }
 }

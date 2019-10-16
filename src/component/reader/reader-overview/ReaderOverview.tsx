@@ -342,10 +342,10 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // const fontSize = 42;
     const bookbuf = base64ToBuffer(bookFile.sampleBookFile);
     this.bookInstance = new book(bookbuf, 500, 500, font, 30, cWhite, cBlack);
-    await CmpUtility.waitOnMe(3000);
+    await CmpUtility.waitOnMe(2000);
   }
   private bookFile = require('../../../webworker/reader-engine/sampleBookFile');
-  private bookPage = require('../../../webworker/reader-engine/sampleBookPage');
+  // private bookPage = require('../../../webworker/reader-engine/sampleBookPage');
   private bookInstance!: book; // =  this.createBook(this.bookFile);
 
   getPagePath(pageIndex: number) {
@@ -361,9 +361,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       return this._pageRenderedPath[pageIndex];
     } else {
       if (!this.bookInstance.areWeAtEnd()) {
-        console.time('renderNextPage');
-        this._pageRenderedPath[pageIndex] = this.bookInstance.renderNextPage();
-        console.timeEnd('renderNextPage');
+        this._pageRenderedPath[pageIndex] = 'true';
+        setTimeout(() => {
+          console.time('renderNextPage');
+          this._pageRenderedPath[pageIndex] = this.bookInstance.renderNextPage();
+          console.timeEnd('renderNextPage');
+        }, 0)
         return this._pageRenderedPath[pageIndex];
       } else {
         return;
