@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import { redux_state } from '../../../redux/app_state';
 import { IUser } from '../../../model/model.user';
 import { History } from "history";
-import { IToken } from '../../../model/model.token';
+// import { IToken } from '../../../model/model.token';
 import { BrowserRouter as Router, Route, Switch, Redirect, HashRouter } from 'react-router-dom';
 import { RouteLayoutMain } from '../main/Main';
 import { Dashboard } from '../../dashboard/Dashboard';
@@ -69,14 +69,14 @@ export const RouteLayoutValidUser = ({ ...rest }: { [key: string]: any }) => {
 interface IProps {
     logged_in_user: IUser | null;
     history: History;
-    token: IToken;
+    // token: IToken;
     match: any;
 }
 
 class LayoutValidUserComponent extends React.Component<IProps> {
 
-    private _fetchIntervalWorker = new FetchIntervalWorker(this.props.token);
-    private _syncWorker = new SyncWorker(this.props.token);
+    private _fetchIntervalWorker = new FetchIntervalWorker(/* this.props.token */);
+    private _syncWorker = new SyncWorker(/* this.props.token */);
 
     componentWillMount() {
         // debugger;
@@ -136,7 +136,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
-        token: state.token
+        // token: state.token
     }
 }
 

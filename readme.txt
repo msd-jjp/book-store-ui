@@ -168,3 +168,7 @@ replace react-slick with swiper in dashboard & store;
 wavesurfer library replace require with import 
 
 ====================================================================================
+
+remove token from state2props in all cmp if possible
+
+====================================================================================

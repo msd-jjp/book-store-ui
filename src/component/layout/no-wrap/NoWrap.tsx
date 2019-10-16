@@ -3,9 +3,9 @@ import { Route } from 'react-router-dom';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../../redux/app_state';
-import { IUser } from '../../../model/model.user';
+// import { IUser } from '../../../model/model.user';
 import { History } from "history";
-import { IToken } from '../../../model/model.token';
+// import { IToken } from '../../../model/model.token';
 
 export const RouteLayoutNoWrap = ({ component: Component, ...rest }: { [key: string]: any }) => {
     return (
@@ -18,9 +18,9 @@ export const RouteLayoutNoWrap = ({ component: Component, ...rest }: { [key: str
 };
 
 interface IProps {
-    logged_in_user?: IUser | null;
+    // logged_in_user?: IUser | null;
     history: History;
-    token: IToken;
+    // token: IToken;
     match: any;
 }
 
@@ -50,8 +50,8 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 
 const state2props = (state: redux_state) => {
     return {
-        logged_in_user: state.logged_in_user,
-        token: state.token
+        // logged_in_user: state.logged_in_user,
+        // token: state.token
     }
 }
 

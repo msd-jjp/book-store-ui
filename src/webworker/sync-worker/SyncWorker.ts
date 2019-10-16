@@ -2,7 +2,7 @@ import /* workerMsg, */ { IReceiveData } from './sync.worker';
 import { BaseWorker } from '../worker.base';
 import { CollectionService } from '../../service/service.collection';
 import { LibraryService } from '../../service/service.library';
-import { IToken } from '../../model/model.token';
+// import { IToken } from '../../model/model.token';
 import { Store2 } from '../../redux/store';
 import { action_set_sync } from '../../redux/action/sync';
 
@@ -29,10 +29,10 @@ export class SyncWorker extends BaseWorker {
     private _collectionService = new CollectionService();
     private _orderService = new OrderService();
 
-    constructor(token: IToken) {
+    constructor(/* token: IToken */) {
         super();
-        this._libraryService.setToken(token);
-        this._collectionService.setToken(token);
+        // this._libraryService.setToken(token);
+        // this._collectionService.setToken(token);
         // this.init();
 
         this.reset_syncStatus(/* false */);

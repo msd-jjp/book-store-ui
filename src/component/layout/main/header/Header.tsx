@@ -155,7 +155,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 
 const state2props = (state: redux_state) => {
     return {
-        logged_in_user: state.logged_in_user,
+        // logged_in_user: state.logged_in_user,
         internationalization: state.internationalization,
         network_status: state.network_status,
         cart: state.cart,

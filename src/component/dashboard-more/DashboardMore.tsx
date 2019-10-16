@@ -20,7 +20,7 @@ import { CmpUtility } from '../_base/CmpUtility';
 import { action_reset_sync } from '../../redux/action/sync';
 import { ISync_schema } from '../../redux/action/sync/syncAction';
 import { SyncWorker } from '../../webworker/sync-worker/SyncWorker';
-import { IToken } from '../../model/model.token';
+// import { IToken } from '../../model/model.token';
 
 interface IProps {
     logged_in_user?: IUser | null;
@@ -36,7 +36,7 @@ interface IProps {
     clear_collections: () => any;
     sync: ISync_schema;
     reset_sync: () => any;
-    token: IToken;
+    // token: IToken;
 }
 
 interface IState {
@@ -57,7 +57,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         //     lastSynced: 1569323258125
         // }
     }
-    private _syncWorker = new SyncWorker(this.props.token);
+    private _syncWorker = new SyncWorker(/* this.props.token */);
 
     componentWillUnmount() {
         this._syncWorker.terminate();
@@ -369,7 +369,7 @@ const state2props = (state: redux_state) => {
         internationalization: state.internationalization,
         cart: state.cart,
         sync: state.sync,
-        token: state.token
+        // token: state.token
     }
 }
 

@@ -2,7 +2,7 @@ import /* workerMsg, */ { IReceiveData } from './fetch-interval.worker';
 import { BaseWorker } from '../worker.base';
 import { CollectionService } from '../../service/service.collection';
 import { LibraryService } from '../../service/service.library';
-import { IToken } from '../../model/model.token';
+// import { IToken } from '../../model/model.token';
 import { Store2 } from '../../redux/store';
 import { action_set_library_data } from '../../redux/action/library';
 import { action_set_collections_data } from '../../redux/action/collection';
@@ -13,12 +13,12 @@ export class FetchIntervalWorker extends BaseWorker {
     private _libraryService = new LibraryService();
     private _collectionService = new CollectionService();
 
-    constructor(token: IToken) {
-        super();
-        this._libraryService.setToken(token);
-        this._collectionService.setToken(token);
-        // this.init();
-    }
+    // constructor(/* token: IToken */) {
+    //     super();
+    //     // this._libraryService.setToken(token);
+    //     // this._collectionService.setToken(token);
+    //     // this.init();
+    // }
 
     protected init() {
         // if (typeof (Worker) !== "undefined") {

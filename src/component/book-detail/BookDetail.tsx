@@ -11,7 +11,7 @@ import { Localization } from "../../config/localization/localization";
 import { BOOK_ROLES, BOOK_TYPES } from "../../enum/Book";
 import Rating from 'react-rating';
 import { FollowService } from "../../service/service.follow";
-import { IToken } from "../../model/model.token";
+// import { IToken } from "../../model/model.token";
 import { BtnLoader } from "../form/btn-loader/BtnLoader";
 import { RateService } from "../../service/service.rate";
 import { IUser } from "../../model/model.user";
@@ -33,7 +33,7 @@ import { Utility } from "../../asset/script/utility";
 interface IProps {
   internationalization: TInternationalization;
   match: any;
-  token: IToken;
+  // token: IToken;
   logged_in_user?: IUser | null;
   onUserLoggedIn?: (user: IUser) => void;
   network_status: NETWORK_STATUS;
@@ -119,10 +119,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
   componentDidMount() {
     this.gotoTop();
-    this._bookService.setToken(this.props.token);
-    this._followService.setToken(this.props.token);
-    this._rateService.setToken(this.props.token);
-    this._commentService.setToken(this.props.token);
+    // this._bookService.setToken(this.props.token);
+    // this._followService.setToken(this.props.token);
+    // this._rateService.setToken(this.props.token);
+    // this._commentService.setToken(this.props.token);
 
     this.bookId = this.props.match.params.bookId;
     this.fetchBook(this.bookId);
@@ -1404,7 +1404,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
   return {
     internationalization: state.internationalization,
-    token: state.token,
+    // token: state.token,
     logged_in_user: state.logged_in_user,
     network_status: state.network_status,
     cart: state.cart,
