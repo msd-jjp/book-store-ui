@@ -172,3 +172,20 @@ wavesurfer library replace require with import
 remove token from state2props in all cmp if possible
 
 ====================================================================================
+
+cmp library line 413
+
+add reducer bookDownloadFile
+    {
+        book_id: string;
+        mainFile: boolean;
+        status: 'start', 'stop', 'inProgress';
+    }[]
+
+    action --> reset, update
+
+cmp bookDownloadFile
+
+service book --> download file.
+
+====================================================================================

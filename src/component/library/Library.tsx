@@ -410,7 +410,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             const isDownloaded = is_libBook_downloaded(item);
             if (!isDownloaded) {
                 //
-                return;
+                // return;
             }
 
             let isAudio = false;
