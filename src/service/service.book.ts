@@ -1,6 +1,8 @@
 import { BaseService, IAPI_ResponseList, IAPI_Response } from './service.base';
 import { IBook } from '../model/model.book';
 import { appLocalStorage } from './appLocalStorage';
+import { CmpUtility } from '../component/_base/CmpUtility';
+import { sampleBookFile } from '../webworker/reader-engine/sampleBookFile';
 
 export class BookService extends BaseService {
 
@@ -71,6 +73,14 @@ export class BookService extends BaseService {
 
     wishList_search(data: { limit: number, offset: number }): Promise<IAPI_ResponseList<IBook>> {
         return this.axiosTokenInstance.post('/wish-list/_search', data);
+    }
+
+    downloadFile(book_id: string, mainFile: boolean): Promise<IAPI_Response<any>> {
+
+        return new Promise(async (resolve, reject) => {
+            await CmpUtility.waitOnMe(5000);
+            resolve({ data: sampleBookFile });
+        });
     }
 
 }
