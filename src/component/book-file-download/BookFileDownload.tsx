@@ -11,6 +11,7 @@ import { IDownloadingBookFile_schema } from "../../redux/action/downloading-book
 import { action_update_downloading_book_file, action_reset_downloading_book_file } from "../../redux/action/downloading-book-file";
 import { appLocalStorage } from "../../service/appLocalStorage";
 import { CmpUtility } from "../_base/CmpUtility";
+import Axios, { CancelTokenSource } from "axios";
 
 interface IProps {
     internationalization: TInternationalization;
@@ -78,18 +79,52 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     }
 
 
+    private _cancelToken_obj: any = {};
+    private get_cancelToken(book_id: string, mainFile: boolean): CancelTokenSource {
+        const prefix = mainFile ? 'mainFile' : 'sampleFile';
+        const name = prefix + book_id;
+
+        if (this._cancelToken_obj[name]) {
+            return this._cancelToken_obj[name];
+        }
+
+        const CancelToken = Axios.CancelToken;
+        const source = CancelToken.source();
+
+        this._cancelToken_obj[name] = source;
+        return this._cancelToken_obj[name];
+    }
+    private remove_cancelToken(book_id: string, mainFile: boolean) {
+        const prefix = mainFile ? 'mainFile' : 'sampleFile';
+        const name = prefix + book_id;
+        delete this._cancelToken_obj[name];
+    }
     async startDownload(book_id: string, mainFile: boolean) {
-        let res = await this._bookService.downloadFile(book_id, mainFile).catch(e => { });
+        let downloadCanceled = false;
+        let res = await this._bookService.downloadFile(
+            book_id,
+            mainFile,
+            this.get_cancelToken(book_id, mainFile).token
+        ).catch(e => {
+            debugger;
+            /** if canceled called prevent calling downloadFinished (it's already removed from list). */
+            if (e.message === 'download-canceled') {
+                this.remove_cancelToken(book_id, mainFile);
+                downloadCanceled = true;
+            }
+        });
 
         if (res) {
             appLocalStorage.storeBookFile(book_id, mainFile, res.data);
         }
 
+        if (downloadCanceled) return;
         this.downloadFinished(book_id, mainFile);
     }
 
     async stopDownload(book_id: string, mainFile: boolean) {
         //stop axios
+        this.get_cancelToken(book_id, mainFile).cancel('download-canceled');
     }
 
     downloadFinished(book_id: string, mainFile: boolean) {

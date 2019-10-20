@@ -3,6 +3,7 @@ import { IBook } from '../model/model.book';
 import { appLocalStorage } from './appLocalStorage';
 import { CmpUtility } from '../component/_base/CmpUtility';
 import { sampleBookFile } from '../webworker/reader-engine/sampleBookFile';
+import { CancelToken } from 'axios';
 
 export class BookService extends BaseService {
 
@@ -75,10 +76,17 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.post('/wish-list/_search', data);
     }
 
-    downloadFile(book_id: string, mainFile: boolean): Promise<IAPI_Response<any>> {
+    downloadFile(book_id: string, mainFile: boolean, cancelToken: CancelToken): Promise<IAPI_Response<any>> {
 
         return new Promise(async (resolve, reject) => {
-            await CmpUtility.waitOnMe(15000);
+            await CmpUtility.waitOnMe(9000);
+            // resolve(
+            //     this.axiosTokenInstance.post(
+            //         '/books/_search',
+            //         { limit: 500, offset: 0, filter: {} },
+            //         { cancelToken }
+            //     )
+            // );
             resolve({ data: sampleBookFile });
         });
     }
