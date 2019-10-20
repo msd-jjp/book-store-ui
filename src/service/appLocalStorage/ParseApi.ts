@@ -1,8 +1,8 @@
 import { AxiosResponse } from "axios";
 import { appLocalStorage } from ".";
 
-export class ParseApi{
-    static parseResponse(response: AxiosResponse<any>){
+export class ParseApi {
+    static parseResponse(response: AxiosResponse<any>) {
         if (response.config.url === "/api/books/_search" || response.config.url === "/api/books/search-phrase") {
             // debugger;
             // if (response.config.data) {
@@ -27,6 +27,18 @@ export class ParseApi{
 
             const id = response.config.url.replace('/api/comments/', '');
             appLocalStorage.removeFromCollection("clc_comment", id);
+        }
+        else if (response.config.url &&
+            response.config.url.includes('/api/orders/user') &&
+            response.config.method === "post") {
+
+            appLocalStorage.addDataToCollection('clc_userInvoicedOrder', response.data.result);
+        }
+        else if (response.config.url &&
+            response.config.url.includes('/api/order-items/order/') &&
+            response.config.method === "get") {
+
+            appLocalStorage.storeData_userInvoicedOrderItem(response.data.result);
         }
     }
 }

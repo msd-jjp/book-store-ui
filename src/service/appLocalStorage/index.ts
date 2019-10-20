@@ -5,6 +5,7 @@ import { AxiosResponse } from 'axios';
 import { ParseApi } from './ParseApi';
 import { SearchAppStorage } from './SearchAppStorage';
 import { StoreData } from './StoreData';
+import { IOrder, IOrderItem } from '../../model/model.order';
 
 interface IBook_file_store_sample {
     id: '/^sampleFile-/';//IBook['id'];
@@ -16,9 +17,15 @@ interface IBook_file_store_main {
     mainFile: Uint8Array;
     // sampleFile: Uint8Array;
 }
+export interface IOrderItemStore { id: IOrder['id']; items: IOrderItem[] };
 export type IBook_file_store = IBook_file_store_sample | IBook_file_store_main;
-export type TCollectionName = 'clc_book' | 'clc_comment' | 'clc_book_file';
-export type TCollectionData = IBook | IComment; // | IBook_file_store;
+export type TCollectionName =
+    'clc_book' |
+    'clc_comment' |
+    'clc_userInvoicedOrder' |
+    'clc_userInvoicedOrderItem' |
+    'clc_book_file';
+export type TCollectionData = IBook | IComment | IOrder; // | IBook_file_store;
 
 export class appLocalStorage {
 
@@ -31,8 +38,13 @@ export class appLocalStorage {
         autosaveInterval: 4000
     });
     // app_db.save
+    static readonly collectionNameList: TCollectionName[] =
+        ['clc_book', 'clc_comment', 'clc_userInvoicedOrder', 'clc_userInvoicedOrderItem', 'clc_book_file'];
+
     static clc_book: Collection<IBook>;
     static clc_comment: Collection<IComment>;
+    static clc_userInvoicedOrder: Collection<IOrder>;
+    static clc_userInvoicedOrderItem: Collection<IOrderItemStore>;
     static clc_book_file: Collection<any>;
     constructor() {
         appLocalStorage.app_db.loadDatabase({}, (err: any) => {
@@ -42,23 +54,32 @@ export class appLocalStorage {
     }
 
     static initDB() {
-        if (this.app_db.getCollection('clc_book')) {
-            this.clc_book = this.app_db.getCollection('clc_book');
-        } else {
-            this.clc_book = this.app_db.addCollection('clc_book');
-        }
+        appLocalStorage.collectionNameList.forEach((colName: TCollectionName) => {
+            // let _appCol = appLocalStorage[colName];
+            if (appLocalStorage.app_db.getCollection(colName)) {
+                (appLocalStorage[colName] as Collection<any>) = appLocalStorage.app_db.getCollection(colName);
+            } else {
+                (appLocalStorage[colName] as Collection<any>) = appLocalStorage.app_db.addCollection(colName);
+            }
+        });
 
-        if (this.app_db.getCollection('clc_comment')) {
-            this.clc_comment = this.app_db.getCollection('clc_comment');
-        } else {
-            this.clc_comment = this.app_db.addCollection('clc_comment');
-        }
+        // if (this.app_db.getCollection('clc_book')) {
+        //     this.clc_book = this.app_db.getCollection('clc_book');
+        // } else {
+        //     this.clc_book = this.app_db.addCollection('clc_book');
+        // }
 
-        if (this.app_db.getCollection('clc_book_file')) {
-            this.clc_book_file = this.app_db.getCollection('clc_book_file');
-        } else {
-            this.clc_book_file = this.app_db.addCollection('clc_book_file');
-        }
+        // if (this.app_db.getCollection('clc_comment')) {
+        //     this.clc_comment = this.app_db.getCollection('clc_comment');
+        // } else {
+        //     this.clc_comment = this.app_db.addCollection('clc_comment');
+        // }
+
+        // if (this.app_db.getCollection('clc_book_file')) {
+        //     this.clc_book_file = this.app_db.getCollection('clc_book_file');
+        // } else {
+        //     this.clc_book_file = this.app_db.addCollection('clc_book_file');
+        // }
     }
 
     static clearCollection(collectionName: TCollectionName) {
@@ -76,8 +97,9 @@ export class appLocalStorage {
     }
 
     static resetDB() {
-        let coll_list: TCollectionName[] = ['clc_book', 'clc_comment', 'clc_book_file'];
-        coll_list.forEach((coll: TCollectionName) => {
+        // let coll_list: TCollectionName[] = ['clc_book', 'clc_comment', 'clc_order', 'clc_orderItem', 'clc_book_file'];
+        // coll_list
+        appLocalStorage.collectionNameList.forEach((coll: TCollectionName) => {
             appLocalStorage.clearCollection(coll);
         });
     }
@@ -85,6 +107,8 @@ export class appLocalStorage {
     static afterAppLogout() {
         // appLocalStorage.resetDB() // todo: ask if need resetDB?
         appLocalStorage.clearCollection('clc_book_file');
+        appLocalStorage.clearCollection('clc_userInvoicedOrder');
+        appLocalStorage.clearCollection('clc_userInvoicedOrderItem');
     }
 
     static storeUsefullResponse(response: AxiosResponse<any>) {
@@ -92,11 +116,15 @@ export class appLocalStorage {
     }
 
     static addDataToCollection = StoreData.addDataToCollection;
+    static storeData_userInvoicedOrderItem = StoreData.storeData_userInvoicedOrderItem;
 
     static findById = SearchAppStorage.findById;
     static findBookMainFileById = SearchAppStorage.findBookMainFileById;
     static search_by_query_book = SearchAppStorage.search_by_query_book;
     static search_by_query_comment = SearchAppStorage.search_by_query_comment;
     static search_by_phrase_book = SearchAppStorage.search_by_phrase_book;
+
+    static search_by_query_userInvoicedOrder = SearchAppStorage.search_by_query_userInvoicedOrder;
+    static find_orderItems_by_order_id = SearchAppStorage.find_orderItems_by_order_id;
 
 }

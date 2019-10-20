@@ -1,5 +1,6 @@
 import { BaseService, IAPI_Response, IAPI_ResponseList } from './service.base';
 import { IOrder, IOrderItem } from '../model/model.order';
+import { appLocalStorage } from './appLocalStorage';
 
 interface IOrderItem_detail {
     book_id: string;
@@ -23,10 +24,27 @@ export class OrderService extends BaseService {
     }
 
     userOrder(limit: number, offset: number, filter?: Object): Promise<IAPI_ResponseList<IOrder>> {
+        if (BaseService.isAppOffline()) {
+            let res: IOrder[] | null = appLocalStorage.search_by_query_userInvoicedOrder({ limit, offset });
+            res = res || [];
+            return new Promise((resolve, reject) => {
+                resolve({ data: { result: res! } });
+            });
+        }
         return this.axiosTokenInstance.post(`/orders/user`, { limit, offset, filter });
     }
 
     getOrderItems(order_id: string): Promise<IAPI_ResponseList<IOrderItem>> {
+        if (BaseService.isAppOffline()) {
+            let res: IOrderItem[] | undefined = appLocalStorage.find_orderItems_by_order_id(order_id);
+            if (res) {
+                return new Promise((resolve, reject) => {
+                    resolve({ data: { result: res! } });
+                });
+            } else {
+                //reject: put if else into Promise
+            }
+        }
         return this.axiosTokenInstance.get(`/order-items/order/${order_id}`);
     }
 

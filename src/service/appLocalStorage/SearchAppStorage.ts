@@ -1,6 +1,7 @@
 import { appLocalStorage, TCollectionName, TCollectionData } from ".";
 import { IBook } from "../../model/model.book";
 import { IComment } from "../../model/model.comment";
+import { IOrder, IOrderItem } from "../../model/model.order";
 
 // type TMainFileId = '/^mainFile-/i';// new RegExp('^' + 'mainFile-', 'i');
 // type vsdv = RegExp('/^mainFile-/i');
@@ -105,4 +106,21 @@ export class SearchAppStorage {
             .limit(searchPayload.limit)
             .data();
     }
+
+    static search_by_query_userInvoicedOrder(
+        searchPayload: { limit: number, offset: number }
+    ): IOrder[] {
+        return appLocalStorage.clc_userInvoicedOrder.chain()
+            .sort(SearchAppStorage.asc_sort_creation_date)
+            .offset(searchPayload.offset)
+            .limit(searchPayload.limit)
+            .data();
+    }
+
+    static find_orderItems_by_order_id(order_id: string): IOrderItem[] | undefined {
+        const data = appLocalStorage.clc_userInvoicedOrderItem.findOne({ id: order_id });
+        if (data) return data.items;
+        // else return [];
+    }
+
 }
