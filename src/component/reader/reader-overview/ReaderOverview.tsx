@@ -3,11 +3,11 @@ import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { redux_state } from "../../../redux/app_state";
 import { IUser } from "../../../model/model.user";
-import { TInternationalization } from "../../../config/setup";
+import { TInternationalization, Setup } from "../../../config/setup";
 import { BaseComponent } from "../../_base/BaseComponent";
 import { History } from "history";
 // import { IToken } from "../../../model/model.token";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import { Localization } from "../../../config/localization/localization";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { PersonService } from "../../../service/service.person";
@@ -28,6 +28,7 @@ import { Input } from "../../form/input/Input";
 import { AppRegex } from "../../../config/regex";
 import { color, getFont, base64ToBuffer } from "../../../webworker/reader-engine/tools";
 import { book } from "../../../webworker/reader-engine/MsdBook";
+import { appLocalStorage } from "../../../service/appLocalStorage";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -214,8 +215,22 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     return book!.title;
   }
 
+  bookFileNotFound_notify() {
+    const notifyBody: string = Localization.msg.ui.book_file_not_found_download_it;
+    const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };
+    toast.warn(notifyBody, this.getNotifyConfig(config));
+  }
+
   async initSwiper() {
-    await this.createBook(this.bookFile);
+    // await this.createBook(this.bookFile);
+    const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
+    if (!bookFile) {
+      this.bookFileNotFound_notify();
+      // CmpUtility.waitOnMe(100);
+      // this.goBack();
+      return;
+    }
+    await this.createBook(bookFile);
     const self = this;
     // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
     // this.swiper_obj && this.swiper_obj.destroy(true, true);
@@ -330,21 +345,21 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  private async createBook(bookFile: any) {
+  private async createBook(bookFile: any) { // Uint8Array
     debugger;
     const cWhite = color(255, 255, 255, 255);
     const cBlack = color(255, 0, 0, 255);
     // const cBlue = color(0, 0, 255, 255);
     const font_arrayBuffer = await getFont('Zar.ttf');
     const font = new Uint8Array(font_arrayBuffer);
-    debugger;
+    // debugger;
     // const fontHeapPtr = copyBufferToHeap(font);
     // const fontSize = 42;
-    const bookbuf = base64ToBuffer(bookFile.sampleBookFile);
+    const bookbuf = base64ToBuffer(bookFile);
     this.bookInstance = new book(bookbuf, 500, 500, font, 30, cWhite, cBlack);
     await CmpUtility.waitOnMe(2000);
   }
-  private bookFile = require('../../../webworker/reader-engine/sampleBookFile');
+  // private bookFile = require('../../../webworker/reader-engine/sampleBookFile');
   // private bookPage = require('../../../webworker/reader-engine/sampleBookPage');
   private bookInstance!: book; // =  this.createBook(this.bookFile);
 
