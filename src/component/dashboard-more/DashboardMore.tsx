@@ -22,6 +22,7 @@ import { ISync_schema } from '../../redux/action/sync/syncAction';
 import { SyncWorker } from '../../webworker/sync-worker/SyncWorker';
 import { BaseService } from '../../service/service.base';
 import { appLocalStorage } from '../../service/appLocalStorage';
+import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 // import { IToken } from '../../model/model.token';
 
 interface IProps {
@@ -39,6 +40,7 @@ interface IProps {
     sync: ISync_schema;
     reset_sync: () => any;
     // token: IToken;
+    network_status: NETWORK_STATUS;
 }
 
 interface IState {
@@ -195,6 +197,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
     }
 
     private async onSync_clicked() {
+        if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
         if (this.props.sync.isSyncing_visible) return;
         this._syncWorker.postMessage('start_visible');
     }
@@ -243,14 +246,23 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
             <>
                 <div className="dashboard-more-wrapper">
                     <ul className="more-list list-group list-group-flush">
-                        <li className="more-item list-group-item p-align-0 cursor-pointer"
+                        <li className={
+                            "more-item list-group-item p-align-0 cursor-pointer "
+                            + (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'disabled' : '')
+                        }
                             onClick={() => this.onSync_clicked()}
                         >
                             <div className="icon-wrapper mr-3">
                                 <i className={"fa fa-refresh " + (this.props.sync.isSyncing_visible ? 'fa-spin' : '')}></i>
                             </div>
                             <div className="wrapper d-inline">
-                                <span className="text">{Localization.sync}</span>
+                                <span className="text">
+                                    {Localization.sync}
+                                    {
+                                        this.props.network_status === NETWORK_STATUS.OFFLINE
+                                            ? <i className="fa fa-wifi text-danger"></i> : ''
+                                    }
+                                </span>
                                 <span className="sub-text d-block text-muted">
                                     {this.sync_subText_render()}
                                 </span>
@@ -375,6 +387,7 @@ const state2props = (state: redux_state) => {
         cart: state.cart,
         sync: state.sync,
         // token: state.token
+        network_status: state.network_status,
     }
 }
 
