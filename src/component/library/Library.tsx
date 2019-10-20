@@ -6,10 +6,7 @@ import { IUser } from '../../model/model.user';
 import { TInternationalization } from '../../config/setup';
 import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
-// import { LibraryService } from '../../service/service.library';
-// import { IToken } from '../../model/model.token';
 import { CollectionService } from '../../service/service.collection';
-// import { BOOK_TYPES, BOOK_ROLES } from '../../enum/Book';
 import { ToastContainer } from 'react-toastify';
 import { Modal, Dropdown } from 'react-bootstrap';
 import { Input } from '../form/input/Input';
@@ -18,39 +15,34 @@ import { History } from "history";
 import { ILibrary } from '../../model/model.library';
 import { LIBRARY_VIEW } from '../../enum/Library';
 import { ILibrary_schema } from '../../redux/action/library/libraryAction';
-import { /* action_set_library_data, */ action_set_library_view } from '../../redux/action/library';
+import { action_set_library_view } from '../../redux/action/library';
 import { ICollection } from '../../model/model.collection';
 import { action_set_collections_data } from '../../redux/action/collection';
 import { ICollection_schema } from '../../redux/action/collection/collectionAction';
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { AddToCollection } from './collection/add-to-collection/AddToCollection';
 import { IBook } from '../../model/model.book';
-import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, is_libBook_downloading } from './libraryViewTemplate';
+import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, toggle_libBook_download } from './libraryViewTemplate';
 import { CmpUtility } from '../_base/CmpUtility';
 import { BOOK_TYPES } from '../../enum/Book';
-import { IDownloadingBookFile_schema } from '../../redux/action/downloading-book-file/downloadingBookFileAction';
-import { action_update_downloading_book_file } from '../../redux/action/downloading-book-file';
+// import { IDownloadingBookFile_schema } from '../../redux/action/downloading-book-file/downloadingBookFileAction';
+// import { action_update_downloading_book_file } from '../../redux/action/downloading-book-file';
 import { appLocalStorage } from '../../service/appLocalStorage';
 
 export interface IProps {
     logged_in_user?: IUser | null;
     internationalization: TInternationalization;
-    // token: IToken;
     history: History;
     library: ILibrary_schema;
-    // set_library_data: (data: ILibrary[]) => any;
     set_library_view: (view: LIBRARY_VIEW) => any;
     collection: ICollection_schema;
     set_collections_data: (data: ICollection[]) => any;
     network_status: NETWORK_STATUS;
-    downloading_book_file: IDownloadingBookFile_schema[];
-    update_downloading_book_file: (data: IDownloadingBookFile_schema[]) => any;
+    // downloading_book_file: IDownloadingBookFile_schema[];
+    // update_downloading_book_file: (data: IDownloadingBookFile_schema[]) => any;
 }
 
 interface IState {
-    // library_view: LIBRARY_VIEW;
-    // library_data: ILibrary[] | [];
-    // collection_data: ICollection[] | [];
     modal_createCollections: {
         show: boolean;
         loader: boolean;
@@ -104,36 +96,11 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         },
     }
 
-    // private _libraryService = new LibraryService();
     private _collectionService = new CollectionService();
-
-    // constructor(props: IProps) {
-    //     super(props);
-    //     // this._libraryService.setToken(this.props.token);
-    //     // this._collectionService.setToken(this.props.token);
-    // }
 
     componentDidMount() {
         // this.fetchLibrary()
     }
-
-    // async fetchLibrary() {
-    //     let res = await this._libraryService.getAll().catch(error => {
-    //         this.handleError({ error: error.response });
-    //     });
-
-    //     if (res) {
-    //         this.props.set_library_data(res.data.result);
-    //     }
-
-    //     let res_coll = await this._collectionService.getAll().catch(error => {
-    //         this.handleError({ error: error.response });
-    //     });
-
-    //     if (res_coll) {
-    //         this.props.set_collections_data(res_coll.data.result);
-    //     }
-    // }
 
     library_header_render() {
         return (
@@ -319,7 +286,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     removeFromDevice() {
         const id_s = this.state.library_data_selected.map((item: ILibrary) => item.book.id);
         appLocalStorage.removeFromCollection('clc_book_mainFile', id_s);
-        this.setState({});
+        CmpUtility.refreshView();
     }
 
     gotoBookDetail(bookId: string) {
@@ -336,26 +303,6 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             //     this.state.library_data_selected
         });
     }
-
-    // private calc_read_percent(item: ILibrary): string {
-    //     let read = 0;
-    //     let total = 0;
-
-    //     if (item.book.type === BOOK_TYPES.Audio) {
-    //         read = item.status.read_duration;
-    //         total = +item.book.duration;
-
-    //     } else if (item.book.type === BOOK_TYPES.Epub || item.book.type === BOOK_TYPES.Pdf) {
-    //         read = item.status.read_pages;
-    //         total = +item.book.pages;
-    //     }
-
-    //     if (total) {
-    //         return Math.floor(((read || 0) * 100) / +total) + '%';
-    //     } else {
-    //         return '0%';
-    //     }
-    // }
 
     view_grid_render() {
         return (
@@ -414,28 +361,13 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     }
 
     //#region select item
-    // is_libBook_downloading(item: ILibrary): boolean {
-    //     const d = this.props.downloading_book_file.find(d => d.book_id === item.book.id && d.mainFile === true);
-    //     return !!d;
-    // }
-
     onItemSelect(item: ILibrary) {
         if (this.state.isLibrary_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
             const isDownloaded = is_libBook_downloaded(item);
             if (!isDownloaded) {
-                const isDownloading = is_libBook_downloading(item);
-                if (isDownloading) return;
-                let dbf = [...this.props.downloading_book_file];
-                dbf.push({
-                    book_id: item.book.id,
-                    mainFile: true,
-                    status: 'start'
-                })
-                this.props.update_downloading_book_file(dbf);
-                debugger;
-                // 
+                toggle_libBook_download(item);
                 return;
             }
 
@@ -1098,7 +1030,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
         // set_library_data: (data: ILibrary[]) => dispatch(action_set_library_data(data)),
         set_library_view: (view: LIBRARY_VIEW) => dispatch(action_set_library_view(view)),
         set_collections_data: (data: ICollection[]) => dispatch(action_set_collections_data(data)),
-        update_downloading_book_file: (data: IDownloadingBookFile_schema[]) => dispatch(action_update_downloading_book_file(data)),
+        // update_downloading_book_file: (data: IDownloadingBookFile_schema[]) => dispatch(action_update_downloading_book_file(data)),
     }
 }
 
@@ -1110,7 +1042,7 @@ const state2props = (state: redux_state) => {
         library: state.library,
         collection: state.collection,
         network_status: state.network_status,
-        downloading_book_file: state.downloading_book_file,
+        // downloading_book_file: state.downloading_book_file,
     }
 }
 
