@@ -1,6 +1,9 @@
 import { IPerson } from "../../model/model.person";
 import { IBook } from "../../model/model.book";
 import { BOOK_ROLES, BOOK_TYPES } from "../../enum/Book";
+import { appLocalStorage } from "../../service/appLocalStorage";
+import { Store2 } from "../../redux/store";
+import { action_change_app_flag } from "../../redux/action/internationalization";
 
 // import React from 'react';
 
@@ -103,6 +106,20 @@ export abstract class CmpUtility {
                 res(true);
             }, timer);
         });
+    }
+
+    static is_book_downloaded(book_id: string): boolean {
+        if (appLocalStorage.findBookMainFileById(book_id))
+            return true;
+        return false;
+    }
+
+    /**
+     * render all cmp with dispatch action_change_app_flag.
+     */
+    static refreshView() {
+        const int = { ...Store2.getState().internationalization };
+        Store2.dispatch(action_change_app_flag(int));
     }
 
 }
