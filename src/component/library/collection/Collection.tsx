@@ -6,10 +6,6 @@ import { IUser } from '../../../model/model.user';
 import { TInternationalization } from '../../../config/setup';
 import { BaseComponent } from '../../_base/BaseComponent';
 import { Localization } from '../../../config/localization/localization';
-// import { LibraryService } from '../../../service/service.library';
-// import { IToken } from '../../../model/model.token';
-// import { CollectionService } from '../../../service/service.collection';
-// import { BOOK_TYPES, BOOK_ROLES } from '../../../enum/Book';
 import { ToastContainer } from 'react-toastify';
 import { Modal, Dropdown } from 'react-bootstrap';
 import { BtnLoader } from '../../form/btn-loader/BtnLoader';
@@ -25,8 +21,10 @@ import { CollectionService } from '../../../service/service.collection';
 import { AddToCollection } from './add-to-collection/AddToCollection';
 import { IBook } from '../../../model/model.book';
 import { NETWORK_STATUS } from '../../../enum/NetworkStatus';
-import { libraryItem_viewList_render, libraryItem_viewGrid_render } from '../libraryViewTemplate';
+import { libraryItem_viewList_render, libraryItem_viewGrid_render, is_libBook_downloaded, toggle_libBook_download } from '../libraryViewTemplate';
 import { BOOK_TYPES } from '../../../enum/Book';
+import { appLocalStorage } from '../../../service/appLocalStorage';
+import { CmpUtility } from '../../_base/CmpUtility';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -71,15 +69,12 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         },
     }
 
-    // private _libraryService = new LibraryService();
     private _collectionService = new CollectionService();
     private collectionTitle: string = '';
     private isUncollected: boolean = false;
 
     constructor(props: IProps) {
         super(props);
-        // this._libraryService.setToken(this.props.token);
-        // this._collectionService.setToken(this.props.token);
 
         this.collectionTitle = this.props.match.params.collectionTitle;
         this.isUncollected = (this.props.match.params.isUncollected === 'true');
@@ -275,7 +270,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                                                 }
                                             </Dropdown.Item>
                                             <Dropdown.Item
-                                                onClick={() => { }}
+                                                onClick={() => this.removeFromDevice()}
                                                 className={
                                                     "text-capitalize "
                                                     + (!this.state.collection_library_data_selected.length ? 'd-none' : '')
@@ -337,6 +332,12 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         }
     }
 
+    removeFromDevice() {
+        const id_s = this.state.collection_library_data_selected.map((item: ILibrary) => item.book.id);
+        appLocalStorage.removeFromCollection('clc_book_mainFile', id_s);
+        CmpUtility.refreshView();
+    }
+
     gotoBookDetail(bookId: string) {
         this.props.history.push(`/book-detail/${bookId}`);
     }
@@ -351,26 +352,6 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
             //     this.state.collection_library_data_selected
         });
     }
-
-    // calc_read_percent(item: ILibrary): string {
-    //     let read = 0;
-    //     let total = 0;
-
-    //     if (item.book.type === BOOK_TYPES.Audio) {
-    //         read = item.status.read_duration;
-    //         total = +item.book.duration;
-
-    //     } else if (item.book.type === BOOK_TYPES.Epub || item.book.type === BOOK_TYPES.Pdf) {
-    //         read = item.status.read_pages;
-    //         total = +item.book.pages;
-    //     }
-
-    //     if (total) {
-    //         return Math.floor(((read || 0) * 100) / +total) + '%';
-    //     } else {
-    //         return '0%';
-    //     }
-    // }
 
     view_grid_render() {
         return (
@@ -431,11 +412,17 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         if (this.state.isCollection_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
+            const isDownloaded = is_libBook_downloaded(item);
+            if (!isDownloaded) {
+                toggle_libBook_download(item);
+                return;
+            }
+
             let isAudio = false;
             if (item.book.type === BOOK_TYPES.Audio) {
                 isAudio = true;
             }
-            this.gotoReader(item.book.id,isAudio);
+            this.gotoReader(item.book.id, isAudio);
         }
     }
 
@@ -451,12 +438,6 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         }
 
         return selected;
-
-        // let index = selected_list.indexOf(item);
-        // if (index < 0) {
-        //     return false;
-        // }
-        // return true;
     }
 
     toggleSelect_libraryData(item: ILibrary) {
@@ -477,14 +458,6 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         } else {
             selected_list.push(item);
         }
-
-
-        // let index = selected_list.indexOf(item);
-        // if (index < 0) {
-        //     selected_list.push(item);
-        // } else {
-        //     selected_list.splice(index, 1);
-        // }
 
         this.setState({ ...this.state, collection_library_data_selected: selected_list });
     }
@@ -590,7 +563,9 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
             this.props.set_collections_data(allColl);
 
             this.set_col_libraryData();
-            // this.goBack();
+            CmpUtility.waitOnMe(100);
+            this.deselectAll_libraryData();
+            
         }
     }
 
