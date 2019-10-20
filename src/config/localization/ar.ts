@@ -28,6 +28,7 @@ export const ar = {
             login_again: 'مجددا وارد شوید',
             sync_error: 'هنگام همگام سازی خطایی روی داد',
             logout_erase_user_data_warning: 'با خروج از برنامه، همه اطلاعات این کاربر، از این دستگاه حذف می شود.',
+            book_file_not_found_download_it: 'فایل کتاب پیدا نشد، لطفا آن را دانلود کنید.',
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',

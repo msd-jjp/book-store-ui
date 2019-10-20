@@ -38,6 +38,7 @@ interface ILocalization extends LocalizedStringsMethods {
             login_again: string;
             sync_error: string;
             logout_erase_user_data_warning: string;
+            book_file_not_found_download_it: string;
         },
         back: {
             [key: string]: any; // todo

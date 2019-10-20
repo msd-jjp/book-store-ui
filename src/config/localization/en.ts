@@ -28,6 +28,7 @@ export const en = {
             login_again: 'login again',
             sync_error: 'error occured while syncing',
             logout_erase_user_data_warning: 'log out will erase all user information from this device.',
+            book_file_not_found_download_it: 'book file not found, please download it.',
         },
         back: {
             user_already_exists: 'user already exists',
