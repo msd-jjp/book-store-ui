@@ -146,14 +146,25 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
     }
 
+    // updateUserCurrentBook_client() {
+    //     let logged_in_user = { ...this.props.logged_in_user! };
+    //     if (!logged_in_user) return;
+    //     const book = this.getBookFromLibrary(this.book_id);
+    //     logged_in_user.person.current_book = book;
+    //     this.props.onUserLoggedIn(logged_in_user);
+
+    //     this.setState({ ...this.state, book: this.getBookFromLibrary(this.book_id) });
+    // }
     updateUserCurrentBook_client() {
-        let logged_in_user = { ...this.props.logged_in_user! };
-        if (!logged_in_user) return;
         const book = this.getBookFromLibrary(this.book_id);
+        this.setState({ ...this.state, book: book });
+
+        let logged_in_user = { ...this.props.logged_in_user! };
+        if (logged_in_user.person.current_book && logged_in_user.person.current_book.id === this.book_id) {
+            return;
+        }
         logged_in_user.person.current_book = book;
         this.props.onUserLoggedIn(logged_in_user);
-
-        this.setState({ ...this.state, book: this.getBookFromLibrary(this.book_id) });
     }
 
     getBookFromLibrary(book_id: string): IBook {
@@ -168,6 +179,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     async updateUserCurrentBook_server() {
         if (!this.book_id) return;
         if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
+        if (this.props.logged_in_user!.person.current_book &&
+            this.props.logged_in_user!.person.current_book.id === this.book_id) {
+            return;
+        }
 
         await this._personService.update(
             { current_book_id: this.book_id },

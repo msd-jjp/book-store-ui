@@ -77,7 +77,7 @@ export class SyncWorker extends BaseWorker {
         this.whichComment_isRemoved();
     }
 
-    reset_syncStatus(/* inProgress: boolean */) {
+    private reset_syncStatus(/* inProgress: boolean */) {
         this._syncStatus = {
             isAccessChanged: {
                 inProgress: false, // inProgress,
@@ -94,7 +94,7 @@ export class SyncWorker extends BaseWorker {
         };
     }
 
-    afterActionFinished() {
+    private afterActionFinished() {
         const inProgressList = Object.keys(this._syncStatus).filter((k) => (this._syncStatus as any)[k].inProgress === true);
         if (!inProgressList.length) {
             const errorList_key = Object.keys(this._syncStatus).filter((k) => (this._syncStatus as any)[k].error !== undefined);
@@ -127,7 +127,7 @@ export class SyncWorker extends BaseWorker {
     /**
      * check if user access updated?
      */
-    async isAccessChanged() {
+    private async isAccessChanged() {
         this._syncStatus.isAccessChanged.inProgress = true;
         this._syncStatus.isAccessChanged.error = undefined;
         // await CmpUtility.waitOnMe(1000);
@@ -143,7 +143,7 @@ export class SyncWorker extends BaseWorker {
     /**
      * send all existing books id list, and wait for list of id that is removed.
      */
-    async whichBook_isRemoved() {
+    private async whichBook_isRemoved() {
         this._syncStatus.whichBook_isRemoved.inProgress = true;
         this._syncStatus.whichBook_isRemoved.error = undefined;
         // await CmpUtility.waitOnMe(1500);
@@ -158,7 +158,7 @@ export class SyncWorker extends BaseWorker {
     /**
      * send all existing comments id list, and wait for list of id that is removed.
      */
-    async whichComment_isRemoved() {
+    private async whichComment_isRemoved() {
         this._syncStatus.whichComment_isRemoved.inProgress = true;
         await CmpUtility.waitOnMe(200);
         this._syncStatus.whichComment_isRemoved.inProgress = false;
@@ -166,5 +166,10 @@ export class SyncWorker extends BaseWorker {
         console.log('whichComment_isRemoved compeleted.');
         this.afterActionFinished();
     }
+
+    /**
+     * check if "device current book" is different from "server current book".
+     */
+    private async sync_current_book() { }
 
 }
