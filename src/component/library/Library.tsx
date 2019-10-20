@@ -25,9 +25,12 @@ import { ICollection_schema } from '../../redux/action/collection/collectionActi
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { AddToCollection } from './collection/add-to-collection/AddToCollection';
 import { IBook } from '../../model/model.book';
-import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded } from './libraryViewTemplate';
+import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, is_libBook_downloading } from './libraryViewTemplate';
 import { CmpUtility } from '../_base/CmpUtility';
 import { BOOK_TYPES } from '../../enum/Book';
+import { IDownloadingBookFile_schema } from '../../redux/action/downloading-book-file/downloadingBookFileAction';
+import { action_update_downloading_book_file } from '../../redux/action/downloading-book-file';
+import { appLocalStorage } from '../../service/appLocalStorage';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -40,6 +43,8 @@ export interface IProps {
     collection: ICollection_schema;
     set_collections_data: (data: ICollection[]) => any;
     network_status: NETWORK_STATUS;
+    downloading_book_file: IDownloadingBookFile_schema[];
+    update_downloading_book_file: (data: IDownloadingBookFile_schema[]) => any;
 }
 
 interface IState {
@@ -249,7 +254,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                             >{Localization.view_in_store}
                                             </Dropdown.Item>
                                             <Dropdown.Item
-                                                onClick={() => { }}
+                                                onClick={() => this.removeFromDevice()}
                                                 className={
                                                     "text-capitalize "
                                                     + (!this.state.library_data_selected.length ? 'd-none' : '')
@@ -309,6 +314,12 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         if (lib) {
             this.gotoBookDetail(lib.book.id);
         }
+    }
+
+    removeFromDevice() {
+        const id_s = this.state.library_data_selected.map((item: ILibrary) => item.book.id);
+        appLocalStorage.removeFromCollection('clc_book_mainFile', id_s);
+        this.setState({});
     }
 
     gotoBookDetail(bookId: string) {
@@ -403,14 +414,29 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
     }
 
     //#region select item
+    // is_libBook_downloading(item: ILibrary): boolean {
+    //     const d = this.props.downloading_book_file.find(d => d.book_id === item.book.id && d.mainFile === true);
+    //     return !!d;
+    // }
+
     onItemSelect(item: ILibrary) {
         if (this.state.isLibrary_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
             const isDownloaded = is_libBook_downloaded(item);
             if (!isDownloaded) {
-                //
-                // return;
+                const isDownloading = is_libBook_downloading(item);
+                if (isDownloading) return;
+                let dbf = [...this.props.downloading_book_file];
+                dbf.push({
+                    book_id: item.book.id,
+                    mainFile: true,
+                    status: 'start'
+                })
+                this.props.update_downloading_book_file(dbf);
+                debugger;
+                // 
+                return;
             }
 
             let isAudio = false;
@@ -1072,6 +1098,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
         // set_library_data: (data: ILibrary[]) => dispatch(action_set_library_data(data)),
         set_library_view: (view: LIBRARY_VIEW) => dispatch(action_set_library_view(view)),
         set_collections_data: (data: ICollection[]) => dispatch(action_set_collections_data(data)),
+        update_downloading_book_file: (data: IDownloadingBookFile_schema[]) => dispatch(action_update_downloading_book_file(data)),
     }
 }
 
@@ -1083,6 +1110,7 @@ const state2props = (state: redux_state) => {
         library: state.library,
         collection: state.collection,
         network_status: state.network_status,
+        downloading_book_file: state.downloading_book_file,
     }
 }
 

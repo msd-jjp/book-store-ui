@@ -4,6 +4,7 @@ import React from 'react';
 import { CmpUtility } from "../_base/CmpUtility";
 import { Localization } from "../../config/localization/localization";
 import { appLocalStorage } from "../../service/appLocalStorage";
+import { Store2 } from "../../redux/store";
 
 export function calc_read_percent(item: ILibrary): string {
     let read = 0;
@@ -30,9 +31,15 @@ export function calc_read_percent(item: ILibrary): string {
 }
 
 export function is_libBook_downloaded(item: ILibrary): boolean {
-    if (appLocalStorage.findBookMainFileById('mainFile-' + item.book.id))
+    if (appLocalStorage.findBookMainFileById(item.book.id))
         return true;
     return false;
+}
+
+export function is_libBook_downloading(item: ILibrary): boolean {
+    const dbf = Store2.getState().downloading_book_file;
+    const d = dbf.find(d => d.book_id === item.book.id && d.mainFile === true);
+    return !!d;
 }
 
 export function libraryItem_viewList_render(
@@ -44,6 +51,8 @@ export function libraryItem_viewList_render(
     // const writerName = CmpUtility.getBook_firstWriterFullName(item.book);
     const writerName = CmpUtility.getBook_role_fisrt_fullName(item.book, BOOK_ROLES.Writer);
     const read_percent = calc_read_percent(item);
+    const is_downloaded = is_libBook_downloaded(item);
+    const is_downloading = is_libBook_downloading(item);
 
     return (
         <div className="view-list-item pb-2 mb-2" >
@@ -68,7 +77,12 @@ export function libraryItem_viewList_render(
                     </span>
                     {/* todo: size */}
                     {/* <span className="book-volume small">789.3 kb</span> */}
-                    <i className={"fa fa-check-circle downloaded-icon " + (is_libBook_downloaded(item) ? '' : 'd-none')}></i>
+                    {/* <i className={"fa fa-check-circle downloaded-icon " + (is_downloaded ? '' : 'd-none')}></i> */}
+                    <i className={
+                        "fa fa-check-circle-- downloaded-icon "
+                        + (is_downloaded ? 'fa-check-circle' : ' ')
+                        + (is_downloading ? 'fa-refresh fa-spin' : ' ')
+                    } />
                 </div>
 
                 <div className={
@@ -91,6 +105,8 @@ export function libraryItem_viewGrid_render(
 ): JSX.Element {
     const book_img = CmpUtility.getBook_firstImg(item.book);
     const read_percent = calc_read_percent(item);
+    const is_downloaded = is_libBook_downloaded(item);
+    const is_downloading = is_libBook_downloading(item);
 
     return (
         <div className="col-4 p-align-inverse-0 mb-3">
@@ -113,8 +129,13 @@ export function libraryItem_viewGrid_render(
                     <div className="bp-state-arrow" />
                     <div className="progress-complete-label">{Localization.readed_}</div>
                 </div>
-                <div className={"book-download " + (is_libBook_downloaded(item) ? '' : 'd-none')}>
-                    <i className="fa fa-check-circle" />
+                {/* <div className={"book-download " + (is_downloaded || is_downloading ? '' : 'd-none')}> */}
+                <div className="book-download">
+                    <i className={
+                        "fa fa-check-circle-- "
+                        + (is_downloaded ? 'fa-check-circle' : ' ')
+                        + (is_downloading ? 'fa-refresh fa-spin' : ' ')
+                    } />
                 </div>
 
                 <div className={
