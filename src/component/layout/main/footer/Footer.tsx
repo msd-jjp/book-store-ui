@@ -28,6 +28,8 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
         ) {
             const current_book = this.props.logged_in_user.person.current_book;
             const current_book_img = CmpUtility.getBook_firstImg(current_book);
+            const is_downloaded = CmpUtility.is_book_downloaded(current_book.id);
+            if (!is_downloaded) return;
 
             return (
                 <>

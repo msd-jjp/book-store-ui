@@ -234,12 +234,13 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   currentBook_render() {
     if (!this.props.logged_in_user) { return; }
     let current_book = this.props.logged_in_user.person && this.props.logged_in_user.person.current_book;
-    if (!current_book) {
-      // return;
+    const is_downloaded = current_book ? CmpUtility.is_book_downloaded(current_book.id) : false;
+    if (!current_book || !is_downloaded) {
       return (
         this.currentBook_empty_render()
       )
     }
+
     const current_book_img = CmpUtility.getBook_firstImg(current_book);
     const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(current_book, BOOK_ROLES.Writer);
     const read_percent = this.calc_read_percent_by_bookItem_in_lib(current_book.id);
