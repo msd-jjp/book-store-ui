@@ -78,7 +78,7 @@ export class BookService extends BaseService {
     downloadFile(book_id: string, mainFile: boolean): Promise<IAPI_Response<any>> {
 
         return new Promise(async (resolve, reject) => {
-            await CmpUtility.waitOnMe(5000);
+            await CmpUtility.waitOnMe(15000);
             resolve({ data: sampleBookFile });
         });
     }

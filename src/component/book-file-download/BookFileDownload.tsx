@@ -10,6 +10,7 @@ import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { IDownloadingBookFile_schema } from "../../redux/action/downloading-book-file/downloadingBookFileAction";
 import { action_update_downloading_book_file, action_reset_downloading_book_file } from "../../redux/action/downloading-book-file";
 import { appLocalStorage } from "../../service/appLocalStorage";
+import { CmpUtility } from "../_base/CmpUtility";
 
 interface IProps {
     internationalization: TInternationalization;
@@ -48,15 +49,23 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
     componentWillReceiveProps(nextProps: IProps) {
         if (JSON.stringify(nextProps.downloading_book_file) !== JSON.stringify(this.props.downloading_book_file)) {
-            debugger;
+
             let new_dbf = [...nextProps.downloading_book_file];
 
             nextProps.downloading_book_file.forEach(d => {
                 if (d.status === 'start') {
-                    new_dbf = new_dbf.filter(nd => !(nd.book_id === d.book_id && nd.mainFile === d.mainFile));
-                    let new_d: IDownloadingBookFile_schema = { ...d, status: 'inProgress' };
+                    debugger;
+                    const filtered_dbf = new_dbf.filter(nd => !(nd.book_id === d.book_id && nd.mainFile === d.mainFile));
+                    new_dbf = filtered_dbf;
+                    const new_d: IDownloadingBookFile_schema = { ...d, status: 'inProgress' };
                     new_dbf.push(new_d);
                     this.startDownload(d.book_id, d.mainFile);
+
+                } else if (d.status === 'stop') {
+                    debugger;
+                    const filtered_dbf = new_dbf.filter(nd => !(nd.book_id === d.book_id && nd.mainFile === d.mainFile));
+                    new_dbf = filtered_dbf;
+                    this.stopDownload(d.book_id, d.mainFile);
                 }
             });
 
@@ -76,13 +85,19 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
             appLocalStorage.storeBookFile(book_id, mainFile, res.data);
         }
 
-        this.downloadFinished(book_id);
+        this.downloadFinished(book_id, mainFile);
     }
 
-    downloadFinished(book_id: string) {
+    async stopDownload(book_id: string, mainFile: boolean) {
+        //stop axios
+    }
+
+    downloadFinished(book_id: string, mainFile: boolean) {
         let dbf = [...this.props.downloading_book_file];
-        const existing_list = dbf.filter(d => d.book_id !== book_id);
+        const existing_list = dbf.filter(d => !(d.book_id === book_id && d.mainFile === mainFile));
         this.props.update_downloading_book_file!(existing_list);
+        // CmpUtility.waitOnMe(100);
+        CmpUtility.refreshView();
     }
 
     render() {
