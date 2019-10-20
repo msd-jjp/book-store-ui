@@ -13,6 +13,7 @@ import { reducer as CartReducer } from './reducer/cart';
 import { reducer as LibraryReducer } from './reducer/library';
 import { reducer as CollectionReducer } from './reducer/collection';
 import { reducer as SyncReducer } from './reducer/sync';
+import { reducer as DownloadingBookFileReducer } from './reducer/downloading-book-file';
 import logger from 'redux-logger';
 //
 import { persistStore, persistReducer } from 'redux-persist';
@@ -22,6 +23,7 @@ import { ICartItems } from './action/cart/cartAction';
 import { ILibrary_schema } from './action/library/libraryAction';
 import { ICollection_schema } from './action/collection/collectionAction';
 import { ISync_schema } from './action/sync/syncAction';
+import { IDownloadingBookFile_schema } from './action/downloading-book-file/downloadingBookFileAction';
 
 const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
   logged_in_user: UserReducer as Reducer<IUser | null, AnyAction>,
@@ -33,6 +35,7 @@ const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
   library: LibraryReducer as Reducer<ILibrary_schema, AnyAction>,
   collection: CollectionReducer as Reducer<ICollection_schema, AnyAction>,
   sync: SyncReducer as Reducer<ISync_schema, AnyAction>,
+  downloading_book_file: DownloadingBookFileReducer as Reducer<IDownloadingBookFile_schema[], AnyAction>,
 }
 
 const main_reducer = combineReducers(reducers);
