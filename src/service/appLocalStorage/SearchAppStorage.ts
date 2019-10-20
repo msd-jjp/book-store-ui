@@ -3,9 +3,6 @@ import { IBook } from "../../model/model.book";
 import { IComment } from "../../model/model.comment";
 import { IOrder, IOrderItem } from "../../model/model.order";
 
-// type TMainFileId = '/^mainFile-/i';// new RegExp('^' + 'mainFile-', 'i');
-// type vsdv = RegExp('/^mainFile-/i');
-
 export class SearchAppStorage {
     // static findById<TCollectionData>(collectionName: TCollectionName, id: string):TCollectionData |null{
     static findById(collectionName: TCollectionName, id: string): any {
@@ -13,8 +10,14 @@ export class SearchAppStorage {
         // appLocalStorage.books.find({ $eq: { id: bookId } });
     }
 
-    static findBookMainFileById(id: string): any {
-        return appLocalStorage['clc_book_file'].findOne({ id: id });
+    static findBookMainFileById(book_id: string): Uint8Array | undefined {
+        const data = appLocalStorage.clc_book_mainFile.findOne({ id: book_id });
+        if (data) return data.file;
+    }
+
+    static findBookSampleFileById(book_id: string): Uint8Array | undefined {
+        const data = appLocalStorage.clc_book_sampleFile.findOne({ id: book_id });
+        if (data) return data.file;
     }
 
     static search_by_query_book(

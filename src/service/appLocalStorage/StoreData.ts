@@ -3,7 +3,7 @@ import { Collection } from "lokijs";
 import { IOrderItem } from "../../model/model.order";
 
 export class StoreData {
-    static addDataToCollection(collectionName: TCollectionName, data: TCollectionData[] | TCollectionData | IBook_file_store) {
+    static addDataToCollection(collectionName: TCollectionName, data: TCollectionData[] | TCollectionData) {
         let coll: Collection<any> = appLocalStorage[collectionName];
 
         //todo: only update found one : here we search twice if found.
@@ -40,6 +40,19 @@ export class StoreData {
         let found = coll.findOne({ id: order_id });
         if (found) {
             coll.findAndUpdate({ id: order_id }, oldObj => {
+                return newData;
+            });
+        } else {
+            coll.insert(newData);
+        }
+    }
+
+    static storeBookFile(book_id: string, mainFile: boolean, data: Uint8Array) {
+        let coll: Collection<IBook_file_store> = mainFile ? appLocalStorage.clc_book_mainFile : appLocalStorage.clc_book_sampleFile;
+        const newData: IBook_file_store = { id: book_id, file: data };
+        let found = coll.findOne({ id: book_id });
+        if (found) {
+            coll.findAndUpdate({ id: book_id }, oldObj => {
                 return newData;
             });
         } else {
