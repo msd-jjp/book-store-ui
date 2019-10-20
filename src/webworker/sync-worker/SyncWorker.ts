@@ -9,6 +9,7 @@ import { action_set_sync } from '../../redux/action/sync';
 import { CmpUtility } from '../../component/_base/CmpUtility';
 import { AxiosError } from 'axios';
 import { OrderService } from '../../service/service.order';
+import { PersonService } from '../../service/service.person';
 interface ISyncStatusItem {
     inProgress: boolean;
     error: AxiosError | undefined;
@@ -18,6 +19,7 @@ interface ISyncStatus {
     isAccessChanged: ISyncStatusItem;
     whichBook_isRemoved: ISyncStatusItem;
     whichComment_isRemoved: ISyncStatusItem;
+    userCurrentBook: ISyncStatusItem;
 }
 
 
@@ -28,6 +30,7 @@ export class SyncWorker extends BaseWorker {
     private _libraryService = new LibraryService();
     private _collectionService = new CollectionService();
     private _orderService = new OrderService();
+    private _personService = new PersonService();
 
     constructor(/* token: IToken */) {
         super();
@@ -45,8 +48,21 @@ export class SyncWorker extends BaseWorker {
     }
 
     postMessage(data: IReceiveData) {
-        if (data === "start" || data === "start_visible") {
-            this.startSyncing(data === "start_visible");
+        if (data === "start") {
+            // this.startSyncing(data === "start_visible");
+
+            if (!Store2.getState().sync.isSyncing_hidden) {
+                this.startSyncing();
+            }
+        } else if (data === "start_visible") {
+            if (!Store2.getState().sync.isSyncing_hidden) {
+                this.startSyncing(true);
+            } else {
+                Store2.dispatch(action_set_sync({
+                    ...Store2.getState().sync,
+                    isSyncing_visible: true,
+                }));
+            }
         } else if (data === "check") {
             if (Store2.getState().sync.isSyncing_hidden) {
                 this.startSyncing();
@@ -75,6 +91,7 @@ export class SyncWorker extends BaseWorker {
         this.isAccessChanged();
         this.whichBook_isRemoved();
         this.whichComment_isRemoved();
+        this.userCurrentBook();
     }
 
     private reset_syncStatus(/* inProgress: boolean */) {
@@ -89,6 +106,10 @@ export class SyncWorker extends BaseWorker {
             },
             whichComment_isRemoved: {
                 inProgress: false, // inProgress,
+                error: undefined
+            },
+            userCurrentBook: {
+                inProgress: false,
                 error: undefined
             },
         };
@@ -170,6 +191,23 @@ export class SyncWorker extends BaseWorker {
     /**
      * check if "device current book" is different from "server current book".
      */
-    private async sync_current_book() { }
+    private async userCurrentBook() {
+        this._syncStatus.userCurrentBook.inProgress = true;
+        this._syncStatus.userCurrentBook.error = undefined;
+        
+        const logged_in_user = Store2.getState().logged_in_user;
+        if (!logged_in_user!.person.current_book || !logged_in_user!.person.current_book.id) {
+            this._syncStatus.userCurrentBook.inProgress = false;
+            return;
+        }
+        await this._personService.update(
+            { current_book_id: logged_in_user!.person.current_book.id },
+            logged_in_user!.person.id
+        ).catch((e: AxiosError) => {
+            this._syncStatus.userCurrentBook.error = e;
+        });
+        this._syncStatus.userCurrentBook.inProgress = false;
+        this.afterActionFinished();
+    }
 
 }

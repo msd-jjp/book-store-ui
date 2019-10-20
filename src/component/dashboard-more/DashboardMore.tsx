@@ -195,6 +195,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
     }
 
     private async onSync_clicked() {
+        if (this.props.sync.isSyncing_visible) return;
         this._syncWorker.postMessage('start_visible');
     }
 
