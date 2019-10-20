@@ -5,6 +5,7 @@ import { CmpUtility } from "../_base/CmpUtility";
 import { Localization } from "../../config/localization/localization";
 import { appLocalStorage } from "../../service/appLocalStorage";
 import { Store2 } from "../../redux/store";
+import { action_update_downloading_book_file } from "../../redux/action/downloading-book-file";
 
 export function calc_read_percent(item: ILibrary): string {
     let read = 0;
@@ -40,6 +41,30 @@ export function is_libBook_downloading(item: ILibrary): boolean {
     const dbf = Store2.getState().downloading_book_file;
     const d = dbf.find(d => d.book_id === item.book.id && d.mainFile === true);
     return !!d;
+}
+
+export function toggle_libBook_download(item: ILibrary): void {
+    const isDownloading = is_libBook_downloading(item);
+    let dbf = [...Store2.getState().downloading_book_file];
+
+    if (isDownloading) {
+        const new_dbf = dbf.filter(d => !(d.book_id === item.book.id && d.mainFile === true));
+        new_dbf.push({
+            book_id: item.book.id,
+            mainFile: true,
+            status: 'stop'
+        });
+        dbf = new_dbf;
+    } else {
+        dbf.push({
+            book_id: item.book.id,
+            mainFile: true,
+            status: 'start'
+        });
+    }
+
+    Store2.dispatch(action_update_downloading_book_file(dbf));
+    CmpUtility.refreshView();
 }
 
 export function libraryItem_viewList_render(
