@@ -7,6 +7,7 @@ import { ILibrary_schema } from './action/library/libraryAction';
 import { ICollection_schema } from './action/collection/collectionAction';
 import { ISync_schema } from './action/sync/syncAction';
 import { IDownloadingBookFile_schema } from './action/downloading-book-file/downloadingBookFileAction';
+import { IReader_schema } from './action/reader/readerAction';
 
 export interface redux_state {
     logged_in_user: IUser | null;
@@ -19,4 +20,5 @@ export interface redux_state {
     collection: ICollection_schema;
     sync: ISync_schema;
     downloading_book_file: IDownloadingBookFile_schema[];
+    reader: IReader_schema;
 }

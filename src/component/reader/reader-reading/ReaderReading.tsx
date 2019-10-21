@@ -24,6 +24,7 @@ import { book, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBoo
 import { color, getFont, base64ToBuffer } from "../../../webworker/reader-engine/tools";
 import { CmpUtility } from "../../_base/CmpUtility";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
+import { action_update_reader } from "../../../redux/action/reader";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -145,7 +146,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
   get_bookPageSize(): { width: number, height: number } {
     const container = document.querySelector('.swiper-container');
-    if (!container) return { width: 100, height: 100 };
+    if (!container) return { width: 200, height: 300 };
     return { width: container.clientWidth - 32, height: container.clientHeight - 32 - 16 };
   }
 
@@ -183,7 +184,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     const bookPosList: IBookPosIndicator[] = this._bookInstance.getListOfPageIndicators();
     // const vdsv2 = this._bookInstance.getProgress();
     // this._bookInstance.RenderSpecPage(this._bookPosIndicator[0])
-    debugger;
+    // debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
     this.book_active_page = 0;
@@ -244,24 +245,26 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   private _bookInstance!: book;
   private async createBook(bookFile: any) { // Uint8Array
     // debugger;
-    // const cWhite = color(255, 255, 255, 255);
-    // const cBlack = color(255, 0, 0, 255);
-    // const cBlue = color(0, 0, 255, 255);
-    const font_color = color(0, 0, 0, 255);
-    const bg_color = color(255, 255, 255, 255);
-    const font_arrayBuffer = await getFont('reader/fonts/iransans.ttf'); // zar | iransans | nunito
+    const reader_state = { ...Store2.getState().reader };
+    const reader_epub = reader_state.epub;
+
+    const font_arrayBuffer = await getFont(`reader/fonts/${reader_epub.fontName}.ttf`); // zar | iransans | nunito
     const font = new Uint8Array(font_arrayBuffer);
-    const fontSize = 16;
+
     const bookbuf = base64ToBuffer(bookFile);
+
     const bookPageSize = this.get_bookPageSize();
+    reader_state.epub.pageSize = bookPageSize;
+    Store2.dispatch(action_update_reader(reader_state));
+
     this._bookInstance = new book(
       bookbuf,
       bookPageSize.width,
       bookPageSize.height,
       font,
-      fontSize,
-      font_color,
-      bg_color
+      reader_epub.fontSize,
+      reader_epub.fontColor,
+      reader_epub.bgColor
     );
     // await CmpUtility.waitOnMe(3000);
     // debugger;

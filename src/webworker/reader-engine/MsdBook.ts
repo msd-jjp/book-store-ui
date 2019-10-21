@@ -124,7 +124,7 @@ export class book {
   }
 
   renderNextPage() {
-    debugger;
+    // debugger;
     if (msdreader.is_last_atom(this.bookPtr, this.currentBookPosIndicator))
       throw new Error('EOF');
 
@@ -147,7 +147,7 @@ export class book {
 
 
   renderPrevPage() {
-    debugger;
+    // debugger;
     if (msdreader.is_first_atom(this.bookPtr, this.currentBookPosIndicator))
       throw new Error('BEG');
 
@@ -200,7 +200,7 @@ export class book {
         indicator.group || 0, indicator.atom || 0)
   }
   getListOfPageIndicators(): Array<IBookPosIndicator> {
-    debugger;
+    // debugger;
     let res = msdreader.getBookPosIndicators(this.bookRendererPtr);
     let len = getDWORDSize(res);
     let c = Math.floor((len - 4) / 8);
