@@ -300,6 +300,7 @@ export const en = {
     download_collection: 'download collection',
     download_collection_: 'download collection?',
     download: 'download',
+    downloading: 'downloading',
     add: 'add',
     selected: 'selected',
     select_all: 'select all',

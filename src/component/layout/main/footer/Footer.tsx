@@ -11,6 +11,7 @@ import { CmpUtility } from "../../../_base/CmpUtility";
 import { History } from "history";
 import { IBook } from "../../../../model/model.book";
 import { BOOK_TYPES } from "../../../../enum/Book";
+import { is_book_downloaded } from "../../../library/libraryViewTemplate";
 
 export interface IProps {
     internationalization: TInternationalization;
@@ -28,7 +29,7 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
         ) {
             const current_book = this.props.logged_in_user.person.current_book;
             const current_book_img = CmpUtility.getBook_firstImg(current_book);
-            const is_downloaded = CmpUtility.is_book_downloaded(current_book.id);
+            const is_downloaded = is_book_downloaded(current_book.id, true);
             if (!is_downloaded) return;
 
             return (

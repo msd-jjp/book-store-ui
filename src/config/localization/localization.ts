@@ -294,6 +294,7 @@ interface ILocalization extends LocalizedStringsMethods {
     download_collection: string;
     download_collection_: string;
     download: string;
+    downloading: string;
     add: string;
     selected: string;
     select_all: string;

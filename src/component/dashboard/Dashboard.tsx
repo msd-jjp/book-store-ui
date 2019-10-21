@@ -24,11 +24,12 @@ import { AddToCollection } from "../library/collection/add-to-collection/AddToCo
 import { CmpUtility } from "../_base/CmpUtility";
 import { action_user_logged_in } from "../../redux/action/user";
 import { PersonService } from "../../service/service.person";
-import { calc_read_percent, is_libBook_downloaded } from "../library/libraryViewTemplate";
+import { calc_read_percent, is_libBook_downloaded, is_book_downloaded, is_book_downloading, toggle_book_download } from "../library/libraryViewTemplate";
 import { ILibrary } from "../../model/model.library";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import Swiper from "swiper";
+import { appLocalStorage } from "../../service/appLocalStorage";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -234,12 +235,15 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   currentBook_render() {
     if (!this.props.logged_in_user) { return; }
     let current_book = this.props.logged_in_user.person && this.props.logged_in_user.person.current_book;
-    const is_downloaded = current_book ? CmpUtility.is_book_downloaded(current_book.id) : false;
-    if (!current_book || !is_downloaded) {
+    // const is_downloaded = current_book ? CmpUtility.is_book_downloaded(current_book.id) : false;
+    if (!current_book /* || !is_downloaded */) {
       return (
         this.currentBook_empty_render()
       )
     }
+
+    const is_downloaded = is_book_downloaded(current_book!.id, true);
+    const is_downloading = is_book_downloading(current_book!.id, true);
 
     const current_book_img = CmpUtility.getBook_firstImg(current_book);
     const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(current_book, BOOK_ROLES.Writer);
@@ -271,11 +275,18 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
               {/* <div className="book-download">
                 <i className="fa fa-check-circle" />
               </div> */}
-              <div className={
+              {/* <div className={
                 "book-download " +
                 (this.is_libCurrentBook_downloaded(this.getItemFromLibrary(current_book.id)) ? '' : 'd-none')
               }>
                 <i className="fa fa-check-circle" />
+              </div> */}
+              <div className="book-download">
+                <i className={
+                  "fa "
+                  + (is_downloaded ? 'fa-check-circle' : ' ')
+                  + (is_downloading ? 'fa-refresh fa-spin' : ' ')
+                } />
               </div>
             </div>
           </div>
@@ -292,7 +303,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 className="btn-read-now"
                 onClick={() => this.before_gotoReader(current_book!)}
               >
-                {Localization.read_now}
+                {
+                  is_downloaded ? Localization.read_now
+                    : is_downloading ? Localization.downloading
+                      : Localization.download
+                }
               </Button>
 
               <Dropdown.Toggle
@@ -318,7 +333,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 <Dropdown.Item>
                   {Localization.recommend_this_book}
                 </Dropdown.Item>
-                <Dropdown.Item>{Localization.remove_from_device}</Dropdown.Item>
+                <Dropdown.Item
+                  className={(is_downloaded ? '' : 'd-none')}
+                  onClick={() => this.removeFromDevice(current_book!.id)}>
+                  {Localization.remove_from_device}
+                </Dropdown.Item>
                 <Dropdown.Item
                   // className={(this.state.removeFromHome_loader ? 'opacity-5 ' : '')}
                   // disabled={this.state.removeFromHome_loader}
@@ -373,6 +392,12 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   before_gotoReader(book: IBook) {
+    const isDownloaded = is_book_downloaded(book.id, true);
+    if (!isDownloaded) {
+      toggle_book_download(book.id, true);
+      return;
+    }
+
     let isAudio = false;
     if (book.type === BOOK_TYPES.Audio) {
       isAudio = true;
@@ -410,6 +435,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       this._is_libCurrentBook_downloaded = is_libBook_downloaded(item);
     }
     return this._is_libCurrentBook_downloaded;
+  }
+
+  removeFromDevice(book_id: string) {
+    appLocalStorage.removeFromCollection('clc_book_mainFile', book_id);
+    CmpUtility.refreshView();
   }
 
   //#region updateUserCurrentBook
