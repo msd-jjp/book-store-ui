@@ -21,8 +21,8 @@ import { Virtual } from 'swiper/dist/js/swiper.esm';
 import { Store2 } from "../../../redux/store";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { book, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
-import { color, getFont, base64ToBuffer } from "../../../webworker/reader-engine/tools";
-import { CmpUtility } from "../../_base/CmpUtility";
+import { getFont, base64ToBuffer } from "../../../webworker/reader-engine/tools";
+// import { CmpUtility } from "../../_base/CmpUtility";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { action_update_reader } from "../../../redux/action/reader";
 
@@ -88,8 +88,8 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   //   // centerPadding: "60px", // 4rem, 60px
   // };
   swiper_obj: Swiper | undefined;
-  private book_page_length = 2500;
-  private book_active_page = 372;
+  private book_page_length = 1; // 2500;
+  private book_active_page = 1; // 372;
 
   constructor(props: IProps) {
     super(props);
@@ -187,9 +187,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     // debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
-    this.book_active_page = 0;
-    // active page & more before and after of it
-    this.getPagePath(this.book_active_page, this._slide_pages[this.book_active_page].page);
+    this.book_active_page = 1;
+    /** active page & more before and after of it */
+    this.getPagePath(this.book_active_page - 1, this._slide_pages[this.book_active_page - 1].page);
 
 
 
@@ -212,7 +212,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
           });
         }
       },
-      initialSlide: this.book_active_page, // self.book_active_page,
+      initialSlide: this.book_active_page - 1, // self.book_active_page,
       on: {
         doubleTap: function () {
           /* do something */
@@ -273,7 +273,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   getActivePage(): number {
     const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
     // console.log('getActivePage:', activeIndex);
-    return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : 0;
+    return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : this.book_active_page; //  : 0;
   }
 
   calc_current_read_percent(): string {

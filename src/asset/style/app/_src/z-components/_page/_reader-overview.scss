@@ -208,6 +208,7 @@
       .swiper-container {
         height: 100%;
         padding: 0 4rem;
+        // padding: 0 6rem;
         // .swiper-wrapper {
         //   .swiper-slide {
         //   }
@@ -222,7 +223,8 @@
         flex-direction: column;
         align-items: center;
         border: 1px solid #ddd;
-        margin: 0 1rem;
+        // margin: 0 1rem;
+        margin: 0 0.5rem;
         padding: 0.25rem;
         justify-content: space-between;
 
@@ -231,7 +233,7 @@
           // max-height: calc(100% - 2rem);
           height: calc(100% - 2rem);
           width: 100%;
-          background-color: #eaffff;
+          // background-color: #eaffff;
           text-align: center;
           padding: 1rem;
           .page-img {

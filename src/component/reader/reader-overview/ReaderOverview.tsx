@@ -26,10 +26,11 @@ import { BOOK_ROLES } from "../../../enum/Book";
 import { Input } from "../../form/input/Input";
 // import { BtnLoader } from "../../form/btn-loader/BtnLoader";
 import { AppRegex } from "../../../config/regex";
-import { color, getFont, base64ToBuffer } from "../../../webworker/reader-engine/tools";
-import { book } from "../../../webworker/reader-engine/MsdBook";
+import { getFont, base64ToBuffer } from "../../../webworker/reader-engine/tools";
+import { book, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { Store2 } from "../../../redux/store";
+import { ContentLoader } from "../../form/content-loader/ContentLoader";
 
 interface IProps {
   // logged_in_user: IUser | null;
@@ -50,6 +51,7 @@ interface IState {
   RcSlider_value: number | undefined;
   is_sidebar_open: boolean;
   modal_goto: { show: boolean; input: { value: any; isValid: boolean } };
+  page_loading: boolean;
 }
 
 class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
@@ -63,6 +65,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     RcSlider_value: undefined,
     is_sidebar_open: false,
     modal_goto: { show: false, input: { value: undefined, isValid: false } },
+    page_loading: true,
   };
 
   private _personService = new PersonService();
@@ -97,8 +100,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   //   centerPadding: "60px", // 4rem, 60px
   // };
   private swiper_obj: Swiper | undefined;
-  private book_page_length = 2500;
-  private book_active_page = 372;
+  private book_page_length = 1; // 2500;
+  private book_active_page = 1; // 372;
 
   constructor(props: IProps) {
     super(props);
@@ -222,7 +225,13 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };
     toast.warn(notifyBody, this.getNotifyConfig(config));
   }
+  readerError_notify() {
+    const notifyBody: string = Localization.msg.ui.reader_epub_error_occurred;
+    const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };
+    toast.error(notifyBody, this.getNotifyConfig(config));
+  }
 
+  private _slide_pages!: { id: number, page: IBookPosIndicator }[];
   async initSwiper() {
     // await this.createBook(this.bookFile);
     const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
@@ -232,19 +241,35 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       // this.goBack();
       return;
     }
-    await this.createBook(bookFile);
+    try {
+      await this.createBook(bookFile);
+    } catch (e) {
+      console.error(e);
+      this.setState({ page_loading: false });
+      this.readerError_notify();
+      return;
+    }
+
+    const bookPosList: IBookPosIndicator[] = this._bookInstance.getListOfPageIndicators();
+    this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
+    this.book_page_length = this._slide_pages.length;
+    this.book_active_page = 1;
+    /** active page & more before and after of it */
+    this.getPagePath(this.book_active_page - 1, this._slide_pages[this.book_active_page - 1].page);
+
+
     const self = this;
     // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
     // this.swiper_obj && this.swiper_obj.destroy(true, true);
-    let slides = [];
-    for (var i = 0; i < this.book_page_length; i += 1) { // 10
-      slides.push({ name: 'Slide_' + (i + 1), id: i + 1 });
-    }
+    // let slides = [];
+    // for (var i = 0; i < this.book_page_length; i += 1) { // 10
+    //   slides.push({ name: 'Slide_' + (i + 1), id: i + 1 });
+    // }
     this.swiper_obj = new Swiper('.swiper-container', {
       // ...
       virtual: {
         cache: true,
-        slides: slides, // self.state.slides,
+        slides: this._slide_pages, // slides, // self.state.slides,
         renderExternal(data: Virtual) {
           // assign virtual slides data
           self.setState({
@@ -293,6 +318,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
             // self.setState({ ...self.state, RcSlider_value: activeIndex });
           }
         },
+        init: () => {
+          this.setState({ page_loading: false });
+        },
 
       }
     });
@@ -312,7 +340,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   getActivePage(): number {
     const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
     // console.log('activeIndex', activeIndex);
-    return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : 0;
+    return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : this.book_active_page; //  : 0;
   }
 
   calc_current_read_percent(): string {
@@ -339,7 +367,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
             {this.getActivePage()}&nbsp;
             {Localization.of}&nbsp;
             {this.book_page_length}&nbsp;
-            <i className="font-size-01 fa fa-circle"></i>&nbsp;
+            <i className="font-size-01 fa fa-circle mx-2"></i>&nbsp;
             {this.calc_current_read_percent()}
           </div>
         </div>
@@ -347,55 +375,94 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  private bookInstance!: book;
+  private _bookInstance!: book;
   private async createBook(bookFile: any) { // Uint8Array
-    debugger;
-    const cWhite = color(255, 255, 255, 255);
-    const cBlack = color(255, 0, 0, 255);
-    // const cBlue = color(0, 0, 255, 255);
-    const font_arrayBuffer = await getFont('Zar.ttf');
-    const font = new Uint8Array(font_arrayBuffer);
     // debugger;
-    // const fontHeapPtr = copyBufferToHeap(font);
-    const fontSize = 42;
+    const reader_state = { ...Store2.getState().reader };
+    const reader_epub = reader_state.epub;
+
+    const font_arrayBuffer = await getFont(`reader/fonts/${reader_epub.fontName}.ttf`); // zar | iransans | nunito
+    const font = new Uint8Array(font_arrayBuffer);
+
     const bookbuf = base64ToBuffer(bookFile);
 
-    //
-    const page = document.querySelector('.swiper-container .swiper-wrapper .swiper-slide .item .page-img-wrapper');
-    // if (!page) return;
-    const width = page ? page.clientWidth : 500;
-    const height = page ? page.clientHeight : 500;
-    //
+    this._bookInstance = new book(
+      bookbuf,
+      reader_epub.pageSize.width,
+      reader_epub.pageSize.height,
+      font,
+      reader_epub.fontSize,
+      reader_epub.fontColor,
+      reader_epub.bgColor
+    );
 
-    this.bookInstance = new book(bookbuf, width, height, font, fontSize, cWhite, cBlack);
-    await CmpUtility.waitOnMe(2000);
+    // const cWhite = color(255, 255, 255, 255);
+    // const cBlack = color(255, 0, 0, 255);
+    // // const cBlue = color(0, 0, 255, 255);
+    // const font_arrayBuffer = await getFont('Zar.ttf');
+    // const font = new Uint8Array(font_arrayBuffer);
+    // // debugger;
+    // // const fontHeapPtr = copyBufferToHeap(font);
+    // const fontSize = 42;
+    // const bookbuf = base64ToBuffer(bookFile);
+
+    // //
+    // const page = document.querySelector('.swiper-container .swiper-wrapper .swiper-slide .item .page-img-wrapper');
+    // // if (!page) return;
+    // const width = page ? page.clientWidth : 500;
+    // const height = page ? page.clientHeight : 500;
+    // //
+
+    // this._bookInstance = new book(bookbuf, width, height, font, fontSize, cWhite, cBlack);
+    // await CmpUtility.waitOnMe(2000);
   }
 
-  getPagePath(pageIndex: number) {
+  getPagePathNear(pageIndex: number) {
+    setTimeout(() => {
+      if (pageIndex - 1 >= 0) {
+        this.getPageRenderedPath(pageIndex - 1, this._slide_pages[pageIndex - 1].page);
+      }
+      if (pageIndex + 1 <= this._slide_pages.length - 1) {
+        this.getPageRenderedPath(pageIndex + 1, this._slide_pages[pageIndex + 1].page);
+      }
+    });
+  }
+  getPagePath(pageIndex: number, slide: IBookPosIndicator) {
+    // console.log('getPagePath', pageIndex);
+    // return this.getPageRenderedPath(pageIndex);
     console.log('getPagePath', pageIndex);
-    return this.getPageRenderedPath(pageIndex);
+    this.getPagePathNear(pageIndex);
+    return this.getPageRenderedPath(pageIndex, slide);
     // return this.bookInstance.renderNextPage();
     // return this.bookPage.sampleBookPage;
     // return `/static/media/img/sample-book-page/page-${pageIndex}.jpg`;
   }
   private _pageRenderedPath: any = {};
-  private getPageRenderedPath(pageIndex: number) {
+  private getPageRenderedPath(pageIndex: number, slide: IBookPosIndicator) {
     if (this._pageRenderedPath[pageIndex]) {
       return this._pageRenderedPath[pageIndex];
     } else {
-      if (!this.bookInstance.areWeAtEnd()) {
-        this._pageRenderedPath[pageIndex] = 'true';
-        setTimeout(() => {
-          console.time('renderNextPage');
-          this._pageRenderedPath[pageIndex] = this.bookInstance.renderNextPage();
-          console.timeEnd('renderNextPage');
-        }, 0)
-        return this._pageRenderedPath[pageIndex];
-      } else {
-        return;
-      }
+      this._pageRenderedPath[pageIndex] = this._bookInstance.RenderSpecPage(slide);
+      return this._pageRenderedPath[pageIndex];
     }
   }
+  // private getPageRenderedPath(pageIndex: number) {
+  //   if (this._pageRenderedPath[pageIndex]) {
+  //     return this._pageRenderedPath[pageIndex];
+  //   } else {
+  //     if (!this.bookInstance.areWeAtEnd()) {
+  //       this._pageRenderedPath[pageIndex] = 'true';
+  //       setTimeout(() => {
+  //         console.time('renderNextPage');
+  //         this._pageRenderedPath[pageIndex] = this.bookInstance.renderNextPage();
+  //         console.timeEnd('renderNextPage');
+  //       }, 0)
+  //       return this._pageRenderedPath[pageIndex];
+  //     } else {
+  //       return;
+  //     }
+  //   }
+  // }
 
 
 
@@ -415,7 +482,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           <div className="app-swiper">
             <div className="swiper-container" dir={swiper_dir}>
               <div className="swiper-wrapper">
-                {vrtData.slides.map((slide: any, index: any) => (
+                {vrtData.slides.map((slide: { id: number, page: IBookPosIndicator }, index: any) => (
                   <Fragment key={slide.id}>
                     <div className="swiper-slide" style={{ [offset_dir]: `${vrtData.offset}px` }}>
                       <div className="item cursor-pointer " onClick={() => this.onPageClicked(slide.id)}>
@@ -423,12 +490,13 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                           <img
                             className="page-img"
                             // src={`/static/media/img/sample-book-page/page-${slide.id}.jpg`}
-                            src={this.getPagePath(slide.id)}
+                            // src={this.getPagePath(slide.id)}
+                            src={this.getPagePath(slide.id, slide.page)}
                             alt="book"
                             loading="lazy"
                           />
                         </div>
-                        <div className="page-number text-muted">{slide.id}</div>
+                        <div className="page-number text-muted">{slide.id + 1}</div>
                       </div>
                     </div>
                   </Fragment>
@@ -776,6 +844,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
               {this.overview_body_render()}
               {this.overview_footer_render()}
               {this.overview_sidebar_render()}
+
+              <ContentLoader gutterClassName="gutter-0" show={this.state.page_loading}></ContentLoader>
             </div>
           </div>
         </div>
