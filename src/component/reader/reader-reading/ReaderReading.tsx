@@ -3,21 +3,27 @@ import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { redux_state } from "../../../redux/app_state";
 import { IUser } from "../../../model/model.user";
-import { TInternationalization } from "../../../config/setup";
+import { TInternationalization, Setup } from "../../../config/setup";
 import { BaseComponent } from "../../_base/BaseComponent";
 import { History } from "history";
 // import { IToken } from "../../../model/model.token";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import { Localization } from "../../../config/localization/localization";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { PersonService } from "../../../service/service.person";
 import { action_user_logged_in } from "../../../redux/action/user";
 // import { Dropdown } from "react-bootstrap";
 import { IBook } from "../../../model/model.book";
-import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
+// import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 // import Slider, { Settings } from "react-slick";
 import Swiper from 'swiper';
 import { Virtual } from 'swiper/dist/js/swiper.esm';
+import { Store2 } from "../../../redux/store";
+import { appLocalStorage } from "../../../service/appLocalStorage";
+import { book, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
+import { color, getFont, base64ToBuffer } from "../../../webworker/reader-engine/tools";
+import { CmpUtility } from "../../_base/CmpUtility";
+import { ContentLoader } from "../../form/content-loader/ContentLoader";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -27,14 +33,15 @@ interface IProps {
   network_status: NETWORK_STATUS;
   onUserLoggedIn: (user: IUser) => void;
   match: any;
-  library: ILibrary_schema;
+  // library: ILibrary_schema;
 }
 
 interface IState {
   book: IBook | undefined;
   virtualData: {
-    slides: any[],
-  },
+    slides: any[];
+  };
+  page_loading: boolean;
 }
 
 class ReaderReadingComponent extends BaseComponent<IProps, IState> {
@@ -45,6 +52,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     virtualData: {
       slides: [],
     },
+    page_loading: true,
   };
 
   private _personService = new PersonService();
@@ -108,7 +116,8 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   getBookFromLibrary(book_id: string): IBook {
-    const lib = this.props.library.data.find(lib => lib.book.id === book_id);
+    // const lib = this.props.library.data.find(lib => lib.book.id === book_id);
+    const lib = Store2.getState().library.data.find(lib => lib.book.id === book_id);
     return (lib! || {}).book;
   }
 
@@ -134,18 +143,51 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     return book!.title;
   }
 
-  initSwiper() {
+  get_bookPageSize(): { width: number, height: number } {
+    const container = document.querySelector('.swiper-container');
+    if (!container) return { width: 100, height: 100 };
+    return { width: container.clientWidth - 32, height: container.clientHeight - 32 - 16 };
+  }
+
+  bookFileNotFound_notify() {
+    const notifyBody: string = Localization.msg.ui.book_file_not_found_download_it;
+    const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };
+    toast.warn(notifyBody, this.getNotifyConfig(config));
+  }
+
+  // private _bookPosIndicator!: IBookPosIndicator[];
+  private _slide_pages!: { id: number, page: IBookPosIndicator }[];
+  async initSwiper() {
+    const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
+    if (!bookFile) {
+      this.bookFileNotFound_notify();
+      // CmpUtility.waitOnMe(100);
+      // this.goBack();
+      return;
+    }
+    await this.createBook(bookFile);
+    const bookPosList: IBookPosIndicator[] = this._bookInstance.getListOfPageIndicators();
+    // const vdsv2 = this._bookInstance.getProgress();
+    // this._bookInstance.RenderSpecPage(this._bookPosIndicator[0])
+    debugger;
+    this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
+    this.book_page_length = this._slide_pages.length;
+    this.book_active_page = 3;
+    this.getPagePath(this.book_active_page, this._slide_pages[this.book_active_page].page); // active page & more before and after of it
+
+
     const self = this;
     // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
     // this.swiper_obj && this.swiper_obj.destroy(true, true);
-    let slides = [];
-    for (var i = 0; i < this.book_page_length; i += 1) { // 10
-      slides.push({ name: 'Slide_' + (i + 1), id: i + 1 });
-    }
+    // let slides = [];
+    // for (var i = 0; i < this.book_page_length; i += 1) { // 10
+    //   slides.push({ name: 'Slide_' + (i + 1), id: i + 1 });
+    // }
     this.swiper_obj = new Swiper('.swiper-container', {
       // ...
       virtual: {
-        slides: slides, // self.state.slides,
+        // slides: slides, // self.state.slides,
+        slides: this._slide_pages,
         renderExternal(data: Virtual) {
           // assign virtual slides data
           self.setState({
@@ -153,7 +195,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
           });
         }
       },
-      initialSlide: self.book_active_page,
+      initialSlide: this.book_active_page, // self.book_active_page,
       on: {
         doubleTap: function () {
           /* do something */
@@ -171,6 +213,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
         slideChange: function () {
           console.log('swiperChange --> active_page_number:', self.getActivePage());
         },
+        init: () => {
+          this.setState({ page_loading: false });
+        },
       }
     });
     // activeIndex && this.gotoIndex(activeIndex);
@@ -178,6 +223,30 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     // this.swiper_obj.on('touchMove', function(){
     //     console.log('touchMove');
     // })
+  }
+
+  private _bookInstance!: book;
+  private async createBook(bookFile: any) { // Uint8Array
+    debugger;
+    const cWhite = color(255, 255, 255, 255);
+    const cBlack = color(255, 0, 0, 255);
+    // const cBlue = color(0, 0, 255, 255);
+    const font_arrayBuffer = await getFont('Zar.ttf');
+    const font = new Uint8Array(font_arrayBuffer);
+    const fontSize = 42;
+    const bookbuf = base64ToBuffer(bookFile);
+    const bookPageSize = this.get_bookPageSize();
+    this._bookInstance = new book(
+      bookbuf,
+      bookPageSize.width,
+      bookPageSize.height,
+      font,
+      fontSize,
+      cWhite,
+      cBlack
+    );
+    await CmpUtility.waitOnMe(3000);
+    // debugger;
   }
 
   getActivePage(): number {
@@ -222,6 +291,40 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     )
   }
 
+  getPagePathNear(pageIndex: number) {
+    setTimeout(() => {
+      if (pageIndex - 1 >= 0) {
+        this.getPageRenderedPath(pageIndex - 1, this._slide_pages[pageIndex - 1].page);
+      }
+      if (pageIndex + 1 <= this._slide_pages.length - 1) {
+        this.getPageRenderedPath(pageIndex + 1, this._slide_pages[pageIndex + 1].page);
+      }
+    });
+  }
+  getPagePath(pageIndex: number, slide: IBookPosIndicator) {
+    console.log('getPagePath', pageIndex);
+    this.getPagePathNear(pageIndex);
+    return this.getPageRenderedPath(pageIndex, slide);
+  }
+  private _pageRenderedPath: any = {};
+  private getPageRenderedPath(pageIndex: number, slide: IBookPosIndicator) {
+    if (this._pageRenderedPath[pageIndex]) {
+      return this._pageRenderedPath[pageIndex];
+    } else {
+      // if (!this._bookInstance.areWeAtEnd()) {
+      // this._pageRenderedPath[pageIndex] = 'true';
+      // setTimeout(() => {
+      console.time('renderNextPage');
+      this._pageRenderedPath[pageIndex] = this._bookInstance.RenderSpecPage(slide);
+      console.timeEnd('renderNextPage');
+      // }, 0)
+      return this._pageRenderedPath[pageIndex];
+      // } else {
+      //   return;
+      // }
+    }
+  }
+
   swiper_render() {
     if (true) {
       const vrtData: any = this.state.virtualData;
@@ -238,14 +341,15 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
           <div className="app-swiper">
             <div className="swiper-container" dir={swiper_dir}>
               <div className="swiper-wrapper">
-                {vrtData.slides.map((slide: any, index: any) => (
+                {vrtData.slides.map((slide: { id: number, page: IBookPosIndicator }, index: any) => (
                   <Fragment key={slide.id}>
                     <div className="swiper-slide" style={{ [offset_dir]: `${vrtData.offset}px` }}>
                       <div className="item" >
                         <div className="page-img-wrapper">
                           <img
                             className="page-img"
-                            src={`/static/media/img/sample-book-page/page-${slide.id}.jpg`}
+                            // src={`/static/media/img/sample-book-page/page-${slide.id}.jpg`}
+                            src={this.getPagePath(slide.id, slide.page)}
                             alt="book"
                             loading="lazy"
                           />
@@ -337,6 +441,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
             <div className="reader-reading-wrapper">
               {this.reading_body_render()}
               {/* {this.reading_footer_render()} */}
+              <ContentLoader gutterClassName="gutter-0" show={this.state.page_loading}></ContentLoader>
             </div>
           </div>
         </div>
@@ -358,7 +463,7 @@ const state2props = (state: redux_state) => {
     internationalization: state.internationalization,
     // token: state.token,
     network_status: state.network_status,
-    library: state.library,
+    // library: state.library,
   };
 };
 

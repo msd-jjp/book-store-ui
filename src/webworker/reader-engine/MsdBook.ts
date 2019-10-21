@@ -102,7 +102,7 @@ export class book {
       bookbuf: Uint8Array, screenWidth: number, screenHeight: number,
       font: Uint8Array, fontSize: number, textFColor: number,
       textBColor: number) {
-    debugger;
+    // debugger;
     this.screenHeight = screenHeight;
     this.screenWidth = screenWidth;
     this.fontSize = fontSize;
@@ -110,7 +110,7 @@ export class book {
     this.rendererFormatPtr = msdreader.getRendererFormat(
         textFColor, textBColor, textFColor, textBColor, this.fontSize,
         this.fontHeapPtr, font.length);
-    debugger;
+    // debugger;
     let bookheapPtr = copyBufferToHeap(bookbuf);
     this.bookPtr = msdreader.getBookFromBuf(bookheapPtr, bookbuf.length);
     freeHeap(bookheapPtr);  // free heap from bin buffer;

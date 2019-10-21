@@ -2,19 +2,19 @@ import React, { Fragment } from "react";
 import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { redux_state } from "../../../redux/app_state";
-import { IUser } from "../../../model/model.user";
+// import { IUser } from "../../../model/model.user";
 import { TInternationalization, Setup } from "../../../config/setup";
 import { BaseComponent } from "../../_base/BaseComponent";
 import { History } from "history";
 // import { IToken } from "../../../model/model.token";
 import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import { Localization } from "../../../config/localization/localization";
-import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
+// import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { PersonService } from "../../../service/service.person";
-import { action_user_logged_in } from "../../../redux/action/user";
+// import { action_user_logged_in } from "../../../redux/action/user";
 import { Dropdown, Modal } from "react-bootstrap";
 import { IBook } from "../../../model/model.book";
-import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
+// import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 // import Slider, { Settings } from "react-slick";
 import Tooltip from 'rc-tooltip';
 import RcSlider, { Handle } from 'rc-slider';
@@ -29,16 +29,17 @@ import { AppRegex } from "../../../config/regex";
 import { color, getFont, base64ToBuffer } from "../../../webworker/reader-engine/tools";
 import { book } from "../../../webworker/reader-engine/MsdBook";
 import { appLocalStorage } from "../../../service/appLocalStorage";
+import { Store2 } from "../../../redux/store";
 
 interface IProps {
-  logged_in_user: IUser | null;
+  // logged_in_user: IUser | null;
   internationalization: TInternationalization;
   history: History;
   // token: IToken;
-  network_status: NETWORK_STATUS;
-  onUserLoggedIn: (user: IUser) => void;
+  // network_status: NETWORK_STATUS;
+  // onUserLoggedIn: (user: IUser) => void;
   match: any;
-  library: ILibrary_schema;
+  // library: ILibrary_schema;
 }
 
 interface IState {
@@ -124,7 +125,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   // }
 
   getBookFromLibrary(book_id: string): IBook {
-    const lib = this.props.library.data.find(lib => lib.book.id === book_id);
+    // const lib = this.props.library.data.find(lib => lib.book.id === book_id);
+    const lib = Store2.getState().library.data.find(lib => lib.book.id === book_id);
     return (lib! || {}).book;
   }
 
@@ -345,6 +347,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     )
   }
 
+  private bookInstance!: book;
   private async createBook(bookFile: any) { // Uint8Array
     debugger;
     const cWhite = color(255, 255, 255, 255);
@@ -354,14 +357,19 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     const font = new Uint8Array(font_arrayBuffer);
     // debugger;
     // const fontHeapPtr = copyBufferToHeap(font);
-    // const fontSize = 42;
+    const fontSize = 42;
     const bookbuf = base64ToBuffer(bookFile);
-    this.bookInstance = new book(bookbuf, 500, 500, font, 30, cWhite, cBlack);
+
+    //
+    const page = document.querySelector('.swiper-container .swiper-wrapper .swiper-slide .item .page-img-wrapper');
+    // if (!page) return;
+    const width = page ? page.clientWidth : 500;
+    const height = page ? page.clientHeight : 500;
+    //
+
+    this.bookInstance = new book(bookbuf, width, height, font, fontSize, cWhite, cBlack);
     await CmpUtility.waitOnMe(2000);
   }
-  // private bookFile = require('../../../webworker/reader-engine/sampleBookFile');
-  // private bookPage = require('../../../webworker/reader-engine/sampleBookPage');
-  private bookInstance!: book; // =  this.createBook(this.bookFile);
 
   getPagePath(pageIndex: number) {
     console.log('getPagePath', pageIndex);
@@ -781,17 +789,17 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
   return {
-    onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
+    // onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
   };
 };
 
 const state2props = (state: redux_state) => {
   return {
-    logged_in_user: state.logged_in_user,
+    // logged_in_user: state.logged_in_user,
     internationalization: state.internationalization,
     // token: state.token,
-    network_status: state.network_status,
-    library: state.library,
+    // network_status: state.network_status,
+    // library: state.library,
   };
 };
 
