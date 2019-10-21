@@ -21,7 +21,7 @@ import { CollectionService } from '../../../service/service.collection';
 import { AddToCollection } from './add-to-collection/AddToCollection';
 import { IBook } from '../../../model/model.book';
 import { NETWORK_STATUS } from '../../../enum/NetworkStatus';
-import { libraryItem_viewList_render, libraryItem_viewGrid_render, is_libBook_downloaded, toggle_libBook_download } from '../libraryViewTemplate';
+import { libraryItem_viewList_render, libraryItem_viewGrid_render, is_libBook_downloaded, toggle_libBook_download, collection_download } from '../libraryViewTemplate';
 import { BOOK_TYPES } from '../../../enum/Book';
 import { appLocalStorage } from '../../../service/appLocalStorage';
 import { CmpUtility } from '../../_base/CmpUtility';
@@ -533,6 +533,8 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     async downloadCollection() {
         // let collection_title = this.collectionTitle;
         // let isUncollected = this.isUncollected;
+        if (this.isUncollected) return;
+        collection_download(this.collectionTitle);
 
         this.closeModal_downloadCollection();
     }
@@ -565,7 +567,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
             this.set_col_libraryData();
             CmpUtility.waitOnMe(100);
             this.deselectAll_libraryData();
-            
+
         }
     }
 

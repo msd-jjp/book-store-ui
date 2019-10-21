@@ -130,6 +130,7 @@ export class appLocalStorage {
 
     static findById = SearchAppStorage.findById;
     static findBookMainFileById = SearchAppStorage.findBookMainFileById;
+    static findBookSampleFileById = SearchAppStorage.findBookSampleFileById;
     static search_by_query_book = SearchAppStorage.search_by_query_book;
     static search_by_query_comment = SearchAppStorage.search_by_query_comment;
     static search_by_phrase_book = SearchAppStorage.search_by_phrase_book;
