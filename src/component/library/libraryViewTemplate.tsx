@@ -31,16 +31,34 @@ export function calc_read_percent(item: ILibrary): string {
     }
 }
 
+function is_book_downloaded(book_id: string, mainFile: boolean): boolean {
+    if (mainFile) {
+        if (appLocalStorage.findBookMainFileById(book_id)) return true;
+        return false;
+    } else {
+        if (appLocalStorage.findBookSampleFileById(book_id)) return true;
+        return false;
+    }
+}
+
+function is_book_downloading(book_id: string, mainFile: boolean): boolean {
+    const dbf = Store2.getState().downloading_book_file;
+    const d = dbf.find(d => d.book_id === book_id && d.mainFile === mainFile);
+    return !!d;
+}
+
 export function is_libBook_downloaded(item: ILibrary): boolean {
-    if (appLocalStorage.findBookMainFileById(item.book.id))
-        return true;
-    return false;
+    return is_book_downloaded(item.book.id, true);
+    // if (appLocalStorage.findBookMainFileById(item.book.id))
+    //     return true;
+    // return false;
 }
 
 export function is_libBook_downloading(item: ILibrary): boolean {
-    const dbf = Store2.getState().downloading_book_file;
-    const d = dbf.find(d => d.book_id === item.book.id && d.mainFile === true);
-    return !!d;
+    return is_book_downloading(item.book.id, true);
+    // const dbf = Store2.getState().downloading_book_file;
+    // const d = dbf.find(d => d.book_id === item.book.id && d.mainFile === true);
+    // return !!d;
 }
 
 export function toggle_libBook_download(item: ILibrary): void {
@@ -63,6 +81,30 @@ export function toggle_libBook_download(item: ILibrary): void {
         });
     }
 
+    Store2.dispatch(action_update_downloading_book_file(dbf));
+    CmpUtility.refreshView();
+}
+
+export function collection_download(title: string) {
+    const col_list = Store2.getState().collection.data;
+    const target_col = col_list.find(c => c.title === title);
+    if (!target_col) return;
+
+    const book_not_down_list: string[] = [];
+    target_col.books.forEach(b => {
+        if (!is_book_downloaded(b.id, true) && !is_book_downloading(b.id, true)) {
+            book_not_down_list.push(b.id);
+        }
+    });
+
+    let dbf = [...Store2.getState().downloading_book_file];
+    book_not_down_list.forEach(id => {
+        dbf.push({
+            book_id: id,
+            mainFile: true,
+            status: 'start'
+        });
+    });
     Store2.dispatch(action_update_downloading_book_file(dbf));
     CmpUtility.refreshView();
 }
