@@ -155,6 +155,12 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     toast.warn(notifyBody, this.getNotifyConfig(config));
   }
 
+  readerError_notify() {
+    const notifyBody: string = Localization.msg.ui.reader_epub_error_occurred;
+    const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };
+    toast.error(notifyBody, this.getNotifyConfig(config));
+  }
+
   // private _bookPosIndicator!: IBookPosIndicator[];
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];
   async initSwiper() {
@@ -165,15 +171,25 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       // this.goBack();
       return;
     }
-    await this.createBook(bookFile);
+    try {
+      await this.createBook(bookFile);
+    } catch (e) {
+      console.error(e);
+      this.setState({ page_loading: false });
+      this.readerError_notify();
+      return;
+    }
+    // console.error('jjjjjjjjjjjj');
     const bookPosList: IBookPosIndicator[] = this._bookInstance.getListOfPageIndicators();
     // const vdsv2 = this._bookInstance.getProgress();
     // this._bookInstance.RenderSpecPage(this._bookPosIndicator[0])
     debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
-    this.book_active_page = 3;
-    this.getPagePath(this.book_active_page, this._slide_pages[this.book_active_page].page); // active page & more before and after of it
+    this.book_active_page = 0;
+    // active page & more before and after of it
+    this.getPagePath(this.book_active_page, this._slide_pages[this.book_active_page].page);
+
 
 
     const self = this;
@@ -227,13 +243,15 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
   private _bookInstance!: book;
   private async createBook(bookFile: any) { // Uint8Array
-    debugger;
-    const cWhite = color(255, 255, 255, 255);
-    const cBlack = color(255, 0, 0, 255);
+    // debugger;
+    // const cWhite = color(255, 255, 255, 255);
+    // const cBlack = color(255, 0, 0, 255);
     // const cBlue = color(0, 0, 255, 255);
-    const font_arrayBuffer = await getFont('Zar.ttf');
+    const font_color = color(0, 0, 0, 255);
+    const bg_color = color(255, 255, 255, 255);
+    const font_arrayBuffer = await getFont('reader/fonts/iransans.ttf'); // zar | iransans | nunito
     const font = new Uint8Array(font_arrayBuffer);
-    const fontSize = 42;
+    const fontSize = 16;
     const bookbuf = base64ToBuffer(bookFile);
     const bookPageSize = this.get_bookPageSize();
     this._bookInstance = new book(
@@ -242,10 +260,10 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       bookPageSize.height,
       font,
       fontSize,
-      cWhite,
-      cBlack
+      font_color,
+      bg_color
     );
-    await CmpUtility.waitOnMe(3000);
+    // await CmpUtility.waitOnMe(3000);
     // debugger;
   }
 
@@ -266,9 +284,12 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
   }
 
+  /**
+   * todo: if last chapter --> show remain from book.
+   */
   calc_current_read_timeLeft(): number {
     let read = this.getActivePage();
-    let total = this.book_page_length || 0; // todo: get chapter not all book.
+    let total = this.book_page_length || 0; // todo: get "active chapter" not all book.
     let min_per_page = 1;
 
     if (total) {

@@ -39,6 +39,8 @@ interface ILocalization extends LocalizedStringsMethods {
             sync_error: string;
             logout_erase_user_data_warning: string;
             book_file_not_found_download_it: string;
+            reader_epub_error_occurred: string;
+            reader_audio_error_occurred: string;
         },
         back: {
             [key: string]: any; // todo

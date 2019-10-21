@@ -29,6 +29,8 @@ export const ar = {
             sync_error: 'هنگام همگام سازی خطایی روی داد',
             logout_erase_user_data_warning: 'با خروج از برنامه، همه اطلاعات این کاربر، از این دستگاه حذف می شود.',
             book_file_not_found_download_it: 'فایل کتاب پیدا نشد، لطفا آن را دانلود کنید.',
+            reader_epub_error_occurred: 'در هنگام نمایش کتاب خطا رخ داد',
+            reader_audio_error_occurred: 'در هنگام پخش کتاب خطا رخ داد',
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',
