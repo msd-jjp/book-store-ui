@@ -21,7 +21,7 @@ export interface IOrderItemStore { id: IOrder['id']; items: IOrderItem[] };
 // export type IBook_file_store = IBook_file_store_sample | IBook_file_store_main;
 export interface IBook_file_store {
     id: IBook['id'];
-    file: Uint8Array;
+    file: Array<number>;
 }
 export type TCollectionName =
     'clc_book' |

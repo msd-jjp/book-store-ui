@@ -12,12 +12,14 @@ export class SearchAppStorage {
 
     static findBookMainFileById(book_id: string): Uint8Array | undefined {
         const data = appLocalStorage.clc_book_mainFile.findOne({ id: book_id });
-        if (data) return data.file;
+        // if (data) return data.file;
+        if (data) return new Uint8Array(data.file);
     }
 
     static findBookSampleFileById(book_id: string): Uint8Array | undefined {
         const data = appLocalStorage.clc_book_sampleFile.findOne({ id: book_id });
-        if (data) return data.file;
+        // if (data) return data.file;
+        if (data) return new Uint8Array(data.file);
     }
 
     static search_by_query_book(

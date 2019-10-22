@@ -49,7 +49,7 @@ export class StoreData {
 
     static storeBookFile(book_id: string, mainFile: boolean, data: Uint8Array) {
         let coll: Collection<IBook_file_store> = mainFile ? appLocalStorage.clc_book_mainFile : appLocalStorage.clc_book_sampleFile;
-        const newData: IBook_file_store = { id: book_id, file: data };
+        const newData: IBook_file_store = { id: book_id, file: Array.from(data) };
         let found = coll.findOne({ id: book_id });
         if (found) {
             coll.findAndUpdate({ id: book_id }, oldObj => {
