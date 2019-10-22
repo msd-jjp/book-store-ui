@@ -5,7 +5,7 @@ import { redux_state } from "../../redux/app_state";
 import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { BookService } from "../../service/service.book";
-import { ToastContainer } from "react-toastify";
+// import { ToastContainer } from "react-toastify";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { IDownloadingBookFile_schema } from "../../redux/action/downloading-book-file/downloadingBookFileAction";
 import { action_update_downloading_book_file, action_reset_downloading_book_file } from "../../redux/action/downloading-book-file";
@@ -140,7 +140,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         return (
             <>
                 {/* <div className="book-file-download-wrapper mt-3"></div> */}
-                <ToastContainer {...this.getNotifyContainerConfig()} />
+                {/* <ToastContainer {...this.getNotifyContainerConfig()} /> */}
             </>
         );
     }

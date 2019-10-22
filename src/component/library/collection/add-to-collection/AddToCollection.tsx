@@ -6,7 +6,7 @@ import { TInternationalization } from '../../../../config/setup';
 import { BaseComponent } from '../../../_base/BaseComponent';
 import { Localization } from '../../../../config/localization/localization';
 // import { IToken } from '../../../../model/model.token';
-import { ToastContainer } from 'react-toastify';
+// import { ToastContainer } from 'react-toastify';
 import { Modal } from 'react-bootstrap';
 import { ICollection } from '../../../../model/model.collection';
 import { action_set_collections_data } from '../../../../redux/action/collection';
@@ -15,6 +15,7 @@ import { CollectionService } from '../../../../service/service.collection';
 import { Input } from '../../../form/input/Input';
 import { BtnLoader } from '../../../form/btn-loader/BtnLoader';
 import { IBook } from '../../../../model/model.book';
+import { NETWORK_STATUS } from '../../../../enum/NetworkStatus';
 
 export interface IProps {
     internationalization: TInternationalization;
@@ -26,7 +27,8 @@ export interface IProps {
     // book_id: string;
     book?: IBook;
     show: boolean;
-    onHide: () => any
+    onHide: () => any;
+    network_status: NETWORK_STATUS;
 }
 
 interface IState {
@@ -104,9 +106,14 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
                                         btnClassName="btn btn-link text-success btn-sm text-uppercase"
                                         loading={this.state.createCollection_loader}
                                         onClick={() => this.create_Collection()}
-                                        disabled={!this.state.newCollectionTitle.isValid}
+                                        disabled={!this.state.newCollectionTitle.isValid ||
+                                            this.props.network_status === NETWORK_STATUS.OFFLINE}
                                     >
                                         {Localization.create}
+                                        {
+                                            this.props.network_status === NETWORK_STATUS.OFFLINE
+                                                ? <i className="fa fa-wifi text-danger"></i> : ''
+                                        }
                                     </BtnLoader>
                                 </div>
                             </div>
@@ -148,9 +155,14 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
                             btnClassName="btn btn-success-- text-primary btn-sm text-uppercase min-w-70px"
                             loading={this.state.addToCollections_loader}
                             onClick={() => this.add_toCollections()}
-                            disabled={!this.props.book || !this.props.book.id || !this.state.selected_collection_list.length}
+                            disabled={!this.props.book || !this.props.book.id || !this.state.selected_collection_list.length ||
+                                this.props.network_status === NETWORK_STATUS.OFFLINE}
                         >
                             {Localization.ok}
+                            {
+                                this.props.network_status === NETWORK_STATUS.OFFLINE
+                                    ? <i className="fa fa-wifi text-danger"></i> : ''
+                            }
                         </BtnLoader>
                     </Modal.Footer>
                 </Modal>
@@ -237,7 +249,7 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
         let res = await this._collectionService.create(
             this.state.newCollectionTitle.value!
         ).catch(error => {
-            this.handleError({ error: error.response });
+            this.handleError({ error: error.response, toastOptions: { toastId: 'createCollections_error' } });
             this.setState({
                 ...this.state,
                 createCollection_loader: false
@@ -278,7 +290,7 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
             selected_collection_list_title,
             [book_toAdd.id]
         ).catch(error => {
-            this.handleError({ error: error.response });
+            this.handleError({ error: error.response, toastOptions: { toastId: 'addToCollections_error' } });
         });
 
         this.setState({
@@ -308,7 +320,7 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
             <>
                 {this.modal_render()}
 
-                <ToastContainer {...this.getNotifyContainerConfig()} />
+                {/* <ToastContainer {...this.getNotifyContainerConfig()} /> */}
             </>
         )
     }
@@ -325,6 +337,7 @@ const state2props = (state: redux_state) => {
         internationalization: state.internationalization,
         // token: state.token,
         collection: state.collection,
+        network_status: state.network_status,
     }
 }
 
