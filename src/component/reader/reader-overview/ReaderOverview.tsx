@@ -269,7 +269,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         doubleTap: () => {
         },
         tap: () => {
-          this.onSlideClicked();
+          // this.onSlideClicked();
+          this.onSwiperTaped();
         },
         slideChange: () => {
           const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
@@ -461,12 +462,14 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   // }
 
   private swiperTaped = false;
-  onSlideClicked() {
+  // onSlideClicked() {
+  onSwiperTaped() {
     this.swiperTaped = true;
-    setTimeout(() => { this.swiperTaped = false; }, 0);
+    setTimeout(() => { this.swiperTaped = false; }, 50);
   }
 
-  onPageClicked(pg_number: number) {
+  async onPageClicked(pg_number: number) {
+    await CmpUtility.waitOnMe(10);
     if (!this.swiperTaped) return;
     // debugger;
     console.log('pg_number: ', pg_number);
