@@ -7,16 +7,12 @@ import { TInternationalization } from "../../config/setup";
 import { BaseComponent } from "../_base/BaseComponent";
 import Slider, { Settings } from "react-slick";
 import { Localization } from "../../config/localization/localization";
-
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
-// import { Dropdown, ButtonGroup } from 'react-bootstrap';
-
 import { History } from "history";
 import { IBook } from "../../model/model.book";
 import { BookService } from "../../service/service.book";
-// import { IToken } from "../../model/model.token";
 import { ToastContainer } from "react-toastify";
 import { BOOK_ROLES, BOOK_TYPES } from "../../enum/Book";
 import { NavLink } from "react-router-dom";
@@ -24,7 +20,7 @@ import { AddToCollection } from "../library/collection/add-to-collection/AddToCo
 import { CmpUtility } from "../_base/CmpUtility";
 import { action_user_logged_in } from "../../redux/action/user";
 import { PersonService } from "../../service/service.person";
-import { calc_read_percent, is_libBook_downloaded, is_book_downloaded, is_book_downloading, toggle_book_download } from "../library/libraryViewTemplate";
+import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download } from "../library/libraryViewTemplate";
 import { ILibrary } from "../../model/model.library";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
@@ -35,7 +31,6 @@ interface IProps {
   logged_in_user: IUser | null;
   internationalization: TInternationalization;
   history: History;
-  // token: IToken;
   onUserLoggedIn: (user: IUser) => void;
   library: ILibrary_schema;
   network_status: NETWORK_STATUS;
@@ -124,8 +119,9 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       freeMode: true,
       on: {
         tap: () => {
-          console.log('tap');
-          this.onSlideClicked();
+          // console.log('tap');
+          // this.onSlideClicked();
+          this.onSwiperTaped();
         }
       }
     });
@@ -141,9 +137,10 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
   }
   private swiperTaped = false;
-  onSlideClicked() {
+  // onSlideClicked() {
+  onSwiperTaped() {
     this.swiperTaped = true;
-    setTimeout(() => { this.swiperTaped = false; }, 0);
+    setTimeout(() => { this.swiperTaped = false; }, 50);
   }
 
   fetchAllData() {
@@ -174,7 +171,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  gotoBookDetail(bookId: string) {
+  async gotoBookDetail(bookId: string) {
+    await CmpUtility.waitOnMe(10);
     if (!this.swiperTaped) return;
     this.props.history.push(`book-detail/${bookId}`);
   }
@@ -444,14 +442,14 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     // return lib!;
   }
 
-  private _is_libCurrentBook_downloaded: boolean | undefined;
-  private is_libCurrentBook_downloaded(item: ILibrary | undefined): boolean {
-    if (!item) return false;
-    if (this._is_libCurrentBook_downloaded === undefined) {
-      this._is_libCurrentBook_downloaded = is_libBook_downloaded(item);
-    }
-    return this._is_libCurrentBook_downloaded;
-  }
+  // private _is_libCurrentBook_downloaded: boolean | undefined;
+  // private is_libCurrentBook_downloaded(item: ILibrary | undefined): boolean {
+  //   if (!item) return false;
+  //   if (this._is_libCurrentBook_downloaded === undefined) {
+  //     this._is_libCurrentBook_downloaded = is_libBook_downloaded(item);
+  //   }
+  //   return this._is_libCurrentBook_downloaded;
+  // }
 
   removeFromDevice(book_id: string) {
     appLocalStorage.removeFromCollection('clc_book_mainFile', book_id);
