@@ -2,20 +2,14 @@ import React, { Fragment } from "react";
 import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { redux_state } from "../../../redux/app_state";
-// import { IUser } from "../../../model/model.user";
 import { TInternationalization, Setup } from "../../../config/setup";
 import { BaseComponent } from "../../_base/BaseComponent";
 import { History } from "history";
-// import { IToken } from "../../../model/model.token";
 import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import { Localization } from "../../../config/localization/localization";
-// import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { PersonService } from "../../../service/service.person";
-// import { action_user_logged_in } from "../../../redux/action/user";
 import { Dropdown, Modal } from "react-bootstrap";
 import { IBook } from "../../../model/model.book";
-// import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
-// import Slider, { Settings } from "react-slick";
 import Tooltip from 'rc-tooltip';
 import RcSlider, { Handle } from 'rc-slider';
 import { NavLink } from "react-router-dom";
@@ -24,23 +18,17 @@ import { Virtual } from 'swiper/dist/js/swiper.esm';
 import { CmpUtility } from "../../_base/CmpUtility";
 import { BOOK_ROLES } from "../../../enum/Book";
 import { Input } from "../../form/input/Input";
-// import { BtnLoader } from "../../form/btn-loader/BtnLoader";
 import { AppRegex } from "../../../config/regex";
-import { getFont } from "../../../webworker/reader-engine/tools";
-import { book, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
+import { book, IBookPosIndicator, IBookContent } from "../../../webworker/reader-engine/MsdBook";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { Store2 } from "../../../redux/store";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
+import { ReaderUtility } from "../ReaderUtility";
 
 interface IProps {
-  // logged_in_user: IUser | null;
   internationalization: TInternationalization;
   history: History;
-  // token: IToken;
-  // network_status: NETWORK_STATUS;
-  // onUserLoggedIn: (user: IUser) => void;
   match: any;
-  // library: ILibrary_schema;
 }
 
 interface IState {
@@ -114,7 +102,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // this.updateUserCurrentBook_client();
     this.setBook_byId(this.book_id);
     // this.updateUserCurrentBook_server();
-    this.initSwiper();
+    this.generateReader();
   }
 
   // updateUserCurrentBook_client() {
@@ -231,106 +219,70 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     toast.error(notifyBody, this.getNotifyConfig(config));
   }
 
-  private _slide_pages!: { id: number, page: IBookPosIndicator }[];
-  async initSwiper() {
-    // await this.createBook(this.bookFile);
+  private async generateReader() {
+    await this.createBook();
+    if (!this._bookInstance) return;
+    this.initSwiper();
+  }
+
+  private _bookInstance!: book;
+  private async createBook() {
     const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
     if (!bookFile) {
+      this.setState({ page_loading: false });
       this.bookFileNotFound_notify();
-      // CmpUtility.waitOnMe(100);
-      // this.goBack();
       return;
     }
-    
+
     try {
-      await this.createBook(bookFile);
+      this._bookInstance = await ReaderUtility.createEpubBook(bookFile);
     } catch (e) {
       console.error(e);
       this.setState({ page_loading: false });
       this.readerError_notify();
-      return;
     }
+  }
 
+  private _slide_pages!: { id: number, page: IBookPosIndicator }[];
+  private initSwiper() {
     const bookPosList: IBookPosIndicator[] = this._bookInstance.getListOfPageIndicators();
+    const bookContent: IBookContent[] = this._bookInstance.getContentList();
+    // debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
     this.book_active_page = 1;
     /** active page & more before and after of it */
     this.getPagePath(this.book_active_page - 1, this._slide_pages[this.book_active_page - 1].page);
 
-
-    const self = this;
-    // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
-    // this.swiper_obj && this.swiper_obj.destroy(true, true);
-    // let slides = [];
-    // for (var i = 0; i < this.book_page_length; i += 1) { // 10
-    //   slides.push({ name: 'Slide_' + (i + 1), id: i + 1 });
-    // }
     this.swiper_obj = new Swiper('.swiper-container', {
-      // ...
       virtual: {
         cache: true,
-        slides: this._slide_pages, // slides, // self.state.slides,
-        renderExternal(data: Virtual) {
-          // assign virtual slides data
-          self.setState({
+        slides: this._slide_pages,
+        renderExternal: (data: Virtual) => {
+          this.setState({
             virtualData: data,
           });
         }
       },
-
-
-      // slidesPerView: 'auto',
-      // centeredSlides: true,
-      // spaceBetween: 330,
-      // slidesPerView: 10,
-      // centeredSlides: true,
-      // spaceBetween: 30,
-      // slidesPerView: 1,
-      // spaceBetween: 30,
-      // centeredSlides: true,
-      // slidesPerView: 3,
-      // spaceBetween: 30,
-      // freeMode: true,
-
-      initialSlide: self.book_active_page - 1,
-
+      initialSlide: this.book_active_page - 1,
       on: {
-        doubleTap: function () {
-          /* do something */
-          console.log('doubleTap');
+        doubleTap: () => {
         },
-        tap: function () {
-          /* do something */
-          console.log('tap');
-          // self.onPageClicked();
-          self.onSlideClicked();
+        tap: () => {
+          this.onSlideClicked();
         },
-        // click: function () {
-        //   /* do something */
-        //   console.log('click');
-        // },
-        slideChange: function () {
-          /* do something */
-          console.log('swiperChange --> call set_RcSlider_value');
-          const activeIndex = self.swiper_obj && self.swiper_obj!.activeIndex;
-          if (activeIndex) {
-            self.set_RcSlider_value(activeIndex + 1);
-            // self.setState({ ...self.state, RcSlider_value: activeIndex });
+        slideChange: () => {
+          const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
+          console.log('swiperChange --> call set_RcSlider_value', activeIndex);
+          if (activeIndex || activeIndex === 0) {
+            this.set_RcSlider_value(activeIndex + 1);
           }
         },
         init: () => {
           this.setState({ page_loading: false });
         },
-
       }
     });
-    // activeIndex && this.gotoIndex(activeIndex);
-
-
-    // this.swiper_obj.on('touchMove', function(){
-    //     console.log('touchMove');
-    // })
   }
 
   swiper_slideTo(value: number) {
@@ -374,30 +326,6 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         </div>
       </>
     )
-  }
-
-  private _bookInstance!: book;
-  private async createBook(bookFile: Uint8Array) { // Uint8Array
-    // debugger;
-    const reader_state = { ...Store2.getState().reader };
-    const reader_epub = reader_state.epub;
-
-    const font_arrayBuffer = await getFont(`reader/fonts/${reader_epub.fontName}.ttf`); // zar | iransans | nunito
-    const font = new Uint8Array(font_arrayBuffer);
-
-    // const bookbuf = base64ToBuffer(bookFile);
-
-    this._bookInstance = new book(
-      bookFile, // bookbuf,
-      reader_epub.pageSize.width,
-      reader_epub.pageSize.height,
-      font,
-      reader_epub.fontSize,
-      reader_epub.fontColor,
-      reader_epub.bgColor
-    );
-
-    // await CmpUtility.waitOnMe(2000);
   }
 
   getPagePathNear(pageIndex: number) {
