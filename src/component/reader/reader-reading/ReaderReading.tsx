@@ -21,7 +21,7 @@ import { Virtual } from 'swiper/dist/js/swiper.esm';
 import { Store2 } from "../../../redux/store";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { book, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
-import { getFont, base64ToBuffer } from "../../../webworker/reader-engine/tools";
+import { getFont } from "../../../webworker/reader-engine/tools";
 // import { CmpUtility } from "../../_base/CmpUtility";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { action_update_reader } from "../../../redux/action/reader";
@@ -172,6 +172,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       // this.goBack();
       return;
     }
+
     try {
       await this.createBook(bookFile);
     } catch (e) {
@@ -180,11 +181,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       this.readerError_notify();
       return;
     }
-    // console.error('jjjjjjjjjjjj');
+
     const bookPosList: IBookPosIndicator[] = this._bookInstance.getListOfPageIndicators();
-    // const vdsv2 = this._bookInstance.getProgress();
-    // this._bookInstance.RenderSpecPage(this._bookPosIndicator[0])
-    // debugger;
+
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
     this.book_active_page = 1;
@@ -243,7 +242,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   private _bookInstance!: book;
-  private async createBook(bookFile: any) { // Uint8Array
+  private async createBook(bookFile: Uint8Array) { // Uint8Array
     // debugger;
     const reader_state = { ...Store2.getState().reader };
     const reader_epub = reader_state.epub;
@@ -251,14 +250,14 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     const font_arrayBuffer = await getFont(`reader/fonts/${reader_epub.fontName}.ttf`); // zar | iransans | nunito
     const font = new Uint8Array(font_arrayBuffer);
 
-    const bookbuf = base64ToBuffer(bookFile);
+    // const bookbuf = base64ToBuffer(bookFile);
 
     const bookPageSize = this.get_bookPageSize();
     reader_state.epub.pageSize = bookPageSize;
     Store2.dispatch(action_update_reader(reader_state));
 
     this._bookInstance = new book(
-      bookbuf,
+      bookFile, // bookbuf,
       bookPageSize.width,
       bookPageSize.height,
       font,

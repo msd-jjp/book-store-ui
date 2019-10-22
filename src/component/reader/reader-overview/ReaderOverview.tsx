@@ -26,7 +26,7 @@ import { BOOK_ROLES } from "../../../enum/Book";
 import { Input } from "../../form/input/Input";
 // import { BtnLoader } from "../../form/btn-loader/BtnLoader";
 import { AppRegex } from "../../../config/regex";
-import { getFont, base64ToBuffer } from "../../../webworker/reader-engine/tools";
+import { getFont } from "../../../webworker/reader-engine/tools";
 import { book, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { Store2 } from "../../../redux/store";
@@ -241,6 +241,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       // this.goBack();
       return;
     }
+    
     try {
       await this.createBook(bookFile);
     } catch (e) {
@@ -376,7 +377,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   private _bookInstance!: book;
-  private async createBook(bookFile: any) { // Uint8Array
+  private async createBook(bookFile: Uint8Array) { // Uint8Array
     // debugger;
     const reader_state = { ...Store2.getState().reader };
     const reader_epub = reader_state.epub;
@@ -384,10 +385,10 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     const font_arrayBuffer = await getFont(`reader/fonts/${reader_epub.fontName}.ttf`); // zar | iransans | nunito
     const font = new Uint8Array(font_arrayBuffer);
 
-    const bookbuf = base64ToBuffer(bookFile);
+    // const bookbuf = base64ToBuffer(bookFile);
 
     this._bookInstance = new book(
-      bookbuf,
+      bookFile, // bookbuf,
       reader_epub.pageSize.width,
       reader_epub.pageSize.height,
       font,
@@ -396,24 +397,6 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       reader_epub.bgColor
     );
 
-    // const cWhite = color(255, 255, 255, 255);
-    // const cBlack = color(255, 0, 0, 255);
-    // // const cBlue = color(0, 0, 255, 255);
-    // const font_arrayBuffer = await getFont('Zar.ttf');
-    // const font = new Uint8Array(font_arrayBuffer);
-    // // debugger;
-    // // const fontHeapPtr = copyBufferToHeap(font);
-    // const fontSize = 42;
-    // const bookbuf = base64ToBuffer(bookFile);
-
-    // //
-    // const page = document.querySelector('.swiper-container .swiper-wrapper .swiper-slide .item .page-img-wrapper');
-    // // if (!page) return;
-    // const width = page ? page.clientWidth : 500;
-    // const height = page ? page.clientHeight : 500;
-    // //
-
-    // this._bookInstance = new book(bookbuf, width, height, font, fontSize, cWhite, cBlack);
     // await CmpUtility.waitOnMe(2000);
   }
 
