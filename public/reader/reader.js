@@ -1185,11 +1185,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 284000,
+    STACK_BASE = 284464,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5526880,
-    DYNAMIC_BASE = 5526880,
-    DYNAMICTOP_PTR = 283968;
+    STACK_MAX = 5527344,
+    DYNAMIC_BASE = 5527344,
+    DYNAMICTOP_PTR = 284432;
 
 
 
@@ -1556,8 +1556,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 1838,
-    'maximum': 1838,
+    'initial': 1870,
+    'maximum': 1870,
     'element': 'anyfunc'
   });
   // With the wasm backend __memory_base and __table_base and only needed for
@@ -1578,7 +1578,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 282976;
+// STATICTOP = STATIC_BASE + 283440;
 /* global initializers */  __ATINIT__.push({ func: function() { ___emscripten_environ_constructor() } });
 
 
@@ -1589,7 +1589,7 @@ var ASM_CONSTS = [];
 
 
 /* no memory initializer */
-var tempDoublePtr = 283984
+var tempDoublePtr = 284448
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
   HEAP8[tempDoublePtr] = HEAP8[ptr];
@@ -6040,6 +6040,8 @@ var _deleteRenderedPage = Module["_deleteRenderedPage"] = function() {  return M
 var _emscripten_replace_memory = Module["_emscripten_replace_memory"] = function() {  return Module["asm"]["_emscripten_replace_memory"].apply(null, arguments) };
 var _free = Module["_free"] = function() {  return Module["asm"]["_free"].apply(null, arguments) };
 var _getBookAtomsCount = Module["_getBookAtomsCount"] = function() {  return Module["asm"]["_getBookAtomsCount"].apply(null, arguments) };
+var _getBookContentAt = Module["_getBookContentAt"] = function() {  return Module["asm"]["_getBookContentAt"].apply(null, arguments) };
+var _getBookContentLength = Module["_getBookContentLength"] = function() {  return Module["asm"]["_getBookContentLength"].apply(null, arguments) };
 var _getBookFromBuf = Module["_getBookFromBuf"] = function() {  return Module["asm"]["_getBookFromBuf"].apply(null, arguments) };
 var _getBookGroupsCount = Module["_getBookGroupsCount"] = function() {  return Module["asm"]["_getBookGroupsCount"].apply(null, arguments) };
 var _getBookIndicatorPartOfPageResult = Module["_getBookIndicatorPartOfPageResult"] = function() {  return Module["asm"]["_getBookIndicatorPartOfPageResult"].apply(null, arguments) };
@@ -6069,6 +6071,7 @@ var _pthread_cond_broadcast = Module["_pthread_cond_broadcast"] = function() {  
 var _realloc = Module["_realloc"] = function() {  return Module["asm"]["_realloc"].apply(null, arguments) };
 var _renderBackPage = Module["_renderBackPage"] = function() {  return Module["asm"]["_renderBackPage"].apply(null, arguments) };
 var _renderNextPage = Module["_renderNextPage"] = function() {  return Module["asm"]["_renderNextPage"].apply(null, arguments) };
+var _renderNextPages = Module["_renderNextPages"] = function() {  return Module["asm"]["_renderNextPages"].apply(null, arguments) };
 var _saveSetjmp = Module["_saveSetjmp"] = function() {  return Module["asm"]["_saveSetjmp"].apply(null, arguments) };
 var _sbrk = Module["_sbrk"] = function() {  return Module["asm"]["_sbrk"].apply(null, arguments) };
 var _setThrew = Module["_setThrew"] = function() {  return Module["asm"]["_setThrew"].apply(null, arguments) };

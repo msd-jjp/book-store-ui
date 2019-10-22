@@ -39,6 +39,12 @@ var msdreader = {
       Module.cwrap('gotoBookPosIndicator', 'number', ['number', 'number']),
   getBookPosIndicators:
       Module.cwrap('getBookPosIndicators', 'number', ['number']),
+  getBookContentAt:
+      Module.cwrap('getBookContentAt', 'number', ['number', 'number']),
+  getBookContentLength:
+      Module.cwrap('getBookContentLength', 'number', ['number']),
+  renderNextPages:
+      Module.cwrap('renderNextPages', 'number', ['number', 'number', 'number']),
 
 
 };
@@ -61,6 +67,13 @@ function getDWORDSize(ptr: number): number {
   return size;
 };
 
+function getWORDSize(ptr: number): number {
+  let size = 0;
+  for (let i = 1; i > -1; i--) {
+    size = (size << 8) + Module.HEAPU8[ptr + i];
+  }
+  return size;
+};
 function extractFromHeapBytes(size: number, ptr: number): Uint8Array {
   return Module.HEAPU8.slice(ptr, ptr + size);
 };
@@ -79,6 +92,9 @@ export interface IBookPosIndicator {
   group: number, atom: number
 }
 ;
+export interface IBookContent {
+  pos: IBookPosIndicator, text: string, parentIndex: number
+}
 export class book {
   fontHeapPtr: number;
   fontSize = 42;
@@ -167,7 +183,32 @@ export class book {
     this.renderedPagePtr = NextPage;
     return pic;
   }
+  renderNPages(fromInd: IBookPosIndicator, n: number): Array<string> {
+    let indic = msdreader.gotoBookPosIndicator(fromInd.group, fromInd.atom);
+    if (msdreader.is_last_atom(this.bookPtr, indic)) {
+      msdreader.deleteBookPosIndicator(indic);
+      throw new Error('EOF');
+    }
 
+    let pagesPtr = msdreader.renderNextPages(this.bookRendererPtr, indic, n);
+    msdreader.deleteBookPosIndicator(indic);
+    if (pagesPtr == null) {
+      throw new Error('BAD POINTER');
+    }
+    let len = getDWORDSize(pagesPtr);
+    let pageCount = (len - 4) / 4;
+    let images = [];
+    for (let i = 0; i < pageCount; i++) {
+      let imgPtr = getDWORDSize(pagesPtr + 4 + i * 4);
+      let imageSize = getDWORDSize(imgPtr);
+      let pngData = extractFromHeapBytes(imageSize - 4, imgPtr + 4);
+      let pic = 'data:image/png;base64,' + _arrayBufferToBase64(pngData);
+      images.push(pic);
+      msdreader.deleteBytePoniter(imgPtr);
+    }
+    msdreader.deleteBytePoniter(pagesPtr);
+    return images;
+  }
   bookType() {
     return msdreader.getBookType(this.bookPtr);
   }
@@ -232,6 +273,28 @@ export class book {
     msdreader.deleteBytePoniter(img);
     this.renderedPagePtr = NextPage;
     return pic;
+  }
 
+  contentAt(itemIndex: number): IBookContent {
+    let r = msdreader.getBookContentAt(this.bookPtr, itemIndex);
+    if (r === 0) throw new Error('bad Index');
+    let size = getDWORDSize(r);
+    let gindex = getDWORDSize(r + 4);
+    let aindex = getDWORDSize(r + 4 + 4);
+    let parentindex = getWORDSize(r + 4 + 4 + 4);
+    let sbuf = extractFromHeapBytes(size - 4 - 4 - 4 - 2, r + 4 + 4 + 4 + 2);
+    let s = new TextDecoder('utf-8').decode(sbuf);
+    return {
+      pos: {group: gindex, atom: aindex}, text: s, parentIndex: parentindex
+    }
+  }
+  contentLength() {
+    return msdreader.getBookContentLength(this.bookPtr);
+  }
+  getContentList(): Array<IBookContent> {
+    let rtn: Array < IBookContent >= [];
+    let cLen = this.contentLength();
+    for (let i = 0; i < cLen; i++) rtn.push(this.contentAt(i));
+    return rtn;
   }
 }
