@@ -1,10 +1,26 @@
 import { Store2 } from "../../redux/store";
 import { book } from "../../webworker/reader-engine/MsdBook";
-import { getFont } from "../../webworker/reader-engine/tools";
+import { getFont, color } from "../../webworker/reader-engine/tools";
 import { action_update_reader } from "../../redux/action/reader";
+import { IReader_schema_epub_theme } from "../../redux/action/reader/readerAction";
 // import { CmpUtility } from "../_base/CmpUtility";
 
 export abstract class ReaderUtility {
+
+    static createEpubBook_theme(theme: IReader_schema_epub_theme): { fontColor: number, bgColor: number } {
+        let bgColor = color(255, 255, 255, 0);
+        let fontColor = color(0, 0, 0, 255);
+
+        if (theme === 'white') {
+        } else if (theme === 'dark') {
+            fontColor = color(255, 255, 255, 255);
+            bgColor = color(0, 0, 0, 255); // todo comment me and add them-... to reader wrapper all 3 epub reader
+            // remove class text-ddark from icon in header of all 3 
+            // add this to for ex: class .reader-overview-wrapper: background-color: black; color: #fff;
+        }
+
+        return { fontColor, bgColor };
+    }
 
     static async createEpubBook(bookFile: Uint8Array, bookPageSize?: { width: number; height: number; }): Promise<book> {
         // debugger;
@@ -39,6 +55,7 @@ export abstract class ReaderUtility {
         }
 
         // await CmpUtility.waitOnMe(3000);
+        const reader_epub_theme = ReaderUtility.createEpubBook_theme(reader_epub.theme);
 
         const _book = new book(
             bookFile,
@@ -46,8 +63,8 @@ export abstract class ReaderUtility {
             _bookPageSize.height,
             font,
             reader_epub.fontSize,
-            reader_epub.fontColor,
-            reader_epub.bgColor
+            reader_epub_theme.fontColor, // reader_epub.fontColor,
+            reader_epub_theme.bgColor // reader_epub.bgColor
         );
 
         return _book;
