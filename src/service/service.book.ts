@@ -2,8 +2,10 @@ import { BaseService, IAPI_ResponseList, IAPI_Response } from './service.base';
 import { IBook } from '../model/model.book';
 import { appLocalStorage } from './appLocalStorage';
 import { CmpUtility } from '../component/_base/CmpUtility';
-import { sampleBookFile } from '../webworker/reader-engine/sampleBookFile';
-import { CancelToken } from 'axios';
+// import { sampleBookFile } from '../webworker/reader-engine/sampleBookFile';
+// import { sampleBookFile } from '../webworker/reader-engine/book.ou';
+import Axios, { CancelToken, AxiosInstance } from 'axios';
+// import { base64ToBuffer } from '../webworker/reader-engine/tools';
 
 export class BookService extends BaseService {
 
@@ -76,10 +78,13 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.post('/wish-list/_search', data);
     }
 
-    downloadFile(book_id: string, mainFile: boolean, cancelToken: CancelToken): Promise<IAPI_Response<any>> {
+    downloadFile(book_id: string, mainFile: boolean, cancelToken: CancelToken)
+        : Promise<IAPI_Response<ArrayBuffer>>
+    // : Promise<Uint8Array> 
+    {
 
         return new Promise(async (resolve, reject) => {
-            await CmpUtility.waitOnMe(9000);
+            await CmpUtility.waitOnMe(1000);
             // resolve(
             //     this.axiosTokenInstance.post(
             //         '/books/_search',
@@ -87,7 +92,21 @@ export class BookService extends BaseService {
             //         { cancelToken }
             //     )
             // );
-            resolve({ data: sampleBookFile });
+            debugger;
+            // this.baseURL = '';
+            // this.axiosTokenInstance.defaults.headers['Content-Type'] = 'multipart/form-data';
+            const axiosInstance: AxiosInstance = Axios.create({
+                baseURL: '',
+                headers: { 'Content-Type': 'application/json' }, // application/json  ,  multipart/form-data
+                responseType: 'arraybuffer', //'arraybuffer',
+            });
+            resolve(
+                axiosInstance.get(
+                    '/reader/book.output',
+                    { cancelToken }
+                )
+            );
+            // resolve({ data: base64ToBuffer(sampleBookFile) });
         });
     }
 
