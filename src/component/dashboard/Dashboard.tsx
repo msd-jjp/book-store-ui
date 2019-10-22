@@ -327,8 +327,24 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                   {Localization.view_in_store}
                   {/* </NavLink> */}
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => this.openModal_addToCollections(/* current_book!.id */)}>{Localization.add_to_collection}</Dropdown.Item>
-                <Dropdown.Item>{Localization.mark_as_read}</Dropdown.Item>
+                <Dropdown.Item onClick={() => this.openModal_addToCollections(/* current_book!.id */)}
+                  disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                >
+                  {Localization.add_to_collection}
+                  {
+                    this.props.network_status === NETWORK_STATUS.OFFLINE
+                      ? <i className="fa fa-wifi text-danger"></i> : ''
+                  }
+                </Dropdown.Item>
+                <Dropdown.Item
+                  disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                >
+                  {Localization.mark_as_read}
+                  {
+                    this.props.network_status === NETWORK_STATUS.OFFLINE
+                      ? <i className="fa fa-wifi text-danger"></i> : ''
+                  }
+                </Dropdown.Item>
                 <Dropdown.Item>{Localization.share_progress}</Dropdown.Item>
                 <Dropdown.Item>
                   {Localization.recommend_this_book}
