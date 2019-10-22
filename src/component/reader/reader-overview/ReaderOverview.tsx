@@ -8,7 +8,7 @@ import { History } from "history";
 import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import { Localization } from "../../../config/localization/localization";
 import { PersonService } from "../../../service/service.person";
-import { Dropdown, Modal } from "react-bootstrap";
+import { Dropdown, Modal, ToggleButtonGroup } from "react-bootstrap";
 import { IBook } from "../../../model/model.book";
 import Tooltip from 'rc-tooltip';
 import RcSlider, { Handle } from 'rc-slider';
@@ -24,6 +24,9 @@ import { appLocalStorage } from "../../../service/appLocalStorage";
 import { Store2 } from "../../../redux/store";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { ReaderUtility } from "../ReaderUtility";
+import { ToggleButton } from "react-bootstrap";
+import { IReader_schema_epub_fontName, IReader_schema_epub_theme } from "../../../redux/action/reader/readerAction";
+import { action_update_reader } from "../../../redux/action/reader";
 
 interface IProps {
   internationalization: TInternationalization;
@@ -40,6 +43,12 @@ interface IState {
   is_sidebar_open: boolean;
   modal_goto: { show: boolean; input: { value: any; isValid: boolean } };
   page_loading: boolean;
+  modal_epub: {
+    show: boolean;
+    fontSize: number | undefined;
+    theme: IReader_schema_epub_theme | undefined;
+    fontName: IReader_schema_epub_fontName | undefined;
+  };
 }
 
 class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
@@ -54,6 +63,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     is_sidebar_open: false,
     modal_goto: { show: false, input: { value: undefined, isValid: false } },
     page_loading: true,
+    modal_epub: {
+      show: false,
+      fontSize: undefined,
+      theme: undefined,
+      fontName: undefined
+    },
   };
 
   private _personService = new PersonService();
@@ -153,7 +168,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
               <div className="float-right">
                 <i className="fa fa-search text-dark p-2 cursor-pointer"></i>
-                <i className="fa fa-font text-dark p-2 cursor-pointer"></i>
+                <i className="fa fa-font text-dark p-2 cursor-pointer" onClick={() => this.openModal_epub()}></i>
                 <i className="fa fa-file-text-o text-dark p-2 cursor-pointer"></i>
                 <i className="fa fa-bookmark-o text-dark p-2 cursor-pointer"></i>
 
@@ -748,6 +763,133 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
   //#endregion
 
+  //#region modal_epub
+  openModal_epub() {
+    const reader_state = { ...Store2.getState().reader };
+    const reader_epub = reader_state.epub;
+
+    this.setState({
+      ...this.state, modal_epub: {
+        ...this.state.modal_epub,
+        show: true,
+        fontSize: reader_epub.fontSize,
+        fontName: reader_epub.fontName,
+        theme: reader_epub.theme,
+      }
+    });
+  }
+
+  closeModal_epub() {
+    this.setState({ ...this.state, modal_epub: { ...this.state.modal_epub, show: false } });
+  }
+
+  modal_epub_render() {
+    return (
+      <>
+        <Modal show={this.state.modal_epub.show} onHide={() => this.closeModal_epub()} centered>
+          <Modal.Body>
+            <div className="row">
+              <div className="col-12">
+                <ul className="more-list-- list-group list-group-flush">
+
+                  <li className="more-item-- list-group-item d-flex justify-content-between px-0 pt-0--">
+                    <div className="text-capitalize">text size</div>
+                    <div>
+                      <span className="mr-3">{this.state.modal_epub.fontSize}</span>
+                      <div className="btn-group btn-group-sm">
+                        <button className="btn btn-light min-w-40px"
+                          onClick={() => this.modal_epub_fontSizeChanged('down')}
+                        ><i className="fa fa-minus"></i></button>
+                        <button className="btn btn-light min-w-40px"
+                          onClick={() => this.modal_epub_fontSizeChanged('up')}
+                        ><i className="fa fa-plus"></i></button>
+                      </div>
+                    </div>
+                  </li>
+
+                  <li className="more-item-- list-group-item d-flex justify-content-between px-0">
+                    <div className="text-capitalize">color</div>
+                    <ToggleButtonGroup
+                      className="btn-group-sm"
+                      type="radio"
+                      name="reader-epub-color"
+                      defaultValue={this.state.modal_epub.theme}
+                      onChange={(theme: IReader_schema_epub_theme) => this.modal_epub_colorChanged(theme)}
+                    >
+                      <ToggleButton className="min-w-70px theme-white" value={'white'}>theme_white</ToggleButton>
+                      <ToggleButton className="min-w-70px theme-dark" value={'dark'}>theme_dark</ToggleButton>
+                    </ToggleButtonGroup>
+                  </li>
+
+                  <li className="more-item-- list-group-item d-flex justify-content-between px-0 pb-0--">
+                    <div className="text-capitalize">font</div>
+                    <ToggleButtonGroup
+                      className="btn-group-sm"
+                      type="radio"
+                      name="reader-epub-color"
+                      defaultValue={this.state.modal_epub.fontName}
+                      onChange={(fontName: IReader_schema_epub_fontName) => this.modal_epub_fontChanged(fontName)}
+                    >
+                      <ToggleButton className="min-w-70px btn-light" value={'iransans'}>iransans</ToggleButton>
+                      <ToggleButton className="min-w-70px btn-light" value={'nunito'}>nunito</ToggleButton>
+                      <ToggleButton className="min-w-70px btn-light" value={'zar'}>zar</ToggleButton>
+                    </ToggleButtonGroup>
+                  </li>
+
+                </ul>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer className="pt-0 border-top-0">
+            <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_epub()}>
+              {Localization.cancel}
+            </button>
+            <button className="btn btn-danger-- text-system btn-sm text-uppercase min-w-70px"
+              onClick={() => this.modal_epub_confirm()}
+            // disabled={!this.state.modal_epub.input.isValid}
+            >
+              {Localization.ok}
+            </button>
+          </Modal.Footer>
+        </Modal>
+      </>
+    )
+  }
+  modal_epub_fontSizeChanged(change: 'up' | 'down') {
+    let fs: number | undefined = this.state.modal_epub.fontSize;
+    if (!fs) return;
+
+    if (change === 'down') {
+      if (fs <= 5) return;
+      fs = fs - 1;
+    } else if (change === 'up') {
+      if (fs >= 50) return;
+      fs = fs + 1;
+    }
+
+    this.setState({ modal_epub: { ...this.state.modal_epub, fontSize: fs } });
+  }
+  modal_epub_colorChanged(theme: IReader_schema_epub_theme) {
+    debugger;
+    this.setState({ modal_epub: { ...this.state.modal_epub, theme } });
+  }
+  modal_epub_fontChanged(fontName: IReader_schema_epub_fontName) {
+    this.setState({ modal_epub: { ...this.state.modal_epub, fontName } });
+  }
+  modal_epub_confirm() {
+    debugger;
+    const reader_state = { ...Store2.getState().reader };
+    const reader_epub = reader_state.epub;
+
+    if (this.state.modal_epub.fontName) reader_epub.fontName = this.state.modal_epub.fontName!;
+    if (this.state.modal_epub.fontSize) reader_epub.fontSize = this.state.modal_epub.fontSize!;
+    if (this.state.modal_epub.theme) reader_epub.theme = this.state.modal_epub.theme!;
+
+    Store2.dispatch(action_update_reader(reader_state));
+    this.gotoReader_reading(this.book_id);
+  }
+  //#endregion
+
   render() {
     return (
       <>
@@ -765,6 +907,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         </div>
 
         {this.modal_goto_render()}
+        {this.modal_epub_render()}
+
         <ToastContainer {...this.getNotifyContainerConfig()} />
       </>
     );

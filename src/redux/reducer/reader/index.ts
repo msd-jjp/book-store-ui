@@ -5,8 +5,11 @@ import { color } from "../../../webworker/reader-engine/tools";
 const reader_reset: IReader_schema = {
     audio: {},
     epub: {
-        fontColor: color(0, 0, 0, 255),
-        bgColor: color(255, 255, 255, 255),
+        // fontColor: color(0, 0, 0, 255),
+        // bgColor: color(255, 255, 255, 255),
+        // fontColor: color(0, 0, 0, 255),
+        // bgColor: color(255, 255, 255, 0),
+        theme: 'white',
         pageSize: {
             width: 200,
             height: 300

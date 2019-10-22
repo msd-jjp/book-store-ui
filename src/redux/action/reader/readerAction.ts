@@ -1,12 +1,14 @@
 import { Action } from "redux";
 import { EACTIONS } from "../../ActionEnum";
 
-type IReader_schema_epub_fontName = 'zar' | 'iransans' | 'nunito';
+export type IReader_schema_epub_fontName = 'zar' | 'iransans' | 'nunito';
+export type IReader_schema_epub_theme = 'white' | 'dark';
 export interface IReader_schema {
     audio: {};
     epub: {
-        fontColor: number;
-        bgColor: number;
+        // fontColor: number;
+        // bgColor: number;
+        theme: IReader_schema_epub_theme;
         fontSize: number;
         fontName: IReader_schema_epub_fontName;
         pageSize: { width: number, height: number };
