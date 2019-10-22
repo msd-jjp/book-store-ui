@@ -12,7 +12,8 @@ const reader_reset: IReader_schema = {
             height: 300
         },
         fontName: 'iransans',
-        fontSize: 16
+        fontSize: 16,
+        fontFiles: {}
     }
 };
 
