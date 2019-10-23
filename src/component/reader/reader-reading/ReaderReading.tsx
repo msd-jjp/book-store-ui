@@ -14,12 +14,14 @@ import { action_user_logged_in } from "../../../redux/action/user";
 import { IBook } from "../../../model/model.book";
 import Swiper from 'swiper';
 import { Virtual } from 'swiper/dist/js/swiper.esm';
-import { Store2 } from "../../../redux/store";
+// import { Store2 } from "../../../redux/store";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { book, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { ReaderUtility } from "../ReaderUtility";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
+import { ILibrary } from "../../../model/model.library";
+import { getLibraryItem } from "../../library/libraryViewTemplate";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -83,23 +85,34 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   // };
   swiper_obj: Swiper | undefined;
   private book_page_length = 1; // 2500;
-  private book_active_page = 1; // 372;
+  private book_active_index = 0; // 372;
+  private _libraryItem: ILibrary | undefined;
 
   constructor(props: IProps) {
     super(props);
 
-    // this._personService.setToken(this.props.token);
     this.book_id = this.props.match.params.bookId;
   }
 
+  componentWillMount() {
+    if (this.book_id) {
+      this._libraryItem = getLibraryItem(this.book_id); // Store2.getState().library.data.find(lib => lib.book.id === this.book_id);
+    }
+  }
   componentDidMount() {
+    if (!this._libraryItem) {
+      this.props.history.replace(`/dashboard`);
+      return;
+    }
+
     this.updateUserCurrentBook_client();
     this.updateUserCurrentBook_server();
     this.generateReader();
   }
 
   updateUserCurrentBook_client() {
-    const book = this.getBookFromLibrary(this.book_id);
+    // const book = this.getBookFromLibrary(this.book_id);
+    const book = this._libraryItem!.book;
     this.setState({ ...this.state, book: book });
 
     let logged_in_user = { ...this.props.logged_in_user! };
@@ -110,11 +123,11 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     this.props.onUserLoggedIn(logged_in_user);
   }
 
-  getBookFromLibrary(book_id: string): IBook {
-    // const lib = this.props.library.data.find(lib => lib.book.id === book_id);
-    const lib = Store2.getState().library.data.find(lib => lib.book.id === book_id);
-    return (lib! || {}).book;
-  }
+  // getBookFromLibrary(book_id: string): IBook {
+  //   // const lib = this.props.library.data.find(lib => lib.book.id === book_id);
+  //   const lib = Store2.getState().library.data.find(lib => lib.book.id === book_id);
+  //   return (lib! || {}).book;
+  // }
 
   async updateUserCurrentBook_server() {
     if (!this.book_id) return;
@@ -186,9 +199,20 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
-    this.book_active_page = 1;
+    const progress_percent = this._libraryItem!.status.read_pages || 0;
+    this.book_active_index = Math.floor(this._slide_pages.length * progress_percent); // - 1;
+    if (this.book_active_index > this._slide_pages.length - 1 || this.book_active_index < 0) {
+      this.book_active_index = 0;
+    }
     /** active page & more before and after of it */
-    this.getPagePath(this.book_active_page - 1, this._slide_pages[this.book_active_page - 1].page);
+    this.getPagePath(this.book_active_index, this._slide_pages[this.book_active_index].page);
+
+    const renderNPages: string[] = this._bookInstance.renderNPages(bookPosList[this.book_active_index], 5);
+    // const renderNPages: string[] = this._bookInstance.renderNPages(bookPosList[0], 50);
+    // const book_active_page_index = this.book_active_page - 1;
+    renderNPages.forEach((img, i) => {
+      this._pageRenderedPath[i + this.book_active_index] = img;
+    });
 
     this.swiper_obj = new Swiper('.swiper-container', {
       virtual: {
@@ -199,7 +223,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
           });
         }
       },
-      initialSlide: this.book_active_page - 1,
+      initialSlide: this.book_active_index,
       on: {
         doubleTap: () => {
         },
@@ -207,7 +231,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
           this.onPageClicked();
         },
         slideChange: () => {
-          console.log('swiperChange --> active_page_number:', this.getActivePage());
+          // console.log('swiperChange --> active_page_number:', this.getActivePage());
+          console.log('swiperChange --> updateLibraryItem', this.getSwiperActiveIndex());
+          this.updateLibraryItem();
         },
         init: () => {
           this.setState({ page_loading: false });
@@ -216,29 +242,52 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     });
   }
 
-
-  getActivePage(): number {
+  updateLibraryItem() {
+    // this._bookInstance.gotoPos(this._slide_pages[this.getSwiperActiveIndex()].page);
+    // const bookProgress: number = this._bookInstance.getProgress();
+    // const bookProgress = this.calc_read_percent(this.getSwiperActiveIndex());
+    const bookProgress = (this.getSwiperActiveIndex() + 1) / this.book_page_length;
+    console.log('updateLibraryItem_progress', bookProgress);
+    ReaderUtility.updateLibraryItem_progress(this.book_id, bookProgress); //  / 100
+  }
+  getSwiperActiveIndex(): number {
     const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
-    // console.log('getActivePage:', activeIndex);
-    return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : this.book_active_page; //  : 0;
+    return activeIndex || 0;
   }
 
-  calc_current_read_percent(): string {
-    let read = this.getActivePage();
+  // getActivePage(): number {
+  //   const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
+  //   // console.log('getActivePage:', activeIndex);
+  //   return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : this.book_active_page; //  : 0;
+  // }
+
+  calc_read_percent(page_index: number): number {
+    let read = page_index + 1; // this.getActivePage();
     let total = this.book_page_length || 0;
 
     if (total) {
-      return Math.floor(((read || 0) * 100) / +total) + '%';
+      return Math.floor(((read || 0) * 100) / +total);
     } else {
-      return '0%';
+      return 0;
     }
   }
+
+  // calc_current_read_percent(page_index: number): string {
+  //   let read = page_index + 1; // this.getActivePage();
+  //   let total = this.book_page_length || 0;
+
+  //   if (total) {
+  //     return Math.floor(((read || 0) * 100) / +total) + '%';
+  //   } else {
+  //     return '0%';
+  //   }
+  // }
 
   /**
    * todo: if last chapter --> show remain from book.
    */
-  calc_current_read_timeLeft(): number {
-    let read = this.getActivePage();
+  calc_current_read_timeLeft(page_index: number): number {
+    let read = page_index + 1; // this.getActivePage();
     let total = this.book_page_length || 0; // todo: get "active chapter" not all book.
     let min_per_page = 1;
 
@@ -326,8 +375,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
                           />
                         </div>
                         <div className="item-footer">
-                          <div>{Localization.formatString(Localization.n_min_left_in_chapter, this.calc_current_read_timeLeft())}</div>
-                          <div>{this.calc_current_read_percent()}</div>
+                          <div>{Localization.formatString(Localization.n_min_left_in_chapter, this.calc_current_read_timeLeft(slide.id))}</div>
+                          {/* <div>{this.calc_current_read_percent(slide.id)}</div> */}
+                          <div>{this.calc_read_percent(slide.id)}%</div>
                         </div>
                       </div>
                     </div>

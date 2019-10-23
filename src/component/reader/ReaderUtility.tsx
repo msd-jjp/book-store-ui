@@ -3,6 +3,8 @@ import { book } from "../../webworker/reader-engine/MsdBook";
 import { getFont, color } from "../../webworker/reader-engine/tools";
 import { action_update_reader } from "../../redux/action/reader";
 import { IReader_schema_epub_theme } from "../../redux/action/reader/readerAction";
+import { action_set_library_data } from "../../redux/action/library";
+// import { ILibrary } from "../../model/model.library";
 // import { CmpUtility } from "../_base/CmpUtility";
 
 export abstract class ReaderUtility {
@@ -81,5 +83,18 @@ export abstract class ReaderUtility {
         //     res(_book);
         // });
     }
+
+    static async updateLibraryItem_progress(book_id: string, progress: number) {
+        const libData = [...Store2.getState().library.data];
+        const _lib = libData.find(lib => lib.book.id === book_id);
+        if (!_lib) return;
+
+        _lib.status.reading_started = true;
+        _lib.status.read_pages = progress;
+
+        Store2.dispatch(action_set_library_data(libData));
+    }
+
+    
 
 }

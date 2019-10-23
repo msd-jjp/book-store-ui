@@ -173,6 +173,10 @@ remove token from state2props in all cmp if possible
 
 ====================================================================================
 
+cash .wasm file in serviceWorker
 
+extend book class --> bookGenerator --> all method
+
+readerOverview --> item: add shadow
 
 ====================================================================================

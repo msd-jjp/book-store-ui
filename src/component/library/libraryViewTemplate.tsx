@@ -243,3 +243,8 @@ export function libraryItem_viewGrid_render(
         </div>
     )
 }
+
+export function getLibraryItem(book_id: string): ILibrary | undefined {
+    const _libraryItem = Store2.getState().library.data.find(lib => lib.book.id === book_id);
+    if (_libraryItem) return { ..._libraryItem };
+}

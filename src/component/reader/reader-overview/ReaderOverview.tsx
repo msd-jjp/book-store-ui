@@ -21,7 +21,7 @@ import { Input } from "../../form/input/Input";
 import { AppRegex } from "../../../config/regex";
 import { book, IBookPosIndicator, IBookContent } from "../../../webworker/reader-engine/MsdBook";
 import { appLocalStorage } from "../../../service/appLocalStorage";
-import { Store2 } from "../../../redux/store";
+// import { Store2 } from "../../../redux/store";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { ReaderUtility } from "../ReaderUtility";
 import { ToggleButton } from "react-bootstrap";
@@ -29,6 +29,8 @@ import { IReader_schema_epub_fontName, IReader_schema_epub_theme, IReader_schema
 import { action_update_reader } from "../../../redux/action/reader";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { BaseService } from "../../../service/service.base";
+import { ILibrary } from "../../../model/model.library";
+import { getLibraryItem } from "../../library/libraryViewTemplate";
 
 interface IProps {
   internationalization: TInternationalization;
@@ -109,7 +111,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   // };
   private swiper_obj: Swiper | undefined;
   private book_page_length = 1; // 2500;
-  private book_active_page = 1; // 372;
+  private book_active_index = 0; // 372;
+  private _libraryItem: ILibrary | undefined;
 
   constructor(props: IProps) {
     super(props);
@@ -118,7 +121,16 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this.book_id = this.props.match.params.bookId;
   }
 
+  componentWillMount() {
+    if (this.book_id) {
+      this._libraryItem = getLibraryItem(this.book_id); // Store2.getState().library.data.find(lib => lib.book.id === this.book_id);
+    }
+  }
   componentDidMount() {
+    if (!this._libraryItem) {
+      this.props.history.replace(`/dashboard`);
+      return;
+    }
     // this.updateUserCurrentBook_client();
     this.setBook_byId(this.book_id);
     // this.updateUserCurrentBook_server();
@@ -135,14 +147,15 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   //   this.setState({ ...this.state, book: this.getBookFromLibrary(this.book_id) });
   // }
 
-  getBookFromLibrary(book_id: string): IBook {
-    // const lib = this.props.library.data.find(lib => lib.book.id === book_id);
-    const lib = Store2.getState().library.data.find(lib => lib.book.id === book_id);
-    return (lib! || {}).book;
-  }
+  // getBookFromLibrary(book_id: string): IBook {
+  //   // const lib = this.props.library.data.find(lib => lib.book.id === book_id);
+  //   const lib = Store2.getState().library.data.find(lib => lib.book.id === book_id);
+  //   return (lib! || {}).book;
+  // }
 
   setBook_byId(book_id: string) {
-    this.setState({ ...this.state, book: this.getBookFromLibrary(book_id) });
+    // this.setState({ ...this.state, book: this.getBookFromLibrary(book_id) });
+    this.setState({ ...this.state, book: this._libraryItem!.book });
   }
 
   // async updateUserCurrentBook_server() {
@@ -270,9 +283,26 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
-    this.book_active_page = 1;
+    const progress_percent = this._libraryItem!.status.read_pages || 0;
+    this.book_active_index = Math.floor(this._slide_pages.length * progress_percent); // - 1;
+    if (this.book_active_index > this._slide_pages.length - 1 || this.book_active_index < 0) {
+      this.book_active_index = 0;
+    }
     /** active page & more before and after of it */
-    this.getPagePath(this.book_active_page - 1, this._slide_pages[this.book_active_page - 1].page);
+    this.getPagePath(this.book_active_index, this._slide_pages[this.book_active_index].page);
+
+    const renderNPages: string[] = this._bookInstance.renderNPages(bookPosList[this.book_active_index], 5);
+    // const book_active_page_index = this.book_active_page - 1;
+    renderNPages.forEach((img, i) => {
+      this._pageRenderedPath[i + this.book_active_index] = img;
+    });
+    debugger;
+    // todo setstate if this.book_active_page !==1 after init
+
+    const bookProgress: number = this._bookInstance.getProgress();
+    // const bookProgress: number = this._bookInstance.gotoPos();
+    debugger;
+
 
     this.swiper_obj = new Swiper('.swiper-container', {
       virtual: {
@@ -284,7 +314,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           });
         }
       },
-      initialSlide: this.book_active_page - 1,
+      initialSlide: this.book_active_index,
       on: {
         doubleTap: () => {
         },
@@ -300,7 +330,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           }
         },
         init: () => {
-          this.setState({ page_loading: false });
+          debugger;
+          this.setState({ page_loading: false, RcSlider_value: this.getActivePage() });
         },
       }
     });
@@ -314,19 +345,30 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   getActivePage(): number {
     const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
     // console.log('activeIndex', activeIndex);
-    return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : this.book_active_page; //  : 0;
+    return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : this.book_active_index + 1; //  : 0;
   }
 
-  calc_current_read_percent(): string {
+  calc_read_percent(): number {
     let read = this.getActivePage();
     let total = this.book_page_length || 0;
 
     if (total) {
-      return Math.floor(((read || 0) * 100) / +total) + '%';
+      return Math.floor(((read || 0) * 100) / +total);
     } else {
-      return '0%';
+      return 0;
     }
   }
+
+  // calc_current_read_percent(): string {
+  //   let read = this.getActivePage();
+  //   let total = this.book_page_length || 0;
+
+  //   if (total) {
+  //     return Math.floor(((read || 0) * 100) / +total) + '%';
+  //   } else {
+  //     return '0%';
+  //   }
+  // }
 
   overview_body_render() {
     return (
@@ -342,7 +384,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
             {Localization.of}&nbsp;
             {this.book_page_length}&nbsp;
             <i className="font-size-01 fa fa-circle mx-2"></i>&nbsp;
-            {this.calc_current_read_percent()}
+            {/* {this.calc_current_read_percent()} */}
+            {this.calc_read_percent()}%
           </div>
         </div>
       </>
@@ -362,7 +405,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   getPagePath(pageIndex: number, slide: IBookPosIndicator) {
     // console.log('getPagePath', pageIndex);
     // return this.getPageRenderedPath(pageIndex);
-    console.log('getPagePath', pageIndex);
+    // console.log('getPagePath', pageIndex);
     this.getPagePathNear(pageIndex);
     return this.getPageRenderedPath(pageIndex, slide);
     // return this.bookInstance.renderNextPage();
@@ -374,6 +417,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     if (this._pageRenderedPath[pageIndex]) {
       return this._pageRenderedPath[pageIndex];
     } else {
+      console.log('RenderSpecPage', pageIndex, slide);
       this._pageRenderedPath[pageIndex] = this._bookInstance.RenderSpecPage(slide);
       return this._pageRenderedPath[pageIndex];
     }
@@ -489,13 +533,23 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // setTimeout(() => { this.swiperTaped = false; }, 50);
   }
 
-  async onPageClicked(pg_number: number) {
+  async onPageClicked(pg_index: number) {
     await CmpUtility.waitOnMe(10);
     if (!this.swiperTaped) return;
     // debugger;
-    console.log('pg_number: ', pg_number);
+    console.log('pg_index: ', pg_index);
     // TODO store active page number
     // make sure redux (reader) updated before chnage route.
+    // debugger;
+    // this._bookInstance.gotoPos(this._slide_pages[pg_number].page);
+    // const bookProgress: number = this._bookInstance.getProgress();
+    // set library_item a value -->
+    // const bookProgress = this.calc_read_percent();
+    const bookProgress = (pg_index + 1) / this.book_page_length;
+    console.log('updateLibraryItem_progress', bookProgress);
+    ReaderUtility.updateLibraryItem_progress(this.book_id, bookProgress); //  / 100
+    debugger;
+
     this.gotoReader_reading(this.book_id);
   }
 
@@ -553,7 +607,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   slider_render() {
     const maxVal = this.book_page_length; // 10
     if (!maxVal) return;
-    const defaultValue = this.book_active_page || 1;
+    const defaultValue = this.book_active_index + 1; // || 1;
 
     return (
       <>
@@ -708,7 +762,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           <Modal.Body>
             <div className="row">
               <div className="col-12">
-                <p>{Localization.formatString(Localization.you_are_reading_loaction_n, this.book_active_page)}</p>
+                <p>{Localization.formatString(Localization.you_are_reading_loaction_n, this.book_active_index + 1)}</p>
               </div>
               <div className="col-12">
                 <Input
