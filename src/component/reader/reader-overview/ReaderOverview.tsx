@@ -267,7 +267,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   private initSwiper() {
     const bookPosList: IBookPosIndicator[] = this._bookInstance.getListOfPageIndicators();
     const bookContent: IBookContent[] = this._bookInstance.getContentList();
-    // debugger;
+    debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
     this.book_active_page = 1;
