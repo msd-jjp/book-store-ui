@@ -172,10 +172,10 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
               ></i>
 
               <div className="float-right">
-                <i className="fa fa-search text-dark-- p-2 cursor-pointer"></i>
-                <i className="fa fa-font text-dark-- p-2 cursor-pointer" onClick={() => this.openModal_epub()}></i>
-                <i className="fa fa-file-text-o text-dark-- p-2 cursor-pointer"></i>
-                <i className="fa fa-bookmark-o text-dark-- p-2 cursor-pointer"></i>
+                <i className="fa fa-search text-dark-- p-2 cursor-pointer-- icon disabled"></i>
+                <i className="fa fa-font text-dark-- p-2 cursor-pointer-- icon" onClick={() => this.openModal_epub()}></i>
+                <i className="fa fa-file-text-o text-dark-- p-2 cursor-pointer-- icon disabled"></i>
+                <i className="fa fa-bookmark-o text-dark-- p-2 cursor-pointer-- icon disabled"></i>
 
                 <Dropdown className="d-inline-block menu-dd">
                   <Dropdown.Toggle
