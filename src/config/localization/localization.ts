@@ -5,6 +5,7 @@ import { fa } from './fa';
 import { en } from './en';
 import { ar } from './ar';
 import { BOOK_GENRE, BOOK_TYPES, BOOK_ROLES } from '../../enum/Book';
+import { IReader_schema_epub_theme } from '../../redux/action/reader/readerAction';
 
 interface ILocalization extends LocalizedStringsMethods {
     [key: string]: any; // todo
@@ -326,6 +327,17 @@ interface ILocalization extends LocalizedStringsMethods {
     count: string;
     unit_price: string;
     type: string;
+    text_size: string;
+    theme: string;
+    font: string;
+    reader_theme_obj: {
+        [key in IReader_schema_epub_theme]: string;
+    };
+    font_obj: {
+        iransans: string;
+        nunito: string;
+        zar: string;
+    };
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

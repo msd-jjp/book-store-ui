@@ -1,6 +1,6 @@
 import { EACTIONS } from "../../ActionEnum";
 import { IReader_schema, IReaderAction } from "../../action/reader/readerAction";
-import { color } from "../../../webworker/reader-engine/tools";
+// import { color } from "../../../webworker/reader-engine/tools";
 
 const reader_reset: IReader_schema = {
     audio: {},

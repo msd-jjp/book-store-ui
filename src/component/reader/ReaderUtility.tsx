@@ -7,6 +7,11 @@ import { IReader_schema_epub_theme } from "../../redux/action/reader/readerActio
 
 export abstract class ReaderUtility {
 
+    // static getEpubBook_theme(): IReader_schema_epub_theme {
+    //     console.log('..........................................getEpubBook_theme..........................................');
+    //     return Store2.getState().reader.epub.theme;
+    // }
+
     static createEpubBook_theme(theme: IReader_schema_epub_theme): { fontColor: number, bgColor: number } {
         let bgColor = color(255, 255, 255, 0);
         let fontColor = color(0, 0, 0, 255);
@@ -14,9 +19,13 @@ export abstract class ReaderUtility {
         if (theme === 'white') {
         } else if (theme === 'dark') {
             fontColor = color(255, 255, 255, 255);
-            bgColor = color(0, 0, 0, 255); // todo comment me and add them-... to reader wrapper all 3 epub reader
-            // remove class text-ddark from icon in header of all 3 
-            // add this to for ex: class .reader-overview-wrapper: background-color: black; color: #fff;
+            // bgColor = color(0, 0, 0, 255);
+        } else if (theme === 'green') {
+            // bg = color(197, 231, 206, 255);
+            fontColor = color(58, 73, 66, 255);
+        } else if (theme === 'sepia') {
+            // bg = color(239, 219, 189, 255);
+            fontColor = color(90, 65, 41, 255);
         }
 
         return { fontColor, bgColor };

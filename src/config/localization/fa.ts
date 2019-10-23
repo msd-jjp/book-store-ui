@@ -332,4 +332,18 @@ export const fa = {
     count: 'تعداد',
     unit_price: 'قیمت واحد',
     type: 'نوع',
+    text_size: 'اندازه متن',
+    theme: 'تم',
+    font: 'فونت',
+    reader_theme_obj: {
+        white: 'سفید',
+        dark: 'سیاه',
+        green: 'سبز',
+        sepia: 'سوبیایی',
+    },
+    font_obj: {
+        iransans: 'ایرانسنس',
+        nunito: 'نونیتو',
+        zar: 'زر',
+    },
 }

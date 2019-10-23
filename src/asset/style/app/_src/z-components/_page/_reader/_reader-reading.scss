@@ -15,6 +15,19 @@
       overflow: hidden;
     }
   }
+
+  &.theme-dark {
+    background-color: $reader-theme-dark-bgColor;
+    color: $reader-theme-dark-color;
+  }
+  &.theme-green {
+    background-color: $reader-theme-green-bgColor;
+    color: $reader-theme-green-color;
+  }
+  &.theme-sepia {
+    background-color: $reader-theme-sepia-bgColor;
+    color: $reader-theme-sepia-color;
+  }
 }
 
 .reader-reading-wrapper {

@@ -332,4 +332,18 @@ export const en = {
     count: 'count',
     unit_price: 'unit price',
     type: 'type',
+    text_size: 'text size',
+    theme: 'theme',
+    font: 'font',
+    reader_theme_obj: {
+        white: 'white',
+        dark: 'dark',
+        green: 'green',
+        sepia: 'sepia',
+    },
+    font_obj: {
+        iransans: 'iransans',
+        nunito: 'nunito',
+        zar: 'zar',
+    },
 }

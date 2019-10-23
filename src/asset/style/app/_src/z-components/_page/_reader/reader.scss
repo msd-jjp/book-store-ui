@@ -1,0 +1,15 @@
+$reader-theme-dark-bgColor: #000000;
+$reader-theme-dark-color: #ffffff;
+
+$reader-theme-green-bgColor: rgba(197, 231, 206, 255);
+$reader-theme-green-color: rgba(58, 73, 66, 255);
+$reader-theme-green-bgColor-light: rgba(246, 251, 248, 255);
+
+$reader-theme-sepia-bgColor: rgba(239, 219, 189, 255);
+$reader-theme-sepia-color: rgba(90, 65, 41, 255);
+$reader-theme-sepia-bgColor-light: rgba(253, 250, 245, 255);
+
+@import "reader-overview";
+@import "reader-reading";
+@import "reader-scroll";
+@import "reader-audio";

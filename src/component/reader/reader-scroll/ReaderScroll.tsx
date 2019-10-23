@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { redux_state } from "../../../redux/app_state";
-import { IUser } from "../../../model/model.user";
+// import { IUser } from "../../../model/model.user";
 import { TInternationalization } from "../../../config/setup";
 import { BaseComponent } from "../../_base/BaseComponent";
 import { History } from "history";
@@ -11,26 +11,30 @@ import { ToastContainer } from "react-toastify";
 // import { Localization } from "../../../config/localization/localization";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { PersonService } from "../../../service/service.person";
-import { action_user_logged_in } from "../../../redux/action/user";
+// import { action_user_logged_in } from "../../../redux/action/user";
 // import { Dropdown } from "react-bootstrap";
 import { IBook } from "../../../model/model.book";
-import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
+// import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
 import Swiper from 'swiper';
 // import { Virtual } from 'swiper/dist/js/swiper.esm';
 import { ReaderWorker } from "../../../webworker/reader-worker/ReaderWorker"; // .reader";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
+import { Store2 } from "../../../redux/store";
+import { IReader_schema } from "../../../redux/action/reader/readerAction";
+import { CmpUtility } from "../../_base/CmpUtility";
 // import { Store2 } from "../../../redux/store";
 // import { readerWorker } from '../../../webworker/reader/reader';
 
 interface IProps {
-  logged_in_user: IUser | null;
+  // logged_in_user: IUser | null;
   internationalization: TInternationalization;
   history: History;
   // token: IToken;
   network_status: NETWORK_STATUS;
-  onUserLoggedIn: (user: IUser) => void;
+  // onUserLoggedIn: (user: IUser) => void;
   match: any;
-  library: ILibrary_schema;
+  // library: ILibrary_schema;
+  reader: IReader_schema;
 }
 
 interface IState {
@@ -102,7 +106,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   getBookFromLibrary(book_id: string): IBook {
-    const lib = this.props.library.data.find(lib => lib.book.id === book_id);
+    // const lib = this.props.library.data.find(lib => lib.book.id === book_id);
+    const lib = Store2.getState().library.data.find(lib => lib.book.id === book_id);
     return (lib! || {}).book;
   }
 
@@ -113,7 +118,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   initSwiper(slides: any[] = [], initialSlide: number = 0) {
-    const self = this;
+    // const self = this;
     // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
     // this.swiper_obj && this.swiper_obj.destroy(true, true);
     // let slides = [];
@@ -171,12 +176,10 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
 
       on: {
-        tap: function () {
-          /* do something */
-          console.log('tap');
-          self.onSlideClicked();
+        tap: () => {
+          this.onSlideClicked();
         },
-        init: function () {
+        init: () => {
           // console.log('init swiper, stop page loader here...');
           // todo: stop page loader
           // self.swiper_obj && self.swiper_obj.slideTo(3);
@@ -189,7 +192,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           // }, 500);
 
           // self.swiper_slideTo_initialSlide(initialSlide);
-          self.swiper_solid_slideTo_initialSlide(initialSlide);
+          this.swiper_solid_slideTo_initialSlide(initialSlide);
         },
 
       }
@@ -251,17 +254,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
         <div className="scroll-body mx-3">
 
           {this.swiper_render()}
-
-          {/* <div className={
-            "lds-roller-wrapper gutter-0 "
-            + (this.state.page_loading ? '' : 'd-none')
-          }>
-            <div className="lds-roller">
-              <div></div><div></div><div></div><div></div>
-              <div></div><div></div><div></div><div></div>
-            </div>
-          </div> */}
-          <ContentLoader gutterClassName="gutter-0" show={this.state.page_loading}></ContentLoader>
+          
+          <ContentLoader gutterClassName="gutter-n1r" show={this.state.page_loading}></ContentLoader>
 
         </div>
       </>
@@ -372,12 +366,16 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   private swiperTaped = false;
-  onSlideClicked() {
+  async onSlideClicked() {
+    // this.swiperTaped = true;
+    // setTimeout(() => { this.swiperTaped = false; }, 0);
     this.swiperTaped = true;
-    setTimeout(() => { this.swiperTaped = false; }, 0);
+    await CmpUtility.waitOnMe(50);
+    this.swiperTaped = false;
   }
 
-  onPageClicked(pg_number: number) {
+  async onPageClicked(pg_number: number) {
+    await CmpUtility.waitOnMe(10);
     if (!this.swiperTaped) return;
     // debugger;
     console.log('pg_number: ', pg_number);
@@ -399,7 +397,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       <>
         <div className="row">
           <div className="col-12 px-0">
-            <div className="reader-scroll-wrapper">
+            <div className={"reader-scroll-wrapper theme-" + this.props.reader.epub.theme}>
               {this.reading_body_render()}
               {this.reading_footer_render()}
             </div>
@@ -413,17 +411,18 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
   return {
-    onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
+    // onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
   };
 };
 
 const state2props = (state: redux_state) => {
   return {
-    logged_in_user: state.logged_in_user,
+    // logged_in_user: state.logged_in_user,
     internationalization: state.internationalization,
     // token: state.token,
     network_status: state.network_status,
-    library: state.library,
+    // library: state.library,
+    reader: state.reader
   };
 };
 

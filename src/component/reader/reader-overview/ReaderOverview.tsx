@@ -25,13 +25,18 @@ import { Store2 } from "../../../redux/store";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { ReaderUtility } from "../ReaderUtility";
 import { ToggleButton } from "react-bootstrap";
-import { IReader_schema_epub_fontName, IReader_schema_epub_theme } from "../../../redux/action/reader/readerAction";
+import { IReader_schema_epub_fontName, IReader_schema_epub_theme, IReader_schema } from "../../../redux/action/reader/readerAction";
 import { action_update_reader } from "../../../redux/action/reader";
+import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
+import { BaseService } from "../../../service/service.base";
 
 interface IProps {
   internationalization: TInternationalization;
   history: History;
   match: any;
+  network_status: NETWORK_STATUS;
+  reader: IReader_schema;
+  update_reader: (reader: IReader_schema) => any;
 }
 
 interface IState {
@@ -158,25 +163,25 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         <div className="row">
           <div className="col-12">
             <div className="icon-wrapper">
-              <i className="fa fa-arrow-left-app text-dark p-2 cursor-pointer"
+              <i className="fa fa-arrow-left-app text-dark-- p-2 cursor-pointer"
                 onClick={() => this.goBack()}
               ></i>
 
-              <i className="fa fa-bars text-dark p-2 cursor-pointer"
+              <i className="fa fa-bars text-dark-- p-2 cursor-pointer"
                 onClick={() => this.showSidebar()}
               ></i>
 
               <div className="float-right">
-                <i className="fa fa-search text-dark p-2 cursor-pointer"></i>
-                <i className="fa fa-font text-dark p-2 cursor-pointer" onClick={() => this.openModal_epub()}></i>
-                <i className="fa fa-file-text-o text-dark p-2 cursor-pointer"></i>
-                <i className="fa fa-bookmark-o text-dark p-2 cursor-pointer"></i>
+                <i className="fa fa-search text-dark-- p-2 cursor-pointer"></i>
+                <i className="fa fa-font text-dark-- p-2 cursor-pointer" onClick={() => this.openModal_epub()}></i>
+                <i className="fa fa-file-text-o text-dark-- p-2 cursor-pointer"></i>
+                <i className="fa fa-bookmark-o text-dark-- p-2 cursor-pointer"></i>
 
                 <Dropdown className="d-inline-block menu-dd">
                   <Dropdown.Toggle
                     as="i"
-                    id="dropdown-collection-menu"
-                    className="icon fa fa-ellipsis-v text-dark p-2 no-default-icon">
+                    id="dropdown-overview-menu"
+                    className="icon fa fa-ellipsis-v text-dark-- p-2 no-default-icon">
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu className="dropdown-menu-right border-0 rounded-0 shadow2">
@@ -584,8 +589,11 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           </div>
           <div className="footer-slider">{this.slider_render()}</div>
           <div className="audio--">
-            <i className="fa fa-headphones p-2 cursor-pointer"
-              onClick={() => { }}
+            {/* <i className="fa fa-headphones p-2 cursor-pointer" */}
+            <i className={"fa fa-wifi p-2 cursor-pointer " +
+              (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'text-danger' : '')
+            }
+              onClick={() => BaseService.check_network_status()}
             ></i>
           </div>
         </div>
@@ -684,7 +692,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   modal_goto_render() {
     return (
       <>
-        <Modal show={this.state.modal_goto.show} onHide={() => this.closeModal_goto()} centered>
+        <Modal
+          show={this.state.modal_goto.show}
+          className={"reader-overview-modal-goto theme-" + this.props.reader.epub.theme}
+          onHide={() => this.closeModal_goto()}
+          centered
+        >
           <Modal.Header
             // closeButton
             className="border-bottom-0 pb-0">
@@ -766,8 +779,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   //#region modal_epub
   openModal_epub() {
-    const reader_state = { ...Store2.getState().reader };
-    const reader_epub = reader_state.epub;
+    // const reader_state = { ...Store2.getState().reader };
+    const reader_epub = this.props.reader.epub; // reader_state.epub;
 
     this.setState({
       ...this.state, modal_epub: {
@@ -785,16 +798,23 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   modal_epub_render() {
+    const font_list: IReader_schema_epub_fontName[] = ["zar", "iransans", "nunito"];
+    const theme_list: IReader_schema_epub_theme[] = ["white", "dark", 'green', 'sepia'];
+
     return (
       <>
-        <Modal show={this.state.modal_epub.show} onHide={() => this.closeModal_epub()} centered>
+        <Modal show={this.state.modal_epub.show}
+          className={"reader-overview-modal-epub theme-" + this.props.reader.epub.theme}
+          onHide={() => this.closeModal_epub()}
+          centered
+        >
           <Modal.Body>
             <div className="row">
               <div className="col-12">
-                <ul className="more-list-- list-group list-group-flush">
+                <ul className="list-group list-group-flush">
 
-                  <li className="more-item-- list-group-item d-flex justify-content-between px-0 pt-0--">
-                    <div className="text-capitalize">text size</div>
+                  <li className="list-group-item d-flex justify-content-between px-0 pt-0--">
+                    <div className="text-capitalize">{Localization.text_size}</div>
                     <div>
                       <span className="mr-3">{this.state.modal_epub.fontSize}</span>
                       <div className="btn-group btn-group-sm">
@@ -808,32 +828,49 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                     </div>
                   </li>
 
-                  <li className="more-item-- list-group-item d-flex justify-content-between px-0">
-                    <div className="text-capitalize">color</div>
+                  <li className="section-theme list-group-item d-flex justify-content-between px-0">
+                    <div className="text-capitalize">{Localization.theme}</div>
                     <ToggleButtonGroup
                       className="btn-group-sm"
                       type="radio"
-                      name="reader-epub-color"
+                      name="reader-epub-theme"
                       defaultValue={this.state.modal_epub.theme}
                       onChange={(theme: IReader_schema_epub_theme) => this.modal_epub_colorChanged(theme)}
                     >
-                      <ToggleButton className="min-w-70px theme-white" value={'white'}>theme_white</ToggleButton>
-                      <ToggleButton className="min-w-70px theme-dark" value={'dark'}>theme_dark</ToggleButton>
+                      {
+                        theme_list.map(th => (
+                          <ToggleButton
+                            key={th}
+                            className={"min-w-70px btn-light theme-" + th}
+                            value={th}
+                          >
+                            {Localization.reader_theme_obj[th]}
+                          </ToggleButton>
+                        ))
+                      }
                     </ToggleButtonGroup>
                   </li>
 
-                  <li className="more-item-- list-group-item d-flex justify-content-between px-0 pb-0--">
-                    <div className="text-capitalize">font</div>
+                  <li className="section-font list-group-item d-flex justify-content-between px-0 pb-0--">
+                    <div className="text-capitalize">{Localization.font}</div>
                     <ToggleButtonGroup
                       className="btn-group-sm"
                       type="radio"
-                      name="reader-epub-color"
+                      name="reader-epub-font"
                       defaultValue={this.state.modal_epub.fontName}
                       onChange={(fontName: IReader_schema_epub_fontName) => this.modal_epub_fontChanged(fontName)}
                     >
-                      <ToggleButton className="min-w-70px btn-light" value={'iransans'}>iransans</ToggleButton>
-                      <ToggleButton className="min-w-70px btn-light" value={'nunito'}>nunito</ToggleButton>
-                      <ToggleButton className="min-w-70px btn-light" value={'zar'}>zar</ToggleButton>
+                      {
+                        font_list.map(f => (
+                          <ToggleButton
+                            key={f}
+                            className="min-w-70px btn-light"
+                            value={f}
+                          >
+                            {Localization.font_obj[f]}
+                          </ToggleButton>
+                        ))
+                      }
                     </ToggleButtonGroup>
                   </li>
 
@@ -871,22 +908,23 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this.setState({ modal_epub: { ...this.state.modal_epub, fontSize: fs } });
   }
   modal_epub_colorChanged(theme: IReader_schema_epub_theme) {
-    debugger;
     this.setState({ modal_epub: { ...this.state.modal_epub, theme } });
   }
   modal_epub_fontChanged(fontName: IReader_schema_epub_fontName) {
     this.setState({ modal_epub: { ...this.state.modal_epub, fontName } });
   }
   modal_epub_confirm() {
-    debugger;
-    const reader_state = { ...Store2.getState().reader };
+    // debugger;
+    // const reader_state = { ...Store2.getState().reader };
+    const reader_state = { ...this.props.reader };
     const reader_epub = reader_state.epub;
 
     if (this.state.modal_epub.fontName) reader_epub.fontName = this.state.modal_epub.fontName!;
     if (this.state.modal_epub.fontSize) reader_epub.fontSize = this.state.modal_epub.fontSize!;
     if (this.state.modal_epub.theme) reader_epub.theme = this.state.modal_epub.theme!;
 
-    Store2.dispatch(action_update_reader(reader_state));
+    // Store2.dispatch(action_update_reader(reader_state));
+    this.props.update_reader(reader_state);
     this.gotoReader_reading(this.book_id);
   }
   //#endregion
@@ -896,7 +934,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       <>
         <div className="row">
           <div className="col-12 px-0">
-            <div className="reader-overview-wrapper mt-3-- mb-5--">
+            <div className={"reader-overview-wrapper mt-3-- mb-5-- theme-" + this.props.reader.epub.theme}>
               {this.overview_header_render()}
               {this.overview_body_render()}
               {this.overview_footer_render()}
@@ -919,6 +957,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
   return {
     // onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
+    update_reader: (reader: IReader_schema) => dispatch(action_update_reader(reader)),
   };
 };
 
@@ -927,8 +966,9 @@ const state2props = (state: redux_state) => {
     // logged_in_user: state.logged_in_user,
     internationalization: state.internationalization,
     // token: state.token,
-    // network_status: state.network_status,
+    network_status: state.network_status,
     // library: state.library,
+    reader: state.reader
   };
 };
 

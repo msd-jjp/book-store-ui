@@ -4,7 +4,7 @@
 
   .scroll-body {
     height: 100%; // calc(100% - 3rem);
-    overflow: hidden;
+    // overflow: hidden;
     z-index: 0;
     position: relative;
 
@@ -24,11 +24,36 @@
     // box-shadow: 0px -2px 5px 0px #e6e6e6;
     @include box-shadow(0px -2px 5px 0px #e6e6e6);
     margin-top: -3rem;
-    background-color: #ffffffb3;
+    // background-color: #ffffffb3;
+    background-color: rgba($reader-theme-dark-color, 0.7);
     .change-view {
       i {
         @include prefix(transform, rotate(90deg));
       }
+    }
+  }
+
+  &.theme-dark {
+    background-color: $reader-theme-dark-bgColor;
+    color: $reader-theme-dark-color;
+    .scroll-footer {
+      // background-color: #000000b3;
+      background-color: rgba($reader-theme-dark-bgColor, 0.7);
+      box-shadow: 0px -2px 5px 0px #444444;
+    }
+  }
+  &.theme-green {
+    background-color: $reader-theme-green-bgColor-light;
+    color: $reader-theme-green-color;
+    .scroll-footer {
+      background-color: rgba($reader-theme-green-bgColor-light, 0.7);
+    }
+  }
+  &.theme-sepia {
+    background-color: $reader-theme-sepia-bgColor-light;
+    color: $reader-theme-sepia-color;
+    .scroll-footer {
+      background-color: rgba($reader-theme-sepia-bgColor-light, 0.7);
     }
   }
 }
@@ -75,7 +100,7 @@
             // max-height: calc(100% - 2rem);
             height: calc(100% - 2rem);
             width: 100%;
-            background-color: #eaffff;
+            // background-color: #eaffff;
             text-align: center;
             padding: 1rem;
             .page-img {
@@ -93,11 +118,36 @@
           }
 
           &.active {
-            border-color: app-color(dark);
+            border-color: app-color(primary); // app-color(dark);
           }
         }
       }
       // }
+    }
+  }
+
+  &.theme-green {
+    .scroll-body {
+      .app-swiper {
+        .item {
+          background-color: $reader-theme-green-bgColor;
+          .page-number {
+            border-top-color: $reader-theme-green-color;
+          }
+        }
+      }
+    }
+  }
+  &.theme-sepia {
+    .scroll-body {
+      .app-swiper {
+        .item {
+          background-color: $reader-theme-sepia-bgColor;
+          .page-number {
+            border-top-color: $reader-theme-sepia-color;
+          }
+        }
+      }
     }
   }
 }

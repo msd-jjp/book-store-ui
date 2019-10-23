@@ -2,7 +2,7 @@ import React from 'react';
 
 interface IProps {
     show?: boolean;
-    gutterClassName?: 'gutter-15' | 'gutter-0';
+    gutterClassName?: 'gutter-15' | 'gutter-0' | 'gutter-n1r';
     colorClassName?: 'system';
 }
 

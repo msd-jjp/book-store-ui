@@ -15,6 +15,10 @@
     right: 0;
     left: 0;
   }
+  &.gutter-n1r {
+    right: -1rem;
+    left: -1rem;
+  }
 }
 
 .lds-roller {

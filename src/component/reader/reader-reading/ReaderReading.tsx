@@ -19,6 +19,7 @@ import { appLocalStorage } from "../../../service/appLocalStorage";
 import { book, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { ReaderUtility } from "../ReaderUtility";
+import { IReader_schema } from "../../../redux/action/reader/readerAction";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -27,6 +28,7 @@ interface IProps {
   network_status: NETWORK_STATUS;
   onUserLoggedIn: (user: IUser) => void;
   match: any;
+  reader: IReader_schema;
 }
 
 interface IState {
@@ -407,7 +409,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       <>
         <div className="row">
           <div className="col-12 px-0">
-            <div className="reader-reading-wrapper">
+            <div className={"reader-reading-wrapper theme-" + this.props.reader.epub.theme}>
               {this.reading_body_render()}
               {/* {this.reading_footer_render()} */}
               <ContentLoader gutterClassName="gutter-0" show={this.state.page_loading}></ContentLoader>
@@ -437,6 +439,7 @@ const state2props = (state: redux_state) => {
     // token: state.token,
     network_status: state.network_status,
     // library: state.library,
+    reader: state.reader
   };
 };
 
