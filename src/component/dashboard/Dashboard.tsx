@@ -137,10 +137,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
   }
   private swiperTaped = false;
-  // onSlideClicked() {
-  onSwiperTaped() {
+  async onSwiperTaped() {
     this.swiperTaped = true;
-    setTimeout(() => { this.swiperTaped = false; }, 50);
+    await CmpUtility.waitOnMe(50);
+    this.swiperTaped = false;
+    // setTimeout(() => { this.swiperTaped = false; }, 50);
   }
 
   fetchAllData() {
