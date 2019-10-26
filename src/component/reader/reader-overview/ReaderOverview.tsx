@@ -21,7 +21,6 @@ import { Input } from "../../form/input/Input";
 import { AppRegex } from "../../../config/regex";
 import { IBookPosIndicator, IBookContent } from "../../../webworker/reader-engine/MsdBook";
 import { appLocalStorage } from "../../../service/appLocalStorage";
-// import { Store2 } from "../../../redux/store";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { ReaderUtility } from "../ReaderUtility";
 import { ToggleButton } from "react-bootstrap";
@@ -44,7 +43,7 @@ interface IProps {
 
 interface IState {
   book: IBook | undefined;
-  virtualData: { // todo change to swiperVirtualData
+  virtualData: { 
     slides: any[],
   },
   RcSlider_value: number | undefined;
@@ -63,7 +62,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   private book_id: string = '';
 
   state = {
-    book: undefined, // this.getBookFromLibrary(this.book_id),
+    book: undefined,
     virtualData: {
       slides: [],
     },
@@ -79,37 +78,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     },
   };
 
-  private _personService = new PersonService();
-  // private sliderSetting: Settings = {
-  //   dots: false,
-  //   accessibility: false,
-  //   // swipe: false,
-  //   infinite: false,
-  //   // className: "center2",
-  //   //centerPadding: "60px",
-  //   // centerPadding: '40px',
-  //   slidesToShow: 1,
-  //   swipeToSlide: true,
-  //   // rtl: false, // this.props.internationalization.rtl,
-  //   // rtl: this.props.internationalization.rtl,
-  //   // adaptiveHeight: true,
-  //   // slidesToScroll: 1,
-
-  //   speed: 100, // 200, // 200,
-  //   // touchThreshold: 100000000,
-  //   // useCSS: false,
-  //   // useTransform: false,
-
-  //   // swipe: false,
-  //   // initialSlide: 5,
-  //   // beforeChange: () => this.dragging = true,
-  //   // afterChange: () => this.dragging = false,
-  //   // lazyLoad: true,
-  //   className: "center",
-  //   centerMode: true,
-  //   // infinite: true,
-  //   centerPadding: "60px", // 4rem, 60px
-  // };
+  // private _personService = new PersonService();
+  
   private swiper_obj: Swiper | undefined;
   private book_page_length = 1; // 2500;
   private book_active_index = 0; // 372;
@@ -118,13 +88,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
-    // this._personService.setToken(this.props.token);
     this.book_id = this.props.match.params.bookId;
   }
 
   componentWillMount() {
     if (this.book_id) {
-      this._libraryItem = getLibraryItem(this.book_id); // Store2.getState().library.data.find(lib => lib.book.id === this.book_id);
+      this._libraryItem = getLibraryItem(this.book_id);
     }
   }
   componentDidMount() {
@@ -148,14 +117,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   //   this.setState({ ...this.state, book: this.getBookFromLibrary(this.book_id) });
   // }
 
-  // getBookFromLibrary(book_id: string): IBook {
-  //   // const lib = this.props.library.data.find(lib => lib.book.id === book_id);
-  //   const lib = Store2.getState().library.data.find(lib => lib.book.id === book_id);
-  //   return (lib! || {}).book;
-  // }
 
   setBook_byId(book_id: string) {
-    // this.setState({ ...this.state, book: this.getBookFromLibrary(book_id) });
     this.setState({ ...this.state, book: this._libraryItem!.book });
   }
 
@@ -280,7 +243,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];
   private initSwiper() {
-    const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages();
+    const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
     const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
     // debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
@@ -294,14 +257,14 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     /** active page & more before and after of it */
     // this.getPagePath(this.book_active_index, this._slide_pages[this.book_active_index].page);
 
-    const renderNPages: string[] = this._bookInstance.renderNPages(bookPosList[this.book_active_index], 5);
+    // const renderNPages: string[] = this._bookInstance.renderNPages(bookPosList[this.book_active_index], 5);
 
-    renderNPages.forEach((img, i) => {
-      this._pageRenderedPath[i + this.book_active_index] = img;
-    });
+    // renderNPages.forEach((img, i) => {
+    //   this._pageRenderedPath[i + this.book_active_index] = img;
+    // });
 
 
-    const bookProgress: number = this._bookInstance.getProgress();
+    // const bookProgress: number = this._bookInstance.getProgress();
     // const bookProgress: number = this._bookInstance.gotoPos();
     // debugger;
 
@@ -321,18 +284,15 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         doubleTap: () => {
         },
         tap: () => {
-          // this.onSlideClicked();
           this.onSwiperTaped();
         },
         slideChange: () => {
           const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
-          console.log('swiperChange --> call set_RcSlider_value', activeIndex);
           if (activeIndex || activeIndex === 0) {
             this.set_RcSlider_value(activeIndex + 1);
           }
         },
         init: () => {
-          debugger;
           this.setState({ page_loading: false, RcSlider_value: this.getActivePage() });
         },
       }
@@ -346,8 +306,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   getActivePage(): number {
     const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
-    // console.log('activeIndex', activeIndex);
-    return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : this.book_active_index + 1; //  : 0;
+    return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : this.book_active_index + 1;
   }
 
   calc_activePagePos_percent(): number {
@@ -361,24 +320,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  // calc_current_read_percent(): string {
-  //   let read = this.getActivePage();
-  //   let total = this.book_page_length || 0;
-
-  //   if (total) {
-  //     return Math.floor(((read || 0) * 100) / +total) + '%';
-  //   } else {
-  //     return '0%';
-  //   }
-  // }
-
   overview_body_render() {
     return (
       <>
         <div className="overview-body my-3--">
           <h5 className="book-title mt-3 text-center">{this.getBookTitle()}</h5>
 
-          {/* {this.carousel_render()} */}
           {this.swiper_render()}
 
           <div className="page-location text-center text-muted">
@@ -386,7 +333,6 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
             {Localization.of}&nbsp;
             {this.book_page_length}&nbsp;
             <i className="font-size-01 fa fa-circle mx-2"></i>&nbsp;
-            {/* {this.calc_current_read_percent()} */}
             {this.calc_activePagePos_percent()}%
           </div>
         </div>
@@ -394,53 +340,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  getPagePathNear(pageIndex: number) {
-    setTimeout(() => {
-      if (pageIndex - 1 >= 0) {
-        this.getPageRenderedPath(pageIndex - 1, this._slide_pages[pageIndex - 1].page);
-      }
-      if (pageIndex + 1 <= this._slide_pages.length - 1) {
-        this.getPageRenderedPath(pageIndex + 1, this._slide_pages[pageIndex + 1].page);
-      }
-    });
+  getPagePath(pageIndex: number) {
+    return this._bookInstance.getPage_with_storeAround(pageIndex, 10);
   }
-  getPagePath(pageIndex: number, slide: IBookPosIndicator) {
-    // console.log('getPagePath', pageIndex);
-    // return this.getPageRenderedPath(pageIndex);
-    // console.log('getPagePath', pageIndex);
-    this.getPagePathNear(pageIndex);
-    return this.getPageRenderedPath(pageIndex, slide);
-    // return this.bookInstance.renderNextPage();
-    // return this.bookPage.sampleBookPage;
-    // return `/static/media/img/sample-book-page/page-${pageIndex}.jpg`;
-  }
-  private _pageRenderedPath: any = {};
-  private getPageRenderedPath(pageIndex: number, slide: IBookPosIndicator) {
-    if (this._pageRenderedPath[pageIndex]) {
-      return this._pageRenderedPath[pageIndex];
-    } else {
-      console.log('RenderSpecPage', pageIndex, slide);
-      this._pageRenderedPath[pageIndex] = this._bookInstance.RenderSpecPage(slide);
-      return this._pageRenderedPath[pageIndex];
-    }
-  }
-  // private getPageRenderedPath(pageIndex: number) {
-  //   if (this._pageRenderedPath[pageIndex]) {
-  //     return this._pageRenderedPath[pageIndex];
-  //   } else {
-  //     if (!this.bookInstance.areWeAtEnd()) {
-  //       this._pageRenderedPath[pageIndex] = 'true';
-  //       setTimeout(() => {
-  //         console.time('renderNextPage');
-  //         this._pageRenderedPath[pageIndex] = this.bookInstance.renderNextPage();
-  //         console.timeEnd('renderNextPage');
-  //       }, 0)
-  //       return this._pageRenderedPath[pageIndex];
-  //     } else {
-  //       return;
-  //     }
-  //   }
-  // }
 
   private _isThisBookRtl: boolean | undefined = undefined;
   isThisBookRtl(): boolean {
@@ -456,7 +358,6 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
       let offset_dir = 'left';
       let swiper_dir = '';
-      // if (this.props.internationalization.rtl) {
       if (this.isThisBookRtl()) {
         offset_dir = 'right';
         swiper_dir = 'rtl';
@@ -474,9 +375,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                         <div className="page-img-wrapper">
                           <img
                             className="page-img"
-                            // src={`/static/media/img/sample-book-page/page-${slide.id}.jpg`}
-                            // src={this.getPagePath(slide.id)}
-                            src={this.getPagePath(slide.id, slide.page)}
+                            src={this.getPagePath(slide.id)}
                             alt="book"
                             loading="lazy"
                           />
@@ -494,52 +393,11 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  // carousel_render_DELETE_ME() {
-  //   if (true) {
-
-  //     let initialSlide = 0;
-  //     if (this.props.internationalization.rtl) {
-  //       // initialSlide = bookList.length - 1 - 2;
-  //       // bookList = [...bookList].reverse();
-  //     }
-
-  //     return (
-  //       <>
-  //         <div className="app-carousel">
-  //           <Slider {...this.sliderSetting} initialSlide={initialSlide}>
-  //             {[1, 2, 3, 4, 5, 6, 7, 8].map((page, pageIndex) => (
-  //               <div
-  //                 key={pageIndex}
-  //                 className="item-wrapper"
-  //               // onClick={() => this.gotoBookDetail(book.id)}
-  //               >
-  //                 <div className="item"
-  //                 // onClick={() => this.onPageClicked()}
-  //                 >
-  //                   <div className="page-img-wrapper">
-  //                     <img
-  //                       className="page-img"
-  //                       src={`/static/media/img/sample-book-page/page-${pageIndex + 1}.jpg`}
-  //                       alt="book"
-  //                     />
-  //                   </div>
-  //                   <div className="page-number">456</div>
-  //                 </div>
-  //               </div>
-  //             ))}
-  //           </Slider>
-  //         </div>
-  //       </>
-  //     );
-  //   }
-  // }
-
   private swiperTaped = false;
   async onSwiperTaped() {
     this.swiperTaped = true;
     await CmpUtility.waitOnMe(50);
     this.swiperTaped = false;
-    // setTimeout(() => { this.swiperTaped = false; }, 50);
   }
 
   async onPageClicked(pg_index: number) {
@@ -610,7 +468,6 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
     return (
       <>
-        {/* <div> */}
         <RcSlider
           min={1}
           max={maxVal}
@@ -624,7 +481,6 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         // onBeforeChange={log}
         // disabled
         />
-        {/* </div> */}
       </>
     )
   }
@@ -1009,18 +865,14 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
   return {
-    // onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
     update_reader: (reader: IReader_schema) => dispatch(action_update_reader(reader)),
   };
 };
 
 const state2props = (state: redux_state) => {
   return {
-    // logged_in_user: state.logged_in_user,
     internationalization: state.internationalization,
-    // token: state.token,
     network_status: state.network_status,
-    // library: state.library,
     reader: state.reader
   };
 };
