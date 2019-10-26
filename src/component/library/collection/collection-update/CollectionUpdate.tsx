@@ -180,26 +180,6 @@ class CollectionUpdateComponent extends BaseComponent<IProps, IState> {
         )
     }
 
-    // calc_read_percent(item: ILibrary): string {
-    //     let read = 0;
-    //     let total = 0;
-
-    //     if (item.book.type === BOOK_TYPES.Audio) {
-    //         read = item.status.read_duration;
-    //         total = +item.book.duration;
-
-    //     } else if (item.book.type === BOOK_TYPES.Epub || item.book.type === BOOK_TYPES.Pdf) {
-    //         read = item.status.read_pages;
-    //         total = +item.book.pages;
-    //     }
-
-    //     if (total) {
-    //         return Math.floor(((read || 0) * 100) / +total) + '%';
-    //     } else {
-    //         return '0%';
-    //     }
-    // }
-
     view_grid_render() {
         return (
             <>

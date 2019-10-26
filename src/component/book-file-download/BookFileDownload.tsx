@@ -36,14 +36,14 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
     componentDidMount() {
         // debugger;
-        console.log('BookFileDownloadComponent componentDidMount');
+        // console.log('BookFileDownloadComponent componentDidMount');
         // if inprogress stop all of them. OR clear All of them --> clear all
         this.props.reset_downloading_book_file!();
     }
 
     componentWillUnmount() {
         // debugger;
-        console.log('BookFileDownloadComponent componentWillUnmount');
+        // console.log('BookFileDownloadComponent componentWillUnmount');
         // if inprogress stop all of them. (probebly clear all of them).
         this.props.reset_downloading_book_file!();
     }
