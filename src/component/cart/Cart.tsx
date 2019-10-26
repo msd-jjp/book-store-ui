@@ -169,16 +169,15 @@ class CartComponent extends BaseComponent<IProps, IState> {
       }
     });
 
-    let person_id = this.props.logged_in_user!.person.id;
-    // person_id = 'caecc785-1ca9-4895-b03c-3b41630ecc26';
+    // let person_id = this.props.logged_in_user!.person.id;
 
-    let res_order = await this._orderService.order(order_items, person_id).catch(error => {
+    let res_order = await this._orderService.userOrder(order_items).catch(error => {
       this.handleError({ error: error.response, toastOptions: { toastId: 'buy_error' } });
       this.setState({ ...this.state, buy_loader: false });
     });
 
     if (res_order) {
-      let res_checkout = await this._orderService.checkout(res_order.data.id, person_id).catch(error => {
+      let res_checkout = await this._orderService.userCheckout(res_order.data.id).catch(error => {
         this.handleError({ error: error.response, toastOptions: { toastId: 'buy_error' } });
         this.setState({ ...this.state, buy_loader: false });
       });
@@ -199,6 +198,12 @@ class CartComponent extends BaseComponent<IProps, IState> {
     } else {
       return (this.state.totalPrice || '').toLocaleString();
     }
+  }
+
+  itemPrice_render(price: number, count: number) {
+    if ((!price && price !== 0) || (!count && count !== 0)) return '';
+    const total = price * count;
+    return (total || '').toLocaleString();
   }
 
   render() {
@@ -294,10 +299,11 @@ class CartComponent extends BaseComponent<IProps, IState> {
 
                           <div className="item-price">
                             {
-                              book.price
-                                ?
-                                book.price * cartItem.count
-                                : ''
+                              this.itemPrice_render(book.price, cartItem.count)
+                              // book.price
+                              //   ?
+                              //   book.price * cartItem.count
+                              //   : ''
                             }
                           </div>
                         </li>
