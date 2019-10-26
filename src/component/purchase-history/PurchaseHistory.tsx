@@ -118,7 +118,9 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
       }
     });
     let res = await this._orderService.getOrderItems(order.id).catch(error => {
-      let errorMsg = this.handleError({ error: error.response, toastOptions: { toastId: 'fetchOrderItems_error' } });
+      let errorMsg = this.handleError(
+        { error: error.response, toastOptions: { toastId: 'fetchOrderItems_error' }, notify: false }
+      );
       this.setState({
         ...this.state,
         modal_orderItems: {
