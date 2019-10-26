@@ -1,5 +1,5 @@
 import { ILibrary } from "../../model/model.library";
-import { BOOK_TYPES, BOOK_ROLES } from "../../enum/Book";
+import { /* BOOK_TYPES, */ BOOK_ROLES } from "../../enum/Book";
 import React from 'react';
 import { CmpUtility } from "../_base/CmpUtility";
 import { Localization } from "../../config/localization/localization";
@@ -8,27 +8,29 @@ import { Store2 } from "../../redux/store";
 import { action_update_downloading_book_file } from "../../redux/action/downloading-book-file";
 
 export function calc_read_percent(item: ILibrary): string {
-    let read = 0;
-    let total = 0;
+    return Math.floor((item.status.read_pages || 0) * 100) + '%';
 
-    // return '100%';
+    // let read = 0;
+    // let total = 0;
 
-    if (!item) return '0%';
+    // // return '100%';
 
-    if (item.book.type === BOOK_TYPES.Audio) {
-        read = item.status.read_duration;
-        total = +item.book.duration;
+    // if (!item) return '0%';
 
-    } else if (item.book.type === BOOK_TYPES.Epub || item.book.type === BOOK_TYPES.Pdf) {
-        read = item.status.read_pages;
-        total = +item.book.pages;
-    }
+    // if (item.book.type === BOOK_TYPES.Audio) {
+    //     read = item.status.read_duration;
+    //     total = +item.book.duration;
 
-    if (total) {
-        return Math.floor(((read || 0) * 100) / +total) + '%';
-    } else {
-        return '0%';
-    }
+    // } else if (item.book.type === BOOK_TYPES.Epub || item.book.type === BOOK_TYPES.Pdf) {
+    //     read = item.status.read_pages;
+    //     total = +item.book.pages;
+    // }
+
+    // if (total) {
+    //     return Math.floor(((read || 0) * 100) / +total) + '%';
+    // } else {
+    //     return '0%';
+    // }
 }
 
 export function is_book_downloaded(book_id: string, mainFile: boolean): boolean {
