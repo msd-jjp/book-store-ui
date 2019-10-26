@@ -16,4 +16,14 @@ export class LibraryService extends BaseService {
         return this.axiosTokenInstance.head('/library');
     }
 
+    update_status(library_id: ILibrary['id'], status: {
+        status?: string;
+        reading_started?: boolean;
+        read_pages?: number;
+        read_duration?: number;
+    }) { // ILibrary['status']
+        // return this.axiosTokenInstance.get('/library');
+        return this.axiosTokenInstance.put(`/library/${library_id}`, { status });
+    }
+
 }

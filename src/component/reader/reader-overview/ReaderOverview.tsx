@@ -19,7 +19,7 @@ import { CmpUtility } from "../../_base/CmpUtility";
 import { BOOK_ROLES } from "../../../enum/Book";
 import { Input } from "../../form/input/Input";
 import { AppRegex } from "../../../config/regex";
-import { book, IBookPosIndicator, IBookContent } from "../../../webworker/reader-engine/MsdBook";
+import { IBookPosIndicator, IBookContent } from "../../../webworker/reader-engine/MsdBook";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 // import { Store2 } from "../../../redux/store";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
@@ -31,6 +31,7 @@ import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { BaseService } from "../../../service/service.base";
 import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem } from "../../library/libraryViewTemplate";
+import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 
 interface IProps {
   internationalization: TInternationalization;
@@ -258,7 +259,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this.initSwiper();
   }
 
-  private _bookInstance!: book;
+  private _bookInstance!: BookGenerator;
   private async createBook() {
     const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
     if (!bookFile) {
@@ -278,13 +279,14 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];
   private initSwiper() {
-    const bookPosList: IBookPosIndicator[] = this._bookInstance.getListOfPageIndicators();
-    const bookContent: IBookContent[] = this._bookInstance.getContentList();
-    debugger;
+    const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages();
+    const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
+    // debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
     const progress_percent = this._libraryItem!.status.read_pages || 0;
-    this.book_active_index = Math.floor(this._slide_pages.length * progress_percent); // - 1;
+    debugger;
+    this.book_active_index = Math.floor(this._slide_pages.length * progress_percent - 1); // - 1;
     if (this.book_active_index > this._slide_pages.length - 1 || this.book_active_index < 0) {
       this.book_active_index = 0;
     }
@@ -292,16 +294,15 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this.getPagePath(this.book_active_index, this._slide_pages[this.book_active_index].page);
 
     const renderNPages: string[] = this._bookInstance.renderNPages(bookPosList[this.book_active_index], 5);
-    // const book_active_page_index = this.book_active_page - 1;
+    
     renderNPages.forEach((img, i) => {
       this._pageRenderedPath[i + this.book_active_index] = img;
     });
-    debugger;
-    // todo setstate if this.book_active_page !==1 after init
+
 
     const bookProgress: number = this._bookInstance.getProgress();
     // const bookProgress: number = this._bookInstance.gotoPos();
-    debugger;
+    // debugger;
 
 
     this.swiper_obj = new Swiper('.swiper-container', {
@@ -348,12 +349,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : this.book_active_index + 1; //  : 0;
   }
 
-  calc_read_percent(): number {
-    let read = this.getActivePage();
-    let total = this.book_page_length || 0;
+  calc_activePagePos_percent(): number {
+    let activePage = this.getActivePage();
+    let totalPage = this.book_page_length || 0;
 
-    if (total) {
-      return Math.floor(((read || 0) * 100) / +total);
+    if (totalPage) {
+      return Math.floor(((activePage || 0) * 100) / +totalPage);
     } else {
       return 0;
     }
@@ -385,7 +386,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
             {this.book_page_length}&nbsp;
             <i className="font-size-01 fa fa-circle mx-2"></i>&nbsp;
             {/* {this.calc_current_read_percent()} */}
-            {this.calc_read_percent()}%
+            {this.calc_activePagePos_percent()}%
           </div>
         </div>
       </>
@@ -536,28 +537,18 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   async onPageClicked(pg_index: number) {
     await CmpUtility.waitOnMe(10);
     if (!this.swiperTaped) return;
-    // debugger;
-    console.log('pg_index: ', pg_index);
-    // TODO store active page number
-    // make sure redux (reader) updated before chnage route.
-    // debugger;
-    // this._bookInstance.gotoPos(this._slide_pages[pg_number].page);
-    // const bookProgress: number = this._bookInstance.getProgress();
-    // set library_item a value -->
-    // const bookProgress = this.calc_read_percent();
-    const bookProgress = (pg_index + 1) / this.book_page_length;
-    console.log('updateLibraryItem_progress', bookProgress);
-    ReaderUtility.updateLibraryItem_progress(this.book_id, bookProgress); //  / 100
+
     debugger;
+    const activePage = pg_index + 1;
+    const bookProgress = activePage / this.book_page_length;
+
+    ReaderUtility.updateLibraryItem_progress(this.book_id, bookProgress);
+    ReaderUtility.updateLibraryItem_progress_server(this.book_id, bookProgress);
 
     this.gotoReader_reading(this.book_id);
   }
 
   gotoReader_reading(book_id: string) {
-    // if (this.props.history.length) {
-    //   this.props.history.goBack();
-    // }
-    // this.props.history.push(`/reader/${book_id}/reading`);
     this.props.history.replace(`/reader/${book_id}/reading`);
   }
 

@@ -14,14 +14,14 @@ import { action_user_logged_in } from "../../../redux/action/user";
 import { IBook } from "../../../model/model.book";
 import Swiper from 'swiper';
 import { Virtual } from 'swiper/dist/js/swiper.esm';
-// import { Store2 } from "../../../redux/store";
 import { appLocalStorage } from "../../../service/appLocalStorage";
-import { book, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
+import { IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { ReaderUtility } from "../ReaderUtility";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem } from "../../library/libraryViewTemplate";
+import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -53,6 +53,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   };
 
   private _personService = new PersonService();
+
   // sliderSetting: Settings = {
   //   dots: false,
   //   accessibility: false,
@@ -175,7 +176,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     this.initSwiper();
   }
 
-  private _bookInstance!: book;
+  private _bookInstance!: BookGenerator;
   private async createBook() {
     const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
     if (!bookFile) {
@@ -195,12 +196,13 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];
   private initSwiper() {
-    const bookPosList: IBookPosIndicator[] = this._bookInstance.getListOfPageIndicators();
+    const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages();
 
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
     const progress_percent = this._libraryItem!.status.read_pages || 0;
-    this.book_active_index = Math.floor(this._slide_pages.length * progress_percent); // - 1;
+    debugger;
+    this.book_active_index = Math.floor(this._slide_pages.length * progress_percent - 1); // - 1;
     if (this.book_active_index > this._slide_pages.length - 1 || this.book_active_index < 0) {
       this.book_active_index = 0;
     }
@@ -243,12 +245,12 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   updateLibraryItem() {
-    // this._bookInstance.gotoPos(this._slide_pages[this.getSwiperActiveIndex()].page);
-    // const bookProgress: number = this._bookInstance.getProgress();
-    // const bookProgress = this.calc_read_percent(this.getSwiperActiveIndex());
-    const bookProgress = (this.getSwiperActiveIndex() + 1) / this.book_page_length;
-    console.log('updateLibraryItem_progress', bookProgress);
+    debugger;
+    const activePage = (this.getSwiperActiveIndex() + 1);
+    const bookProgress = activePage / this.book_page_length;
+    // console.log('updateLibraryItem_progress', bookProgress);
     ReaderUtility.updateLibraryItem_progress(this.book_id, bookProgress); //  / 100
+    ReaderUtility.updateLibraryItem_progress_server(this.book_id, bookProgress);
   }
   getSwiperActiveIndex(): number {
     const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
@@ -261,12 +263,12 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   //   return (activeIndex || activeIndex === 0) ? (activeIndex + 1) : this.book_active_page; //  : 0;
   // }
 
-  calc_read_percent(page_index: number): number {
-    let read = page_index + 1; // this.getActivePage();
-    let total = this.book_page_length || 0;
+  calc_activePagePos_percent(page_index: number): number {
+    let activePage = page_index + 1;
+    let totalPage = this.book_page_length || 0;
 
-    if (total) {
-      return Math.floor(((read || 0) * 100) / +total);
+    if (totalPage) {
+      return Math.floor(((activePage || 0) * 100) / +totalPage);
     } else {
       return 0;
     }
@@ -377,7 +379,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
                         <div className="item-footer">
                           <div>{Localization.formatString(Localization.n_min_left_in_chapter, this.calc_current_read_timeLeft(slide.id))}</div>
                           {/* <div>{this.calc_current_read_percent(slide.id)}</div> */}
-                          <div>{this.calc_read_percent(slide.id)}%</div>
+                          <div>{this.calc_activePagePos_percent(slide.id)}%</div>
                         </div>
                       </div>
                     </div>

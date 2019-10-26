@@ -1,9 +1,13 @@
 import { Store2 } from "../../redux/store";
-import { book } from "../../webworker/reader-engine/MsdBook";
+// import { book } from "../../webworker/reader-engine/MsdBook";
 import { getFont, color } from "../../webworker/reader-engine/tools";
 import { action_update_reader } from "../../redux/action/reader";
 import { IReader_schema_epub_theme } from "../../redux/action/reader/readerAction";
 import { action_set_library_data } from "../../redux/action/library";
+import { LibraryService } from "../../service/service.library";
+import { getLibraryItem } from "../library/libraryViewTemplate";
+import { NETWORK_STATUS } from "../../enum/NetworkStatus";
+import { BookGenerator } from "../../webworker/reader-engine/BookGenerator";
 // import { ILibrary } from "../../model/model.library";
 // import { CmpUtility } from "../_base/CmpUtility";
 
@@ -33,7 +37,7 @@ export abstract class ReaderUtility {
         return { fontColor, bgColor };
     }
 
-    static async createEpubBook(bookFile: Uint8Array, bookPageSize?: { width: number; height: number; }): Promise<book> {
+    static async createEpubBook(bookFile: Uint8Array, bookPageSize?: { width: number; height: number; }): Promise<BookGenerator> {
         // debugger;
         // await CmpUtility.waitOnMe(5000);
 
@@ -68,7 +72,7 @@ export abstract class ReaderUtility {
         // await CmpUtility.waitOnMe(3000);
         const reader_epub_theme = ReaderUtility.createEpubBook_theme(reader_epub.theme);
 
-        const _book = new book(
+        const _book = new BookGenerator(
             bookFile,
             _bookPageSize.width,
             _bookPageSize.height,
@@ -95,6 +99,22 @@ export abstract class ReaderUtility {
         Store2.dispatch(action_set_library_data(libData));
     }
 
-    
+    static async updateLibraryItem_progress_server(book_id: string, progress: number) {
+        if(Store2.getState().network_status === NETWORK_STATUS.OFFLINE)return;
+
+        const libItem = getLibraryItem(book_id);
+        if (!libItem) return;
+
+        const _libraryService = new LibraryService();
+        libItem.status.reading_started = true;
+        libItem.status.read_pages = progress;
+        let obj = {
+            reading_started: libItem.status.reading_started,
+            read_pages: libItem.status.read_pages
+        }
+        _libraryService.update_status(libItem.id, obj).catch(e => { });
+    }
+
+
 
 }
