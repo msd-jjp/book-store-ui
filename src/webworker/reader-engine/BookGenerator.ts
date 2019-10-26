@@ -2,10 +2,43 @@ import { book, IBookPosIndicator, IBookContent } from "./MsdBook";
 import { CmpUtility } from "../../component/_base/CmpUtility";
 
 export class BookGenerator extends book {
-    private _allPages: IBookPosIndicator[] | undefined;
-    getAllPages(): Array<IBookPosIndicator> {
-        if (!this._allPages) this._allPages = this.getListOfPageIndicators();
-        return this._allPages;
+    private _pageStorage: any = {};
+    setToStorage(index: number, page: string): void {
+        this._pageStorage[index] = page;
+    }
+    getFromStorage(index: number): string | undefined {
+        return this._pageStorage[index];
+    }
+
+    private _allPages_pos: IBookPosIndicator[] | undefined;
+    getAllPages_pos(): Array<IBookPosIndicator> {
+        if (!this._allPages_pos) this._allPages_pos = this.getListOfPageIndicators();
+        return this._allPages_pos;
+    }
+    getPage(index: number) {
+        let page = this.getFromStorage(index);
+        if (!page) {
+            const allPages_pos = this.getAllPages_pos();
+            const page = this.RenderSpecPage(allPages_pos[index]);
+            this.setToStorage(index, page);
+        }
+        return page;
+    }
+    getPage_with_storeAround(index: number, n: number) {
+        let page = this.getFromStorage(index);
+        if (!page) {
+            const allPages_pos = this.getAllPages_pos();
+            const page = this.RenderSpecPage(allPages_pos[index]);
+            this.setToStorage(index, page);
+            this.storeAround(index, n);
+        }
+        return page;
+    }
+
+    private async storeAround(pageIndex: number, n: number) {
+        await CmpUtility.waitOnMe(0);
+        this.get_n_pages_before_x(pageIndex, n);
+        this.get_n_pages_after_x(pageIndex, n);
     }
 
     private _allChapters: IBookContent[] | undefined;
@@ -18,8 +51,8 @@ export class BookGenerator extends book {
         let y = x - n;
         if (y <= 0) y = 0;
         let m = x - y;
-        const allPages = this.getAllPages();
-        const mPages = this.renderNPages(allPages[y], m);
+        const allPages_pos = this.getAllPages_pos();
+        const mPages = this.renderNPages(allPages_pos[y], m);
 
         for (let i = 0; i < mPages.length; i++) {
             this.setToStorage(y + i, mPages[i]);
@@ -32,8 +65,8 @@ export class BookGenerator extends book {
      * @param n number of page include index x
      */
     get_n_pages_after_x(x: number, n: number): string[] {
-        const allPages = this.getAllPages();
-        const nPages = this.renderNPages(allPages[x], n);
+        const allPages_pos = this.getAllPages_pos();
+        const nPages = this.renderNPages(allPages_pos[x], n);
 
         for (let i = 0; i < nPages.length; i++) {
             this.setToStorage(x + i, nPages[i]);
@@ -42,12 +75,6 @@ export class BookGenerator extends book {
         return nPages;
     }
 
-    private _pageStorage: any = {};
-    setToStorage(index: number, page: string): void {
-        this._pageStorage[index] = page;
-    }
-    getFromStorage(index: number): string | undefined {
-        return this._pageStorage[index];
-    }
+
 
 }
