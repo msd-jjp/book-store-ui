@@ -95,7 +95,7 @@ export abstract class ReaderUtility {
         if (!_lib) return;
 
         _lib.status.reading_started = true;
-        _lib.status.progess = progress;
+        _lib.progress = progress;
 
         Store2.dispatch(action_set_library_data(libData));
     }
@@ -108,12 +108,12 @@ export abstract class ReaderUtility {
 
         const _libraryService = new LibraryService();
         libItem.status.reading_started = true;
-        libItem.status.progess = progress;
-        let obj = {
+        libItem.progress = progress;
+        let status_obj = {
             reading_started: libItem.status.reading_started,
-            progess: libItem.status.progess
+            // progess: libItem.progess
         };
-        _libraryService.update_status(libItem.id, obj).catch(e => { });
+        _libraryService.update_status(libItem.id, status_obj, libItem.progress).catch(e => { });
     }
 
     private static rtlLanguage_list: LANGUAGES[] = [LANGUAGES.PERSIAN, LANGUAGES.ARABIC];

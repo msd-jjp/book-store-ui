@@ -159,10 +159,11 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
-    const progress_percent = this._libraryItem!.status.progess || 0;
+    const progress_percent = this._libraryItem!.progress || 0;
     debugger;
     this.book_active_index = Math.floor(this._slide_pages.length * progress_percent - 1); // - 1;
     if (this.book_active_index > this._slide_pages.length - 1 || this.book_active_index < 0) {
+      console.error('this.book_active_index:', this.book_active_index, ' this._slide_pages.length:', this._slide_pages.length);
       this.book_active_index = 0;
     }
 
@@ -241,7 +242,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   getPagePath(pageIndex: number) {
-    return this._bookInstance.getPage_with_storeAround(pageIndex, 10);
+    return this._bookInstance.getPage_with_storeAround(pageIndex, 3);
   }
 
   private _isThisBookRtl: boolean | undefined = undefined;

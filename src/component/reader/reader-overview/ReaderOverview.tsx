@@ -7,7 +7,6 @@ import { BaseComponent } from "../../_base/BaseComponent";
 import { History } from "history";
 import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import { Localization } from "../../../config/localization/localization";
-import { PersonService } from "../../../service/service.person";
 import { Dropdown, Modal, ToggleButtonGroup } from "react-bootstrap";
 import { IBook } from "../../../model/model.book";
 import Tooltip from 'rc-tooltip';
@@ -43,7 +42,7 @@ interface IProps {
 
 interface IState {
   book: IBook | undefined;
-  virtualData: { 
+  virtualData: {
     slides: any[],
   },
   RcSlider_value: number | undefined;
@@ -78,11 +77,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     },
   };
 
-  // private _personService = new PersonService();
-  
   private swiper_obj: Swiper | undefined;
-  private book_page_length = 1; // 2500;
-  private book_active_index = 0; // 372;
+  private book_page_length = 1;
+  private book_active_index = 0;
   private _libraryItem: ILibrary | undefined;
 
   constructor(props: IProps) {
@@ -101,38 +98,13 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       this.props.history.replace(`/dashboard`);
       return;
     }
-    // this.updateUserCurrentBook_client();
     this.setBook_byId(this.book_id);
-    // this.updateUserCurrentBook_server();
     this.generateReader();
   }
-
-  // updateUserCurrentBook_client() {
-  //   let logged_in_user = { ...this.props.logged_in_user! };
-  //   if (!logged_in_user) return;
-  //   const book = this.getBookFromLibrary(this.book_id);
-  //   logged_in_user.person.current_book = book;
-  //   this.props.onUserLoggedIn(logged_in_user);
-
-  //   this.setState({ ...this.state, book: this.getBookFromLibrary(this.book_id) });
-  // }
-
 
   setBook_byId(book_id: string) {
     this.setState({ ...this.state, book: this._libraryItem!.book });
   }
-
-  // async updateUserCurrentBook_server() {
-  //   if (!this.book_id) return;
-  //   if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
-
-  //   await this._personService.update(
-  //     { current_book_id: this.book_id },
-  //     this.props.logged_in_user!.person.id
-  //   ).catch(e => {
-  //     // this.handleError({ error: e.response });
-  //   });
-  // }
 
   overview_header_render() {
     return (
@@ -248,26 +220,13 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
-    const progress_percent = this._libraryItem!.status.progess || 0;
+    const progress_percent = this._libraryItem!.progress || 0;
     debugger;
     this.book_active_index = Math.floor(this._slide_pages.length * progress_percent - 1); // - 1;
     if (this.book_active_index > this._slide_pages.length - 1 || this.book_active_index < 0) {
+      console.error('this.book_active_index:', this.book_active_index, ' this._slide_pages.length:', this._slide_pages.length);
       this.book_active_index = 0;
     }
-    /** active page & more before and after of it */
-    // this.getPagePath(this.book_active_index, this._slide_pages[this.book_active_index].page);
-
-    // const renderNPages: string[] = this._bookInstance.renderNPages(bookPosList[this.book_active_index], 5);
-
-    // renderNPages.forEach((img, i) => {
-    //   this._pageRenderedPath[i + this.book_active_index] = img;
-    // });
-
-
-    // const bookProgress: number = this._bookInstance.getProgress();
-    // const bookProgress: number = this._bookInstance.gotoPos();
-    // debugger;
-
 
     this.swiper_obj = new Swiper('.swiper-container', {
       virtual: {
@@ -341,8 +300,25 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   getPagePath(pageIndex: number) {
-    return this._bookInstance.getPage_with_storeAround(pageIndex, 10);
+    // this._setState_should = true;
+    const page = this._bookInstance.getPage_with_storeAround(pageIndex, 3);
+    // this.setState_withDelay();
+    return page;
   }
+  // private _setState_timer: any;
+  // private _setState_should = false;
+  // async setState_withDelay() {
+  //   if (this._setState_timer) {
+  //     clearTimeout(this._setState_timer);
+  //   }
+  //   this._setState_timer = setTimeout(() => {
+  //     console.log('setState_withDelay 0000');
+  //     if (!this._setState_should) return;
+  //     console.log('setState_withDelay 11111');
+  //     this._setState_should = false;
+  //     this.setState({});
+  //   }, 500);
+  // }
 
   private _isThisBookRtl: boolean | undefined = undefined;
   isThisBookRtl(): boolean {
@@ -378,6 +354,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                             src={this.getPagePath(slide.id)}
                             alt="book"
                             loading="lazy"
+                          // onLoad={(e) => { this.getPagePath_onLoad() }}
                           />
                         </div>
                         <div className="page-number text-muted">{slide.id + 1}</div>

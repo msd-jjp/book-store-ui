@@ -1,4 +1,4 @@
-import { BaseService, IAPI_ResponseList } from './service.base';
+import { BaseService, IAPI_ResponseList, IAPI_Response } from './service.base';
 import { ILibrary } from '../model/model.library';
 
 export class LibraryService extends BaseService {
@@ -16,14 +16,12 @@ export class LibraryService extends BaseService {
         return this.axiosTokenInstance.head('/library');
     }
 
-    update_status(library_id: ILibrary['id'], status: {
-        status?: string;
-        reading_started?: boolean;
-        read_pages?: number;
-        read_duration?: number;
-    }) { // ILibrary['status']
-        // return this.axiosTokenInstance.get('/library');
-        return this.axiosTokenInstance.put(`/library/${library_id}`, { status });
+    update_status(
+        library_id: ILibrary['id'],
+        status: { status?: string; reading_started?: boolean; read_pages?: number; read_duration?: number; }, // ILibrary['status']
+        progress: ILibrary['progress']
+    ): Promise<IAPI_Response<ILibrary>> {
+        return this.axiosTokenInstance.put(`/library/${library_id}`, { status, progress });
     }
 
 }
