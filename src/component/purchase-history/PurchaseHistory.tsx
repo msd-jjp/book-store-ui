@@ -82,7 +82,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
   private async fetchUserOrders() {
     this.setState({ ...this.state, orderError: undefined, loadMoreBtnLoader: true });
 
-    let res = await this._orderService.userOrder(
+    let res = await this._orderService.search_userOrder(
       this.state.pager_limit,
       this.state.pager_offset,
       {
@@ -187,8 +187,8 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
   }
 
   getOrderDate(order: IOrder): number | undefined {
-    return order.creation_date;
-    // return order.modification_date;
+    // return order.creation_date;
+    return order.modification_date;
   }
 
   private gotoBookDetail(bookId: string) {
