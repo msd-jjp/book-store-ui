@@ -231,11 +231,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  currentBook_render() {
-    if (!this.props.logged_in_user) { return; }
+  currentBook_render(): JSX.Element {
+    if (!this.props.logged_in_user) { return <></>; }
+
     let current_book = this.props.logged_in_user.person && this.props.logged_in_user.person.current_book;
-    // const is_downloaded = current_book ? CmpUtility.is_book_downloaded(current_book.id) : false;
-    if (!current_book /* || !is_downloaded */) {
+    if (!current_book) {
       return (
         this.currentBook_empty_render()
       )
@@ -300,12 +300,17 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
               <Button
                 variant="dark"
                 className="btn-read-now"
+                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE && !is_downloaded}
                 onClick={() => this.before_gotoReader(current_book!)}
               >
                 {
                   is_downloaded ? Localization.read_now
                     : is_downloading ? Localization.downloading
                       : Localization.download
+                }
+                {
+                  this.props.network_status === NETWORK_STATUS.OFFLINE && !is_downloaded
+                    ? <i className="fa fa-wifi text-danger"></i> : ''
                 }
               </Button>
 
@@ -409,6 +414,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   before_gotoReader(book: IBook) {
     const isDownloaded = is_book_downloaded(book.id, true);
     if (!isDownloaded) {
+      if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
       toggle_book_download(book.id, true);
       return;
     }

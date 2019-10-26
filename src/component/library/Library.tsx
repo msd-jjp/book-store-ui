@@ -954,8 +954,13 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                             btnClassName="btn btn-system-- text-system btn-sm text-uppercase min-w-70px"
                             loading={this.state.modal_downloadCollections.loader}
                             onClick={() => this.downloadCollection(this.collection_title_to_download!)}
+                            disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                         >
                             {Localization.download}
+                            {
+                                this.props.network_status === NETWORK_STATUS.OFFLINE
+                                    ? <i className="fa fa-wifi text-danger"></i> : ''
+                            }
                         </BtnLoader>
 
                     </Modal.Footer>
