@@ -8,6 +8,7 @@ import { LibraryService } from "../../service/service.library";
 import { getLibraryItem } from "../library/libraryViewTemplate";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { BookGenerator } from "../../webworker/reader-engine/BookGenerator";
+import { LANGUAGES } from "../../enum/language";
 // import { ILibrary } from "../../model/model.library";
 // import { CmpUtility } from "../_base/CmpUtility";
 
@@ -18,7 +19,7 @@ export abstract class ReaderUtility {
     //     return Store2.getState().reader.epub.theme;
     // }
 
-    static createEpubBook_theme(theme: IReader_schema_epub_theme): { fontColor: number, bgColor: number } {
+    private static getEpubBook_theme(theme: IReader_schema_epub_theme): { fontColor: number, bgColor: number } {
         let bgColor = color(255, 255, 255, 0);
         let fontColor = color(0, 0, 0, 255);
 
@@ -70,7 +71,7 @@ export abstract class ReaderUtility {
         }
 
         // await CmpUtility.waitOnMe(3000);
-        const reader_epub_theme = ReaderUtility.createEpubBook_theme(reader_epub.theme);
+        const reader_epub_theme = ReaderUtility.getEpubBook_theme(reader_epub.theme);
 
         const _book = new BookGenerator(
             bookFile,
@@ -100,7 +101,7 @@ export abstract class ReaderUtility {
     }
 
     static async updateLibraryItem_progress_server(book_id: string, progress: number) {
-        if(Store2.getState().network_status === NETWORK_STATUS.OFFLINE)return;
+        if (Store2.getState().network_status === NETWORK_STATUS.OFFLINE) return;
 
         const libItem = getLibraryItem(book_id);
         if (!libItem) return;
@@ -115,6 +116,11 @@ export abstract class ReaderUtility {
         _libraryService.update_status(libItem.id, obj).catch(e => { });
     }
 
+    private static rtlLanguage_list: LANGUAGES[] = [LANGUAGES.PERSIAN, LANGUAGES.ARABIC];
+    static isBookRtl(lang: LANGUAGES | undefined): boolean {
+        if (!lang) return true;
+        else return ReaderUtility.rtlLanguage_list.includes(lang);
+    }
 
 
 }

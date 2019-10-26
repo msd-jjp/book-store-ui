@@ -22,6 +22,9 @@ import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { Store2 } from "../../../redux/store";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { CmpUtility } from "../../_base/CmpUtility";
+import { ReaderUtility } from "../ReaderUtility";
+import { getLibraryItem } from "../../library/libraryViewTemplate";
+import { ILibrary } from "../../../model/model.library";
 // import { Store2 } from "../../../redux/store";
 // import { readerWorker } from '../../../webworker/reader/reader';
 
@@ -63,6 +66,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   swiper_obj: Swiper | undefined;
   private book_page_length = 2500;
   private book_active_page = 372;
+  private _libraryItem: ILibrary | undefined;
 
   constructor(props: IProps) {
     super(props);
@@ -71,7 +75,16 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     this.book_id = this.props.match.params.bookId;
   }
 
+  componentWillMount() {
+    if (this.book_id) {
+      this._libraryItem = getLibraryItem(this.book_id);
+    }
+  }
   componentDidMount() {
+    if (!this._libraryItem) {
+      this.props.history.replace(`/dashboard`);
+      return;
+    }
     this.getData_readerWorker();
   }
 
@@ -254,7 +267,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
         <div className="scroll-body mx-3">
 
           {this.swiper_render()}
-          
+
           <ContentLoader gutterClassName="gutter-n1r" show={this.state.page_loading}></ContentLoader>
 
         </div>
@@ -330,22 +343,32 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     }
   }
 
+  private _isThisBookRtl: boolean | undefined = undefined;
+  isThisBookRtl(): boolean {
+    if (this._isThisBookRtl === undefined) {
+      this._isThisBookRtl = ReaderUtility.isBookRtl(this._libraryItem!.book.language);
+    }
+    return this._isThisBookRtl;
+  }
+
   swiper_render() {
     if (true) {
       // const vrtData: any = this.state.virtualData;
       const swiper_slides: any = this.state.swiper_slides;
 
+
       // let offset_dir = 'top';
-      // let swiper_dir = '';
+      let swiper_dir = 'ltr';
       // if (this.props.internationalization.rtl) {
-      //   offset_dir = 'right';
-      //   swiper_dir = 'rtl';
-      // }
+      if (this.isThisBookRtl()) {
+        // offset_dir = 'right';
+        swiper_dir = 'rtl';
+      }
 
       return (
         <>
           <div className="app-swiper">
-            <div className="swiper-container" >
+            <div className="swiper-container" dir={swiper_dir}>
               <div className="swiper-wrapper">
                 {/* {vrtData.slides.map(( */}
                 {swiper_slides.map((

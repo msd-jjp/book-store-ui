@@ -254,6 +254,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   private async generateReader() {
+    await CmpUtility.waitOnMe(0);
     await this.createBook();
     if (!this._bookInstance) return;
     this.initSwiper();
@@ -294,7 +295,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this.getPagePath(this.book_active_index, this._slide_pages[this.book_active_index].page);
 
     const renderNPages: string[] = this._bookInstance.renderNPages(bookPosList[this.book_active_index], 5);
-    
+
     renderNPages.forEach((img, i) => {
       this._pageRenderedPath[i + this.book_active_index] = img;
     });
@@ -441,7 +442,13 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   //   }
   // }
 
-
+  private _isThisBookRtl: boolean | undefined = undefined;
+  isThisBookRtl(): boolean {
+    if (this._isThisBookRtl === undefined) {
+      this._isThisBookRtl = ReaderUtility.isBookRtl(this._libraryItem!.book.language);
+    }
+    return this._isThisBookRtl;
+  }
 
   swiper_render() {
     if (true) {
@@ -449,7 +456,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
       let offset_dir = 'left';
       let swiper_dir = '';
-      if (this.props.internationalization.rtl) {
+      // if (this.props.internationalization.rtl) {
+      if (this.isThisBookRtl()) {
         offset_dir = 'right';
         swiper_dir = 'rtl';
       }

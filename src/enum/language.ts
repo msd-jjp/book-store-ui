@@ -1,0 +1,8 @@
+export enum LANGUAGES {
+    PERSIAN = 'PERSIAN',
+    ENGLISH = 'ENGLISH',
+    ARABIC = 'ARABIC',
+    FRENCH = 'FRENCH',
+    GERMAN = 'GERMAN',
+    SPANISH = 'SPANISH',
+}

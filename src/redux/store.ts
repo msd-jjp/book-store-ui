@@ -44,7 +44,7 @@ const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
 
 const main_reducer = combineReducers(reducers);
 
-export const Store = createStore(main_reducer, applyMiddleware(logger));
+// export const Store = createStore(main_reducer, applyMiddleware(logger));
 
 //////////////////////////////////////////////////
 

@@ -22,6 +22,7 @@ import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem } from "../../library/libraryViewTemplate";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
+import { CmpUtility } from "../../_base/CmpUtility";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -146,11 +147,11 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     });
   }
 
-  getBookTitle(): string {
-    const book: IBook | undefined = this.state.book;
-    if (!book) return '';
-    return book!.title;
-  }
+  // getBookTitle(): string {
+  //   const book: IBook | undefined = this.state.book;
+  //   if (!book) return '';
+  //   return book!.title;
+  // }
 
   get_bookPageSize(): { width: number, height: number } {
     const container = document.querySelector('.swiper-container');
@@ -171,6 +172,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   private async generateReader() {
+    await CmpUtility.waitOnMe(0);
     await this.createBook();
     if (!this._bookInstance) return;
     this.initSwiper();
@@ -347,13 +349,22 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
   }
 
+  private _isThisBookRtl: boolean | undefined = undefined;
+  isThisBookRtl(): boolean {
+    if (this._isThisBookRtl === undefined) {
+      this._isThisBookRtl = ReaderUtility.isBookRtl(this._libraryItem!.book.language);
+    }
+    return this._isThisBookRtl;
+  }
+
   swiper_render() {
     if (true) {
       const vrtData: any = this.state.virtualData;
 
       let offset_dir = 'left';
       let swiper_dir = '';
-      if (this.props.internationalization.rtl) {
+      // if (this.props.internationalization.rtl) {
+      if (this.isThisBookRtl()) {
         offset_dir = 'right';
         swiper_dir = 'rtl';
       }
@@ -366,7 +377,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
                 {vrtData.slides.map((slide: { id: number, page: IBookPosIndicator }, index: any) => (
                   <Fragment key={slide.id}>
                     <div className="swiper-slide" style={{ [offset_dir]: `${vrtData.offset}px` }}>
-                      <div className="item" >
+                      <div className="item cursor-pointer" >
                         <div className="page-img-wrapper">
                           <img
                             className="page-img"

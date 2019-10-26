@@ -169,17 +169,15 @@ check dd-menu in readerOverview & collection & library --> ltr mode
 
 ====================================================================================
 
-book model should have isRtl property.
+====================================================================================
 
 ====================================================================================
 
-disable download collection in offline mode --> dashboard collection library
+update libraryItem in readerReading, purchase modifivation data instead of createDate
 
 ====================================================================================
 
-update libraryItem in readerReading, 
-
-====================================================================================
+mark as read in --> dashboard collection library
 
 ====================================================================================
 
