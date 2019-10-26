@@ -8,5 +8,6 @@ export interface ILibrary {
         reading_started: boolean;
         read_pages: number;
         read_duration: number;
+        progess : number;
     },
 }

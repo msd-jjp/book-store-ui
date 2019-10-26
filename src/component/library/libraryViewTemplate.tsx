@@ -8,7 +8,7 @@ import { Store2 } from "../../redux/store";
 import { action_update_downloading_book_file } from "../../redux/action/downloading-book-file";
 
 export function calc_read_percent(item: ILibrary): string {
-    return Math.floor((item.status.read_pages || 0) * 100) + '%';
+    return Math.floor((item.status.progess || 0) * 100) + '%';
 
     // let read = 0;
     // let total = 0;

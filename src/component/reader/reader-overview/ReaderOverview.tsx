@@ -285,14 +285,14 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
-    const progress_percent = this._libraryItem!.status.read_pages || 0;
+    const progress_percent = this._libraryItem!.status.progess || 0;
     debugger;
     this.book_active_index = Math.floor(this._slide_pages.length * progress_percent - 1); // - 1;
     if (this.book_active_index > this._slide_pages.length - 1 || this.book_active_index < 0) {
       this.book_active_index = 0;
     }
     /** active page & more before and after of it */
-    this.getPagePath(this.book_active_index, this._slide_pages[this.book_active_index].page);
+    // this.getPagePath(this.book_active_index, this._slide_pages[this.book_active_index].page);
 
     const renderNPages: string[] = this._bookInstance.renderNPages(bookPosList[this.book_active_index], 5);
 

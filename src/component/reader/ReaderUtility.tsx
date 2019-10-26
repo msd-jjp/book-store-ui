@@ -95,7 +95,7 @@ export abstract class ReaderUtility {
         if (!_lib) return;
 
         _lib.status.reading_started = true;
-        _lib.status.read_pages = progress;
+        _lib.status.progess = progress;
 
         Store2.dispatch(action_set_library_data(libData));
     }
@@ -108,11 +108,11 @@ export abstract class ReaderUtility {
 
         const _libraryService = new LibraryService();
         libItem.status.reading_started = true;
-        libItem.status.read_pages = progress;
+        libItem.status.progess = progress;
         let obj = {
             reading_started: libItem.status.reading_started,
-            read_pages: libItem.status.read_pages
-        }
+            progess: libItem.status.progess
+        };
         _libraryService.update_status(libItem.id, obj).catch(e => { });
     }
 
