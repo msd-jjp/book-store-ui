@@ -180,5 +180,27 @@ export abstract class ReaderUtility {
         else return ReaderUtility.rtlLanguage_list.includes(lang);
     }
 
+    private static _check_swiperImg_loaded_timer: any;
+    static check_swiperImg_loaded(selector?: string) {
+        selector = selector || '.swiper-container .swiper-slide img.page-img';
+
+        if (ReaderUtility._check_swiperImg_loaded_timer) {
+            clearTimeout(ReaderUtility._check_swiperImg_loaded_timer);
+        }
+
+        ReaderUtility._check_swiperImg_loaded_timer = setTimeout(() => {
+
+            const img_list = document.querySelectorAll(selector!);
+            for (let i = 0; i < img_list.length; i++) {
+                if (!img_list[i].getAttribute('src')) {
+                    const d_s = img_list[i].getAttribute('data-src');
+                    if (d_s) {
+                        img_list[i].setAttribute('src', d_s);
+                    }
+                }
+            }
+            
+        }, 300);
+    }
 
 }

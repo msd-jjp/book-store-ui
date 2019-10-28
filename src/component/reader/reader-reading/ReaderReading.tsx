@@ -171,6 +171,8 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       this.book_active_index = 0;
     }
 
+    this.getSinglePagePath(this.book_active_index);
+
     this.swiper_obj = new Swiper('.swiper-container', {
       virtual: {
         slides: this._slide_pages,
@@ -246,8 +248,18 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  getPagePath(pageIndex: number) {
-    return this._bookInstance.getPage_with_storeAround(pageIndex, 3);
+  getPagePath_ifExist(pageIndex: number) {
+    const page = this._bookInstance.getPage_ifExist(pageIndex);
+    if (!page) { ReaderUtility.check_swiperImg_loaded() }
+    return page;
+  }
+  async getPagePath(pageIndex: number) {
+    await CmpUtility.waitOnMe(0);
+    return this._bookInstance.getPage_with_storeAround(pageIndex, 1);
+    // return this._bookInstance.getPage(pageIndex);
+  }
+  getSinglePagePath(pageIndex: number) {
+    return this._bookInstance.getPage(pageIndex);
   }
 
   private _isThisBookRtl: boolean | undefined = undefined;
@@ -282,7 +294,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
                         <div className="page-img-wrapper">
                           <img
                             className="page-img"
-                            src={this.getPagePath(slide.id)}
+                            // src={this.getPagePath(slide.id)}
+                            src={this.getPagePath_ifExist(slide.id)}
+                            data-src={this.getPagePath(slide.id)}
                             alt="book"
                             loading="lazy"
                             width={this._bookPageSize.width}

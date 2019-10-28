@@ -230,7 +230,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       this.book_active_index = 0;
     }
 
+    this.getSinglePagePath(this.book_active_index);
+
     this.swiper_obj = new Swiper('.swiper-container', {
+      // freeMode: true,
+      // centeredSlides: true,
+      // slidesPerView: 1,
       virtual: {
         cache: true,
         slides: this._slide_pages,
@@ -301,26 +306,19 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  getPagePath(pageIndex: number) {
-    // this._setState_should = true;
-    const page = this._bookInstance.getPage_with_storeAround(pageIndex, 3);
-    // this.setState_withDelay();
+  getPagePath_ifExist(pageIndex: number) {
+    const page = this._bookInstance.getPage_ifExist(pageIndex);
+    if (!page) { ReaderUtility.check_swiperImg_loaded() }
     return page;
   }
-  // private _setState_timer: any;
-  // private _setState_should = false;
-  // async setState_withDelay() {
-  //   if (this._setState_timer) {
-  //     clearTimeout(this._setState_timer);
-  //   }
-  //   this._setState_timer = setTimeout(() => {
-  //     console.log('setState_withDelay 0000');
-  //     if (!this._setState_should) return;
-  //     console.log('setState_withDelay 11111');
-  //     this._setState_should = false;
-  //     this.setState({});
-  //   }, 500);
-  // }
+  async getPagePath(pageIndex: number) {
+    await CmpUtility.waitOnMe(0);
+    const page = this._bookInstance.getPage_with_storeAround(pageIndex, 1);
+    return page;
+  }
+  getSinglePagePath(pageIndex: number) {
+    return this._bookInstance.getPage(pageIndex);
+  }
 
   private _isThisBookRtl: boolean | undefined = undefined;
   isThisBookRtl(): boolean {
@@ -353,7 +351,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                         <div className="page-img-wrapper">
                           <img
                             className="page-img"
-                            src={this.getPagePath(slide.id)}
+                            src={this.getPagePath_ifExist(slide.id)}
+                            data-src={this.getPagePath(slide.id)}
                             alt="book"
                             loading="lazy"
                             // onLoad={(e) => { this.getPagePath_onLoad() }}
