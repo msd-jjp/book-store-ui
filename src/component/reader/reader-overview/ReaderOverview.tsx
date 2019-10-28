@@ -30,6 +30,7 @@ import { BaseService } from "../../../service/service.base";
 import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem, updateLibraryItem_progress } from "../../library/libraryViewTemplate";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
+import { Store2 } from "../../../redux/store";
 
 interface IProps {
   internationalization: TInternationalization;
@@ -195,6 +196,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this.initSwiper();
   }
 
+  private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
   private _bookInstance!: BookGenerator;
   private async createBook() {
     const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
@@ -354,7 +356,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                             src={this.getPagePath(slide.id)}
                             alt="book"
                             loading="lazy"
-                          // onLoad={(e) => { this.getPagePath_onLoad() }}
+                            // onLoad={(e) => { this.getPagePath_onLoad() }}
+                            width={this._bookPageSize.width}
+                            height={this._bookPageSize.height}
                           />
                         </div>
                         <div className="page-number text-muted">{slide.id + 1}</div>

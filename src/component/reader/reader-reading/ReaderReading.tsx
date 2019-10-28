@@ -110,10 +110,14 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     });
   }
 
-  get_bookPageSize(): { width: number, height: number } {
+  private _bookPageSize!: { width: number, height: number }; // = Store2.getState().reader.epub.pageSize;
+  private get_bookPageSize(): { width: number, height: number } {
     const container = document.querySelector('.swiper-container');
-    if (!container) return { width: 200, height: 300 };
-    return { width: container.clientWidth - 32, height: container.clientHeight - 32 - 16 };
+    let size;
+    if (!container) size = { width: 200, height: 300 };
+    else size = { width: container.clientWidth - 32, height: container.clientHeight - 32 - 16 };
+    this._bookPageSize = size;
+    return size;
   }
 
   bookFileNotFound_notify() {
@@ -281,6 +285,8 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
                             src={this.getPagePath(slide.id)}
                             alt="book"
                             loading="lazy"
+                            width={this._bookPageSize.width}
+                            height={this._bookPageSize.height}
                           />
                         </div>
                         <div className="item-footer">
