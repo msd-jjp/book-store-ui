@@ -139,6 +139,21 @@
             // }
           }
         }
+
+        .book-chapters {
+          opacity: 1;
+          ul {
+            padding-right: 0.25rem;
+            list-style: none;
+            margin-bottom: 0.5rem;
+            li {
+              opacity: 1;
+              &.clickable {
+                cursor: pointer;
+              }
+            }
+          }
+        }
       }
     }
 

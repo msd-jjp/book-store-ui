@@ -10,6 +10,7 @@ import { IReader_schema_epub_theme, IReader_schema_epub_fontName } from "../../r
 import { BookGenerator } from "../../webworker/reader-engine/BookGenerator";
 import { LANGUAGES } from "../../enum/language";
 import { CmpUtility } from "../_base/CmpUtility";
+import { IBookContent } from "../../webworker/reader-engine/MsdBook";
 // import { ILibrary } from "../../model/model.library";
 // import { CmpUtility } from "../_base/CmpUtility";
 
@@ -199,8 +200,42 @@ export abstract class ReaderUtility {
                     }
                 }
             }
-            
+
         }, 300);
+    }
+
+    private static _epubBook_chapters: {
+        chapter: IBookContent | undefined, clickable: boolean,
+        children: { chapter: IBookContent | undefined, children: [], clickable: boolean }[],
+    } | undefined;
+    static createEpubBook_chapters(chapterList: IBookContent[]) {
+        debugger;
+        const list = [...chapterList];
+        this._epubBook_chapters = { clickable: false, chapter: undefined, children: [] };
+        const length = list.length;
+
+        for (let i = 0; i < length; i++) {
+            const ch = list.shift();
+            if (ch!.parentIndex === 65535) {
+                this._epubBook_chapters.chapter = ch;
+
+            } else {
+                let _ch_obj = this._epubBook_chapters;
+                for (let i = 0; i < ch!.parentIndex; i++) {
+                    if (_ch_obj.children[_ch_obj.children.length - 1]) {
+                        _ch_obj = _ch_obj.children[_ch_obj.children.length - 1];
+                    }
+                }
+                const ca = (ch!.pos.atom === -1 && ch!.pos.group === -1) ? false : true;
+                _ch_obj.children.push({
+                    chapter: ch,
+                    clickable: ca,
+                    children: []
+                });
+            }
+        }
+
+        return this._epubBook_chapters;
     }
 
 }

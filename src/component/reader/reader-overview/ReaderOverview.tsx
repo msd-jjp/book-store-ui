@@ -215,10 +215,23 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
   }
 
+
+  private _createBookChapters: {
+    chapter: IBookContent | undefined, clickable: boolean,
+    children: { chapter: IBookContent | undefined, children: [], clickable: boolean }[],
+  } | undefined;
+  private async  createBookChapters() {
+    await CmpUtility.waitOnMe(0);
+    const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
+    debugger;
+    this._createBookChapters = ReaderUtility.createEpubBook_chapters(bookContent);
+  }
+
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];
   private initSwiper() {
     const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
-    const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
+    // const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
+    this.createBookChapters();
     // debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
@@ -311,8 +324,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     if (!page) { ReaderUtility.check_swiperImg_loaded() }
     return page;
   }
-  async getPagePath(pageIndex: number) {
-    await CmpUtility.waitOnMe(0);
+  // async 
+  getPagePath(pageIndex: number) {
+    // await CmpUtility.waitOnMe(0);
     const page = this._bookInstance.getPage_with_storeAround(pageIndex, 1);
     return page;
   }
@@ -466,8 +480,6 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-
-
   overview_footer_render() {
     return (
       <>
@@ -527,6 +539,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
             >
               {Localization.goto}
             </div>
+            <div className="item px-2 py-3">
+              {this.sidebar_book_chapter_render()}
+            </div>
           </div>
 
         </div>
@@ -563,6 +578,77 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         </div>
       </>
     )
+  }
+
+  generateEl(
+    chaptersObj: {
+      chapter: IBookContent | undefined, clickable: boolean,
+      children: { chapter: IBookContent | undefined, children: [], clickable: boolean }[],
+    }
+  ) {
+    return (
+      <ul>
+        <li
+          className={(chaptersObj.clickable) ? 'clickable' : 'text-muted'}
+          onClick={() => { if (chaptersObj.clickable) this.chapterClicked(chaptersObj.chapter!); }}>
+          {chaptersObj.chapter!.text}
+        </li>
+        {/* <ul> */}
+        {
+          chaptersObj.children.map((ch, index) => (
+            <Fragment key={index}>
+              {this.generateEl(ch)}
+            </Fragment>
+          ))
+        }
+        {/* </ul> */}
+      </ul>
+    )
+  }
+  sidebar_book_chapter_render(): JSX.Element {
+    if (!this._createBookChapters) {
+      return <div></div>;
+    } else {
+      return (
+        <div className="book-chapters">
+          {this.generateEl(this._createBookChapters)}
+        </div>
+      )
+    }
+  }
+  async chapterClicked(ibc: IBookContent) {
+    debugger;
+    const pageIndex = this.getPageIndex_byChapter(ibc.pos);
+    if (pageIndex || pageIndex === 0) {
+      this.hideSidebar();
+      await CmpUtility.waitOnMe(100);
+      this.set_RcSlider_value(pageIndex + 1);
+      this.swiper_slideTo(pageIndex);
+      // this.setState({});
+    }
+  }
+
+  private _pagePosList: number[] = [];
+  getPageIndex_byChapter(chapterPos: IBookPosIndicator): number | undefined {
+    if (!this._pagePosList.length) {
+      const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
+      bookPosList.forEach(bpi => {
+        this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
+      });
+    }
+
+    const chapterIndex = chapterPos.group * 1000000 + chapterPos.atom;
+    let pageIndex = undefined;
+    for (var i = 0; i < this._pagePosList.length; i++) {
+      if (this._pagePosList[i] === chapterIndex) {
+        pageIndex = i; // this._pagePosList[i];
+        break;
+      } else if (this._pagePosList[i] > chapterIndex) {
+        pageIndex = i - 1; // this._pagePosList[i - 1];
+        break;
+      }
+    }
+    return pageIndex;
   }
 
   goBack() {
