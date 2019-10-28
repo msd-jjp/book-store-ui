@@ -22,7 +22,7 @@ import { ICollection_schema } from '../../redux/action/collection/collectionActi
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { AddToCollection } from './collection/add-to-collection/AddToCollection';
 import { IBook } from '../../model/model.book';
-import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, toggle_libBook_download, collection_download } from './libraryViewTemplate';
+import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem } from './libraryViewTemplate';
 import { CmpUtility } from '../_base/CmpUtility';
 import { BOOK_TYPES } from '../../enum/Book';
 // import { IDownloadingBookFile_schema } from '../../redux/action/downloading-book-file/downloadingBookFileAction';
@@ -199,7 +199,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                 }
                                             </Dropdown.Item>
                                             <Dropdown.Item
-                                                onClick={() => { }}
+                                                onClick={() => this.markAsRead()}
                                                 className={
                                                     "text-capitalize "
                                                     + (!this.state.library_data_selected.length ? 'd-none' : '')
@@ -287,6 +287,14 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         const id_s = this.state.library_data_selected.map((item: ILibrary) => item.book.id);
         appLocalStorage.removeFromCollection('clc_book_mainFile', id_s);
         CmpUtility.refreshView();
+    }
+
+    private async markAsRead() {
+        const id_s = this.state.library_data_selected.map((item: ILibrary) => item.book.id);
+        for (let i = 0; i < id_s.length; i++) {
+            await CmpUtility.waitOnMe(0);
+            markAsRead_libraryItem(id_s[i]);
+        }
     }
 
     gotoBookDetail(bookId: string) {

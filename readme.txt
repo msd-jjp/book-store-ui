@@ -159,7 +159,7 @@ wavesurfer library replace require with import
 
 cash .wasm file in serviceWorker
 
-extend book class --> bookGenerator --> all method
+
 
 readerOverview --> item: add shadow
 
@@ -173,12 +173,14 @@ check dd-menu in readerOverview & collection & library --> ltr mode
 
 ====================================================================================
 
-update libraryItem in readerReading, purchase modifivation data instead of createDate
+
 
 ====================================================================================
 
-mark as read in --> dashboard collection library
+
 
 ====================================================================================
+
+add attr width & height on img --> reader
 
 ====================================================================================
