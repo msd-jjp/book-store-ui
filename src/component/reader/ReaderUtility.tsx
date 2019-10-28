@@ -2,11 +2,11 @@ import { Store2 } from "../../redux/store";
 // import { book } from "../../webworker/reader-engine/MsdBook";
 import { getFont, color } from "../../webworker/reader-engine/tools";
 import { action_update_reader } from "../../redux/action/reader";
-import { IReader_schema_epub_theme } from "../../redux/action/reader/readerAction";
-import { action_set_library_data } from "../../redux/action/library";
-import { LibraryService } from "../../service/service.library";
-import { getLibraryItem } from "../library/libraryViewTemplate";
-import { NETWORK_STATUS } from "../../enum/NetworkStatus";
+import { IReader_schema_epub_theme, IReader_schema_epub_fontName } from "../../redux/action/reader/readerAction";
+// import { action_set_library_data } from "../../redux/action/library";
+// import { LibraryService } from "../../service/service.library";
+// import { getLibraryItem } from "../library/libraryViewTemplate";
+// import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { BookGenerator } from "../../webworker/reader-engine/BookGenerator";
 import { LANGUAGES } from "../../enum/language";
 // import { ILibrary } from "../../model/model.library";
@@ -38,9 +38,43 @@ export abstract class ReaderUtility {
         return { fontColor, bgColor };
     }
 
-    static async createEpubBook(bookFile: Uint8Array, bookPageSize?: { width: number; height: number; }): Promise<BookGenerator> {
+    private static _createEpubBook_instance: {
+        book_id: string;
+        bookPageSize: { width: number; height: number; };
+        theme: IReader_schema_epub_theme;
+        fontSize: number;
+        fontName: IReader_schema_epub_fontName;
+        book: BookGenerator;
+    } | undefined;
+    private static checkEpubBookExist(book_id: string, bookPageSize?: { width: number; height: number; }): boolean {
+        const reader_state = { ...Store2.getState().reader };
+        const reader_epub = reader_state.epub;
+
+        const existBookObj = ReaderUtility._createEpubBook_instance;
+        if (existBookObj) {
+            const b_p_size = bookPageSize || reader_epub.pageSize;
+            if (
+                existBookObj.book_id === book_id
+                && existBookObj.bookPageSize.width === b_p_size.width
+                && existBookObj.bookPageSize.height === b_p_size.height
+                && existBookObj.fontSize === reader_epub.fontSize
+                && existBookObj.fontName === reader_epub.fontName
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    static async createEpubBook(
+        book_id: string,
+        bookFile: Uint8Array,
+        bookPageSize?: { width: number; height: number; }
+    ): Promise<BookGenerator> {
         // debugger;
-        // await CmpUtility.waitOnMe(5000);
+        if (ReaderUtility.checkEpubBookExist(book_id, bookPageSize)) {
+            return ReaderUtility._createEpubBook_instance!.book;
+        }
+        // debugger;
 
         const reader_state = { ...Store2.getState().reader };
         const reader_epub = reader_state.epub;
@@ -70,7 +104,6 @@ export abstract class ReaderUtility {
             Store2.dispatch(action_update_reader(reader_state));
         }
 
-        // await CmpUtility.waitOnMe(3000);
         const reader_epub_theme = ReaderUtility.getEpubBook_theme(reader_epub.theme);
 
         const _book = new BookGenerator(
@@ -79,42 +112,49 @@ export abstract class ReaderUtility {
             _bookPageSize.height,
             font,
             reader_epub.fontSize,
-            reader_epub_theme.fontColor, // reader_epub.fontColor,
-            reader_epub_theme.bgColor // reader_epub.bgColor
+            reader_epub_theme.fontColor,
+            reader_epub_theme.bgColor
         );
 
-        return _book;
-        // return new Promise((res, rej) => {
-        //     res(_book);
-        // });
-    }
-
-    static async updateLibraryItem_progress(book_id: string, progress: number) {
-        const libData = [...Store2.getState().library.data];
-        const _lib = libData.find(lib => lib.book.id === book_id);
-        if (!_lib) return;
-
-        _lib.status.reading_started = true;
-        _lib.progress = progress;
-
-        Store2.dispatch(action_set_library_data(libData));
-    }
-
-    static async updateLibraryItem_progress_server(book_id: string, progress: number) {
-        if (Store2.getState().network_status === NETWORK_STATUS.OFFLINE) return;
-
-        const libItem = getLibraryItem(book_id);
-        if (!libItem) return;
-
-        const _libraryService = new LibraryService();
-        libItem.status.reading_started = true;
-        libItem.progress = progress;
-        let status_obj = {
-            reading_started: libItem.status.reading_started,
-            // progess: libItem.progess
+        ReaderUtility._createEpubBook_instance = {
+            book_id: book_id,
+            book: _book,
+            fontName: reader_epub.fontName,
+            fontSize: reader_epub.fontSize,
+            theme: reader_epub.theme,
+            bookPageSize: _bookPageSize
         };
-        _libraryService.update_status(libItem.id, status_obj, libItem.progress).catch(e => { });
+
+        return _book;
     }
+
+    // static async updateLibraryItem_progress_client(book_id: string, progress: number) {
+    //     const libData = [...Store2.getState().library.data];
+    //     const _lib = libData.find(lib => lib.book.id === book_id);
+    //     if (!_lib) return;
+
+    //     // _lib.status.reading_started = true;
+    //     _lib.progress = progress;
+
+    //     Store2.dispatch(action_set_library_data(libData));
+    // }
+
+    // static async updateLibraryItem_progress_server(book_id: string, progress: number) {
+    //     if (Store2.getState().network_status === NETWORK_STATUS.OFFLINE) return;
+
+    //     const libItem = getLibraryItem(book_id);
+    //     if (!libItem) return;
+
+    //     const _libraryService = new LibraryService();
+    //     // libItem.status.reading_started = true;
+    //     // libItem.progress = progress;
+    //     // let status_obj = {
+    //     //     reading_started: libItem.status.reading_started,
+    //     //     // progess: libItem.progess
+    //     // };
+    //     // _libraryService.update_status(libItem.id, status_obj, libItem.progress).catch(e => { });
+    //     _libraryService.update_progress(libItem.id, progress).catch(e => { });
+    // }
 
     private static rtlLanguage_list: LANGUAGES[] = [LANGUAGES.PERSIAN, LANGUAGES.ARABIC];
     static isBookRtl(lang: LANGUAGES | undefined): boolean {

@@ -28,7 +28,7 @@ import { action_update_reader } from "../../../redux/action/reader";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { BaseService } from "../../../service/service.base";
 import { ILibrary } from "../../../model/model.library";
-import { getLibraryItem } from "../../library/libraryViewTemplate";
+import { getLibraryItem, updateLibraryItem_progress } from "../../library/libraryViewTemplate";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 
 interface IProps {
@@ -205,7 +205,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
 
     try {
-      this._bookInstance = await ReaderUtility.createEpubBook(bookFile);
+      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile);
     } catch (e) {
       console.error(e);
       this.setState({ page_loading: false });
@@ -385,8 +385,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     const activePage = pg_index + 1;
     const bookProgress = activePage / this.book_page_length;
 
-    ReaderUtility.updateLibraryItem_progress(this.book_id, bookProgress);
-    ReaderUtility.updateLibraryItem_progress_server(this.book_id, bookProgress);
+    // ReaderUtility.updateLibraryItem_progress_client(this.book_id, bookProgress);
+    // ReaderUtility.updateLibraryItem_progress_server(this.book_id, bookProgress);
+    updateLibraryItem_progress(this.book_id, bookProgress);
 
     this.gotoReader_reading(this.book_id);
   }
@@ -787,7 +788,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       if (fs <= 5) return;
       fs = fs - 1;
     } else if (change === 'up') {
-      if (fs >= 50) return;
+      if (fs >= 80) return;
       fs = fs + 1;
     }
 

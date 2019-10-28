@@ -20,7 +20,7 @@ import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { ReaderUtility } from "../ReaderUtility";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { ILibrary } from "../../../model/model.library";
-import { getLibraryItem } from "../../library/libraryViewTemplate";
+import { getLibraryItem, updateLibraryItem_progress } from "../../library/libraryViewTemplate";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 import { CmpUtility } from "../../_base/CmpUtility";
 
@@ -145,7 +145,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
 
     try {
-      this._bookInstance = await ReaderUtility.createEpubBook(bookFile, this.get_bookPageSize());
+      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, this.get_bookPageSize());
     } catch (e) {
       console.error(e);
       this.setState({ page_loading: false });
@@ -197,8 +197,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     debugger;
     const activePage = (this.getSwiperActiveIndex() + 1);
     const bookProgress = activePage / this.book_page_length;
-    ReaderUtility.updateLibraryItem_progress(this.book_id, bookProgress);
-    ReaderUtility.updateLibraryItem_progress_server(this.book_id, bookProgress);
+    // ReaderUtility.updateLibraryItem_progress_client(this.book_id, bookProgress);
+    // ReaderUtility.updateLibraryItem_progress_server(this.book_id, bookProgress);
+    updateLibraryItem_progress(this.book_id, bookProgress);
   }
   getSwiperActiveIndex(): number {
     const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
