@@ -15,20 +15,24 @@ export class BookGenerator extends book {
         if (!this._allPages_pos) this._allPages_pos = this.getListOfPageIndicators();
         return this._allPages_pos;
     }
-    getPage(index: number) {
+    getPage(index: number): string {
         let page = this.getFromStorage(index);
         if (!page) {
             const allPages_pos = this.getAllPages_pos();
-            const page = this.RenderSpecPage(allPages_pos[index]);
+            page = this.RenderSpecPage(allPages_pos[index]);
             this.setToStorage(index, page);
         }
         return page;
     }
-    getPage_with_storeAround(index: number, n: number) {
+    getPage_ifExist(index: number): string | undefined {
+        let page = this.getFromStorage(index);
+        return page;
+    }
+    getPage_with_storeAround(index: number, n: number): string {
         let page = this.getFromStorage(index);
         if (!page) {
             const allPages_pos = this.getAllPages_pos();
-            const page = this.RenderSpecPage(allPages_pos[index]);
+            page = this.RenderSpecPage(allPages_pos[index]);
             this.setToStorage(index, page);
             this.storeAround(index, n);
         }
@@ -38,7 +42,7 @@ export class BookGenerator extends book {
     private async storeAround(pageIndex: number, n: number) {
         await CmpUtility.waitOnMe(0);
         this.get_n_pages_before_x(pageIndex, n);
-        this.get_n_pages_after_x(pageIndex, n);
+        this.get_n_pages_after_x(pageIndex, n+1);
     }
 
     private _allChapters: IBookContent[] | undefined;
