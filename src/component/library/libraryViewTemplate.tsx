@@ -6,6 +6,9 @@ import { Localization } from "../../config/localization/localization";
 import { appLocalStorage } from "../../service/appLocalStorage";
 import { Store2 } from "../../redux/store";
 import { action_update_downloading_book_file } from "../../redux/action/downloading-book-file";
+import { action_set_library_data } from "../../redux/action/library";
+import { NETWORK_STATUS } from "../../enum/NetworkStatus";
+import { LibraryService } from "../../service/service.library";
 
 export function calc_read_percent(item: ILibrary): string {
     return Math.floor((item.progress || 0) * 100) + '%';
@@ -249,4 +252,31 @@ export function libraryItem_viewGrid_render(
 export function getLibraryItem(book_id: string): ILibrary | undefined {
     const _libraryItem = Store2.getState().library.data.find(lib => lib.book.id === book_id);
     if (_libraryItem) return { ..._libraryItem };
+}
+
+export function markAsRead_libraryItem(book_id: string): void {
+    updateLibraryItem_progress(book_id, 1);
+}
+
+export function updateLibraryItem_progress(book_id: string, progress: number) {
+    updateLibraryItem_progress_client(book_id, progress);
+    updateLibraryItem_progress_server(book_id, progress);
+}
+
+export function updateLibraryItem_progress_client(book_id: string, progress: number) {
+    const libData = [...Store2.getState().library.data];
+    const _lib = libData.find(lib => lib.book.id === book_id);
+    if (!_lib) return;
+
+    _lib.progress = progress;
+    Store2.dispatch(action_set_library_data(libData));
+}
+
+export function updateLibraryItem_progress_server(book_id: string, progress: number) {
+    if (Store2.getState().network_status === NETWORK_STATUS.OFFLINE) return;
+    const libItem = getLibraryItem(book_id);
+    if (!libItem) return;
+
+    const _libraryService = new LibraryService();
+    _libraryService.update_progress(libItem.id, progress).catch(e => { });
 }
