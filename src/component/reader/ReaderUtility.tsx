@@ -136,12 +136,21 @@ export abstract class ReaderUtility {
 
     private static wait_loadReaderEngine() {
         return new Promise(async (res, rej) => {
-            if ((window as any).Module) { res(true); return; };
+            if ((window as any).Module && (window as any).Module.asm && (window as any).Module.asm._malloc) { // stackSave, _malloc
+                // if ((window as any).Module && (window as any).Module._malloc) { // stackSave, _malloc
+                console.log('window.Module.asm', (window as any).Module._malloc);
+                res(true);
+                return;
+            };
 
             for (let i = 0; i < 50; i++) {
                 await CmpUtility.waitOnMe((i + 1) * 200);
-                if ((window as any).Module) { res(true); break; };
-                // debugger;
+                if ((window as any).Module && (window as any).Module.asm && (window as any).Module.asm._malloc) {
+                    // if ((window as any).Module && (window as any).Module._malloc) {
+                    console.log('window.Module.asm', (window as any).Module._malloc);
+                    res(true);
+                    break;
+                };
             }
             rej();
         });
