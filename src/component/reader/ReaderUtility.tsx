@@ -9,6 +9,7 @@ import { IReader_schema_epub_theme, IReader_schema_epub_fontName } from "../../r
 // import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { BookGenerator } from "../../webworker/reader-engine/BookGenerator";
 import { LANGUAGES } from "../../enum/language";
+import { CmpUtility } from "../_base/CmpUtility";
 // import { ILibrary } from "../../model/model.library";
 // import { CmpUtility } from "../_base/CmpUtility";
 
@@ -106,6 +107,10 @@ export abstract class ReaderUtility {
 
         const reader_epub_theme = ReaderUtility.getEpubBook_theme(reader_epub.theme);
 
+        // const readerEngine_loaded = 
+        await ReaderUtility.wait_loadReaderEngine();
+        // if (!readerEngine_loaded) return;
+
         const _book = new BookGenerator(
             bookFile,
             _bookPageSize.width,
@@ -126,6 +131,19 @@ export abstract class ReaderUtility {
         };
 
         return _book;
+    }
+
+    private static wait_loadReaderEngine() {
+        return new Promise(async (res, rej) => {
+            if ((window as any).Module) { res(true); return; };
+
+            for (let i = 0; i < 50; i++) {
+                await CmpUtility.waitOnMe((i + 1) * 200);
+                if ((window as any).Module) { res(true); break; };
+                // debugger;
+            }
+            rej();
+        });
     }
 
     // static async updateLibraryItem_progress_client(book_id: string, progress: number) {
