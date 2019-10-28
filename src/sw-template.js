@@ -130,7 +130,7 @@ if ('function' === typeof importScripts) {
             ],
             htmlJsCss: [
                 /\.(?:html|js|css)$/,
-                new workbox.strategies.NetworkFirst({
+                new workbox.strategies.CacheFirst({ // NetworkFirst
                     cacheName: "html-js-css",
                     plugins: [
                         new workbox.expiration.Plugin({
@@ -171,7 +171,7 @@ if ('function' === typeof importScripts) {
             ],
             serveFiles: [
                 new RegExp('api/serve-files'),
-                new workbox.strategies.NetworkFirst({
+                new workbox.strategies.CacheFirst({ // NetworkFirst
                     cacheName: 'serve-files',
                     plugins: [
                         new workbox.expiration.Plugin({
@@ -180,7 +180,20 @@ if ('function' === typeof importScripts) {
                         }),
                     ],
                 })
-            ]
+            ],
+            wasmFiles: [
+                new RegExp('reader.wasm'),
+                new workbox.strategies.CacheFirst({
+                    cacheName: "wasm-files",
+                    plugins: [
+                        new workbox.expiration.Plugin({
+                            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+                            maxEntries: 5
+                        })
+                    ]
+                }),
+                "GET"
+            ],
         };
 
         /* custom cache rules*/
@@ -229,6 +242,7 @@ if ('function' === typeof importScripts) {
         workbox.routing.registerRoute(...cacheConfig.fonts);
         // workbox.routing.registerRoute(...cacheConfig.manifest);
         workbox.routing.registerRoute(...cacheConfig.manifest2);
+        workbox.routing.registerRoute(...cacheConfig.wasmFiles);
 
         //todo
         /* self.addEventListener("install", event => {
