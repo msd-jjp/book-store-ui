@@ -5,7 +5,7 @@ import { IReader_schema_epub_theme, IReader_schema_epub_fontName } from "../../r
 import { BookGenerator } from "../../webworker/reader-engine/BookGenerator";
 import { LANGUAGES } from "../../enum/language";
 import { CmpUtility } from "../_base/CmpUtility";
-import { IBookContent } from "../../webworker/reader-engine/MsdBook";
+import { IBookContent, IBookPosIndicator } from "../../webworker/reader-engine/MsdBook";
 // import { Reader2Worker } from "../../webworker/reader2-worker/Reader2Worker";
 
 interface IEpubBook_chapters_flat {
@@ -247,6 +247,18 @@ export abstract class ReaderUtility {
             }
         });
 
+        // todo --> this sort not work 100% (group * 1000000 + atom not always correct)
+        chapterList_flat.sort((a, b) => {
+            const a_num = a.content!.pos.group * 1000000 + a.content!.pos.atom;
+            const b_num = b.content!.pos.group * 1000000 + b.content!.pos.atom;
+            if (a_num < b_num) {
+                return -1;
+            } else if (a_num > b_num) {
+                return 1;
+            }
+            return 0;
+        });
+
         const searchTree = (ch: IEpubBook_chapters_tree, id: string): IEpubBook_chapters_tree | null => {
             if (ch.id === id) {
                 return ch;
@@ -295,6 +307,32 @@ export abstract class ReaderUtility {
             tree: _epubBook_chapters,
             flat: chapterList_flat
         };
+    }
+
+
+    static getPageIndex_byChapter(chapterPos: IBookPosIndicator, pagePosList: number[]): number | undefined {
+        if (!chapterPos || !pagePosList.length) {
+            return;
+        }
+        const chapterId = chapterPos.group * 1000000 + chapterPos.atom;
+        let pageIndex = undefined;
+        for (var i = 0; i < pagePosList.length; i++) {
+            if (pagePosList[i] === chapterId) {
+                pageIndex = i;
+                break;
+            } else if (pagePosList[i] > chapterId) {
+                pageIndex = i - 1;
+                break;
+            }
+        }
+
+        if (pageIndex && pageIndex < 0) return;
+
+        if (pageIndex === undefined && pagePosList.length) {
+            pageIndex = pagePosList.length - 1;
+        }
+
+        return pageIndex;
     }
 
 }
