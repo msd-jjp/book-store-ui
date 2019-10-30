@@ -102,7 +102,8 @@ export class BookService extends BaseService {
             });
             resolve(
                 axiosInstance.get(
-                    '/reader/book.output',
+                    // '/reader/book.output',
+                    '/reader/book2.output',
                     { cancelToken }
                 )
             );
