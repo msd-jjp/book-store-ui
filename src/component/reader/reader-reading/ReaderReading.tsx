@@ -265,7 +265,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   private _isThisBookRtl: boolean | undefined = undefined;
   isThisBookRtl(): boolean {
     if (this._isThisBookRtl === undefined) {
-      this._isThisBookRtl = ReaderUtility.isBookRtl(this._libraryItem!.book.language);
+      this._isThisBookRtl = this._libraryItem ? ReaderUtility.isBookRtl(this._libraryItem.book.language) : false;
     }
     return this._isThisBookRtl;
   }
