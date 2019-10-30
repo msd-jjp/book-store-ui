@@ -23,6 +23,7 @@ import { SyncWorker } from '../../webworker/sync-worker/SyncWorker';
 import { BaseService } from '../../service/service.base';
 import { appLocalStorage } from '../../service/appLocalStorage';
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
+import { action_reset_reader } from '../../redux/action/reader';
 // import { IToken } from '../../model/model.token';
 
 interface IProps {
@@ -39,8 +40,8 @@ interface IProps {
     clear_collections: () => any;
     sync: ISync_schema;
     reset_sync: () => any;
-    // token: IToken;
     network_status: NETWORK_STATUS;
+    reset_reader: () => any;
 }
 
 interface IState {
@@ -63,7 +64,11 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
     }
     private _syncWorker = new SyncWorker(/* this.props.token */);
 
+    componentWillMount() {
+        document.title = Localization.more;
+    }
     componentWillUnmount() {
+        document.title = Localization.app_title;
         this._syncWorker.terminate();
     }
 
@@ -73,7 +78,8 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
             // if (!this.props.internationalization.rtl) {
             document.body.classList.add('rtl');
             Localization.setLanguage('fa');
-            this.props.change_app_flag && this.props.change_app_flag({
+            document.title = Localization.more;
+            this.props.change_app_flag({
                 rtl: true,
                 language: 'فارسی',
                 flag: 'fa',
@@ -83,7 +89,8 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
             // if (this.props.internationalization.rtl) {
             document.body.classList.remove('rtl');
             Localization.setLanguage('en');
-            this.props.change_app_flag && this.props.change_app_flag({
+            document.title = Localization.more;
+            this.props.change_app_flag({
                 rtl: false,
                 language: 'english',
                 flag: 'en',
@@ -92,7 +99,8 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         } else if (lang === 'ar') {
             document.body.classList.add('rtl');
             Localization.setLanguage('ar');
-            this.props.change_app_flag && this.props.change_app_flag({
+            document.title = Localization.more;
+            this.props.change_app_flag({
                 rtl: true,
                 language: 'العربیه',
                 flag: 'ar',
@@ -110,6 +118,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.clear_library();
         this.props.clear_collections();
         this.props.reset_sync();
+        this.props.reset_reader();
         appLocalStorage.afterAppLogout();
         this.props.history.push('/login');
     }
@@ -322,7 +331,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             </span>
                         </li>
 
-                        <li className="more-item list-group-item p-align-0">
+                        <li className="more-item list-group-item p-align-0 disabled">
                             <div className="icon-wrapper mr-3"><i className="fa fa-cog"></i></div>
                             <span className="text text-capitalize">{Localization.settings}</span>
                         </li>
@@ -347,7 +356,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <div className="icon-wrapper mr-3"><i className="fa fa-info-circle"></i></div>
                             <span className="text text-capitalize">{Localization.info}</span>
                         </li>
-                        <li className="more-item list-group-item p-align-0">
+                        <li className="more-item list-group-item p-align-0 disabled">
                             <div className="icon-wrapper mr-3"><i className="fa fa-twitch"></i></div>
                             <span className="text text-capitalize">{Localization.help_feedback}</span>
                         </li>
@@ -377,6 +386,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
         clear_library: () => dispatch(action_clear_library()),
         clear_collections: () => dispatch(action_clear_collections()),
         reset_sync: () => dispatch(action_reset_sync()),
+        reset_reader: () => dispatch(action_reset_reader()),
     }
 }
 
@@ -386,7 +396,6 @@ const state2props = (state: redux_state) => {
         internationalization: state.internationalization,
         cart: state.cart,
         sync: state.sync,
-        // token: state.token
         network_status: state.network_status,
     }
 }

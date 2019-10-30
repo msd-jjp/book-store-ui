@@ -126,7 +126,7 @@ export const ar = {
     home: 'خانه',
     library: 'کتابخانه',
     store: 'فروشگاه',
-    more: 'بیشتر',
+    more: 'مزید',
     recomended_for_you: 'پیشنهادی برای شما',
     new_release_in_bookstore: 'نسخه های جدید در کتابفروشی',
     more_by_writer: 'بیشتر از {0}',
