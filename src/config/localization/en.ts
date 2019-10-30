@@ -314,6 +314,7 @@ export const en = {
     drag_and_drop: "drag and drop",
     choose_image: 'choose image',
     n_min_left_in_chapter: '{0} min left in chapter',
+    n_min_left_in_book: '{0} min left in book',
     book_from_your_library: 'book from your library',
     your_recent_item_appear_manage_remove: 'your recent item will appear here. you can manage or remove it anytime.',
     go_to_library: 'go to library',

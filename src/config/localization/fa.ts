@@ -314,6 +314,7 @@ export const fa = {
     drag_and_drop: "بکشید و رها کنید",
     choose_image: 'انتخاب تصویر',
     n_min_left_in_chapter: '{0} دقیقه از فصل مانده است',
+    n_min_left_in_book: '{0} دقیقه از کتاب مانده است',
     book_from_your_library: 'کتاب از کتابخانه شما',
     your_recent_item_appear_manage_remove: 'کتاب اخیر شما در اینجا ظاهر می شود. شما می توانید آن را در هر زمان مدیریت یا حذف کنید. ',
     go_to_library: 'رفتن به کتابخانه',

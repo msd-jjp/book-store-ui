@@ -177,33 +177,35 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       });
     }
 
+    this._chapters_with_page = ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat) || [];
+
     debugger;
-    this._createBookChapters!.flat.forEach((ch, index) => {
-      if (!ch.clickable) {
-        this._chapters_with_page.push({ firstPageIndex: undefined, lastPageIndex: undefined });
-        return;
-      }
+    // this._createBookChapters!.flat.forEach((ch, index) => {
+    //   if (!ch.clickable) {
+    //     this._chapters_with_page.push({ firstPageIndex: undefined, lastPageIndex: undefined });
+    //     return;
+    //   }
 
-      const obj: { firstPageIndex: number | undefined, lastPageIndex: number | undefined } = {
-        firstPageIndex: ReaderUtility.getPageIndex_byChapter(ch.content!.pos, this._pagePosList),
-        lastPageIndex: undefined
-      };
+    //   const obj: { firstPageIndex: number | undefined, lastPageIndex: number | undefined } = {
+    //     firstPageIndex: ReaderUtility.getPageIndex_byChapter(ch.content!.pos, this._pagePosList),
+    //     lastPageIndex: undefined
+    //   };
 
-      this._chapters_with_page.push(obj);
+    //   this._chapters_with_page.push(obj);
 
-      if (index !== 0) {
-        if (!this._createBookChapters!.flat[index - 1].clickable) {
-          return;
-        }
-        let prev_ch = this._chapters_with_page[index - 1];
-        prev_ch.lastPageIndex = prev_ch.firstPageIndex === obj.firstPageIndex ? obj.firstPageIndex :
-          obj.firstPageIndex ? obj.firstPageIndex - 1 : undefined;
-      }
-      if (index === this._createBookChapters!.flat.length - 1) {
-        this._chapters_with_page[index].lastPageIndex = this._pagePosList.length - 1;
-      }
-    });
-    debugger;
+    //   if (index !== 0) {
+    //     if (!this._createBookChapters!.flat[index - 1].clickable) {
+    //       return;
+    //     }
+    //     let prev_ch = this._chapters_with_page[index - 1];
+    //     prev_ch.lastPageIndex = prev_ch.firstPageIndex === obj.firstPageIndex ? obj.firstPageIndex :
+    //       obj.firstPageIndex ? obj.firstPageIndex - 1 : undefined;
+    //   }
+    //   if (index === this._createBookChapters!.flat.length - 1) {
+    //     this._chapters_with_page[index].lastPageIndex = this._pagePosList.length - 1;
+    //   }
+    // });
+    // debugger;
   }
 
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];
@@ -288,34 +290,50 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   //   }
   //   return ch_length;
   // }
-  private getChapterLastPage_byPageIndex(pageIndex: number): number | undefined {
+  private getChapterLastPage_byPageIndex(pageIndex: number)
+    : { chapter_lastPageIndex: number | undefined; is_last_chapter: boolean; } {
     // debugger;
-    if (!this._chapters_with_page.length) return;
+    if (!this._chapters_with_page.length) return {
+      chapter_lastPageIndex: undefined,
+      is_last_chapter: false
+    };
 
     let ch_lastPage = undefined;
+    let is_last_chapter = false;
     for (let i = 0; i < this._chapters_with_page.length; i++) {
       let fp = this._chapters_with_page[i].firstPageIndex;
       let lp = this._chapters_with_page[i].lastPageIndex;
       if ((fp || fp === 0) && fp <= pageIndex && (lp || lp === 0) && lp >= pageIndex) {
         ch_lastPage = lp;
+        if (i === this._chapters_with_page.length - 1) {
+          is_last_chapter = true;
+        }
         break;
       }
     }
     // return ch_lastPage?ch_lastPage+1:ch_lastPage;
-    return ch_lastPage;
+    return {
+      chapter_lastPageIndex: ch_lastPage,
+      is_last_chapter
+    };
   }
-  calc_current_read_timeLeft(page_index: number): number {
+  calc_current_read_timeLeft(page_index: number): {
+    timeLeft: number;
+    is_last_chapter: boolean;
+  } {
     // let read = page_index + 1;
     let read = page_index; // + 1;
     // let total = this.book_page_length || 0; // todo: get "active chapter" not all book.
     // let total = this.getChapterLength_byPageIndex(page_index);
-    let total = this.getChapterLastPage_byPageIndex(page_index);
+    let obj = this.getChapterLastPage_byPageIndex(page_index);
+    let total = obj.chapter_lastPageIndex;
+    let is_last_chapter = obj.is_last_chapter;
     let min_per_page = 1;
 
     if (total) {
-      return (total - read + 1) * min_per_page;
+      return { timeLeft: (total - read + 1) * min_per_page, is_last_chapter };
     } else {
-      return 0;
+      return { timeLeft: 0, is_last_chapter };
     }
   }
 
@@ -369,7 +387,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
             <div className="swiper-container" dir={swiper_dir}>
               <div className="swiper-wrapper">
                 {vrtData.slides.map((slide: { id: number, page: IBookPosIndicator }, index: any) => {
-                  const timeLeft = this.calc_current_read_timeLeft(slide.id);
+                  const { timeLeft, is_last_chapter } = this.calc_current_read_timeLeft(slide.id);
                   return (
                     <Fragment key={slide.id}>
                       <div className="swiper-slide" style={{ [offset_dir]: `${vrtData.offset}px` }}>
@@ -388,7 +406,12 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
                           </div>
                           <div className="item-footer">
                             <div className={!timeLeft ? 'd-none-- invisible' : ''}>
-                              {Localization.formatString(Localization.n_min_left_in_chapter, timeLeft)}
+                              {
+                                is_last_chapter ?
+                                  Localization.formatString(Localization.n_min_left_in_book, timeLeft)
+                                  :
+                                  Localization.formatString(Localization.n_min_left_in_chapter, timeLeft)
+                              }
                             </div>
                             <div>{this.calc_activePagePos_percent(slide.id)}%</div>
                           </div>

@@ -335,4 +335,40 @@ export abstract class ReaderUtility {
         return pageIndex;
     }
 
+    static calc_chapters_pagesIndex(pagePosList: number[], flat_chapters: IEpubBook_chapters_flat_list)
+        : { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] | undefined {
+
+        if (!pagePosList.length) return;
+        
+        const chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
+        debugger;
+        flat_chapters.forEach((ch, index) => {
+            if (!ch.clickable) {
+                chapters_with_page.push({ firstPageIndex: undefined, lastPageIndex: undefined });
+                return;
+            }
+
+            const obj: { firstPageIndex: number | undefined, lastPageIndex: number | undefined } = {
+                firstPageIndex: ReaderUtility.getPageIndex_byChapter(ch.content!.pos, pagePosList),
+                lastPageIndex: undefined
+            };
+
+            chapters_with_page.push(obj);
+
+            if (index !== 0) {
+                if (!flat_chapters[index - 1].clickable) {
+                    return;
+                }
+                let prev_ch = chapters_with_page[index - 1];
+                prev_ch.lastPageIndex = prev_ch.firstPageIndex === obj.firstPageIndex ? obj.firstPageIndex :
+                    obj.firstPageIndex ? obj.firstPageIndex - 1 : undefined;
+            }
+            if (index === flat_chapters.length - 1) {
+                chapters_with_page[index].lastPageIndex = pagePosList.length - 1;
+            }
+        });
+        debugger;
+        return chapters_with_page;
+    }
+
 }
