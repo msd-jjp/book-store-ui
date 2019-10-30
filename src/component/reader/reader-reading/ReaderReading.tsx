@@ -158,7 +158,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   private _createBookChapters: IEpubBook_chapters | undefined;
-  private async  createBookChapters() {
+  private async createBookChapters() {
     await CmpUtility.waitOnMe(0);
     const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
     this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
@@ -180,6 +180,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     this._chapters_with_page = ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat) || [];
 
     debugger;
+    this.setState({});
     // this._createBookChapters!.flat.forEach((ch, index) => {
     //   if (!ch.clickable) {
     //     this._chapters_with_page.push({ firstPageIndex: undefined, lastPageIndex: undefined });

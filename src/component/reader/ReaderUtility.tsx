@@ -341,7 +341,7 @@ export abstract class ReaderUtility {
         if (!pagePosList.length) return;
         
         const chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
-        debugger;
+        // debugger;
         flat_chapters.forEach((ch, index) => {
             if (!ch.clickable) {
                 chapters_with_page.push({ firstPageIndex: undefined, lastPageIndex: undefined });
@@ -367,7 +367,7 @@ export abstract class ReaderUtility {
                 chapters_with_page[index].lastPageIndex = pagePosList.length - 1;
             }
         });
-        debugger;
+        // debugger;
         return chapters_with_page;
     }
 
