@@ -206,7 +206,27 @@ export abstract class ReaderUtility {
         }, 300);
     }
 
-    static createEpubBook_chapters(chapterList: IBookContent[]) {
+    private static _checkEpubBook_chapters_exist: {
+        epubBook_chapters: IEpubBook_chapters;
+        book_id: string
+    } | undefined;
+    private static checkEpubBook_chapters_exist(book_id: string) {
+        if (ReaderUtility._checkEpubBook_chapters_exist) {
+            if (
+                ReaderUtility._checkEpubBook_chapters_exist.epubBook_chapters &&
+                ReaderUtility._checkEpubBook_chapters_exist.book_id === book_id
+            ) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+    static createEpubBook_chapters(book_id: string, chapterList: IBookContent[]): IEpubBook_chapters {
+        if (ReaderUtility.checkEpubBook_chapters_exist(book_id)) {
+            return ReaderUtility._checkEpubBook_chapters_exist!.epubBook_chapters;
+        }
+
         let chapterList_flat = chapterList.map(ibc => {
             return {
                 ibc: ibc,

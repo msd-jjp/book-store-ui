@@ -177,6 +177,6 @@ call CmpUtility.refreshView(); when action need it, remove from general method l
 
 ====================================================================================
 
-
+fetch user on app open & in layout validUser. update logedInUser state.
 
 ====================================================================================
