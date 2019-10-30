@@ -589,9 +589,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  generateEl(
-    eb_chapters: IEpubBook_chapters
-  ) {
+  generateEl(eb_chapters: IEpubBook_chapters['tree']) {
     return (
       <>
         {/* <ul> */}
@@ -600,9 +598,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         // onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.chapter!); }}
         >
           <div className="chapter-title p-2"
-            onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.chapter!); }}
+            onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.content!); }}
           >
-            {eb_chapters.chapter!.text}
+            {eb_chapters.content!.text}
           </div>
           {/* </li> */}
           {
@@ -630,7 +628,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       return (
         <div className="book-chapters">
           <ul className="p-0">
-            {this.generateEl(this._createBookChapters)}
+            {this.generateEl(this._createBookChapters.tree)}
           </ul>
         </div>
       )
@@ -668,6 +666,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         break;
       }
     }
+
+    if (pageIndex && pageIndex < 0) return;
 
     if (pageIndex === undefined && this._pagePosList.length) {
       pageIndex = this._pagePosList.length - 1;

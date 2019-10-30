@@ -8,12 +8,20 @@ import { CmpUtility } from "../_base/CmpUtility";
 import { IBookContent } from "../../webworker/reader-engine/MsdBook";
 // import { Reader2Worker } from "../../webworker/reader2-worker/Reader2Worker";
 
-export interface IEpubBook_chapters {
-    chapter: IBookContent | undefined;
+interface IEpubBook_chapters_flat {
+    content: IBookContent | undefined;
     clickable: boolean;
     id: string | undefined;
     parentId: string | undefined;
-    children: IEpubBook_chapters[],
+}
+type IEpubBook_chapters_flat_list = IEpubBook_chapters_flat[];
+interface IEpubBook_chapters_tree extends IEpubBook_chapters_flat {
+    children: IEpubBook_chapters_tree[],
+}
+
+export interface IEpubBook_chapters {
+    tree: IEpubBook_chapters_tree;
+    flat: IEpubBook_chapters_flat_list;
 }
 
 export abstract class ReaderUtility {
@@ -207,13 +215,13 @@ export abstract class ReaderUtility {
     }
 
     private static _checkEpubBook_chapters_exist: {
-        epubBook_chapters: IEpubBook_chapters;
+        chapters: IEpubBook_chapters;
         book_id: string
     } | undefined;
     private static checkEpubBook_chapters_exist(book_id: string) {
         if (ReaderUtility._checkEpubBook_chapters_exist) {
             if (
-                ReaderUtility._checkEpubBook_chapters_exist.epubBook_chapters &&
+                ReaderUtility._checkEpubBook_chapters_exist.chapters &&
                 ReaderUtility._checkEpubBook_chapters_exist.book_id === book_id
             ) {
                 return true;
@@ -224,12 +232,13 @@ export abstract class ReaderUtility {
     }
     static createEpubBook_chapters(book_id: string, chapterList: IBookContent[]): IEpubBook_chapters {
         if (ReaderUtility.checkEpubBook_chapters_exist(book_id)) {
-            return ReaderUtility._checkEpubBook_chapters_exist!.epubBook_chapters;
+            return ReaderUtility._checkEpubBook_chapters_exist!.chapters;
         }
 
-        let chapterList_flat = chapterList.map(ibc => {
+        let chapterList_flat: IEpubBook_chapters_flat_list = chapterList.map(ibc => {
             return {
-                ibc: ibc,
+                content: ibc,
+                clickable: (ibc.pos.atom === -1 && ibc.pos.group === -1) ? false : true,
                 id: ibc.pos.group * 1000000 + ibc.pos.atom + '-' + ibc.parentIndex,
                 parentId: (ibc.parentIndex === 65535) ? undefined :
                     (chapterList[ibc.parentIndex])
@@ -238,7 +247,7 @@ export abstract class ReaderUtility {
             }
         });
 
-        const searchTree = (ch: IEpubBook_chapters, id: string): IEpubBook_chapters | null => {
+        const searchTree = (ch: IEpubBook_chapters_tree, id: string): IEpubBook_chapters_tree | null => {
             if (ch.id === id) {
                 return ch;
             } else if (ch.children.length) {
@@ -252,29 +261,40 @@ export abstract class ReaderUtility {
             return null;
         }
 
-        const _epubBook_chapters: IEpubBook_chapters | undefined
-            = { clickable: false, chapter: undefined, children: [], id: undefined, parentId: undefined };
+        const _epubBook_chapters: IEpubBook_chapters_tree | undefined
+            = { clickable: false, content: undefined, children: [], id: undefined, parentId: undefined };
 
-        if (chapterList_flat[0].ibc.parentIndex === 65535) {
-            _epubBook_chapters.chapter = chapterList_flat[0].ibc;
+        if (chapterList_flat[0].content!.parentIndex === 65535) {
+            _epubBook_chapters.content = chapterList_flat[0].content;
             _epubBook_chapters.id = chapterList_flat[0].id;
             _epubBook_chapters.parentId = chapterList_flat[0].parentId;
         }
         chapterList_flat.forEach(ch => {
-            if (ch.ibc.parentIndex !== 65535) {
+            if (ch.content!.parentIndex !== 65535) {
                 if (!ch.parentId) return;
                 const p_ch = searchTree(_epubBook_chapters!, ch.parentId);
                 p_ch && p_ch.children.push({
-                    chapter: ch.ibc,
+                    content: ch.content,
                     parentId: ch.parentId,
                     id: ch.id,
-                    clickable: (ch.ibc.pos.atom === -1 && ch.ibc.pos.group === -1) ? false : true,
+                    clickable: (ch.content!.pos.atom === -1 && ch.content!.pos.group === -1) ? false : true,
                     children: []
                 });
             }
         });
 
-        return _epubBook_chapters;
+        ReaderUtility._checkEpubBook_chapters_exist = {
+            book_id,
+            chapters: {
+                tree: _epubBook_chapters,
+                flat: chapterList_flat
+            }
+        }
+
+        return {
+            tree: _epubBook_chapters,
+            flat: chapterList_flat
+        };
     }
 
 }
