@@ -137,7 +137,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                   <Dropdown.Menu className="dropdown-menu-right border-0 rounded-0 shadow2">
 
                     <Dropdown.Item
-                      className="text-capitalize"
+                      className="text-capitalize opacity-5"
+                      disabled
                     >
                       {Localization.recommend_this_book}
                     </Dropdown.Item>
@@ -148,7 +149,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                       {Localization.shop_in_store}
                     </Dropdown.Item>
                     <Dropdown.Item
-                      className="text-capitalize"
+                      className="text-capitalize opacity-5"
+                      disabled
                     >
                       {Localization.share_progress}
                     </Dropdown.Item>
@@ -233,7 +235,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
     const progress_percent = this._libraryItem!.progress || 0;
-    debugger;
+    // debugger;
     this.book_active_index = Math.floor(this._slide_pages.length * progress_percent - 1); // - 1;
     if (this.book_active_index > this._slide_pages.length - 1 || this.book_active_index < 0) {
       console.error('this.book_active_index:', this.book_active_index, ' this._slide_pages.length:', this._slide_pages.length);
@@ -395,7 +397,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     await CmpUtility.waitOnMe(10);
     if (!this.swiperTaped) return;
 
-    debugger;
+    // debugger;
     const activePage = pg_index + 1;
     const bookProgress = activePage / this.book_page_length;
 
@@ -635,7 +637,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
   }
   async chapterClicked(ibc: IBookContent) {
-    debugger;
+    // debugger;
     const pageIndex = this.getPageIndex_byChapter(ibc.pos);
     if (pageIndex || pageIndex === 0) {
       this.hideSidebar();

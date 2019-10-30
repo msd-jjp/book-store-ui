@@ -164,7 +164,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
     const progress_percent = this._libraryItem!.progress || 0;
-    debugger;
+    // debugger;
     this.book_active_index = Math.floor(this._slide_pages.length * progress_percent - 1); // - 1;
     if (this.book_active_index > this._slide_pages.length - 1 || this.book_active_index < 0) {
       console.error('this.book_active_index:', this.book_active_index, ' this._slide_pages.length:', this._slide_pages.length);
@@ -200,7 +200,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   updateLibraryItem() {
-    debugger;
+    // debugger;
     const activePage = (this.getSwiperActiveIndex() + 1);
     const bookProgress = activePage / this.book_page_length;
     // ReaderUtility.updateLibraryItem_progress_client(this.book_id, bookProgress);
