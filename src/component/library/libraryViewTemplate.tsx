@@ -54,16 +54,10 @@ export function is_book_downloading(book_id: string, mainFile: boolean): boolean
 
 export function is_libBook_downloaded(item: ILibrary): boolean {
     return is_book_downloaded(item.book.id, true);
-    // if (appLocalStorage.findBookMainFileById(item.book.id))
-    //     return true;
-    // return false;
 }
 
 export function is_libBook_downloading(item: ILibrary): boolean {
     return is_book_downloading(item.book.id, true);
-    // const dbf = Store2.getState().downloading_book_file;
-    // const d = dbf.find(d => d.book_id === item.book.id && d.mainFile === true);
-    // return !!d;
 }
 
 export function toggle_book_download(book_id: string, mainFile: boolean): void {
@@ -92,28 +86,6 @@ export function toggle_book_download(book_id: string, mainFile: boolean): void {
 
 export function toggle_libBook_download(item: ILibrary): void {
     toggle_book_download(item.book.id, true);
-
-    // const isDownloading = is_libBook_downloading(item);
-    // let dbf = [...Store2.getState().downloading_book_file];
-
-    // if (isDownloading) {
-    //     const new_dbf = dbf.filter(d => !(d.book_id === item.book.id && d.mainFile === true));
-    //     new_dbf.push({
-    //         book_id: item.book.id,
-    //         mainFile: true,
-    //         status: 'stop'
-    //     });
-    //     dbf = new_dbf;
-    // } else {
-    //     dbf.push({
-    //         book_id: item.book.id,
-    //         mainFile: true,
-    //         status: 'start'
-    //     });
-    // }
-
-    // Store2.dispatch(action_update_downloading_book_file(dbf));
-    // CmpUtility.refreshView();
 }
 
 export function collection_download(title: string) {
