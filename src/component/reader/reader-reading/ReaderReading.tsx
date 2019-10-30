@@ -297,7 +297,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
                             // src={this.getPagePath(slide.id)}
                             src={this.getPagePath_ifExist(slide.id)}
                             data-src={this.getPagePath(slide.id)}
-                            alt="book"
+                            alt=""
                             loading="lazy"
                             width={this._bookPageSize.width}
                             height={this._bookPageSize.height}

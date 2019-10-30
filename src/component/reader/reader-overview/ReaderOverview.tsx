@@ -367,7 +367,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                             className="page-img"
                             src={this.getPagePath_ifExist(slide.id)}
                             data-src={this.getPagePath(slide.id)}
-                            alt="book"
+                            alt=""
                             loading="lazy"
                             // onLoad={(e) => { this.getPagePath_onLoad() }}
                             width={this._bookPageSize.width}
