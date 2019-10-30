@@ -21,7 +21,7 @@ import { AppRegex } from "../../../config/regex";
 import { IBookPosIndicator, IBookContent } from "../../../webworker/reader-engine/MsdBook";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
-import { ReaderUtility } from "../ReaderUtility";
+import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
 import { ToggleButton } from "react-bootstrap";
 import { IReader_schema_epub_fontName, IReader_schema_epub_theme, IReader_schema } from "../../../redux/action/reader/readerAction";
 import { action_update_reader } from "../../../redux/action/reader";
@@ -216,14 +216,11 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
 
-  private _createBookChapters: {
-    chapter: IBookContent | undefined, clickable: boolean,
-    children: { chapter: IBookContent | undefined, children: [], clickable: boolean }[],
-  } | undefined;
+  private _createBookChapters: IEpubBook_chapters | undefined;
   private async  createBookChapters() {
     await CmpUtility.waitOnMe(0);
     const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
-    debugger;
+    // debugger;
     this._createBookChapters = ReaderUtility.createEpubBook_chapters(bookContent);
   }
 
@@ -591,28 +588,37 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   generateEl(
-    chaptersObj: {
-      chapter: IBookContent | undefined, clickable: boolean,
-      children: { chapter: IBookContent | undefined, children: [], clickable: boolean }[],
-    }
+    eb_chapters: IEpubBook_chapters
   ) {
     return (
-      <ul>
-        <li
-          className={(chaptersObj.clickable) ? 'clickable' : 'text-muted'}
-          onClick={() => { if (chaptersObj.clickable) this.chapterClicked(chaptersObj.chapter!); }}>
-          {chaptersObj.chapter!.text}
-        </li>
+      <>
         {/* <ul> */}
-        {
-          chaptersObj.children.map((ch, index) => (
-            <Fragment key={index}>
-              {this.generateEl(ch)}
-            </Fragment>
-          ))
-        }
+        <li
+          className={(eb_chapters.clickable) ? 'clickable' : 'disabled'}
+        // onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.chapter!); }}
+        >
+          <div className="chapter-title p-2"
+            onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.chapter!); }}
+          >
+            {eb_chapters.chapter!.text}
+          </div>
+          {/* </li> */}
+          {
+            eb_chapters.children.length ?
+              <ul className="pl-1 mb-2">
+                {
+                  eb_chapters.children.map((ch, index) => (
+                    <Fragment key={index}>
+                      {this.generateEl(ch)}
+                    </Fragment>
+                  ))
+                }
+              </ul>
+              : ''
+          }
+        </li>
         {/* </ul> */}
-      </ul>
+      </>
     )
   }
   sidebar_book_chapter_render(): JSX.Element {
@@ -621,7 +627,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     } else {
       return (
         <div className="book-chapters">
-          {this.generateEl(this._createBookChapters)}
+          <ul className="p-0">
+            {this.generateEl(this._createBookChapters)}
+          </ul>
         </div>
       )
     }
@@ -651,13 +659,18 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     let pageIndex = undefined;
     for (var i = 0; i < this._pagePosList.length; i++) {
       if (this._pagePosList[i] === chapterIndex) {
-        pageIndex = i; // this._pagePosList[i];
+        pageIndex = i;
         break;
       } else if (this._pagePosList[i] > chapterIndex) {
-        pageIndex = i - 1; // this._pagePosList[i - 1];
+        pageIndex = i - 1;
         break;
       }
     }
+
+    if (pageIndex === undefined && this._pagePosList.length) {
+      pageIndex = this._pagePosList.length - 1;
+    }
+
     return pageIndex;
   }
 
@@ -887,7 +900,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       if (fs <= 5) return;
       fs = fs - 1;
     } else if (change === 'up') {
-      if (fs >= 80) return;
+      if (fs >= 50) return;
       fs = fs + 1;
     }
 

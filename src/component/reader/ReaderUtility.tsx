@@ -8,6 +8,14 @@ import { CmpUtility } from "../_base/CmpUtility";
 import { IBookContent } from "../../webworker/reader-engine/MsdBook";
 // import { Reader2Worker } from "../../webworker/reader2-worker/Reader2Worker";
 
+export interface IEpubBook_chapters {
+    chapter: IBookContent | undefined;
+    clickable: boolean;
+    id: string | undefined;
+    parentId: string | undefined;
+    children: IEpubBook_chapters[],
+}
+
 export abstract class ReaderUtility {
 
     private static getEpubBook_theme(theme: IReader_schema_epub_theme): { fontColor: number, bgColor: number } {
@@ -198,38 +206,55 @@ export abstract class ReaderUtility {
         }, 300);
     }
 
-    private static _epubBook_chapters: {
-        chapter: IBookContent | undefined, clickable: boolean,
-        children: { chapter: IBookContent | undefined, children: [], clickable: boolean }[],
-    } | undefined;
     static createEpubBook_chapters(chapterList: IBookContent[]) {
-        debugger;
-        const list = [...chapterList];
-        this._epubBook_chapters = { clickable: false, chapter: undefined, children: [] };
-        const length = list.length;
+        let chapterList_flat = chapterList.map(ibc => {
+            return {
+                ibc: ibc,
+                id: ibc.pos.group * 1000000 + ibc.pos.atom + '-' + ibc.parentIndex,
+                parentId: (ibc.parentIndex === 65535) ? undefined :
+                    (chapterList[ibc.parentIndex])
+                        ? chapterList[ibc.parentIndex].pos.group * 1000000 + chapterList[ibc.parentIndex].pos.atom + '-' + chapterList[ibc.parentIndex].parentIndex
+                        : undefined
+            }
+        });
 
-        for (let i = 0; i < length; i++) {
-            const ch = list.shift();
-            if (ch!.parentIndex === 65535) {
-                this._epubBook_chapters.chapter = ch;
-
-            } else {
-                let _ch_obj = this._epubBook_chapters;
-                for (let i = 0; i < ch!.parentIndex; i++) {
-                    if (_ch_obj.children[_ch_obj.children.length - 1]) {
-                        _ch_obj = _ch_obj.children[_ch_obj.children.length - 1];
-                    }
+        const searchTree = (ch: IEpubBook_chapters, id: string): IEpubBook_chapters | null => {
+            if (ch.id === id) {
+                return ch;
+            } else if (ch.children.length) {
+                let i;
+                let result = null;
+                for (i = 0; result === null && i < ch.children.length; i++) {
+                    result = searchTree(ch.children[i], id);
                 }
-                const ca = (ch!.pos.atom === -1 && ch!.pos.group === -1) ? false : true;
-                _ch_obj.children.push({
-                    chapter: ch,
-                    clickable: ca,
+                return result;
+            }
+            return null;
+        }
+
+        const _epubBook_chapters: IEpubBook_chapters | undefined
+            = { clickable: false, chapter: undefined, children: [], id: undefined, parentId: undefined };
+
+        if (chapterList_flat[0].ibc.parentIndex === 65535) {
+            _epubBook_chapters.chapter = chapterList_flat[0].ibc;
+            _epubBook_chapters.id = chapterList_flat[0].id;
+            _epubBook_chapters.parentId = chapterList_flat[0].parentId;
+        }
+        chapterList_flat.forEach(ch => {
+            if (ch.ibc.parentIndex !== 65535) {
+                if (!ch.parentId) return;
+                const p_ch = searchTree(_epubBook_chapters!, ch.parentId);
+                p_ch && p_ch.children.push({
+                    chapter: ch.ibc,
+                    parentId: ch.parentId,
+                    id: ch.id,
+                    clickable: (ch.ibc.pos.atom === -1 && ch.ibc.pos.group === -1) ? false : true,
                     children: []
                 });
             }
-        }
+        });
 
-        return this._epubBook_chapters;
+        return _epubBook_chapters;
     }
 
 }
