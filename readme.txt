@@ -157,10 +157,6 @@ wavesurfer library replace require with import
 
 ====================================================================================
 
-cash .wasm file in serviceWorker
-
-
-
 readerOverview --> item: add shadow
 
 ====================================================================================
@@ -177,10 +173,10 @@ check dd-menu in readerOverview & collection & library --> ltr mode
 
 ====================================================================================
 
-
+call CmpUtility.refreshView(); when action need it, remove from general method like "toggle_book_download"
 
 ====================================================================================
 
-add attr width & height on img --> reader
+
 
 ====================================================================================

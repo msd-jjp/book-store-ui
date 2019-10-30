@@ -344,6 +344,8 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
             await CmpUtility.waitOnMe(0);
             markAsRead_libraryItem(id_s[i]);
         }
+
+        this.set_col_libraryData();
     }
 
     gotoBookDetail(bookId: string) {

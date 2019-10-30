@@ -5,7 +5,7 @@ import { redux_state } from "../../redux/app_state";
 import { IUser } from "../../model/model.user";
 import { TInternationalization } from "../../config/setup";
 import { BaseComponent } from "../_base/BaseComponent";
-import Slider, { Settings } from "react-slick";
+// import Slider, { Settings } from "react-slick";
 import { Localization } from "../../config/localization/localization";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -21,7 +21,6 @@ import { CmpUtility } from "../_base/CmpUtility";
 import { action_user_logged_in } from "../../redux/action/user";
 import { PersonService } from "../../service/service.person";
 import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem } from "../library/libraryViewTemplate";
-import { ILibrary } from "../../model/model.library";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import Swiper from "swiper";
@@ -71,40 +70,34 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   private _bookService = new BookService();
   private _personService = new PersonService();
   // dragging!: boolean;
-  sliderSetting: Settings = {
-    dots: false,
-    accessibility: false,
-    // swipe: false,
-    infinite: false,
-    // className: "center2",
-    //centerPadding: "60px",
-    // centerPadding: '40px',
-    slidesToShow: 3,
-    swipeToSlide: true,
-    // rtl: false, // this.props.internationalization.rtl,
-    // rtl: this.props.internationalization.rtl,
-    // adaptiveHeight: true,
-    // slidesToScroll: 1,
+  // sliderSetting: Settings = {
+  //   dots: false,
+  //   accessibility: false,
+  //   // swipe: false,
+  //   infinite: false,
+  //   // className: "center2",
+  //   //centerPadding: "60px",
+  //   // centerPadding: '40px',
+  //   slidesToShow: 3,
+  //   swipeToSlide: true,
+  //   // rtl: false, // this.props.internationalization.rtl,
+  //   // rtl: this.props.internationalization.rtl,
+  //   // adaptiveHeight: true,
+  //   // slidesToScroll: 1,
 
-    speed: 100 // 200, // 200,
-    // touchThreshold: 100000000,
-    // useCSS: false,
-    // useTransform: false,
+  //   speed: 100 // 200, // 200,
+  //   // touchThreshold: 100000000,
+  //   // useCSS: false,
+  //   // useTransform: false,
 
-    // swipe: false,
-    // initialSlide: 5,
-    // beforeChange: () => this.dragging = true,
-    // afterChange: () => this.dragging = false,
-  };
+  //   // swipe: false,
+  //   // initialSlide: 5,
+  //   // beforeChange: () => this.dragging = true,
+  //   // afterChange: () => this.dragging = false,
+  // };
 
   fetchBookByWriter_writerId!: string;
   fetchBookByWriter_current_book_id!: string;
-
-  // constructor(props: IProps) {
-  //   super(props);
-  //   // this._personService.setToken(this.props.token);
-  //   // this._bookService.setToken(this.props.token);
-  // }
 
   componentDidMount() {
     this.init_swiper();
@@ -436,29 +429,18 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   calc_read_percent_by_bookItem_in_lib(book_id: string): string {
-    const item = this.getItemFromLibrary(book_id);
+    // const item = this.getItemFromLibrary(book_id);
+    const item = getLibraryItem(book_id);
     if (item) return calc_read_percent(item);
     else return '0%';
   }
 
-  private library_current_book_item: ILibrary | undefined;
-  getItemFromLibrary(book_id: string): ILibrary | undefined {
-    if (!this.library_current_book_item) {
-      // const lib = this.props.library.data.find(lib => lib.book.id === book_id);
-      // this.library_current_book_item = lib;
-      this.library_current_book_item = getLibraryItem(book_id);
-    }
-    return this.library_current_book_item;
-    // return lib!;
-  }
-
-  // private _is_libCurrentBook_downloaded: boolean | undefined;
-  // private is_libCurrentBook_downloaded(item: ILibrary | undefined): boolean {
-  //   if (!item) return false;
-  //   if (this._is_libCurrentBook_downloaded === undefined) {
-  //     this._is_libCurrentBook_downloaded = is_libBook_downloaded(item);
+  // private library_current_book_item: ILibrary | undefined;
+  // private getItemFromLibrary(book_id: string): ILibrary | undefined {
+  //   if (!this.library_current_book_item) {
+  //     this.library_current_book_item = getLibraryItem(book_id);
   //   }
-  //   return this._is_libCurrentBook_downloaded;
+  //   return this.library_current_book_item;
   // }
 
   removeFromDevice(book_id: string) {
@@ -504,45 +486,45 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: false } });
   }
 
-  carousel_render_DELETE_ME(bookList: IBook[]) {
-    if (bookList && bookList.length) {
+  // carousel_render_DELETE_ME(bookList: IBook[]) {
+  //   if (bookList && bookList.length) {
 
-      let initialSlide = 0;
-      if (this.props.internationalization.rtl) {
-        initialSlide = bookList.length - 1 - 2;
-        bookList = [...bookList].reverse();
-      }
+  //     let initialSlide = 0;
+  //     if (this.props.internationalization.rtl) {
+  //       initialSlide = bookList.length - 1 - 2;
+  //       bookList = [...bookList].reverse();
+  //     }
 
-      return (
-        <>
-          <div className="app-carousel">
-            <Slider {...this.sliderSetting} initialSlide={initialSlide}>
-              {bookList.map((book: IBook, bookIndex) => (
-                <div
-                  key={bookIndex}
-                  className="item"
-                  onClick={() => this.gotoBookDetail(book.id)}
-                >
-                  <div className="img-scaffolding-container">
-                    <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
+  //     return (
+  //       <>
+  //         <div className="app-carousel">
+  //           <Slider {...this.sliderSetting} initialSlide={initialSlide}>
+  //             {bookList.map((book: IBook, bookIndex) => (
+  //               <div
+  //                 key={bookIndex}
+  //                 className="item"
+  //                 onClick={() => this.gotoBookDetail(book.id)}
+  //               >
+  //                 <div className="img-scaffolding-container">
+  //                   <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
 
-                    <img src={CmpUtility.getBook_firstImg(book)}
-                      alt="book"
-                      className="main-img center-el-in-box"
-                      onError={e => CmpUtility.bookImageOnError(e)}
-                      loading="lazy"
-                    />
-                  </div>
+  //                   <img src={CmpUtility.getBook_firstImg(book)}
+  //                     alt="book"
+  //                     className="main-img center-el-in-box"
+  //                     onError={e => CmpUtility.bookImageOnError(e)}
+  //                     loading="lazy"
+  //                   />
+  //                 </div>
 
-                  <span className="item-number">{bookIndex}</span>
-                </div>
-              ))}
-            </Slider>
-          </div>
-        </>
-      );
-    }
-  }
+  //                 <span className="item-number">{bookIndex}</span>
+  //               </div>
+  //             ))}
+  //           </Slider>
+  //         </div>
+  //       </>
+  //     );
+  //   }
+  // }
 
   carousel_render(bookList: IBook[]) {
     if (bookList && bookList.length) {
@@ -585,39 +567,39 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  carousel_render_preLoad_DELETE_ME(slideCount: number = 3) {
-    let list = [];
-    for (let i = 0; i < slideCount; i++) { list.push(i); }
+  // carousel_render_preLoad_DELETE_ME(slideCount: number = 3) {
+  //   let list = [];
+  //   for (let i = 0; i < slideCount; i++) { list.push(i); }
 
-    // let initialSlide = 0;
-    // if (this.props.internationalization.rtl) {
-    //   initialSlide = list.length - 1 - 2;
-    //   list = [...list].reverse();
-    // }
+  //   // let initialSlide = 0;
+  //   // if (this.props.internationalization.rtl) {
+  //   //   initialSlide = list.length - 1 - 2;
+  //   //   list = [...list].reverse();
+  //   // }
 
-    return (
-      <>
-        <div className="app-carousel app-carousel-preLoad" key="app-carousel-preloader">
-          <Slider {...this.sliderSetting}
-          // initialSlide={initialSlide}
-          >
-            {list.map((_no: number, bookIndex) => (
-              <div key={bookIndex} className="item">
-                <div className="img-scaffolding-container">
-                  <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
-                </div>
-                <span className="item-loader-wrapper center-el-in-box">
-                  <div className="spinner-grow item-loader">
-                    <span className="sr-only">{Localization.loading_with_dots}</span>
-                  </div>
-                </span>
-              </div>
-            ))}
-          </Slider>
-        </div>
-      </>
-    );
-  }
+  //   return (
+  //     <>
+  //       <div className="app-carousel app-carousel-preLoad" key="app-carousel-preloader">
+  //         <Slider {...this.sliderSetting}
+  //         // initialSlide={initialSlide}
+  //         >
+  //           {list.map((_no: number, bookIndex) => (
+  //             <div key={bookIndex} className="item">
+  //               <div className="img-scaffolding-container">
+  //                 <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
+  //               </div>
+  //               <span className="item-loader-wrapper center-el-in-box">
+  //                 <div className="spinner-grow item-loader">
+  //                   <span className="sr-only">{Localization.loading_with_dots}</span>
+  //                 </div>
+  //               </span>
+  //             </div>
+  //           ))}
+  //         </Slider>
+  //       </div>
+  //     </>
+  //   );
+  // }
 
   carousel_render_preLoad(slideCount: number = 3) {
     let list = [];
@@ -647,29 +629,29 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     );
   }
 
-  carousel_render_error_DELETE_ME(errorMsg: string, onClick: () => void) {
-    return (
-      <>
-        <div className="app-carousel app-carousel-error" key="app-carousel-error">
-          <Slider {...this.sliderSetting}>
-            <div className="item">
-              <div className="img-scaffolding-container bg-transparent">
-                <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
-              </div>
-            </div>
-          </Slider>
-          <div className="center-el-in-box text-center">
-            {/* <div className="item-error--"> */}
-            <div className="mb-2">{errorMsg}</div>
-            <div onClick={() => onClick()} className="cursor-pointer">
-              {Localization.retry} <i className="fa fa-refresh"></i>
-            </div>
-            {/* </div> */}
-          </div>
-        </div>
-      </>
-    );
-  }
+  // carousel_render_error_DELETE_ME(errorMsg: string, onClick: () => void) {
+  //   return (
+  //     <>
+  //       <div className="app-carousel app-carousel-error" key="app-carousel-error">
+  //         <Slider {...this.sliderSetting}>
+  //           <div className="item">
+  //             <div className="img-scaffolding-container bg-transparent">
+  //               <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
+  //             </div>
+  //           </div>
+  //         </Slider>
+  //         <div className="center-el-in-box text-center">
+  //           {/* <div className="item-error--"> */}
+  //           <div className="mb-2">{errorMsg}</div>
+  //           <div onClick={() => onClick()} className="cursor-pointer">
+  //             {Localization.retry} <i className="fa fa-refresh"></i>
+  //           </div>
+  //           {/* </div> */}
+  //         </div>
+  //       </div>
+  //     </>
+  //   );
+  // }
 
   carousel_render_error(errorMsg: string, onClick: () => void) {
     return (
