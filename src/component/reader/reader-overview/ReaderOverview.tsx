@@ -511,6 +511,15 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this.setState({ is_sidebar_open: false });
   }
 
+  // is_sidebarBody_overflow(): boolean {
+  //   const sidebar = document.querySelector('.overview-sidebar');
+  //   const sidebarBody = document.querySelector('.overview-sidebar-body');
+  //   if (!sidebar || !sidebarBody) return false;
+  //   const sidebarHeight = sidebar.clientHeight;
+  //   const sidebarBodyHeight = sidebarBody.scrollHeight;
+  //   if (sidebarHeight < sidebarBodyHeight) return true;
+  //   return false;
+  // }
   overview_sidebar_render() {
     return (
       <>
@@ -527,7 +536,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
             <span className="text-capitalize">{Localization.close_book}</span>
           </div>
 
-          <div className="overview-sidebar-body">
+          {/* <div className={"overview-sidebar-body " + (this.is_sidebarBody_overflow() ? 'overflow-y-scroll--' : '')}> */}
+          <div className={"overview-sidebar-body"}>
             <div className="item px-2 py-3">
               {this.sidebar_book_main_detail_render()}
             </div>

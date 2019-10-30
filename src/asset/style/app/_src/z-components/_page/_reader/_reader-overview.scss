@@ -124,6 +124,10 @@
     }
 
     .overview-sidebar-body {
+      // height: calc(100% - 3rem);
+      @include calc("height", "100% - 3rem");
+      overflow-x: hidden;
+
       .item {
         border-bottom: 1px solid #ddd;
         .book-main-detail {
@@ -384,7 +388,6 @@
     }
   }
 }
-
 
 //modal
 .reader-overview-modal-goto {
