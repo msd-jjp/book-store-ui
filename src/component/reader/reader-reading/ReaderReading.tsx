@@ -15,9 +15,9 @@ import { IBook } from "../../../model/model.book";
 import Swiper from 'swiper';
 import { Virtual } from 'swiper/dist/js/swiper.esm';
 import { appLocalStorage } from "../../../service/appLocalStorage";
-import { IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
+import { IBookPosIndicator, IBookContent } from "../../../webworker/reader-engine/MsdBook";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
-import { ReaderUtility } from "../ReaderUtility";
+import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem, updateLibraryItem_progress } from "../../library/libraryViewTemplate";
@@ -157,9 +157,59 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
   }
 
+  private _createBookChapters: IEpubBook_chapters | undefined;
+  private async  createBookChapters() {
+    await CmpUtility.waitOnMe(0);
+    const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
+    this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
+
+    this.calc_chapters_with_page();
+  }
+
+  private _pagePosList: number[] = [];
+  private _chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
+  private async  calc_chapters_with_page() {
+    await CmpUtility.waitOnMe(0);
+    if (!this._pagePosList.length) {
+      const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
+      bookPosList.forEach(bpi => {
+        this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
+      });
+    }
+
+    debugger;
+    this._createBookChapters!.flat.forEach((ch, index) => {
+      if (!ch.clickable) {
+        this._chapters_with_page.push({ firstPageIndex: undefined, lastPageIndex: undefined });
+        return;
+      }
+
+      const obj: { firstPageIndex: number | undefined, lastPageIndex: number | undefined } = {
+        firstPageIndex: ReaderUtility.getPageIndex_byChapter(ch.content!.pos, this._pagePosList),
+        lastPageIndex: undefined
+      };
+
+      this._chapters_with_page.push(obj);
+
+      if (index !== 0) {
+        if (!this._createBookChapters!.flat[index - 1].clickable) {
+          return;
+        }
+        let prev_ch = this._chapters_with_page[index - 1];
+        prev_ch.lastPageIndex = prev_ch.firstPageIndex === obj.firstPageIndex ? obj.firstPageIndex :
+          obj.firstPageIndex ? obj.firstPageIndex - 1 : undefined;
+      }
+      if (index === this._createBookChapters!.flat.length - 1) {
+        this._chapters_with_page[index].lastPageIndex = this._pagePosList.length - 1;
+      }
+    });
+    debugger;
+  }
+
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];
   private initSwiper() {
     const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
+    this.createBookChapters();
 
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
@@ -223,12 +273,43 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  /**
-   * todo: if last chapter --> show remain from book.
-   */
+  // private getChapterLength_byPageIndex(pageIndex: number): number | undefined {
+  //   // debugger;
+  //   if (!this._chapters_with_page.length) return;
+
+  //   let ch_length = undefined;
+  //   for (let i = 0; i < this._chapters_with_page.length; i++) {
+  //     let fp = this._chapters_with_page[i].firstPageIndex;
+  //     let lp = this._chapters_with_page[i].lastPageIndex;
+  //     if (fp && fp <= pageIndex && lp && lp >= pageIndex) {
+  //       ch_length = lp - fp;
+  //       break;
+  //     }
+  //   }
+  //   return ch_length;
+  // }
+  private getChapterLastPage_byPageIndex(pageIndex: number): number | undefined {
+    // debugger;
+    if (!this._chapters_with_page.length) return;
+
+    let ch_lastPage = undefined;
+    for (let i = 0; i < this._chapters_with_page.length; i++) {
+      let fp = this._chapters_with_page[i].firstPageIndex;
+      let lp = this._chapters_with_page[i].lastPageIndex;
+      if ((fp || fp === 0) && fp <= pageIndex && (lp || lp === 0) && lp >= pageIndex) {
+        ch_lastPage = lp;
+        break;
+      }
+    }
+    // return ch_lastPage?ch_lastPage+1:ch_lastPage;
+    return ch_lastPage;
+  }
   calc_current_read_timeLeft(page_index: number): number {
-    let read = page_index + 1; // this.getActivePage();
-    let total = this.book_page_length || 0; // todo: get "active chapter" not all book.
+    // let read = page_index + 1;
+    let read = page_index; // + 1;
+    // let total = this.book_page_length || 0; // todo: get "active chapter" not all book.
+    // let total = this.getChapterLength_byPageIndex(page_index);
+    let total = this.getChapterLastPage_byPageIndex(page_index);
     let min_per_page = 1;
 
     if (total) {
@@ -287,30 +368,35 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
           <div className="app-swiper">
             <div className="swiper-container" dir={swiper_dir}>
               <div className="swiper-wrapper">
-                {vrtData.slides.map((slide: { id: number, page: IBookPosIndicator }, index: any) => (
-                  <Fragment key={slide.id}>
-                    <div className="swiper-slide" style={{ [offset_dir]: `${vrtData.offset}px` }}>
-                      <div className="item cursor-pointer" >
-                        <div className="page-img-wrapper">
-                          <img
-                            className="page-img"
-                            // src={this.getPagePath(slide.id)}
-                            src={this.getPagePath_ifExist(slide.id)}
-                            data-src={this.getPagePath(slide.id)}
-                            alt=""
-                            loading="lazy"
-                            width={this._bookPageSize.width}
-                            height={this._bookPageSize.height}
-                          />
-                        </div>
-                        <div className="item-footer">
-                          <div>{Localization.formatString(Localization.n_min_left_in_chapter, this.calc_current_read_timeLeft(slide.id))}</div>
-                          <div>{this.calc_activePagePos_percent(slide.id)}%</div>
+                {vrtData.slides.map((slide: { id: number, page: IBookPosIndicator }, index: any) => {
+                  const timeLeft = this.calc_current_read_timeLeft(slide.id);
+                  return (
+                    <Fragment key={slide.id}>
+                      <div className="swiper-slide" style={{ [offset_dir]: `${vrtData.offset}px` }}>
+                        <div className="item cursor-pointer" >
+                          <div className="page-img-wrapper">
+                            <img
+                              className="page-img"
+                              // src={this.getPagePath(slide.id)}
+                              src={this.getPagePath_ifExist(slide.id)}
+                              data-src={this.getPagePath(slide.id)}
+                              alt=""
+                              loading="lazy"
+                              width={this._bookPageSize.width}
+                              height={this._bookPageSize.height}
+                            />
+                          </div>
+                          <div className="item-footer">
+                            <div className={!timeLeft ? 'd-none-- invisible' : ''}>
+                              {Localization.formatString(Localization.n_min_left_in_chapter, timeLeft)}
+                            </div>
+                            <div>{this.calc_activePagePos_percent(slide.id)}%</div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Fragment>
-                ))}
+                    </Fragment>
+                  )
+                })}
               </div>
             </div>
           </div>
