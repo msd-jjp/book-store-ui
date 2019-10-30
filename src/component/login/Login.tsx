@@ -67,7 +67,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
             password: this.state.password.value!
         }
         let res_token = await this._loginService.login(authObj).catch((error) => {
-            this.handleError({ error: error.response });
+            this.handleError({ error: error.response, toastOptions: { toastId: 'login_error' } });
             this.setState({ ...this.state, btnLoader: false });
         });
 
@@ -79,10 +79,10 @@ class LoginComponent extends BaseComponent<IProps, IState> {
             // this._loginService.setToken(res_token.data);
 
             res_user = await this._loginService.profile().catch((error) => {
-                this.handleError({ error: error.response });
+                this.handleError({ error: error.response, toastOptions: { toastId: 'login_error' } });
             });
         }
-        
+
         this.setState({ ...this.state, btnLoader: false });
 
         if (res_user) {

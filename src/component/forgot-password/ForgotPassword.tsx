@@ -70,8 +70,8 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, btnLoader: true });
 
     let res = await this._loginService.forgotPassword({ cell_no: this.state.mobile.value! }).catch(error => {
-      debugger;
-      this.handleError({ error: error.response });
+      // debugger;
+      this.handleError({ error: error.response, toastOptions: { toastId: 'onSubmitMobile_error' } });
       this.setState({ ...this.state, btnLoader: false });
     });
 
@@ -96,8 +96,8 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
     };
 
     let res = await this._loginService.resetPassword(resetPasswordData).catch(error => {
-      debugger;
-      this.handleError({ error: error.response });
+      // debugger;
+      this.handleError({ error: error.response, toastOptions: { toastId: 'onSubmitNewPassword_error' } });
       this.setState({ ...this.state, btnLoader: false });
     });
 

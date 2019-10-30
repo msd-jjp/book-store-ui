@@ -214,8 +214,8 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         this.setState({ ...this.state, btnLoader: true });
         let res = await this._registerService.sendCode({ cell_no: this.state.mobile.value! })
             .catch(error => {
-                debugger;
-                this.handleError({ error: error.response });
+                // debugger;
+                this.handleError({ error: error.response, toastOptions: { toastId: 'onSubmit_mobile_error' } });
                 /* let time = ((error.response || {}).data || {}).time;
                 if (time) {
                     let msg: any = Localization.formatString(Localization.msg.back.already_has_valid_key, time);
@@ -251,9 +251,9 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         this.setState({ ...this.state, btnSendAgain_loader: true });
         let res = await this._registerService.sendCode({ cell_no: this.state.mobile.value! })
             .catch(error => {
-                debugger;
+                // debugger;
                 // this.errorNotify();
-                this.handleError({ error: error.response });
+                this.handleError({ error: error.response, toastOptions: { toastId: 'sendAgain_error' } });
             });
 
         if (!res) {
@@ -354,9 +354,9 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         let response = await this._registerService.activateAcount(
             { cell_no: this.state.mobile.value!, activation_code: this.state.code.value! }
         ).catch(error => {
-            debugger;
+            // debugger;
             // this.errorNotify();
-            this.handleError({ error: error.response });
+            this.handleError({ error: error.response, toastOptions: { toastId: 'onValidate_mobile_error' } });
         });
         this.setState({ ...this.state, btnLoader: false });
         if (!response) return;
@@ -443,7 +443,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         }
     }
     async onRegister() {
-        debugger;
+        // debugger;
         this.setState({ ...this.state, btnLoader: true });
         let res = await this._registerService.signUp({
             // "user": {
@@ -460,8 +460,8 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
             "cell_no": this.state.mobile.value!,
             "signup_token": this.signup_token,
         }).catch((error: any) => {
-            debugger;
-            this.handleError({ error: error.response });
+            // debugger;
+            this.handleError({ error: error.response, toastOptions: { toastId: 'onRegister_error' } });
         });
         this.setState({ ...this.state, btnLoader: false });
 
