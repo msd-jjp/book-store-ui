@@ -1,25 +1,14 @@
 import { Store2 } from "../../redux/store";
-// import { book } from "../../webworker/reader-engine/MsdBook";
 import { getFont, color } from "../../webworker/reader-engine/tools";
 import { action_update_reader } from "../../redux/action/reader";
 import { IReader_schema_epub_theme, IReader_schema_epub_fontName } from "../../redux/action/reader/readerAction";
-// import { action_set_library_data } from "../../redux/action/library";
-// import { LibraryService } from "../../service/service.library";
-// import { getLibraryItem } from "../library/libraryViewTemplate";
-// import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { BookGenerator } from "../../webworker/reader-engine/BookGenerator";
 import { LANGUAGES } from "../../enum/language";
 import { CmpUtility } from "../_base/CmpUtility";
 import { IBookContent } from "../../webworker/reader-engine/MsdBook";
-// import { ILibrary } from "../../model/model.library";
-// import { CmpUtility } from "../_base/CmpUtility";
+// import { Reader2Worker } from "../../webworker/reader2-worker/Reader2Worker";
 
 export abstract class ReaderUtility {
-
-    // static getEpubBook_theme(): IReader_schema_epub_theme {
-    //     console.log('..........................................getEpubBook_theme..........................................');
-    //     return Store2.getState().reader.epub.theme;
-    // }
 
     private static getEpubBook_theme(theme: IReader_schema_epub_theme): { fontColor: number, bgColor: number } {
         let bgColor = color(255, 255, 255, 0);
@@ -109,20 +98,39 @@ export abstract class ReaderUtility {
 
         const reader_epub_theme = ReaderUtility.getEpubBook_theme(reader_epub.theme);
 
-        // const readerEngine_loaded = 
         await ReaderUtility.wait_loadReaderEngine();
-        // if (!readerEngine_loaded) return;
 
         let valid_fontSize = reader_epub.fontSize;
         if (valid_fontSize > 50) { valid_fontSize = 50; }
         else if (valid_fontSize < 5) { valid_fontSize = 5; }
+
+
+
+        // const _reader2Worker = new Reader2Worker();
+        // _reader2Worker.postMessage({
+        //     type: 'generate',
+        //     config: {
+        //         bookFile,
+        //         width: _bookPageSize.width,
+        //         height: _bookPageSize.height,
+        //         font,
+        //         fontSize: valid_fontSize,
+        //         fontColor: reader_epub_theme.fontColor,
+        //         bgColor: reader_epub_theme.bgColor
+        //     }
+        // });
+        // _reader2Worker.onmessage((book: BookGenerator) => {
+        //     debugger;
+        // });
+
+
 
         const _book = new BookGenerator(
             bookFile,
             _bookPageSize.width,
             _bookPageSize.height,
             font,
-            reader_epub.fontSize,
+            valid_fontSize, // reader_epub.fontSize,
             reader_epub_theme.fontColor,
             reader_epub_theme.bgColor
         );
@@ -143,7 +151,7 @@ export abstract class ReaderUtility {
         return new Promise(async (res, rej) => {
             if ((window as any).Module && (window as any).Module.asm && (window as any).Module.asm._malloc) { // stackSave, _malloc
                 // if ((window as any).Module && (window as any).Module._malloc) { // stackSave, _malloc
-                console.log('window.Module.asm', (window as any).Module._malloc);
+                // console.log('window.Module.asm', (window as any).Module._malloc);
                 res(true);
                 return;
             };
@@ -152,7 +160,7 @@ export abstract class ReaderUtility {
                 await CmpUtility.waitOnMe((i + 1) * 200);
                 if ((window as any).Module && (window as any).Module.asm && (window as any).Module.asm._malloc) {
                     // if ((window as any).Module && (window as any).Module._malloc) {
-                    console.log('window.Module.asm', (window as any).Module._malloc);
+                    // console.log('window.Module.asm', (window as any).Module._malloc);
                     res(true);
                     break;
                 };
@@ -160,34 +168,6 @@ export abstract class ReaderUtility {
             rej();
         });
     }
-
-    // static async updateLibraryItem_progress_client(book_id: string, progress: number) {
-    //     const libData = [...Store2.getState().library.data];
-    //     const _lib = libData.find(lib => lib.book.id === book_id);
-    //     if (!_lib) return;
-
-    //     // _lib.status.reading_started = true;
-    //     _lib.progress = progress;
-
-    //     Store2.dispatch(action_set_library_data(libData));
-    // }
-
-    // static async updateLibraryItem_progress_server(book_id: string, progress: number) {
-    //     if (Store2.getState().network_status === NETWORK_STATUS.OFFLINE) return;
-
-    //     const libItem = getLibraryItem(book_id);
-    //     if (!libItem) return;
-
-    //     const _libraryService = new LibraryService();
-    //     // libItem.status.reading_started = true;
-    //     // libItem.progress = progress;
-    //     // let status_obj = {
-    //     //     reading_started: libItem.status.reading_started,
-    //     //     // progess: libItem.progess
-    //     // };
-    //     // _libraryService.update_status(libItem.id, status_obj, libItem.progress).catch(e => { });
-    //     _libraryService.update_progress(libItem.id, progress).catch(e => { });
-    // }
 
     private static rtlLanguage_list: LANGUAGES[] = [LANGUAGES.PERSIAN, LANGUAGES.ARABIC];
     static isBookRtl(lang: LANGUAGES | undefined): boolean {
