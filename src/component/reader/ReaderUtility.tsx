@@ -61,6 +61,7 @@ export abstract class ReaderUtility {
                 && existBookObj.bookPageSize.height === b_p_size.height
                 && existBookObj.fontSize === reader_epub.fontSize
                 && existBookObj.fontName === reader_epub.fontName
+                && existBookObj.theme === reader_epub.theme
             ) {
                 return true;
             }
@@ -111,6 +112,10 @@ export abstract class ReaderUtility {
         // const readerEngine_loaded = 
         await ReaderUtility.wait_loadReaderEngine();
         // if (!readerEngine_loaded) return;
+
+        let valid_fontSize = reader_epub.fontSize;
+        if (valid_fontSize > 50) { valid_fontSize = 50; }
+        else if (valid_fontSize < 5) { valid_fontSize = 5; }
 
         const _book = new BookGenerator(
             bookFile,
