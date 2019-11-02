@@ -181,32 +181,6 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
     debugger;
     this.setState({});
-    // this._createBookChapters!.flat.forEach((ch, index) => {
-    //   if (!ch.clickable) {
-    //     this._chapters_with_page.push({ firstPageIndex: undefined, lastPageIndex: undefined });
-    //     return;
-    //   }
-
-    //   const obj: { firstPageIndex: number | undefined, lastPageIndex: number | undefined } = {
-    //     firstPageIndex: ReaderUtility.getPageIndex_byChapter(ch.content!.pos, this._pagePosList),
-    //     lastPageIndex: undefined
-    //   };
-
-    //   this._chapters_with_page.push(obj);
-
-    //   if (index !== 0) {
-    //     if (!this._createBookChapters!.flat[index - 1].clickable) {
-    //       return;
-    //     }
-    //     let prev_ch = this._chapters_with_page[index - 1];
-    //     prev_ch.lastPageIndex = prev_ch.firstPageIndex === obj.firstPageIndex ? obj.firstPageIndex :
-    //       obj.firstPageIndex ? obj.firstPageIndex - 1 : undefined;
-    //   }
-    //   if (index === this._createBookChapters!.flat.length - 1) {
-    //     this._chapters_with_page[index].lastPageIndex = this._pagePosList.length - 1;
-    //   }
-    // });
-    // debugger;
   }
 
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];

@@ -2,23 +2,35 @@ import React, { Fragment } from "react";
 import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { redux_state } from "../../../redux/app_state";
-import { TInternationalization } from "../../../config/setup";
+import { TInternationalization, Setup } from "../../../config/setup";
 import { BaseComponent } from "../../_base/BaseComponent";
 import { History } from "history";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
-import { PersonService } from "../../../service/service.person";
-import { IBook } from "../../../model/model.book";
 import Swiper from 'swiper';
 // import { Virtual } from 'swiper/dist/js/swiper.esm';
-import { ReaderWorker } from "../../../webworker/reader-worker/ReaderWorker"; // .reader";
+// import { ReaderWorker } from "../../../webworker/reader-worker/ReaderWorker"; // .reader";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { Store2 } from "../../../redux/store";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { CmpUtility } from "../../_base/CmpUtility";
-import { ReaderUtility } from "../ReaderUtility";
-import { getLibraryItem } from "../../library/libraryViewTemplate";
+import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
+import { getLibraryItem, updateLibraryItem_progress } from "../../library/libraryViewTemplate";
 import { ILibrary } from "../../../model/model.library";
+import { Localization } from "../../../config/localization/localization";
+import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
+import { appLocalStorage } from "../../../service/appLocalStorage";
+import { IBookContent, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
+import { Virtual } from "swiper/dist/js/swiper.esm";
+import { AppGuid } from "../../../asset/script/guid";
+
+
+interface IBookSlide {
+  id: string;
+  isTitle: boolean;
+  chapterTitle: string;
+  pages: number[]; // { url: string; number: number }[];
+}
 
 interface IProps {
   internationalization: TInternationalization;
@@ -29,11 +41,11 @@ interface IProps {
 }
 
 interface IState {
-  book: IBook | undefined;
-  // virtualData: {
-  //   slides: any[];
-  // },
-  swiper_slides: any[];
+  // book: IBook | undefined;
+  virtualData: {
+    slides: any[];
+  },
+  // swiper_slides: any[];
   page_loading: boolean;
 }
 
@@ -41,19 +53,17 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   private book_id: string = '';
 
   state = {
-    book: undefined, // this.getBookFromLibrary(this.book_id),
-    // virtualData: {
-    //   slides: [],
-    // },
-    swiper_slides: [],
+    // book: undefined,
+    virtualData: {
+      slides: [],
+    },
+    // swiper_slides: [],
     page_loading: true,
   };
 
-  private _personService = new PersonService();
-
   swiper_obj: Swiper | undefined;
-  private book_page_length = 2500;
-  private book_active_page = 372;
+  private book_page_length = 1;
+  private book_active_index = 0;
   private _libraryItem: ILibrary | undefined;
 
   constructor(props: IProps) {
@@ -72,59 +82,225 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       this.props.history.replace(`/dashboard`);
       return;
     }
-    this.getData_readerWorker();
+    // this.getData_readerWorker();
+    this.generateReader();
   }
 
-  private _readerWorker: ReaderWorker | undefined;
-  getData_readerWorker() {
-    this._readerWorker = new ReaderWorker();
-    if (!this._readerWorker) return;
-
-    this._readerWorker.postMessage({
-      book_active_page: this.book_active_page
-    });
-
-    // this._readerWorker.onmessage(this.onReceive_data_from_worker.bind(this));
-    this._readerWorker.onmessage((data) => { this.onReceive_data_from_worker(data) });
+  bookFileNotFound_notify() {
+    const notifyBody: string = Localization.msg.ui.book_file_not_found_download_it;
+    const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };
+    toast.warn(notifyBody, this.getNotifyConfig(config));
+  }
+  readerError_notify() {
+    const notifyBody: string = Localization.msg.ui.reader_epub_error_occurred;
+    const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };
+    toast.error(notifyBody, this.getNotifyConfig(config));
   }
 
-  onReceive_data_from_worker(data: { bookSlideList: any[]; active_slide: number | undefined; }) {
-    console.log('main: Message received from worker', data);
-
-    this.setState(
-      { ...this.state, swiper_slides: data.bookSlideList },
-      () => {
-        this.initSwiper(data.bookSlideList, data.active_slide);
-      }
-    );
-
-    this._readerWorker!.terminate();
+  private async generateReader() {
+    await CmpUtility.waitOnMe(0);
+    await this.createBook();
+    if (!this._bookInstance) return;
+    this.initSwiper();
   }
 
-  componentWillUnmount() {
-    if (this._readerWorker) { this._readerWorker.terminate(); }
-  }
+  // private _readerWorker: ReaderWorker | undefined;
+  // getData_readerWorker() {
+  //   this._readerWorker = new ReaderWorker();
+  //   if (!this._readerWorker) return;
 
-  getBookFromLibrary(book_id: string): IBook {
-    // const lib = this.props.library.data.find(lib => lib.book.id === book_id);
-    const lib = Store2.getState().library.data.find(lib => lib.book.id === book_id);
-    return (lib! || {}).book;
-  }
+  //   this._readerWorker.postMessage({
+  //     book_active_page: this.book_active_page
+  //   });
 
-  // getBookTitle(): string {
-  //   const book: IBook | undefined = this.state.book;
-  //   if (!book) return '';
-  //   return book!.title;
+  //   // this._readerWorker.onmessage(this.onReceive_data_from_worker.bind(this));
+  //   this._readerWorker.onmessage((data) => { this.onReceive_data_from_worker(data) });
   // }
 
-  initSwiper(slides: any[] = [], initialSlide: number = 0) {
+  // onReceive_data_from_worker(data: { bookSlideList: any[]; active_slide: number | undefined; }) {
+  //   console.log('main: Message received from worker', data);
+
+  //   this.setState(
+  //     { ...this.state, swiper_slides: data.bookSlideList },
+  //     () => {
+  //       this.initSwiper(data.bookSlideList, data.active_slide);
+  //     }
+  //   );
+
+  //   this._readerWorker!.terminate();
+  // }
+
+  // componentWillUnmount() {
+  //   if (this._readerWorker) { this._readerWorker.terminate(); }
+  // }
+
+
+
+  private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
+  private _bookInstance!: BookGenerator;
+  private async createBook() {
+    const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
+    if (!bookFile) {
+      this.setState({ page_loading: false });
+      this.bookFileNotFound_notify();
+      return;
+    }
+
+    try {
+      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile);
+    } catch (e) {
+      console.error(e);
+      this.setState({ page_loading: false });
+      this.readerError_notify();
+    }
+  }
+
+  private _createBookChapters: IEpubBook_chapters | undefined;
+  private /* async */ createBookChapters() {
+    // await CmpUtility.waitOnMe(0);
+    const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
+    this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
+
+    this.calc_chapters_with_page();
+  }
+
+  private _pagePosList: number[] = [];
+  private _chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
+  private /* async */ calc_chapters_with_page() {
+    // await CmpUtility.waitOnMe(0);
+    if (!this._pagePosList.length) {
+      const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
+      bookPosList.forEach(bpi => {
+        this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
+      });
+    }
+
+    this._chapters_with_page = ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat) || [];
+
+    debugger;
+    // this.setState({});
+    // this.getBookSlideList();
+  }
+
+  // private _slideList: IBookSlide[] = [];
+  private getBookSlideList(): IBookSlide[] {
+
+    let slideList: IBookSlide[] = [];
+
+    // let bookTree:{ chapter_list: { title: string; pages: string[] }[] } = {};
+    const bookTree: { title: string; pages: number[] }[] = [];
+    this._createBookChapters!.flat.forEach((ch, ch_index) => {
+      if (!ch.clickable) return;
+      const firstPageIndex = this._chapters_with_page[ch_index].firstPageIndex;
+      const lastPageIndex = this._chapters_with_page[ch_index].lastPageIndex;
+      if (!((firstPageIndex || firstPageIndex === 0) && (lastPageIndex || lastPageIndex === 0))) return;
+      bookTree.push({
+        title: ch.content!.text,
+        pages: Array.from({ length: lastPageIndex - firstPageIndex + 1 }, (v, k) => k + firstPageIndex)
+      });
+    })
+
+    bookTree.forEach((chapter, chapter_index) => {
+      slideList.push({
+        id: AppGuid.generate(),
+        isTitle: true,
+        chapterTitle: chapter.title,
+        pages: []
+      });
+
+      let lastPageNumber = 0;
+      if (slideList.length && slideList.length > 1 && slideList[slideList.length - 1 - 1].pages.length) {
+        const lastSlide = slideList[slideList.length - 1 - 1];
+        const lastSlide_lastPage = lastSlide.pages[lastSlide.pages.length - 1];
+        lastPageNumber = lastSlide_lastPage; // lastSlide_lastPage.number;
+      }
+
+      for (let i = 0; i < chapter.pages.length;) {
+        const newPage = [];
+        for (let j = i; j < i + 3; j++) {
+          // if (chapter.pages[j]) {
+          if (chapter.pages[j] || chapter.pages[j] === 0) {
+            // let pageNumber = /* (chapter_index + 1) * */ (j + 1) + lastPageNumber;
+            let pageNumber = j + lastPageNumber;
+            // newPage.push({ url: chapter.pages[j], number: pageNumber });
+            newPage.push(pageNumber);
+          }
+        }
+        slideList.push({
+          id: AppGuid.generate(),
+          isTitle: false,
+          chapterTitle: chapter.title,
+          pages: [...newPage]
+        });
+        i += 3;
+      }
+    });
+
+    return slideList;
+    // this._slideList = slideList;
+  }
+  private calc_active_slide(bookSlideList: IBookSlide[], book_active_page: number) {
+    let activeSlide = 0;
+    for (let i = 0; i < bookSlideList.length; i++) {
+      let current_slide = bookSlideList[i];
+
+      for (let j = 0; j < current_slide.pages.length; j++) {
+        let current_page = current_slide.pages[j];
+        // if (current_page.number === book_active_page) {
+        if (current_page === book_active_page) {
+          activeSlide = i;
+          break;
+        }
+      }
+      if (activeSlide) {
+        break;
+      }
+    }
+    // console.log(Store_cart());
+    return activeSlide;
+  }
+
+  // private _slide_pages!: { id: number, page: IBookPosIndicator }[];
+  initSwiper() {
+    const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
+    this.createBookChapters();
+
+    this.book_page_length = bookPosList.length;
+    const progress_percent = this._libraryItem!.progress || 0;
+    // debugger;
+    this.book_active_index = Math.floor(this.book_page_length * progress_percent - 1); // - 1;
+    if (this.book_active_index > this.book_page_length - 1 || this.book_active_index < 0) {
+      console.error('this.book_active_index:', this.book_active_index, ' this._slide_pages.length:', this.book_page_length);
+      this.book_active_index = 0;
+    }
+
+    const slideList = this.getBookSlideList();
+    const activeSlide = this.calc_active_slide(slideList, this.book_active_index);
+    debugger;
+
+
+    // this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
+
+
+    // this.getSinglePagePath(this.book_active_index);
+
+
     // const self = this;
     // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
     // this.swiper_obj && this.swiper_obj.destroy(true, true);
     // let slides = [];
 
     this.swiper_obj = new Swiper('.swiper-container', {
-
+      keyboard: true,
+      virtual: {
+        slides: slideList, // this._slide_pages,
+        renderExternal: (data: Virtual) => {
+          this.setState({
+            virtualData: data,
+          });
+        }
+      },
+      initialSlide: activeSlide, // this.book_active_index,
       // virtual: {
       //   cache: true,
       //   slides: slides,
@@ -142,7 +318,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       //   // },
       // },
 
-      initialSlide: initialSlide,
+      // initialSlide: initialSlide,
       direction: 'vertical',
       // autoHeight: true,
       // slidesPerView: 3,
@@ -152,7 +328,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       autoHeight: true,
       spaceBetween: 32,
       // direction: 'vertical',
-      slidesPerView: 'auto',
+      // slidesPerView: 'auto',
+      slidesPerView: 3,
       // slidesPerView: 10, // 3
       freeMode: true,
       centeredSlides: true,
@@ -160,7 +337,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       //   el: '.swiper-scrollbar',
       // },
       // mousewheel: true,
-      keyboard: true,
+      // keyboard: true,
       // effect: 'flip',
       // normalizeSlideIndex: true,
       // speed: 30,
@@ -170,8 +347,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       centerInsufficientSlides: true,
       grabCursor: true,
       simulateTouch: true,
-      observer: true,
-      observeParents: true,
+      // observer: true,
+      // observeParents: true,
       // init:
 
 
@@ -192,7 +369,9 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           // }, 500);
 
           // self.swiper_slideTo_initialSlide(initialSlide);
-          this.swiper_solid_slideTo_initialSlide(initialSlide);
+
+          // this.swiper_solid_slideTo_initialSlide(initialSlide);
+          this.setState({ page_loading: false });
         },
 
       }
@@ -204,7 +383,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     // })
   }
 
-  swiper_solid_slideTo_initialSlide(initialSlide: number) {
+  private swiper_solid_slideTo_initialSlide(initialSlide: number) {
     setTimeout(() => {
       this.swiper_obj && this.swiper_obj.slideTo(initialSlide, undefined, false);
       this.setState({ page_loading: false });
@@ -274,8 +453,21 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     )
   }
 
+  getPagePath_ifExist(pageIndex: number) {
+    const page = this._bookInstance.getPage_ifExist(pageIndex);
+    if (!page) { ReaderUtility.check_swiperImg_loaded() }
+    return page;
+  }
+  // async 
+  getPagePath(pageIndex: number) {
+    // await CmpUtility.waitOnMe(0);
+    return this._bookInstance.getPage_with_storeAround(pageIndex, 5);
+    // return this._bookInstance.getPage(pageIndex);
+  }
+
   swiper_item_render(
-    slide: { id: string; chapterTitle: string; isTitle: boolean; pages: { url: string; number: number }[] },
+    // slide: { id: string; chapterTitle: string; isTitle: boolean; pages: { url: string; number: number }[] },
+    slide: { id: string; chapterTitle: string; isTitle: boolean; pages: number[] },
     // offset: any
   ) {
     if (slide.isTitle) {
@@ -292,9 +484,11 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
     } else {
       const slide_pages = [...slide.pages];
+      const slide_pages_length = slide_pages.length
       if (slide_pages.length < 3) {
-        for (let i = 0; i < 3 - slide_pages.length; i++) {
-          slide_pages.push({ number: -1, url: '' });
+        for (let i = 0; i < 3 - slide_pages_length; i++) {
+          // slide_pages.push({ number: -1, url: CmpUtility.bookSizeImagePath }); // url: ''
+          slide_pages.push(-1); // url: ''
         }
       }
       return (
@@ -303,22 +497,41 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           <div className="swiper-slide" >
             <div className="item-wrapper" >
               {slide_pages.map((pg, pg_index) => {
+                const key = pg === -1 ? (slide_pages[0] + '' + pg + '' + pg_index) : pg;
                 return (
-                  <Fragment key={pg_index}>
-                    <div className={
-                      "item " +
-                      ((pg.number === this.book_active_page) ? 'active ' : '') +
-                      ((pg.number === -1) ? 'invisible' : '')
-                    } onClick={() => this.onPageClicked(pg.number)}>
+                  // <Fragment key={pg_index}>
+                  <Fragment key={key}>
+                    <div
+                      // className={
+                      //   "item " +
+                      //   ((pg.number === this.book_active_index) ? 'active ' : '') +
+                      //   ((pg.number === -1) ? 'invisible' : '')
+                      // }
+                      className={
+                        "item " +
+                        ((pg === this.book_active_index) ? 'active ' : '') +
+                        ((pg === -1) ? 'invisible' : '')
+                      }
+                      // onClick={() => this.onPageClicked(pg.number)}
+                      onClick={() => this.onPageClicked(pg)}
+                    >
                       <div className="page-img-wrapper">
                         <img
                           className="page-img"
-                          src={pg.url}
+                          // src={pg.url}
+                          // src={pg + ''}
+                          src={(() => { if (pg !== -1) return this.getPagePath_ifExist(pg); else return CmpUtility.bookSizeImagePath; })()}
+                          data-src={(() => { if (pg !== -1) return this.getPagePath(pg); else return CmpUtility.bookSizeImagePath; })()}
                           alt="book"
                           loading="lazy"
+                          width={this._bookPageSize.width}
+                          height={this._bookPageSize.height}
                         />
                       </div>
-                      <div className="page-number text-muted">{pg.number}</div>
+                      <div className="page-number text-muted">
+                        {pg + 1}
+                        {/* {pg.number} */}
+                      </div>
                     </div>
                   </Fragment>
                 )
@@ -340,8 +553,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
   swiper_render() {
     if (true) {
-      // const vrtData: any = this.state.virtualData;
-      const swiper_slides: any = this.state.swiper_slides;
+      const vrtData: any = this.state.virtualData;
+      // const swiper_slides: any = this.state.swiper_slides;
 
 
       // let offset_dir = 'top';
@@ -357,9 +570,10 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           <div className="app-swiper">
             <div className="swiper-container" dir={swiper_dir}>
               <div className="swiper-wrapper">
-                {/* {vrtData.slides.map(( */}
-                {swiper_slides.map((
-                  slide: { id: string; chapterTitle: string; isTitle: boolean; pages: { url: string; number: number }[] },
+                {vrtData.slides.map((
+                  // {swiper_slides.map((
+                  // slide: { id: string; chapterTitle: string; isTitle: boolean; pages: { url: string; number: number }[] },
+                  slide: { id: string; chapterTitle: string; isTitle: boolean; pages: number[] },
                   index: any) => (
                     <Fragment key={slide.id}>
                       {this.swiper_item_render(slide/* , vrtData.offset */)}
@@ -384,14 +598,21 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     this.swiperTaped = false;
   }
 
-  async onPageClicked(pg_number: number) {
+  async onPageClicked(pg_index: number) {
     await CmpUtility.waitOnMe(10);
     if (!this.swiperTaped) return;
     // debugger;
-    console.log('pg_number: ', pg_number);
-    // todo store active page number
-    // make sure redux (reader) updated before chnage route.
+    const activePage = pg_index + 1;
+    const bookProgress = activePage / this.book_page_length;
+
+    updateLibraryItem_progress(this.book_id, bookProgress);
+
     this.gotoReader_reading(this.book_id);
+  }
+
+  goBack() {
+    if (this.props.history.length > 1) { this.props.history.goBack(); }
+    else { this.props.history.push(`/dashboard`); }
   }
 
   gotoReader_overview(book_id: string) {
