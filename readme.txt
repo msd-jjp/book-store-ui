@@ -180,5 +180,20 @@ call CmpUtility.refreshView(); when action need it, remove from general method l
 fetch user on app open & in layout validUser. update logedInUser state.
 
 ====================================================================================
+
 kindle --> mark as un-read
+
+====================================================================================
+
+reader Reading & Overview —> keyboard (like readerScroll)
+
+on getPage only work with  specPage not "N"page
+also getPageAround spec not Npage.
+
+why book not updated? check "اگزو 3"  writer (in db & server).
+
+mabe in profile: get user instead of person.
+
+onSync : check cart too.
+
 ====================================================================================

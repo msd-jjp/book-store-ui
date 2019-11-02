@@ -11,9 +11,10 @@ export class StoreData {
             data.forEach(obj => {
                 let found = coll.findOne({ id: obj.id });
                 if (found) {
-                    coll.findAndUpdate({ id: obj.id }, oldObj => {
+                    /* coll.findAndUpdate({ id: obj.id }, oldObj => {
                         return obj;
-                    });
+                    }); */
+                    StoreData.updateData_byId(collectionName, obj.id, obj);
                 } else {
                     coll.insert(obj);
                 }
@@ -21,9 +22,17 @@ export class StoreData {
         } else {
             let found = coll.findOne({ id: data.id });
             if (found) {
-                coll.findAndUpdate({ id: data.id }, oldObj => {
-                    return data;
-                });
+                // coll.findAndUpdate({ id: data.id }, oldObj => {
+                //     /* const newData = { ...data, $loki: undefined, meta: undefined };
+                //     newData['$loki'] = oldObj['$loki'];
+                //     newData['meta'] = oldObj['meta'];
+                //     // oldObj = data;
+                //     // return data;
+                //     return newData; */
+                //     return data;
+                // });
+                StoreData.updateData_byId(collectionName, data.id, data);
+                // appLocalStorage.app_db.
             } else {
                 coll.insert(data);
             }
@@ -39,9 +48,10 @@ export class StoreData {
 
         let found = coll.findOne({ id: order_id });
         if (found) {
-            coll.findAndUpdate({ id: order_id }, oldObj => {
+            /* coll.findAndUpdate({ id: order_id }, oldObj => {
                 return newData;
-            });
+            }); */
+            StoreData.updateData_byId('clc_userInvoicedOrderItem', order_id, newData);
         } else {
             coll.insert(newData);
         }
@@ -52,11 +62,30 @@ export class StoreData {
         const newData: IBook_file_store = { id: book_id, file: Array.from(data) };
         let found = coll.findOne({ id: book_id });
         if (found) {
-            coll.findAndUpdate({ id: book_id }, oldObj => {
+            /* coll.findAndUpdate({ id: book_id }, oldObj => {
                 return newData;
-            });
+            }); */
+            StoreData.updateData_byId(mainFile ? 'clc_book_mainFile' : 'clc_book_sampleFile', book_id, newData);
         } else {
             coll.insert(newData);
         }
     }
+
+    private static updateData_byId(collectionName: TCollectionName, id: string, newData: any) {
+        let coll: Collection<any> = appLocalStorage[collectionName];
+        /* coll.chain().find({ id: id })
+            // .update(newData);
+            .update(function (obj) {
+                // obj = newData;
+                return newData;
+            }); */
+        // coll.update({});
+        const oldData = coll.findOne({ id });
+        if (!oldData) return;
+        const newDataLoki = { ...newData, $loki: undefined, meta: undefined };
+        newDataLoki['$loki'] = oldData['$loki'];
+        newDataLoki['meta'] = oldData['meta'];
+        coll.update(newDataLoki);
+    }
+
 }
