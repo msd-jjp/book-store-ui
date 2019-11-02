@@ -227,6 +227,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     this.getSinglePagePath(this.book_active_index);
 
     this.swiper_obj = new Swiper('.swiper-container', {
+      keyboard: true,
       virtual: {
         slides: this._slide_pages,
         renderExternal: (data: Virtual) => {

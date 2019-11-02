@@ -248,6 +248,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       // freeMode: true,
       // centeredSlides: true,
       // slidesPerView: 1,
+      keyboard: true,
       virtual: {
         cache: true,
         slides: this._slide_pages,
