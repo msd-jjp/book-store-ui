@@ -354,9 +354,10 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     if (!page) { ReaderUtility.check_swiperImg_loaded() }
     return page;
   }
-  async getPagePath(pageIndex: number) {
-    await CmpUtility.waitOnMe(0);
-    return this._bookInstance.getPage_with_storeAround(pageIndex, 1);
+  // async 
+  getPagePath(pageIndex: number) {
+    // await CmpUtility.waitOnMe(0);
+    return this._bookInstance.getPage_with_storeAround(pageIndex, 5);
     // return this._bookInstance.getPage(pageIndex);
   }
   getSinglePagePath(pageIndex: number) {

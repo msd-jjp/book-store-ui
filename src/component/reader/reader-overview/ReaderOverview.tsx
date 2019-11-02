@@ -327,7 +327,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   // async 
   getPagePath(pageIndex: number) {
     // await CmpUtility.waitOnMe(0);
-    const page = this._bookInstance.getPage_with_storeAround(pageIndex, 1);
+    const page = this._bookInstance.getPage_with_storeAround(pageIndex, 5);
     return page;
   }
   getSinglePagePath(pageIndex: number) {

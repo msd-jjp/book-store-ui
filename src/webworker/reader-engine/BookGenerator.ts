@@ -28,6 +28,20 @@ export class BookGenerator extends book {
         let page = this.getFromStorage(index);
         return page;
     }
+    // getPage_with_storeAround_old(index: number, n: number): string {
+    //     let page = this.getFromStorage(index);
+    //     if (!page) {
+    //         const allPages_pos = this.getAllPages_pos();
+    //         page = this.RenderSpecPage(allPages_pos[index]);
+    //         this.setToStorage(index, page);
+    //         this.storeAround(index, n);
+    //     }
+    //     return page;
+    // }
+
+    /**
+     * if page not exist it will store around.
+     */
     getPage_with_storeAround(index: number, n: number): string {
         let page = this.getFromStorage(index);
         if (!page) {
@@ -38,11 +52,17 @@ export class BookGenerator extends book {
         }
         return page;
     }
+    
 
+    // private async storeAround_DELETE_ME(pageIndex: number, n: number) {
+    //     await CmpUtility.waitOnMe(0);
+    //     this.get_n_pages_before_x(pageIndex, n);
+    //     this.get_n_pages_after_x(pageIndex, n+1);
+    // }
     private async storeAround(pageIndex: number, n: number) {
         await CmpUtility.waitOnMe(0);
-        this.get_n_pages_before_x(pageIndex, n);
-        this.get_n_pages_after_x(pageIndex, n+1);
+        this.store_n_pages_before_x(pageIndex, n);
+        this.store_n_pages_after_x(pageIndex, n);
     }
 
     private _allChapters: IBookContent[] | undefined;
@@ -51,32 +71,43 @@ export class BookGenerator extends book {
         return this._allChapters;
     }
 
-    get_n_pages_before_x(x: number, n: number): string[] {
-        let y = x - n;
-        if (y <= 0) y = 0;
-        let m = x - y;
-        const allPages_pos = this.getAllPages_pos();
-        const mPages = this.renderNPages(allPages_pos[y], m);
+    // private get_n_pages_before_x(x: number, n: number): string[] {
+    //     let y = x - n;
+    //     if (y <= 0) y = 0;
+    //     let m = x - y;
+    //     const allPages_pos = this.getAllPages_pos();
+    //     const mPages = this.renderNPages(allPages_pos[y], m);
 
-        for (let i = 0; i < mPages.length; i++) {
-            this.setToStorage(y + i, mPages[i]);
-        }
+    //     for (let i = 0; i < mPages.length; i++) {
+    //         this.setToStorage(y + i, mPages[i]);
+    //     }
 
-        return mPages;
-    }
+    //     return mPages;
+    // }
     /** get n pages from x, include x, first page is x.
      * @param x from x
      * @param n number of page include index x
      */
-    get_n_pages_after_x(x: number, n: number): string[] {
-        const allPages_pos = this.getAllPages_pos();
-        const nPages = this.renderNPages(allPages_pos[x], n);
+    // private get_n_pages_after_x(x: number, n: number): string[] {
+    //     const allPages_pos = this.getAllPages_pos();
+    //     const nPages = this.renderNPages(allPages_pos[x], n);
 
-        for (let i = 0; i < nPages.length; i++) {
-            this.setToStorage(x + i, nPages[i]);
+    //     for (let i = 0; i < nPages.length; i++) {
+    //         this.setToStorage(x + i, nPages[i]);
+    //     }
+
+    //     return nPages;
+    // }
+    private store_n_pages_before_x(x: number, n: number): void {
+        for (let i = x - 1; i >= x - n && i >= 0; i--) {
+            this.getPage(i);
         }
-
-        return nPages;
+    }
+    private store_n_pages_after_x(x: number, n: number): void {
+        const allPages_pos = this.getAllPages_pos();
+        for (let i = x + 1; i < allPages_pos.length && i <= x + n; i++) {
+            this.getPage(i);
+        }
     }
 
 
