@@ -115,7 +115,40 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
           // console.log('tap');
           // this.onSlideClicked();
           this.onSwiperTaped();
-        }
+        },
+        // init: () => {
+        //   debugger;
+        //   // return;
+        //   setTimeout(() => {
+        //     let fvd = this.swiper_obj;
+        //     debugger;
+        //     if (!this.swiper_obj) return;
+        //     if (Array.isArray(this.swiper_obj)) {
+        //       this.swiper_obj.forEach(sw => {
+        //         // (sw as any).resizeReInit = false;
+        //         (sw as any).resize.resizeHandler = undefined;
+        //         (sw as any).resize.orientationChangeHandler = undefined;
+        //       });
+        //     } else {
+        //       // (this.swiper_obj as any).resizeReInit = false;
+        //       (this.swiper_obj as any).resize.resizeHandler = undefined;
+        //       (this.swiper_obj as any).resize.orientationChangeHandler = undefined;
+        //     }
+        //   }, 500);
+        // },
+
+        // resize: () => {
+        //   let fvd = this.swiper_obj;
+        //   debugger;
+        //   if (!this.swiper_obj) return;
+        //   if (Array.isArray(this.swiper_obj)) {
+        //     this.swiper_obj.forEach(sw => {
+        //       sw.detachEvents();
+        //     });
+        //   } else {
+        //     this.swiper_obj.detachEvents();
+        //   }
+        // }
       }
     });
   }

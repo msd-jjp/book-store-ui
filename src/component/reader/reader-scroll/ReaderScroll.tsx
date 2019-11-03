@@ -285,10 +285,11 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       freeMode: true,
       centeredSlides: true,
 
-      // roundLengths: true,
-      // centerInsufficientSlides: true,
+      roundLengths: true,
+      centerInsufficientSlides: true,
       grabCursor: true,
       // simulateTouch: true,
+      // slidesPerGroup: 1,
 
       on: {
         tap: () => {
