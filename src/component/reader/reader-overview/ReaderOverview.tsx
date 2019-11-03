@@ -637,7 +637,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
   async chapterClicked(ibc: IBookContent) {
     // debugger;
-    const pageIndex = this.getPageIndex_byChapter(ibc.pos);
+    const pageIndex = this.getPageIndex_withChapter(ibc.pos);
     if (pageIndex || pageIndex === 0) {
       this.hideSidebar();
       await CmpUtility.waitOnMe(100);
@@ -648,33 +648,36 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   private _pagePosList: number[] = [];
-  getPageIndex_byChapter(chapterPos: IBookPosIndicator): number | undefined {
+  getPageIndex_withChapter(chapterPos: IBookPosIndicator): number | undefined {
     if (!this._pagePosList.length) {
       const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
       bookPosList.forEach(bpi => {
-        this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
+        // this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
+        this._pagePosList.push(ReaderUtility.calc_bookContentPos_value(bpi));
       });
     }
 
-    const chapterIndex = chapterPos.group * 1000000 + chapterPos.atom;
-    let pageIndex = undefined;
-    for (var i = 0; i < this._pagePosList.length; i++) {
-      if (this._pagePosList[i] === chapterIndex) {
-        pageIndex = i;
-        break;
-      } else if (this._pagePosList[i] > chapterIndex) {
-        pageIndex = i - 1;
-        break;
-      }
-    }
+    return ReaderUtility.getPageIndex_byChapter(chapterPos, this._pagePosList);
 
-    if (pageIndex && pageIndex < 0) return;
+    // const chapterIndex = chapterPos.group * 1000000 + chapterPos.atom;
+    // let pageIndex = undefined;
+    // for (var i = 0; i < this._pagePosList.length; i++) {
+    //   if (this._pagePosList[i] === chapterIndex) {
+    //     pageIndex = i;
+    //     break;
+    //   } else if (this._pagePosList[i] > chapterIndex) {
+    //     pageIndex = i - 1;
+    //     break;
+    //   }
+    // }
 
-    if (pageIndex === undefined && this._pagePosList.length) {
-      pageIndex = this._pagePosList.length - 1;
-    }
+    // if (pageIndex && pageIndex < 0) return;
 
-    return pageIndex;
+    // if (pageIndex === undefined && this._pagePosList.length) {
+    //   pageIndex = this._pagePosList.length - 1;
+    // }
+
+    // return pageIndex;
   }
 
   goBack() {

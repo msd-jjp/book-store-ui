@@ -168,12 +168,13 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
   private _pagePosList: number[] = [];
   private _chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
-  private async  calc_chapters_with_page() {
+  private async calc_chapters_with_page() {
     await CmpUtility.waitOnMe(0);
     if (!this._pagePosList.length) {
       const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
       bookPosList.forEach(bpi => {
-        this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
+        // this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
+        this._pagePosList.push(ReaderUtility.calc_bookContentPos_value(bpi));
       });
     }
 

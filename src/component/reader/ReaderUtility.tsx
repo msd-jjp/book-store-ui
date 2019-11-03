@@ -214,6 +214,10 @@ export abstract class ReaderUtility {
         }, 300);
     }
 
+    static calc_bookContentPos_value(bookPosIndicator: IBookPosIndicator): number {
+        return bookPosIndicator.group * 1000000 + bookPosIndicator.atom;
+    }
+
     private static _checkEpubBook_chapters_exist: {
         chapters: IEpubBook_chapters;
         book_id: string
@@ -239,18 +243,22 @@ export abstract class ReaderUtility {
             return {
                 content: ibc,
                 clickable: (ibc.pos.atom === -1 && ibc.pos.group === -1) ? false : true,
-                id: ibc.pos.group * 1000000 + ibc.pos.atom + '-' + ibc.parentIndex,
+                // id: ibc.pos.group * 1000000 + ibc.pos.atom + '-' + ibc.parentIndex,
+                id: ReaderUtility.calc_bookContentPos_value(ibc.pos) + '-' + ibc.parentIndex,
                 parentId: (ibc.parentIndex === 65535) ? undefined :
                     (chapterList[ibc.parentIndex])
-                        ? chapterList[ibc.parentIndex].pos.group * 1000000 + chapterList[ibc.parentIndex].pos.atom + '-' + chapterList[ibc.parentIndex].parentIndex
+                        // ? chapterList[ibc.parentIndex].pos.group * 1000000 + chapterList[ibc.parentIndex].pos.atom + '-' + chapterList[ibc.parentIndex].parentIndex
+                        ? ReaderUtility.calc_bookContentPos_value(chapterList[ibc.parentIndex].pos) + '-' + chapterList[ibc.parentIndex].parentIndex
                         : undefined
             }
         });
 
         // todo --> this sort not work 100% (group * 1000000 + atom not always correct)
         chapterList_flat.sort((a, b) => {
-            const a_num = a.content!.pos.group * 1000000 + a.content!.pos.atom;
-            const b_num = b.content!.pos.group * 1000000 + b.content!.pos.atom;
+            // const a_num = a.content!.pos.group * 1000000 + a.content!.pos.atom;
+            // const b_num = b.content!.pos.group * 1000000 + b.content!.pos.atom;
+            const a_num = ReaderUtility.calc_bookContentPos_value(a.content!.pos);
+            const b_num = ReaderUtility.calc_bookContentPos_value(b.content!.pos);
             if (a_num < b_num) {
                 return -1;
             } else if (a_num > b_num) {
@@ -314,7 +322,8 @@ export abstract class ReaderUtility {
         if (!chapterPos || !pagePosList.length) {
             return;
         }
-        const chapterId = chapterPos.group * 1000000 + chapterPos.atom;
+        // const chapterId = chapterPos.group * 1000000 + chapterPos.atom;
+        const chapterId = ReaderUtility.calc_bookContentPos_value(chapterPos);
         let pageIndex = undefined;
         for (var i = 0; i < pagePosList.length; i++) {
             if (pagePosList[i] === chapterId) {
@@ -339,7 +348,7 @@ export abstract class ReaderUtility {
         : { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] | undefined {
 
         if (!pagePosList.length) return;
-        
+
         const chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
         // debugger;
         flat_chapters.forEach((ch, index) => {

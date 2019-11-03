@@ -171,23 +171,18 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     if (!this._pagePosList.length) {
       const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
       bookPosList.forEach(bpi => {
-        this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
+        // this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
+        this._pagePosList.push(ReaderUtility.calc_bookContentPos_value(bpi));
       });
     }
 
     this._chapters_with_page = ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat) || [];
-
-    // debugger;
-    // this.setState({});
-    // this.getBookSlideList();
   }
 
-  // private _slideList: IBookSlide[] = [];
   private getBookSlideList(): IBookSlide[] {
 
     let slideList: IBookSlide[] = [];
 
-    // let bookTree:{ chapter_list: { title: string; pages: string[] }[] } = {};
     const bookTree: { title: string; pages: number[] }[] = [];
     this._createBookChapters!.flat.forEach((ch, ch_index) => {
       if (!ch.clickable) return;
@@ -208,22 +203,10 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
         pages: []
       });
 
-      /* let lastPageNumber = 0;
-      if (slideList.length && slideList.length > 1 && slideList[slideList.length - 1 - 1].pages.length) {
-        const lastSlide = slideList[slideList.length - 1 - 1];
-        const lastSlide_lastPage = lastSlide.pages[lastSlide.pages.length - 1];
-        lastPageNumber = lastSlide_lastPage; // lastSlide_lastPage.number;
-      } */
-
       for (let i = 0; i < chapter.pages.length;) {
         const newPage = [];
         for (let j = i; j < i + 3; j++) {
-          // if (chapter.pages[j]) {
           if (chapter.pages[j] || chapter.pages[j] === 0) {
-            // let pageNumber = /* (chapter_index + 1) * */ (j + 1) + lastPageNumber;
-            // let pageNumber = j + lastPageNumber;
-            // newPage.push({ url: chapter.pages[j], number: pageNumber });
-            // newPage.push(pageNumber);
             newPage.push(chapter.pages[j]);
           }
         }
@@ -238,17 +221,15 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     });
 
     return slideList;
-    // this._slideList = slideList;
   }
-  private calc_active_slide(bookSlideList: IBookSlide[], book_active_page: number) {
+  private calc_active_slide(bookSlideList: IBookSlide[], book_activePage_index: number) {
     let activeSlide = 0;
     for (let i = 0; i < bookSlideList.length; i++) {
       let current_slide = bookSlideList[i];
 
       for (let j = 0; j < current_slide.pages.length; j++) {
         let current_page = current_slide.pages[j];
-        // if (current_page.number === book_active_page) {
-        if (current_page === book_active_page) {
+        if (current_page === book_activePage_index) {
           activeSlide = i;
           break;
         }
@@ -257,11 +238,9 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
         break;
       }
     }
-    // console.log(Store_cart());
     return activeSlide;
   }
 
-  // private _slide_pages!: { id: number, page: IBookPosIndicator }[];
   initSwiper() {
     const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
     this.createBookChapters();
@@ -279,17 +258,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     const activeSlide = this.calc_active_slide(slideList, this.book_active_index);
     debugger;
 
-
-    // this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
-
-
     // this.getSinglePagePath(this.book_active_index);
-
-
-    // const self = this;
-    // const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
-    // this.swiper_obj && this.swiper_obj.destroy(true, true);
-    // let slides = [];
+    this.getPagePath(this.book_active_index);
 
     this.swiper_obj = new Swiper('.swiper-container', {
       keyboard: true,
@@ -323,18 +293,12 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
         init: () => {
           // this.swiper_solid_slideTo_initialSlide(initialSlide);
           this.setState({ page_loading: false });
-        },
-
+        }
       }
     });
-    // activeIndex && this.gotoIndex(activeIndex);
-
-    // this.swiper_obj.on('touchMove', function(){
-    //     console.log('touchMove');
-    // })
   }
 
-  private swiper_solid_slideTo_initialSlide(initialSlide: number) {
+  /* private swiper_solid_slideTo_initialSlide(initialSlide: number) {
     setTimeout(() => {
       this.swiper_obj && this.swiper_obj.slideTo(initialSlide, undefined, false);
       this.setState({ page_loading: false });
@@ -342,41 +306,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     setTimeout(() => {
       this.swiper_obj && this.swiper_obj.slideTo(initialSlide, undefined, false);
     }, 1000);
-  }
-
-  /* _DELETE_ME */
-  swiper_slideTo_initialSlide(initialSlide: number) {
-    const maximum_wait = 1000;
-    let waiting = 0;
-
-    const goto_slide = () => {
-      setTimeout(() => {
-
-        console.log(
-          'swiper_obj2: ', this.swiper_obj,
-          ' --------------- ',
-          'waiting: ', waiting,
-          ' --------------- ',
-          'initialSlide: ', initialSlide
-        );
-
-        if (this.swiper_obj) {
-          this.swiper_obj.slideTo(initialSlide);
-          this.setState({ page_loading: false });
-        } else {
-          if (waiting >= maximum_wait) {
-            this.setState({ page_loading: false });
-          } else {
-            waiting = waiting + 100;
-            goto_slide();
-          }
-        }
-
-      }, waiting);
-    };
-
-    goto_slide();
-  }
+  } */
 
   reading_body_render() {
     return (
