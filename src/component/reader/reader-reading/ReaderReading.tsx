@@ -179,7 +179,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
     this._chapters_with_page = ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat) || [];
 
-    debugger;
+    // debugger;
     this.setState({});
   }
 

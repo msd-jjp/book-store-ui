@@ -177,7 +177,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
     this._chapters_with_page = ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat) || [];
 
-    debugger;
+    // debugger;
     // this.setState({});
     // this.getBookSlideList();
   }
@@ -208,12 +208,12 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
         pages: []
       });
 
-      let lastPageNumber = 0;
+      /* let lastPageNumber = 0;
       if (slideList.length && slideList.length > 1 && slideList[slideList.length - 1 - 1].pages.length) {
         const lastSlide = slideList[slideList.length - 1 - 1];
         const lastSlide_lastPage = lastSlide.pages[lastSlide.pages.length - 1];
         lastPageNumber = lastSlide_lastPage; // lastSlide_lastPage.number;
-      }
+      } */
 
       for (let i = 0; i < chapter.pages.length;) {
         const newPage = [];
@@ -221,9 +221,10 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           // if (chapter.pages[j]) {
           if (chapter.pages[j] || chapter.pages[j] === 0) {
             // let pageNumber = /* (chapter_index + 1) * */ (j + 1) + lastPageNumber;
-            let pageNumber = j + lastPageNumber;
+            // let pageNumber = j + lastPageNumber;
             // newPage.push({ url: chapter.pages[j], number: pageNumber });
-            newPage.push(pageNumber);
+            // newPage.push(pageNumber);
+            newPage.push(chapter.pages[j]);
           }
         }
         slideList.push({
@@ -301,75 +302,25 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
         }
       },
       initialSlide: activeSlide, // this.book_active_index,
-      // virtual: {
-      //   cache: true,
-      //   slides: slides,
-      //   renderExternal(data: Virtual) {
-      //     // assign virtual slides data
-      //     self.setState({
-      //       virtualData: data,
-      //     });
-      //   },
-      //   // renderSlide(slide: any, index: any) {
-      //   //   console.log(slide, index);
-      //   //   // self.setState({
-      //   //   //   virtualData: slide,
-      //   //   // });
-      //   // },
-      // },
-
-      // initialSlide: initialSlide,
       direction: 'vertical',
-      // autoHeight: true,
-      // slidesPerView: 3,
       mousewheel: true,
-      // direction: 'vertical',
-      // slidesPerView: undefined,
-      autoHeight: true,
+      autoHeight: true, // false
       spaceBetween: 32,
-      // direction: 'vertical',
       // slidesPerView: 'auto',
       slidesPerView: 3,
-      // slidesPerView: 10, // 3
       freeMode: true,
       centeredSlides: true,
-      // scrollbar: {
-      //   el: '.swiper-scrollbar',
-      // },
-      // mousewheel: true,
-      // keyboard: true,
-      // effect: 'flip',
-      // normalizeSlideIndex: true,
-      // speed: 30,
-      // virtualTranslate:true,
-      roundLengths: true,
-      // watchOverflow: true,
-      centerInsufficientSlides: true,
-      grabCursor: true,
-      simulateTouch: true,
-      // observer: true,
-      // observeParents: true,
-      // init:
 
+      // roundLengths: true,
+      // centerInsufficientSlides: true,
+      grabCursor: true,
+      // simulateTouch: true,
 
       on: {
         tap: () => {
-          this.onSlideClicked();
+          this.onSwiperTaped();
         },
         init: () => {
-          // console.log('init swiper, stop page loader here...');
-          // todo: stop page loader
-          // self.swiper_obj && self.swiper_obj.slideTo(3);
-
-          // console.log('swiper_obj1:', self.swiper_obj);
-          // setTimeout(() => {
-          //   console.log('swiper_obj2:', self.swiper_obj);
-          //   self.swiper_obj && self.swiper_obj.slideTo(initialSlide);
-          //   self.setState({ page_loading: false });
-          // }, 500);
-
-          // self.swiper_slideTo_initialSlide(initialSlide);
-
           // this.swiper_solid_slideTo_initialSlide(initialSlide);
           this.setState({ page_loading: false });
         },
@@ -468,13 +419,13 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   swiper_item_render(
     // slide: { id: string; chapterTitle: string; isTitle: boolean; pages: { url: string; number: number }[] },
     slide: { id: string; chapterTitle: string; isTitle: boolean; pages: number[] },
-    // offset: any
+    offset: any
   ) {
     if (slide.isTitle) {
       return (
         <>
-          {/* <div className="swiper-slide" style={{ top: `${offset}px` }}> */}
-          <div className="swiper-slide" >
+          <div className="swiper-slide" style={{ top: `${offset}px` }}>
+            {/* <div className="swiper-slide" > */}
             <div className="item-- text-center d-block-- my-4" >
               <h3 className="chapterTitle-- font-weight-normal">{slide.chapterTitle}</h3>
             </div>
@@ -491,10 +442,11 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           slide_pages.push(-1); // url: ''
         }
       }
+      const invisibleImgSrc = ''; // CmpUtility.bookSizeImagePath;
       return (
         <>
-          {/* <div className="swiper-slide" style={{ top: `${offset}px` }}> */}
-          <div className="swiper-slide" >
+          <div className="swiper-slide" style={{ top: `${offset}px` }}>
+            {/* <div className="swiper-slide" > */}
             <div className="item-wrapper" >
               {slide_pages.map((pg, pg_index) => {
                 const key = pg === -1 ? (slide_pages[0] + '' + pg + '' + pg_index) : pg;
@@ -520,9 +472,9 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
                           className="page-img"
                           // src={pg.url}
                           // src={pg + ''}
-                          src={(() => { if (pg !== -1) return this.getPagePath_ifExist(pg); else return CmpUtility.bookSizeImagePath; })()}
-                          data-src={(() => { if (pg !== -1) return this.getPagePath(pg); else return CmpUtility.bookSizeImagePath; })()}
-                          alt="book"
+                          src={(() => { if (pg !== -1) return this.getPagePath_ifExist(pg); else return invisibleImgSrc; })()}
+                          data-src={(() => { if (pg !== -1) return this.getPagePath(pg); else return invisibleImgSrc; })()}
+                          alt=""
                           loading="lazy"
                           width={this._bookPageSize.width}
                           height={this._bookPageSize.height}
@@ -576,7 +528,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
                   slide: { id: string; chapterTitle: string; isTitle: boolean; pages: number[] },
                   index: any) => (
                     <Fragment key={slide.id}>
-                      {this.swiper_item_render(slide/* , vrtData.offset */)}
+                      {this.swiper_item_render(slide, vrtData.offset)}
                     </Fragment>
                   ))}
               </div>
@@ -590,9 +542,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   private swiperTaped = false;
-  async onSlideClicked() {
-    // this.swiperTaped = true;
-    // setTimeout(() => { this.swiperTaped = false; }, 0);
+  async onSwiperTaped() {
     this.swiperTaped = true;
     await CmpUtility.waitOnMe(50);
     this.swiperTaped = false;
