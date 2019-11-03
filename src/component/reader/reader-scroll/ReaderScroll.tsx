@@ -281,7 +281,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       autoHeight: true, // false
       spaceBetween: 32,
       // slidesPerView: 'auto',
-      slidesPerView: 3,
+      slidesPerView: 4,
       freeMode: true,
       centeredSlides: true,
 
