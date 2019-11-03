@@ -549,6 +549,14 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
             >
               {Localization.goto}
             </div>
+            <div className="item px-2 py-3 text-capitalize cursor-pointer opacity-5"
+              onClick={() => { }}
+            >
+              <div className="d-flex justify-content-between align-items-center">
+                <span>{Localization.sync}</span>
+                <i className="fa fa-refresh"></i>
+              </div>
+            </div>
             <div className="item px-2 py-3">
               {this.sidebar_book_chapter_render()}
             </div>

@@ -13,6 +13,7 @@ interface IEpubBook_chapters_flat {
     clickable: boolean;
     id: string | undefined;
     parentId: string | undefined;
+    level: number | undefined;
 }
 type IEpubBook_chapters_flat_list = IEpubBook_chapters_flat[];
 interface IEpubBook_chapters_tree extends IEpubBook_chapters_flat {
@@ -249,7 +250,8 @@ export abstract class ReaderUtility {
                     (chapterList[ibc.parentIndex])
                         // ? chapterList[ibc.parentIndex].pos.group * 1000000 + chapterList[ibc.parentIndex].pos.atom + '-' + chapterList[ibc.parentIndex].parentIndex
                         ? ReaderUtility.calc_bookContentPos_value(chapterList[ibc.parentIndex].pos) + '-' + chapterList[ibc.parentIndex].parentIndex
-                        : undefined
+                        : undefined,
+                level: undefined
             }
         });
 
@@ -282,23 +284,27 @@ export abstract class ReaderUtility {
         }
 
         const _epubBook_chapters: IEpubBook_chapters_tree | undefined
-            = { clickable: false, content: undefined, children: [], id: undefined, parentId: undefined };
+            = { clickable: false, content: undefined, children: [], id: undefined, parentId: undefined, level: undefined };
 
         if (chapterList_flat[0].content!.parentIndex === 65535) {
             _epubBook_chapters.content = chapterList_flat[0].content;
             _epubBook_chapters.id = chapterList_flat[0].id;
             _epubBook_chapters.parentId = chapterList_flat[0].parentId;
+            _epubBook_chapters.level = 0;
         }
         chapterList_flat.forEach(ch => {
             if (ch.content!.parentIndex !== 65535) {
                 if (!ch.parentId) return;
                 const p_ch = searchTree(_epubBook_chapters!, ch.parentId);
-                p_ch && p_ch.children.push({
+                if (!p_ch) return;
+                ch.level = (p_ch.level || p_ch.level === 0) ? p_ch.level + 1 : undefined
+                p_ch.children.push({
                     content: ch.content,
                     parentId: ch.parentId,
                     id: ch.id,
                     clickable: (ch.content!.pos.atom === -1 && ch.content!.pos.group === -1) ? false : true,
-                    children: []
+                    children: [],
+                    level: ch.level
                 });
             }
         });

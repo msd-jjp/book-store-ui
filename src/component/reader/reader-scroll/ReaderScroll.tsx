@@ -25,11 +25,12 @@ import { Virtual } from "swiper/dist/js/swiper.esm";
 import { AppGuid } from "../../../asset/script/guid";
 
 
-interface IBookSlide {
+interface IReaderScrollSlide {
   id: string;
   isTitle: boolean;
   chapterTitle: string;
   pages: number[]; // { url: string; number: number }[];
+  level: number | undefined;
 }
 
 interface IProps {
@@ -179,28 +180,30 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     this._chapters_with_page = ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat) || [];
   }
 
-  private getBookSlideList(): IBookSlide[] {
+  private getBookSlideList(): IReaderScrollSlide[] {
 
-    let slideList: IBookSlide[] = [];
+    let slideList: IReaderScrollSlide[] = [];
 
-    const bookTree: { title: string; pages: number[] }[] = [];
+    const bookChapter_withPages: { title: string; pages: number[], level: number | undefined }[] = [];
     this._createBookChapters!.flat.forEach((ch, ch_index) => {
       if (!ch.clickable) return;
       const firstPageIndex = this._chapters_with_page[ch_index].firstPageIndex;
       const lastPageIndex = this._chapters_with_page[ch_index].lastPageIndex;
       if (!((firstPageIndex || firstPageIndex === 0) && (lastPageIndex || lastPageIndex === 0))) return;
-      bookTree.push({
+      bookChapter_withPages.push({
         title: ch.content!.text,
-        pages: Array.from({ length: lastPageIndex - firstPageIndex + 1 }, (v, k) => k + firstPageIndex)
+        pages: Array.from({ length: lastPageIndex - firstPageIndex + 1 }, (v, k) => k + firstPageIndex),
+        level: ch.level
       });
     })
 
-    bookTree.forEach((chapter, chapter_index) => {
+    bookChapter_withPages.forEach((chapter, chapter_index) => {
       slideList.push({
         id: AppGuid.generate(),
         isTitle: true,
         chapterTitle: chapter.title,
-        pages: []
+        pages: [],
+        level: chapter.level
       });
 
       for (let i = 0; i < chapter.pages.length;) {
@@ -214,7 +217,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           id: AppGuid.generate(),
           isTitle: false,
           chapterTitle: chapter.title,
-          pages: [...newPage]
+          pages: [...newPage],
+          level: chapter.level
         });
         i += 3;
       }
@@ -222,7 +226,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
     return slideList;
   }
-  private calc_active_slide(bookSlideList: IBookSlide[], book_activePage_index: number) {
+  private calc_active_slide(bookSlideList: IReaderScrollSlide[], book_activePage_index: number) {
     let activeSlide = 0;
     for (let i = 0; i < bookSlideList.length; i++) {
       let current_slide = bookSlideList[i];
@@ -291,22 +295,16 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           this.onSwiperTaped();
         },
         init: () => {
-          // this.swiper_solid_slideTo_initialSlide(initialSlide);
           this.setState({ page_loading: false });
+
+          setTimeout(() => {
+            this.swiper_obj && this.swiper_obj.slideTo(activeSlide + 1);
+            this.swiper_obj && this.swiper_obj.slideTo(activeSlide);
+          }, 1000);
         }
       }
     });
   }
-
-  /* private swiper_solid_slideTo_initialSlide(initialSlide: number) {
-    setTimeout(() => {
-      this.swiper_obj && this.swiper_obj.slideTo(initialSlide, undefined, false);
-      this.setState({ page_loading: false });
-    }, 500);
-    setTimeout(() => {
-      this.swiper_obj && this.swiper_obj.slideTo(initialSlide, undefined, false);
-    }, 1000);
-  } */
 
   reading_body_render() {
     return (
@@ -346,18 +344,24 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     // return this._bookInstance.getPage(pageIndex);
   }
 
-  swiper_item_render(
-    // slide: { id: string; chapterTitle: string; isTitle: boolean; pages: { url: string; number: number }[] },
-    slide: { id: string; chapterTitle: string; isTitle: boolean; pages: number[] },
-    offset: any
-  ) {
+  swiper_item_render(slide: IReaderScrollSlide, offset: any) {
     if (slide.isTitle) {
       return (
         <>
           <div className="swiper-slide" style={{ top: `${offset}px` }}>
             {/* <div className="swiper-slide" > */}
             <div className="item-- text-center d-block-- my-4" >
-              <h3 className="chapterTitle-- font-weight-normal">{slide.chapterTitle}</h3>
+
+              <h3 className="chapterTitle-- font-weight-normal">
+                {
+                  (slide.level && slide.level > 1) ?
+                    Array.from({ length: slide.level - 1 }, (v, k) => k).map(i => (
+                      <i className="font-size-01 fa fa-circle mx-1" key={i}></i>
+                    ))
+                    : ''
+                }
+                <span className="mx-2">{slide.chapterTitle}</span>
+              </h3>
             </div>
           </div>
         </>
@@ -384,11 +388,6 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
                   // <Fragment key={pg_index}>
                   <Fragment key={key}>
                     <div
-                      // className={
-                      //   "item " +
-                      //   ((pg.number === this.book_active_index) ? 'active ' : '') +
-                      //   ((pg.number === -1) ? 'invisible' : '')
-                      // }
                       className={
                         "item " +
                         ((pg === this.book_active_index) ? 'active ' : '') +
@@ -400,8 +399,6 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
                       <div className="page-img-wrapper">
                         <img
                           className="page-img"
-                          // src={pg.url}
-                          // src={pg + ''}
                           src={(() => { if (pg !== -1) return this.getPagePath_ifExist(pg); else return invisibleImgSrc; })()}
                           data-src={(() => { if (pg !== -1) return this.getPagePath(pg); else return invisibleImgSrc; })()}
                           alt=""
@@ -412,7 +409,6 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
                       </div>
                       <div className="page-number text-muted">
                         {pg + 1}
-                        {/* {pg.number} */}
                       </div>
                     </div>
                   </Fragment>
@@ -438,7 +434,6 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       const vrtData: any = this.state.virtualData;
       // const swiper_slides: any = this.state.swiper_slides;
 
-
       // let offset_dir = 'top';
       let swiper_dir = 'ltr';
       // if (this.props.internationalization.rtl) {
@@ -452,18 +447,12 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
           <div className="app-swiper">
             <div className="swiper-container" dir={swiper_dir}>
               <div className="swiper-wrapper">
-                {vrtData.slides.map((
-                  // {swiper_slides.map((
-                  // slide: { id: string; chapterTitle: string; isTitle: boolean; pages: { url: string; number: number }[] },
-                  slide: { id: string; chapterTitle: string; isTitle: boolean; pages: number[] },
-                  index: any) => (
-                    <Fragment key={slide.id}>
-                      {this.swiper_item_render(slide, vrtData.offset)}
-                    </Fragment>
-                  ))}
+                {vrtData.slides.map((slide: IReaderScrollSlide, index: any) => (
+                  <Fragment key={slide.id}>
+                    {this.swiper_item_render(slide, vrtData.offset)}
+                  </Fragment>
+                ))}
               </div>
-
-              {/* <div className="swiper-scrollbar"></div> */}
             </div>
           </div>
         </>
