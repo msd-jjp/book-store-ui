@@ -1,6 +1,5 @@
 import loki, { Collection, LokiLocalStorageAdapter } from 'lokijs';
-// import * as LokiIndexedAdapter from 'lokijs/build/LokiIndexedAdapter';
-import LokiIndexedAdapter from 'lokijs/src/loki-indexed-adapter';
+// import LokiIndexedAdapter from 'lokijs/src/loki-indexed-adapter';
 
 import { IBook } from '../../model/model.book';
 import { IComment } from '../../model/model.comment';
@@ -33,20 +32,20 @@ export class appLocalStorage {
 
     static idbAdapter = new LokiLocalStorageAdapter();
 
-    static idbAdapter_i = new LokiIndexedAdapter('appAdapter');
+    /* static idbAdapter_i = new LokiIndexedAdapter('appAdapter');
     static pa_idbAdapter_i = new loki.LokiPartitioningAdapter(
         appLocalStorage.idbAdapter_i,
-        { paging: true, pageSize: 4 * 1024 * 1024 }
-    );
+        { paging: true, pageSize: 1 * 1024 * 1024 }
+    ); */
 
     // static adapter = new lfsa();
     // static idbAdapter_fs = new LokiFsAdapter();
 
-    
-    static app_db = new loki('bookstore.db2', {
-        // adapter: appLocalStorage.idbAdapter,
+
+    static app_db = new loki('bookstore.db', {
+        adapter: appLocalStorage.idbAdapter,
         // adapter: appLocalStorage.idbAdapter_i,
-        adapter: appLocalStorage.pa_idbAdapter_i,
+        // adapter: appLocalStorage.pa_idbAdapter_i,
         // adapter: appLocalStorage.idbAdapter_fs,
         // adapter: appLocalStorage.adapter,
         // autoload: true,
@@ -94,7 +93,7 @@ export class appLocalStorage {
     }
 
     static autosaveCallback(e: any) {
-        debugger;
+        // debugger;
     }
 
     static manualSaveDB() {
@@ -106,8 +105,8 @@ export class appLocalStorage {
         //         console.log("database saved.");
         //     }
         // });
-        return;
-        return new Promise((res, rej) => {
+        // return;
+        /* return new Promise((res, rej) => {
             appLocalStorage.app_db.saveDatabase((err: any) => {
                 debugger;
                 if (err) {
@@ -119,7 +118,7 @@ export class appLocalStorage {
                     res(true);
                 }
             });
-        });
+        }); */
     }
 
     static clearCollection(collectionName: TCollectionName) {
