@@ -37,13 +37,19 @@ export function calc_read_percent(item: ILibrary): string {
 }
 
 export function is_book_downloaded(book_id: string, mainFile: boolean): boolean {
+    if (CmpUtility.is_book_downloaded_history_check(book_id, mainFile) !== undefined)
+        return CmpUtility.is_book_downloaded_history_check(book_id, mainFile)!;
+
+    let exist = false;
     if (mainFile) {
-        if (appLocalStorage.findBookMainFileById(book_id)) return true;
-        return false;
+        appLocalStorage.findBookMainFileById(book_id) ? exist = true : exist = false;
+
     } else {
-        if (appLocalStorage.findBookSampleFileById(book_id)) return true;
-        return false;
+        appLocalStorage.findBookSampleFileById(book_id) ? exist = true : exist = false;
     }
+
+    CmpUtility.is_book_downloaded_history_save(book_id, mainFile, exist);
+    return exist;
 }
 
 export function is_book_downloading(book_id: string, mainFile: boolean): boolean {

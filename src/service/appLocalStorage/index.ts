@@ -1,4 +1,7 @@
 import loki, { Collection, LokiLocalStorageAdapter } from 'lokijs';
+// import * as LokiIndexedAdapter from 'lokijs/build/LokiIndexedAdapter';
+import LokiIndexedAdapter from 'lokijs/src/loki-indexed-adapter';
+
 import { IBook } from '../../model/model.book';
 import { IComment } from '../../model/model.comment';
 import { AxiosResponse } from 'axios';
@@ -6,19 +9,13 @@ import { ParseApi } from './ParseApi';
 import { SearchAppStorage } from './SearchAppStorage';
 import { StoreData } from './StoreData';
 import { IOrder, IOrderItem } from '../../model/model.order';
+import { CmpUtility } from '../../component/_base/CmpUtility';
+// import { is_book_downloaded_history_reset } from '../../component/library/libraryViewTemplate';
 
-// interface IBook_file_store_sample {
-//     id: '/^sampleFile-/';//IBook['id'];
-//     // mainFile: Uint8Array; // todo: change to Uint8Array[] if audio book has multiple files.
-//     sampleFile: Uint8Array;
-// }
-// interface IBook_file_store_main {
-//     id: '/^mainFile-/';
-//     mainFile: Uint8Array;
-//     // sampleFile: Uint8Array;
-// }
+// const LokiIndexedAdapter = require('lokijs/src/loki-indexed-adapter');
+// const lfsa = require('lokijs/src/loki-fs-structured-adapter');
+
 export interface IOrderItemStore { id: IOrder['id']; items: IOrderItem[] };
-// export type IBook_file_store = IBook_file_store_sample | IBook_file_store_main;
 export interface IBook_file_store {
     id: IBook['id'];
     file: Array<number>;
@@ -35,12 +32,28 @@ export type TCollectionData = IBook | IComment | IOrder; // | IBook_file_store;
 export class appLocalStorage {
 
     static idbAdapter = new LokiLocalStorageAdapter();
-    static app_db = new loki('bookstore.db', {
-        adapter: appLocalStorage.idbAdapter,
+
+    static idbAdapter_i = new LokiIndexedAdapter('appAdapter');
+    static pa_idbAdapter_i = new loki.LokiPartitioningAdapter(
+        appLocalStorage.idbAdapter_i,
+        { paging: true, pageSize: 4 * 1024 * 1024 }
+    );
+
+    // static adapter = new lfsa();
+    // static idbAdapter_fs = new LokiFsAdapter();
+
+    static app_db = new loki('bookstore.db2', {
+        // adapter: appLocalStorage.idbAdapter,
+        // adapter: appLocalStorage.idbAdapter_i,
+        adapter: appLocalStorage.pa_idbAdapter_i,
+        // adapter: appLocalStorage.idbAdapter_fs,
+        // adapter: appLocalStorage.adapter,
         // autoload: true,
         // autoloadCallback: appLocalStorage.initDB,
+
         autosave: true,
-        autosaveInterval: 4000
+        autosaveInterval: 4000,
+        autosaveCallback: appLocalStorage.autosaveCallback
     });
     // app_db.save
     static readonly collectionNameList: TCollectionName[] =
@@ -56,12 +69,18 @@ export class appLocalStorage {
     static clc_book_sampleFile: Collection<IBook_file_store>;
     constructor() {
         appLocalStorage.app_db.loadDatabase({}, (err: any) => {
-            // debugger;
+            debugger;
+
+            appLocalStorage.initDB(); // indexed db adaptor need this.
+            CmpUtility.is_book_downloaded_history_reset();
+            CmpUtility.refreshView();
         });
         appLocalStorage.initDB();
     }
 
-    static initDB() {
+    static /* async */ initDB() {
+        // await CmpUtility.waitOnMe(2000);
+
         appLocalStorage.collectionNameList.forEach((colName: TCollectionName) => {
             // let _appCol = appLocalStorage[colName];
             if (appLocalStorage.app_db.getCollection(colName)) {
@@ -71,27 +90,40 @@ export class appLocalStorage {
             }
         });
 
-        // if (this.app_db.getCollection('clc_book')) {
-        //     this.clc_book = this.app_db.getCollection('clc_book');
-        // } else {
-        //     this.clc_book = this.app_db.addCollection('clc_book');
-        // }
+    }
 
-        // if (this.app_db.getCollection('clc_comment')) {
-        //     this.clc_comment = this.app_db.getCollection('clc_comment');
-        // } else {
-        //     this.clc_comment = this.app_db.addCollection('clc_comment');
-        // }
+    static autosaveCallback(e: any) {
+        debugger;
+    }
 
-        // if (this.app_db.getCollection('clc_book_file')) {
-        //     this.clc_book_file = this.app_db.getCollection('clc_book_file');
-        // } else {
-        //     this.clc_book_file = this.app_db.addCollection('clc_book_file');
-        // }
+    static manualSaveDB() {
+        // appLocalStorage.app_db.saveDatabase((err: any) => {
+        //     if (err) {
+        //         console.error("saveDatabase error : " + err);
+        //     }
+        //     else {
+        //         console.log("database saved.");
+        //     }
+        // });
+        return;
+        return new Promise((res, rej) => {
+            appLocalStorage.app_db.saveDatabase((err: any) => {
+                debugger;
+                if (err) {
+                    console.error("******************* saveDatabase error : " + err);
+                    rej(err);
+                }
+                else {
+                    console.log("******************* database saved.");
+                    res(true);
+                }
+            });
+        });
     }
 
     static clearCollection(collectionName: TCollectionName) {
         appLocalStorage[collectionName].clear();
+        appLocalStorage.manualSaveDB();
     }
 
     static removeFromCollection(collectionName: TCollectionName, id_s: string | string[]) {
@@ -102,11 +134,11 @@ export class appLocalStorage {
         } else {
             appLocalStorage[collectionName].findAndRemove({ id: id_s });
         }
+
+        appLocalStorage.manualSaveDB();
     }
 
     static resetDB() {
-        // let coll_list: TCollectionName[] = ['clc_book', 'clc_comment', 'clc_order', 'clc_orderItem', 'clc_book_file'];
-        // coll_list
         appLocalStorage.collectionNameList.forEach((coll: TCollectionName) => {
             appLocalStorage.clearCollection(coll);
         });
@@ -115,6 +147,7 @@ export class appLocalStorage {
     static afterAppLogout() {
         // appLocalStorage.resetDB() // todo: ask if need resetDB?
         appLocalStorage.clearCollection('clc_book_mainFile');
+        CmpUtility.is_book_downloaded_history_reset();
         // appLocalStorage.clearCollection('clc_book_sampleFile');
         appLocalStorage.clearCollection('clc_userInvoicedOrder');
         appLocalStorage.clearCollection('clc_userInvoicedOrderItem');

@@ -25,9 +25,6 @@ import { IBook } from '../../model/model.book';
 import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem } from './libraryViewTemplate';
 import { CmpUtility } from '../_base/CmpUtility';
 import { BOOK_TYPES } from '../../enum/Book';
-// import { IDownloadingBookFile_schema } from '../../redux/action/downloading-book-file/downloadingBookFileAction';
-// import { action_update_downloading_book_file } from '../../redux/action/downloading-book-file';
-import { appLocalStorage } from '../../service/appLocalStorage';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -285,8 +282,9 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
 
     removeFromDevice() {
         const id_s = this.state.library_data_selected.map((item: ILibrary) => item.book.id);
-        appLocalStorage.removeFromCollection('clc_book_mainFile', id_s);
-        CmpUtility.refreshView();
+        CmpUtility.removeBookFileFromDevice(id_s, true);
+        /* appLocalStorage.removeFromCollection('clc_book_mainFile', id_s);
+        CmpUtility.refreshView(); */
     }
 
     private async markAsRead() {

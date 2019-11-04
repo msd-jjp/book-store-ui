@@ -37,6 +37,8 @@ export class StoreData {
                 coll.insert(data);
             }
         }
+
+        appLocalStorage.manualSaveDB();
     }
 
     static storeData_userInvoicedOrderItem(data: IOrderItem[]) {
@@ -55,6 +57,8 @@ export class StoreData {
         } else {
             coll.insert(newData);
         }
+
+        appLocalStorage.manualSaveDB();
     }
 
     static storeBookFile(book_id: string, mainFile: boolean, data: Uint8Array) {
@@ -69,6 +73,8 @@ export class StoreData {
         } else {
             coll.insert(newData);
         }
+
+        appLocalStorage.manualSaveDB();
     }
 
     private static updateData_byId(collectionName: TCollectionName, id: string, newData: any) {

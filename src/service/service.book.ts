@@ -5,6 +5,8 @@ import { CmpUtility } from '../component/_base/CmpUtility';
 // import { sampleBookFile } from '../webworker/reader-engine/sampleBookFile';
 // import { sampleBookFile } from '../webworker/reader-engine/book.ou';
 import Axios, { CancelToken, AxiosInstance } from 'axios';
+import { getLibraryItem } from '../component/library/libraryViewTemplate';
+import { BOOK_TYPES } from '../enum/Book';
 // import { base64ToBuffer } from '../webworker/reader-engine/tools';
 
 export class BookService extends BaseService {
@@ -100,10 +102,17 @@ export class BookService extends BaseService {
                 headers: { 'Content-Type': 'application/json' }, // application/json  ,  multipart/form-data
                 responseType: 'arraybuffer', //'arraybuffer',
             });
+
+            let url = '/reader/book2.output';
+            let libItem = getLibraryItem(book_id);
+            if (libItem!.book.type === BOOK_TYPES.Audio) {
+                url = '/reader/book1.msd';
+            }
+
             resolve(
                 axiosInstance.get(
                     // '/reader/book.output',
-                    '/reader/book2.output',
+                    url,
                     { cancelToken }
                 )
             );

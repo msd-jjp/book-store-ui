@@ -24,7 +24,6 @@ import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import Swiper from "swiper";
-import { appLocalStorage } from "../../service/appLocalStorage";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -477,8 +476,9 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   // }
 
   removeFromDevice(book_id: string) {
-    appLocalStorage.removeFromCollection('clc_book_mainFile', book_id);
-    CmpUtility.refreshView();
+    CmpUtility.removeBookFileFromDevice(book_id, true);
+    /* appLocalStorage.removeFromCollection('clc_book_mainFile', book_id);
+    CmpUtility.refreshView(); */
   }
 
   private async markAsRead(book_id: string) {

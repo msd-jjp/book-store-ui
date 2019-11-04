@@ -4,6 +4,7 @@ import { BOOK_ROLES, BOOK_TYPES } from "../../enum/Book";
 // import { appLocalStorage } from "../../service/appLocalStorage";
 import { Store2 } from "../../redux/store";
 import { action_change_app_flag } from "../../redux/action/internationalization";
+import { appLocalStorage } from "../../service/appLocalStorage";
 
 // import React from 'react';
 
@@ -120,6 +121,38 @@ export abstract class CmpUtility {
     static refreshView() {
         const int = { ...Store2.getState().internationalization };
         Store2.dispatch(action_change_app_flag(int));
+    }
+
+
+    private static _book_downloaded_mainObj: any = {};
+    private static _book_downloaded_sampleObj: any = {};
+    static is_book_downloaded_history_check(book_id: string, mainFile: boolean): boolean | undefined {
+        if (mainFile) return CmpUtility._book_downloaded_mainObj[book_id];
+        return CmpUtility._book_downloaded_sampleObj[book_id];
+    }
+    static is_book_downloaded_history_save(book_id: string, mainFile: boolean, value: boolean): void {
+        if (mainFile) CmpUtility._book_downloaded_mainObj[book_id] = value;
+        else CmpUtility._book_downloaded_sampleObj[book_id] = value;
+    }
+    static is_book_downloaded_history_remove(book_id: string, mainFile: boolean) {
+        if (mainFile) delete CmpUtility._book_downloaded_mainObj[book_id];
+        else delete CmpUtility._book_downloaded_sampleObj[book_id];
+    }
+    static is_book_downloaded_history_reset() {
+        CmpUtility._book_downloaded_mainObj = {};
+        CmpUtility._book_downloaded_sampleObj = {};
+    }
+
+    static removeBookFileFromDevice(book_id_s: string | string[], mainFile: boolean) {
+        appLocalStorage.removeFromCollection(mainFile ? 'clc_book_mainFile' : 'clc_book_sampleFile', book_id_s);
+        if (Array.isArray(book_id_s)) {
+            book_id_s.forEach(id => {
+                CmpUtility.is_book_downloaded_history_remove(id, mainFile);
+            });
+        } else {
+            CmpUtility.is_book_downloaded_history_remove(book_id_s, mainFile);
+        }
+        CmpUtility.refreshView();
     }
 
 }
