@@ -42,6 +42,7 @@ export class appLocalStorage {
     // static adapter = new lfsa();
     // static idbAdapter_fs = new LokiFsAdapter();
 
+    
     static app_db = new loki('bookstore.db2', {
         // adapter: appLocalStorage.idbAdapter,
         // adapter: appLocalStorage.idbAdapter_i,
