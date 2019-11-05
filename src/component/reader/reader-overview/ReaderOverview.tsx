@@ -99,11 +99,11 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       this.props.history.replace(`/dashboard`);
       return;
     }
-    this.setBook_byId(this.book_id);
+    this.setBook_byId(/* this.book_id */);
     this.generateReader();
   }
 
-  setBook_byId(book_id: string) {
+  setBook_byId(/* book_id: string */) {
     this.setState({ ...this.state, book: this._libraryItem!.book });
   }
 

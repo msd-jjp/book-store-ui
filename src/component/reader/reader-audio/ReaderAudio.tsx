@@ -3,11 +3,11 @@ import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { redux_state } from "../../../redux/app_state";
 import { IUser } from "../../../model/model.user";
-import { TInternationalization } from "../../../config/setup";
+import { TInternationalization, Setup } from "../../../config/setup";
 import { BaseComponent } from "../../_base/BaseComponent";
 import { History } from "history";
 // import { IToken } from "../../../model/model.token";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { PersonService } from "../../../service/service.person";
 import { action_user_logged_in } from "../../../redux/action/user";
@@ -18,6 +18,12 @@ import { Localization } from "../../../config/localization/localization";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { Dropdown } from "react-bootstrap";
 import RcSlider from 'rc-slider';
+import { ILibrary } from "../../../model/model.library";
+import { getLibraryItem } from "../../library/libraryViewTemplate";
+import { CmpUtility } from "../../_base/CmpUtility";
+import { appLocalStorage } from "../../../service/appLocalStorage";
+import { AudioBookGenerator } from "../../../webworker/reader-engine/AudioBookGenerator";
+import { ReaderUtility } from "../ReaderUtility";
 //
 // import * as WaveSurferAll from 'wavesurfer.js';
 //
@@ -65,6 +71,7 @@ interface IState {
 
 class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private book_id: string = '';
+
     private playlist = [
         'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/A%20Birthday%20Present.ogg',
         'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/All%20The%20Dead%20Dears.ogg',
@@ -113,6 +120,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private wavesurfer: WaveSurfer | undefined;
     private _componentWillUnmount = false;
     private is_small_media = false;
+    private _libraryItem: ILibrary | undefined;
 
     constructor(props: IProps) {
         super(props);
@@ -125,38 +133,40 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         if (window.innerWidth < 500) {
             this.is_small_media = true;
         }
+        if (this.book_id) {
+            this._libraryItem = getLibraryItem(this.book_id);
+        }
     }
 
     componentDidMount() {
+        if (!this._libraryItem) {
+            this.props.history.replace(`/dashboard`);
+            return;
+        }
+
+        // this.setBook_byId(/* this.book_id */);
         this.updateUserCurrentBook_client();
-        this.setBook_byId(this.book_id);
         this.updateUserCurrentBook_server();
-        this.initAudio();
+        // this.initAudio();
+        this.generateReader();
     }
     componentWillUnmount() {
         // this._componentWillUnmount = true;
         // this.wavesurfer!.xhr
         console.log('wavesurfer!.destroy');
         try {
-            this.wavesurfer!.cancelAjax();
-            this.wavesurfer!.destroy();
+            if (this.wavesurfer) {
+                this.wavesurfer.cancelAjax();
+                this.wavesurfer.destroy();
+            }
         } catch (e) {
             // note Firefox bug
             console.error('componentWillUnmount wavesurfer!.destroy', e);
         }
     }
 
-    // updateUserCurrentBook_client() {
-    //     let logged_in_user = { ...this.props.logged_in_user! };
-    //     if (!logged_in_user) return;
-    //     const book = this.getBookFromLibrary(this.book_id);
-    //     logged_in_user.person.current_book = book;
-    //     this.props.onUserLoggedIn(logged_in_user);
-
-    //     this.setState({ ...this.state, book: this.getBookFromLibrary(this.book_id) });
-    // }
     updateUserCurrentBook_client() {
-        const book = this.getBookFromLibrary(this.book_id);
+        const book = this._libraryItem!.book;
         this.setState({ ...this.state, book: book });
 
         let logged_in_user = { ...this.props.logged_in_user! };
@@ -166,16 +176,6 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         logged_in_user.person.current_book = book;
         this.props.onUserLoggedIn(logged_in_user);
     }
-
-    getBookFromLibrary(book_id: string): IBook {
-        const lib = this.props.library.data.find(lib => lib.book.id === book_id);
-        return (lib! || {}).book;
-    }
-
-    setBook_byId(book_id: string) {
-        this.setState({ ...this.state, book: this.getBookFromLibrary(book_id) });
-    }
-
     async updateUserCurrentBook_server() {
         if (!this.book_id) return;
         if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
@@ -221,7 +221,149 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         return book!.title;
     }
 
-    initAudio() {
+    bookFileNotFound_notify() {
+        const notifyBody: string = Localization.msg.ui.book_file_not_found_download_it;
+        const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };
+        toast.warn(notifyBody, this.getNotifyConfig(config));
+    }
+
+    readerError_notify() {
+        const notifyBody: string = Localization.msg.ui.reader_epub_error_occurred;
+        const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };
+        toast.error(notifyBody, this.getNotifyConfig(config));
+    }
+
+    private async generateReader() {
+        await CmpUtility.waitOnMe(0);
+        await this.createBook();
+        if (!this._bookInstance) return;
+        // this.initAudio();
+        this.initAudio2();
+    }
+
+    private _bookInstance!: AudioBookGenerator;
+    private async createBook() {
+        const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
+        if (!bookFile) {
+            //   this.setState({ page_loading: false });
+            this.setState({ loading: false });
+            this.bookFileNotFound_notify();
+            return;
+        }
+
+        try {
+            this._bookInstance = await ReaderUtility.createAudioBook(this.book_id, bookFile);
+        } catch (e) {
+            console.error(e);
+            //   this.setState({ page_loading: false });
+            this.setState({ loading: false });
+            this.readerError_notify();
+        }
+    }
+
+    private initAudio2() {
+        // debugger;
+        const totalDuration = this._bookInstance.getTotalDuration();
+        debugger;
+        const obj: any = { // WaveSurfer.WaveSurferParams = {
+            container: '#waveform',
+            waveColor: '#01aaa480', //'#A8DBA8',
+            progressColor: '#01aaa4', // '#3B8686',
+            // backend: 'MediaElement',
+            backend: 'WebAudio',
+            // height: 208,
+            height: 320,
+            barWidth: 1,
+            cursorWidth: 1,
+            cursorColor: '#015e5b', // '#4a74a5',
+
+
+            // partialRender:true,
+            // splitChannels:true,
+            // mediaControls: true,
+            // audioContext:
+
+            duration: totalDuration / 1000,
+
+
+            // responsive: true,
+            // rtl: true,
+            plugins: [
+                // _waveSurfer_timeline.create({
+                TimelinePlugin.create({
+                    container: "#wave-timeline",
+                    height: 16,
+                }),
+                CursorPlugin.create({
+                    showTime: true,
+                    opacity: .5,
+                    customShowTimeStyle: {
+                        'background-color': '#000',
+                        color: '#fff',
+                        padding: '2px',
+                        'font-size': '10px'
+                    },
+                })
+            ]
+        };
+        // const wvs: WaveSurfer = WaveSurfer.create(obj);
+        // this.wavesurfer = WaveSurfer.create(obj);
+        // const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
+        // debugger;
+
+
+        const all = this._bookInstance.getAllAtoms_pos();
+        debugger;
+        const firstAtom = this._bookInstance.getFirstAtom();
+        this._bookInstance.loadVoiceAtom(firstAtom);
+
+        let srate = this._bookInstance.getLoadedVoiceAtomSampleRate();
+        let chans = this._bookInstance.getLoadedVoiceAtomChannels();
+        console.log(this._bookInstance.getLoadedVoiceAtomDuration());
+        let b = this._bookInstance.getLoadedVoiceAtom10Second(0);
+        let audioCtx = new ((window as any).AudioContext || (window as any).webkitAudioContext)(
+            {
+                sampleRate: srate
+            }
+        );
+        let audioBuffer = audioCtx.createBuffer(chans, b[0].length, srate);
+        for (let i = 0; i < chans; i++) {
+            audioBuffer.copyToChannel(b[i], i, 0);
+        }
+        // var source = audioCtx.createBufferSource();
+
+        // obj.audioContext = source.context;
+
+
+        this.wavesurfer = WaveSurfer.create(obj);
+        // wvs.loadBlob(new Blob([bookFile!]));
+        // this.wavesurfer!.loadBlob(new Blob([bookFile!]));
+        // this.wavesurfer!.loadBlob(new Blob([bookFile!]));
+        // this.wavesurfer!.loa
+        this.wavesurfer!.loadDecodedBuffer(audioBuffer);
+        // this.wavesurfer!.loadArrayBuffer(audioBuffer);
+        debugger;
+
+        this.wavesurfer!.on('audioprocess', () => { this.updateTimer(); });
+        this.wavesurfer!.on('seek', () => { this.updateTimer(); });
+
+        // let aa = this.wavesurfer!.backend;
+        let peaks = [
+            0.0218, 0.0183, 0.0165, 0.0198, 0.2137, 0.2888, 0.2313, 0.15, 0.2542, 0.2538, 0.2358, 0.1195, 0.1591, 0.2599, 0.2742, 0.1447, 0.2328, 0.1878, 0.1988, 0.1645, 0.1218, 0.2005, 0.2828, 0.2051, 0.1664, 0.1181, 0.1621, 0.2966, 0.189, 0.246, 0.2445, 0.1621, 0.1618, 0.189, 0.2354, 0.1561, 0.1638, 0.2799, 0.0923, 0.1659, 0.1675, 0.1268, 0.0984, 0.0997, 0.1248, 0.1495, 0.1431, 0.1236, 0.1755, 0.1183, 0.1349, 0.1018, 0.1109, 0.1833, 0.1813, 0.1422, 0.0961, 0.1191, 0.0791, 0.0631, 0.0315, 0.0157, 0.0166, 0.0108
+        ];
+        peaks = peaks.map(x => x + 1.5);
+        this.wavesurfer!.backend.setPeaks(peaks, totalDuration / 1000);
+        debugger;
+
+        /* function load(url, peaks) {
+            wavesurfer.backend.setPeaks(peaks);
+            wavesurfer.drawBuffer();
+            wavesurfer.getArrayBuffer(url, data => wavesurfer.loadArrayBuffer(data));
+        } */
+
+    }
+
+    private initAudio() {
         const progressDiv: any = document.querySelector('#progress-bar');
         const progressBar = progressDiv!.querySelector('.progress-bar');
 
@@ -388,9 +530,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // try {
         // console.log(this.wavesurfer!.cancelAjax);
         // console.log(this.wavesurfer!.load);
-        this.wavesurfer!.cancelAjax();
+        this.wavesurfer && this.wavesurfer!.cancelAjax();
         // this.wavesurfer!.load(this.state.active_item, undefined, 'auto', 560000);
-        this.wavesurfer!.load(this.state.active_item);
+        this.wavesurfer && this.wavesurfer!.load(this.state.active_item);
         // } catch (e) { console.log('load_file', e); }
     }
 
@@ -548,7 +690,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                             </div>
                             <div id="wave-timeline" className={`wave-timeline ` + (this.state.loading ? 'd-none' : '')} ></div>
                         </div>
-                        {this.progress_bar_render()}
+                        {/* {this.progress_bar_render()} */}
                     </div>
 
                     <div className="col-12">

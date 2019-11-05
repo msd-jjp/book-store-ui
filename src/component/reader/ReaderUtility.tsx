@@ -6,6 +6,7 @@ import { BookGenerator } from "../../webworker/reader-engine/BookGenerator";
 import { LANGUAGES } from "../../enum/language";
 import { CmpUtility } from "../_base/CmpUtility";
 import { IBookContent, IBookPosIndicator } from "../../webworker/reader-engine/MsdBook";
+import { AudioBookGenerator } from "../../webworker/reader-engine/AudioBookGenerator";
 // import { Reader2Worker } from "../../webworker/reader2-worker/Reader2Worker";
 
 interface IEpubBook_chapters_flat {
@@ -384,6 +385,14 @@ export abstract class ReaderUtility {
         });
         // debugger;
         return chapters_with_page;
+    }
+
+    static async createAudioBook(book_id: string, bookFile: Uint8Array): Promise<AudioBookGenerator> {
+        // check book exist
+
+        await ReaderUtility.wait_loadReaderEngine();
+        
+        return new AudioBookGenerator(bookFile);
     }
 
 }
