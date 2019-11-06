@@ -423,9 +423,6 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             this.play();
 
             source.start();
-
-            // ax.suspend
-            // ax.resume
         }, 3000);
 
     }

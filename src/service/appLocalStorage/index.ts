@@ -69,7 +69,7 @@ export class appLocalStorage {
     static clc_book_sampleFile: Collection<IBook_file_store>;
     constructor() {
         appLocalStorage.app_db.loadDatabase({}, (err: any) => {
-            debugger;
+            // debugger;
 
             appLocalStorage.initDB(); // indexed db adaptor need this.
             CmpUtility.is_book_downloaded_history_reset();
