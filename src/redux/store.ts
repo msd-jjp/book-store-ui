@@ -60,5 +60,6 @@ const persistedReducer = persistReducer(persistConfig, main_reducer)
   let persistor = persistStore(store)
   return { store, persistor }
 } */
-export const Store2 = createStore(persistedReducer, applyMiddleware(logger));
+// export const Store2 = createStore(persistedReducer, applyMiddleware(logger));
+export const Store2 = createStore(persistedReducer);
 export const persistor = persistStore(Store2);

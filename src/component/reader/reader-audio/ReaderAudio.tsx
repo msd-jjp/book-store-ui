@@ -24,6 +24,7 @@ import { CmpUtility } from "../../_base/CmpUtility";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { AudioBookGenerator } from "../../../webworker/reader-engine/AudioBookGenerator";
 import { ReaderUtility } from "../ReaderUtility";
+import { IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
 //
 // import * as WaveSurferAll from 'wavesurfer.js';
 //
@@ -269,10 +270,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             trackTotalDuration += this._bookInstance.getAtomDuration(atom);
         });
         debugger;
-        this._bookInstance.loadVoiceAtom(allAtoms_pos[0]);
+        /* this._bookInstance.loadVoiceAtom(allAtoms_pos[0]);
         let srate = this._bookInstance.getLoadedVoiceAtomSampleRate();
         let chans = this._bookInstance.getLoadedVoiceAtomChannels();
-        console.log(this._bookInstance.getLoadedVoiceAtomDuration());
+        console.log(this._bookInstance.getLoadedVoiceAtomDuration()); */
 
         const wsParams: any = { // WaveSurfer.WaveSurferParams = {
             // const obj: WaveSurfer.WaveSurferParams = {
@@ -287,7 +288,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             cursorWidth: 1,
             cursorColor: '#015e5b', // '#4a74a5',
             // mediaControls: true,
-            audioContext: this.getAudioContext(srate),
+            // audioContext: this.getAudioContext(srate),
 
             duration: trackTotalDuration / 1000,
             // rtl: true,
@@ -310,11 +311,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         };
 
 
-        let atom_10_0 = this._bookInstance.getLoadedVoiceAtom10Second(0);
-        let atom_10_1 = this._bookInstance.getLoadedVoiceAtom10Second(10000);
-        let atom_10_2 = this._bookInstance.getLoadedVoiceAtom10Second(20000);
-        let atom_10_3 = this._bookInstance.getLoadedVoiceAtom10Second(30000);
-        let atom_10_4 = this._bookInstance.getLoadedVoiceAtom10Second(40000);
+        // let atom_10_0 = this._bookInstance.getLoadedVoiceAtom10Second(0);
+        // let atom_10_1 = this._bookInstance.getLoadedVoiceAtom10Second(10000);
+        // let atom_10_2 = this._bookInstance.getLoadedVoiceAtom10Second(20000);
+        // let atom_10_3 = this._bookInstance.getLoadedVoiceAtom10Second(30000);
+        // let atom_10_4 = this._bookInstance.getLoadedVoiceAtom10Second(40000);
 
         this.wavesurfer = WaveSurfer.create(wsParams);
 
@@ -322,9 +323,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
         // this.createGainNode(srate);
 
-        this.wavesurfer!.backend.audioContext = this.getAudioContext(srate);
+        // this.wavesurfer!.backend.audioContext = this.getAudioContext(srate);
 
-        debugger;
+        // debugger;
         this.wavesurfer!.on('ready', () => {
             // this.wavesurfer.play();
             console.log('ready...');
@@ -355,6 +356,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             // this.wavesurfer!.pause();
             // this.pause();
             // this.after_pause();
+            this.pause();
             this.stop();
         });
         this.wavesurfer!.on('loading', () => { console.log('loadingggg'); });
@@ -362,28 +364,42 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.wavesurfer!.on('audioprocess', () => { this.updateTimer(); });
         this.wavesurfer!.on('seek', () => { this.updateTimer(); });
 
-        this.updateTimer(0);
-
-        const audioBuffer_min = this.getaudioBuffer(srate, 1, [new Float32Array(1)]);
+        const audioBuffer_min = this.getaudioBuffer(44100, 1, [new Float32Array(1)]); // srate
         this.wavesurfer!.loadDecodedBuffer(audioBuffer_min);
 
+        this.updateTimer(0);
+
+        //     const ab = this.getaudioBuffer(srate, chans, atom_10_3);
+        //     let numOfChan = ab.numberOfChannels,
+        //   length = 441000 * numOfChan * 2 + 44,
+        //   buffer = new ArrayBuffer(length),
+        //   view = new DataView(buffer),
+        //   channels = [], i, sample,
+        //   offset = 0,
+        //   pos = 0;
+        //     this.wavesurfer!.loadBlob(new Blob([buffer], {type: 'audio/mp3'}));
+        // this.wavesurfer!.loadBlob
+
+
         setTimeout(() => {
-            // return;
+            return;
             debugger;
 
             // this.wavesurfer!.backend.buffer = this.getaudioBuffer(srate, chans, atom_10_3);
             // this.wavesurfer!.backend.source.buffer = this.getaudioBuffer(srate, chans, atom_10_3);
 
             // this.wavesurfer!.backend.pause();
-            this.test(this.getaudioBuffer(srate, chans, atom_10_3), 30);
+            // this.test(this.getaudioBuffer(srate, chans, atom_10_3), 30);
 
             // this.play();
 
-            const newB4 = this.getaudioBuffer(srate, chans, atom_10_4);
+            // const newB4 = this.getaudioBuffer(srate, chans, atom_10_4);
             setTimeout(() => {
+                return;
                 // this.wavesurfer!.backend.buffer = newB4;
                 // this.wavesurfer!.backend.source.buffer = newB4;
-                this.test(newB4, 40);
+
+                // this.test(newB4, 40);
             }, 10000);
 
             return;
@@ -395,7 +411,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             ax.suspend();
 
             const source1 = ax.createBufferSource();
-            source1.buffer = this.getaudioBuffer(srate, chans, atom_10_3);
+            // source1.buffer = this.getaudioBuffer(srate, chans, atom_10_3);
             source1.connect(ax.destination);
             // source1.connect(gn);
             source1.start(ax.currentTime + 0);
@@ -403,7 +419,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             // this.play();
 
             const source2 = ax.createBufferSource();
-            source2.buffer = this.getaudioBuffer(srate, chans, atom_10_4);
+            // source2.buffer = this.getaudioBuffer(srate, chans, atom_10_4);
             source2.connect(ax.destination);
             // source1.connect(gn);
             source2.start(ax.currentTime + 10);
@@ -423,8 +439,31 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
     private test(bf: AudioBuffer, startPosition: number) {
         const backend = this.wavesurfer!.backend;
-        // backend.buffer = bf;
+        backend.buffer = bf;
 
+        // backend.startPosition = startPosition;
+        // backend.lastPlay = backend.ac.currentTime +startPosition;
+        // backend.buffer = bf;
+        // backend.createSource();
+
+        // backend.disconnectSource();
+        // backend.source = backend.ac.createBufferSource();
+
+        // // adjust for old browsers
+        // // backend.source.start = backend.source.start || backend.source.noteGrainOn;
+        // // backend.source.start(backend.ac.currentTime + startPosition);
+        // // backend.source.stop = backend.source.stop || backend.source.noteOff;
+
+        // backend.source.playbackRate.setValueAtTime(
+        //     backend.playbackRate,
+        //     backend.ac.currentTime + startPosition
+        // );
+        // backend.source.buffer = backend.buffer;
+        // backend.source.connect(backend.analyser);
+        // backend.source.connect(backend.ac.destination);
+
+        // backend.source.start(backend.ac.currentTime + startPosition);
+        return;
 
         // backend.startPosition = 0;
         // backend.lastPlay = backend.ac.currentTime;
@@ -456,13 +495,18 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         if (this._audioContextObj && (sampleRate ? this._audioContextObj.sampleRate === sampleRate : true)) {
             return this._audioContextObj!.audioContext!;
         }
-        let audioCtx = new ((window as any).AudioContext || (window as any).webkitAudioContext)({ sampleRate: sampleRate });
+        let audioCtx: AudioContext = new ((window as any).AudioContext || (window as any).webkitAudioContext)(
+            { sampleRate: sampleRate }
+        );
+        audioCtx.suspend();
         this._audioContextObj = { audioContext: audioCtx, sampleRate };
         return this._audioContextObj!.audioContext!;
     }
 
     getaudioBuffer(sampleRate: number, channel: number, sourceList: Float32Array[]): AudioBuffer {
-        const ax = this.getAudioContext(sampleRate);
+        // const ax = this.getAudioContext(sampleRate);
+        const backend = this.wavesurfer!.backend;
+        const ax = backend.ac;
         let audioBuffer = ax.createBuffer(channel, sourceList[0].length, sampleRate);
         for (let i = 0; i < channel; i++) {
             audioBuffer.copyToChannel(sourceList[i], i, 0);
@@ -484,6 +528,155 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this._gainNode!.gain.setValueAtTime(vol, this.getAudioContext().currentTime);
     }
 
+    // private _activeAtomPos: IBookPosIndicator | undefined;
+    private processCurrentTime(currentTime: number): void {
+        console.log('currentTimeeeeeee:', currentTime);
+        const fileAtoms_duration = this._bookInstance.getFileAtoms_duration();
+        let currentAtom_index = undefined;
+
+        for (let i = 0; i < fileAtoms_duration.length; i++) {
+            const atomFromTo = fileAtoms_duration[i];
+            if (atomFromTo.from / 1000 <= currentTime && atomFromTo.to / 1000 >= currentTime) {
+                currentAtom_index = i;
+                break;
+            }
+        }
+
+        let currentAtomPos: IBookPosIndicator | undefined;
+        if (currentAtom_index || currentAtom_index === 0) {
+            currentAtomPos = this._bookInstance.getAllAtoms_pos()[currentAtom_index];
+
+            // if (currentAtomPos !== this._activeAtomPos) {
+            //     this._activeAtomPos = currentAtomPos;
+            // }
+
+            this.bindVoiceToAudioContext(
+                currentAtomPos,
+                fileAtoms_duration[currentAtom_index],
+                currentTime,
+                currentAtom_index,
+                true,
+                0
+            );
+        }
+    }
+
+    private _loadedAtomPos: IBookPosIndicator | undefined;
+    // private _activeFromToTime: { from: number, to: number } | undefined;
+    private async bindVoiceToAudioContext(
+        atomPos: IBookPosIndicator,
+        atomFromTo: { from: number, to: number },
+        fromTime: number,
+        atomPos_index: number,
+        pauseUntilBind: boolean,
+        offset: number
+    ): Promise<void> {
+        await CmpUtility.waitOnMe(0);
+        const earlyTime = 6;
+
+        if (!this.isSourceDurationAllow(fromTime, fromTime + 10)) {
+            console.log('-----isSourceDurationAllow false-----');
+
+            if (this.isSourceDurationAllow(fromTime + earlyTime, fromTime + earlyTime + 10)) {
+                if ((fromTime + earlyTime) * 1000 >= atomFromTo.to) {
+                    console.log('..........5sec early get next atom');
+                    const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
+                    if (allAtoms_pos.length - 1 >= atomPos_index + 1) {
+                        const fileAtoms_duration = this._bookInstance.getFileAtoms_duration();
+                        this.bindVoiceToAudioContext(
+                            allAtoms_pos[atomPos_index + 1],
+                            fileAtoms_duration[atomPos_index + 1],
+                            fromTime + earlyTime,
+                            atomPos_index + 1,
+                            false,
+                            earlyTime
+                        );
+                    }
+                } else {
+                    console.log('..........5sec early get this atom');
+                    this.bindVoiceToAudioContext(atomPos, atomFromTo, fromTime + earlyTime, atomPos_index, false, earlyTime);
+                }
+            }
+
+            return;
+        }
+
+
+        const isPlaying = this.state.isPlaying;
+        if (pauseUntilBind) {
+            if (isPlaying) {
+                this.pause();
+            }
+        }
+
+        if (this._loadedAtomPos !== atomPos) {
+            console.log('----------loadVoiceAtom----------');
+            this._loadedAtomPos = atomPos;
+            this._bookInstance.loadVoiceAtom(atomPos);
+        }
+
+        let sampleRate = this._bookInstance.getLoadedVoiceAtomSampleRate();
+        let channels = this._bookInstance.getLoadedVoiceAtomChannels();
+        // console.log(this._bookInstance.getLoadedVoiceAtomDuration());
+        let atom_10 = this._bookInstance.getLoadedVoiceAtom10Second(fromTime * 1000 - atomFromTo.from);
+        let voiceTime = ((fromTime + 10) * 1000 <= atomFromTo.to) ? 10 : ((atomFromTo.to - (fromTime * 1000)) / 1000);
+
+
+        this.addSourceDuration(fromTime, fromTime + voiceTime);
+
+        const ax = this.getAudioContext(sampleRate);
+        // const gn = this.getGainNode(srate);
+        // ax.suspend();
+        const source = ax.createBufferSource();
+        source.buffer = this.getaudioBuffer(sampleRate, channels, atom_10);
+        source.connect(ax.destination);
+        // source1.connect(gn);
+        // source.start(ax.currentTime + fromTime);
+        source.start(ax.currentTime + offset);
+        // source.stop(ax.currentTime + fromTime + voiceTime);
+        source.stop(ax.currentTime + offset + voiceTime);
+        source.onended = (ev: Event) => {
+            console.log('------source.onended----', fromTime, fromTime + voiceTime);
+            this.removeSourceDuration(fromTime, fromTime + voiceTime);
+        };
+
+        if (isPlaying && this.state.isPlaying === false) {
+            this.play();
+        }
+    }
+
+    private _allSourceDuration: { from: number, to: number }[] = [];
+    private addSourceDuration(from: number, to: number): void {
+        this._allSourceDuration.push({ from, to });
+    }
+    private removeSourceDuration(from: number, to: number): void {
+        for (let i = 0; i < this._allSourceDuration.length; i++) {
+            let du = this._allSourceDuration[i];
+            if (from === du.from && to === du.to) {
+                this._allSourceDuration.splice(i, 1);
+                break;
+            }
+        }
+    }
+    private isSourceDurationAllow(from: number, to: number): boolean {
+        let allow = true;
+        for (let i = 0; i < this._allSourceDuration.length; i++) {
+            let du = this._allSourceDuration[i];
+            if ((from >= du.from && from <= du.to) || (to >= du.from && to <= du.to)) {
+                // if ((from > du.from && from < du.to) || (to > du.from && to < du.to)) {
+                allow = false;
+                break;
+            }
+        }
+        return allow;
+    }
+
+
+
+
+
+
+
     private gotoBegining() {
         this.wavesurfer!.setCurrentTime(0);
     }
@@ -498,12 +691,12 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     };
     private play() {
         this.wavesurfer!.play();
-        // this.getAudioContext().resume();
+        this.getAudioContext().resume();
         this.after_play();
     };
     private pause() {
         this.wavesurfer!.pause();
-        // this.getAudioContext().suspend();
+        this.getAudioContext().suspend();
         this.after_pause();
     };
     private after_play() {
@@ -558,6 +751,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this._current_time = formattedTime;
         document.getElementById('time-current')!.innerText = formattedTime;
         // console.log(formattedTime);
+        this.processCurrentTime((currentTime || currentTime === 0) ? currentTime : this.wavesurfer!.getCurrentTime());
     }
     private secondsToTimeFormatter(seconds: number) {
         seconds = Math.floor(seconds);
