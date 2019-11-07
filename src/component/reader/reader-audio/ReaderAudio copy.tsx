@@ -423,6 +423,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             this.play();
 
             source.start();
+
+            // source1.onended = (e) => {
+            //     source1.stop();
+            //     source1.disconnect()
+            // };
         }, 3000);
 
     }
