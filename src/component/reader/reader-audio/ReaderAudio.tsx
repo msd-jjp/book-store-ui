@@ -429,6 +429,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         seek: boolean,
         helperBinding: boolean,
     ): Promise<void> {
+
+        const audioCtx_currentTime = this.getAudioContext().currentTime;
         await CmpUtility.waitOnMe(0);
 
         const loadMoreTimer = 6;
@@ -528,7 +530,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         const channels = this._bookInstance.getLoadedVoiceAtomChannels();
         const atom_10 = this._bookInstance.getLoadedVoiceAtom10Second(fromTime * 1000 - atomFromTo.from);
         if (!atom_10[0].length) {
-            console.warn('!!!! atom_10[0].length');
+            console.warn('!!!! atom_10[0].length', atom_10);
             if (isPlaying && this.state.isPlaying === false) {
                 this.play();
             }
@@ -540,8 +542,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         const source = audioCtx.createBufferSource();
         source.buffer = this.getaudioBuffer(sampleRate, channels, atom_10);
         source.connect(audioCtx.destination);
-        source.start(audioCtx.currentTime + offset);
-        source.stop(audioCtx.currentTime + offset + voiceTime);
+        source.start(audioCtx_currentTime + offset); // audioCtx.currentTime
+        source.stop(audioCtx_currentTime + offset + voiceTime); // audioCtx.currentTime
         source.onended = (ev: Event) => {
             console.log('------source.onended----', fromTime, fromTime + voiceTime);
             // this.pause();
