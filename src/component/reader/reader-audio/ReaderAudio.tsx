@@ -327,7 +327,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.wavesurfer!.loadDecodedBuffer(audioBuffer_min);
 
         // this.getGainNode();
-        
+
         //todo: book progreess position;
         let bookReadedTime = 60;
         this.setWavesurferTime(bookReadedTime);
@@ -549,7 +549,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             const source = audioCtx.createBufferSource();
             source.buffer = this.getaudioBuffer(sampleRate, channels, atom_10);
             // source.connect(audioCtx.destination);
-            
+
             const gainNode = this.getGainNode(); // sampleRate
             source.connect(gainNode);
             // gainNode.connect(audioCtx.destination);
@@ -569,10 +569,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         if (helperBinding) {
             if (this._source1_obj && this._source2_obj) {
                 if (this._source1_obj.timing.from > this._source2_obj.timing.from) {
-                    this.destroy_srcObj(this._source1_obj);
+                    // this.destroy_srcObj(this._source1_obj);
                     this._source1_obj = newSource;
                 } else {
-                    this.destroy_srcObj(this._source2_obj);
+                    // this.destroy_srcObj(this._source2_obj);
                     this._source2_obj = newSource;
                 }
             } else {
@@ -585,24 +585,32 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             }
 
         } else {
-            if (this._source1_obj && this._source2_obj) {
-                if (this._source1_obj.timing.from > this._source2_obj.timing.from) {
-                    this.destroy_srcObj(this._source2_obj);
-                    this._source2_obj = newSource;
-                } else {
-                    this.destroy_srcObj(this._source1_obj);
-                    this._source1_obj = newSource;
-                }
+
+            if (!createAbleSource) {
+                this.destroy_srcObj(this._source1_obj);
+                this.destroy_srcObj(this._source2_obj);
+
             } else {
-                if (this._source1_obj) {
-                    this.destroy_srcObj(this._source1_obj);
-                    this._source1_obj = newSource;
+                if (this._source1_obj && this._source2_obj) {
+                    if (this._source1_obj.timing.from > this._source2_obj.timing.from) {
+                        // this.destroy_srcObj(this._source2_obj);
+                        this._source2_obj = newSource;
+                    } else {
+                        // this.destroy_srcObj(this._source1_obj);
+                        this._source1_obj = newSource;
+                    }
+                } else {
+                    if (this._source1_obj) {
+                        // this.destroy_srcObj(this._source1_obj);
+                        this._source1_obj = newSource;
+                    }
+                    else {
+                        // this.destroy_srcObj(this._source2_obj);
+                        this._source2_obj = newSource
+                    };
                 }
-                else {
-                    this.destroy_srcObj(this._source2_obj);
-                    this._source2_obj = newSource
-                };
             }
+
         }
 
         if (isPlaying && this.state.isPlaying === false) {

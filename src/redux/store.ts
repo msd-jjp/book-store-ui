@@ -1,4 +1,4 @@
-import { combineReducers, createStore, ReducersMapObject, AnyAction/* , Action */, applyMiddleware } from 'redux';
+import { combineReducers, createStore, ReducersMapObject, AnyAction/* , Action *//* , applyMiddleware */ } from 'redux';
 import { redux_state } from './app_state';
 import { reducer as UserReducer } from './reducer/user';
 import { reducer as InternationalizationReducer } from './reducer/internationalization';
@@ -16,7 +16,7 @@ import { reducer as SyncReducer } from './reducer/sync';
 import { reducer as DownloadingBookFileReducer } from './reducer/downloading-book-file';
 import { reducer as ReaderReducer } from './reducer/reader';
 
-import logger from 'redux-logger';
+// import logger from 'redux-logger';
 //
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
