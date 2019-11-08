@@ -320,8 +320,6 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.wavesurfer!.on('finish', () => {
             console.log('finish...');
             // this.stop();
-            this.destroy_srcObj(true);
-            this.destroy_srcObj(false);
             this.pause();
         });
         this.wavesurfer!.on('loading', () => { console.log('loadingggg'); });
@@ -416,31 +414,19 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    private destroy_srcObj(mainSrc: boolean) {
-        if (mainSrc) {
-            console.log('destroy_srcObj main', this._mainSource_obj && this._mainSource_obj.timing, this._mainSource_obj &&
-                this._mainSource_obj.source);
 
-            if (this._mainSource_obj && this._mainSource_obj.source) {
-                this._mainSource_obj.source.stop();
-                this._mainSource_obj.source.disconnect();
-            }
-            this._mainSource_obj = undefined;
-
-        } else {
-            console.log('destroy_srcObj helper', this._helpSource_obj && this._helpSource_obj.timing, this._helpSource_obj &&
-                this._helpSource_obj.source);
-
-            if (this._helpSource_obj && this._helpSource_obj.source) {
-                this._helpSource_obj.source.stop();
-                this._helpSource_obj.source.disconnect();
-            }
-            this._helpSource_obj = undefined;
+    private destroy_srcObj(srcObj: IAudioSourceObj | undefined) {
+        console.log('destroy_srcObj', srcObj && srcObj.timing);
+        if (srcObj && srcObj.source) {
+            srcObj.source.stop();
+            srcObj.source.disconnect();
         }
+        srcObj = undefined;
     }
     private _loadedAtomPos: IBookPosIndicator | undefined;
-    private _mainSource_obj: IAudioSourceObj | undefined;
-    private _helpSource_obj: IAudioSourceObj | undefined;
+    private _source1_obj: IAudioSourceObj | undefined;
+    private _source2_obj: IAudioSourceObj | undefined;
+    // private _activeFromToTime: { from: number, to: number } | undefined;
     private async bindVoiceToAudioContext(
         atomPos: IBookPosIndicator,
         atomFromTo: { from: number, to: number },
@@ -457,49 +443,85 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
         const loadMoreTimer = 6;
 
+        let mainSource: IAudioSourceObj | undefined = undefined;
+        let helpSource: IAudioSourceObj | undefined = undefined;
+
         if (seek) {
-            this.destroy_srcObj(true);
-            this.destroy_srcObj(false);
+            /* if (this._source1_obj && this._source1_obj.source) {
+                this._source1_obj.source.stop();
+                this._source1_obj.source.disconnect();
+            }
+            if (this._source2_obj && this._source2_obj.source) {
+                this._source2_obj.source.stop();
+                this._source2_obj.source.disconnect();
+            }
+            this._source1_obj = undefined;
+            this._source2_obj = undefined; */
+            this.destroy_srcObj(this._source1_obj);
+            this.destroy_srcObj(this._source2_obj);
         }
 
-        if (this._mainSource_obj && !helperBinding) {
-            console.warn('exist:', fromTime, this._mainSource_obj);
-            if (fromTime >= this._mainSource_obj.timing.to) {
-                if (this._helpSource_obj) {
-                    this._mainSource_obj = this._helpSource_obj;
-                    this._helpSource_obj = undefined;
-                    return;
-                } else {
-                    console.error('why _helpSource_obj not exist??')
-                }
-
-            } else if (fromTime + loadMoreTimer >= this._mainSource_obj.timing.to) {
-                if (this._helpSource_obj) { // && ...
-                    return;
-                }
-                if ((fromTime + loadMoreTimer) * 1000 >= atomFromTo.to) {
-                    const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
-                    if (allAtoms_pos.length - 1 >= atomPos_index + 1) {
-                        const fileAtoms_duration = this._bookInstance.getFileAtoms_duration();
-                        this.bindVoiceToAudioContext(
-                            allAtoms_pos[atomPos_index + 1],
-                            fileAtoms_duration[atomPos_index + 1],
-                            this._mainSource_obj.timing.to,
-                            atomPos_index + 1,
-                            false,
-                            loadMoreTimer,
-                            false,
-                            true
-                        );
-                    }
-                } else {
-                    this.bindVoiceToAudioContext(atomPos,
-                        atomFromTo, this._mainSource_obj.timing.to, atomPos_index, false, loadMoreTimer, false, true);
-                }
-                return;
+        if (this._source1_obj && this._source2_obj) {
+            if (this._source1_obj.timing.from > this._source2_obj.timing.from) {
+                mainSource = this._source2_obj;
+                helpSource = this._source1_obj;
             } else {
-                return;
+                mainSource = this._source1_obj;
+                helpSource = this._source2_obj;
             }
+        } else {
+            mainSource = this._source1_obj ? this._source1_obj : this._source2_obj;
+        }
+
+
+        // if (!seek && this._source1_obj && this._source1_obj.timing.from <= fromTime && this._source1_obj.timing.to >= fromTime) {
+        if (!seek && !helperBinding && mainSource && mainSource.timing.from < fromTime && mainSource.timing.to > fromTime) {
+
+            if (fromTime + loadMoreTimer >= mainSource.timing.to) {
+                if (!helpSource || fromTime + loadMoreTimer >= helpSource.timing.to) {
+
+                    // if fromTime in helper range --> find & clear mainSource
+                    if (helpSource) {
+                        if (helpSource === this._source1_obj) { this.destroy_srcObj(this._source2_obj) }
+                        else { this.destroy_srcObj(this._source1_obj) }
+                    }
+
+                    const helperTimingFrom = mainSource.timing.to;
+                    const helperTimingTo = mainSource.timing.to + 10;
+                    if (helpSource) {
+                        helpSource.timing.from = helperTimingFrom;
+                        helpSource.timing.to = helperTimingTo;
+                    } else {
+                        if (this._source1_obj) {
+                            this._source2_obj = { timing: { from: helperTimingFrom, to: helperTimingTo }, source: undefined };
+                        } else {
+                            this._source1_obj = { timing: { from: helperTimingFrom, to: helperTimingTo }, source: undefined };
+                        }
+                    }
+
+                    if ((fromTime + loadMoreTimer) * 1000 >= atomFromTo.to) {
+                        const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
+                        if (allAtoms_pos.length - 1 >= atomPos_index + 1) {
+                            const fileAtoms_duration = this._bookInstance.getFileAtoms_duration();
+                            this.bindVoiceToAudioContext(
+                                allAtoms_pos[atomPos_index + 1],
+                                fileAtoms_duration[atomPos_index + 1],
+                                mainSource.timing.to,
+                                atomPos_index + 1,
+                                false,
+                                loadMoreTimer,
+                                false,
+                                true
+                            );
+                        }
+                    } else {
+                        this.bindVoiceToAudioContext(atomPos,
+                            atomFromTo, mainSource.timing.to, atomPos_index, false, loadMoreTimer, false, true);
+                    }
+
+                }
+            }
+            return;
         }
 
         let newSource: IAudioSourceObj | undefined = { timing: { from: fromTime, to: fromTime + 10 }, source: undefined };
@@ -549,18 +571,84 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
 
         if (helperBinding) {
-            this.destroy_srcObj(false);
-            this._helpSource_obj = newSource;
+            if (this._source1_obj && this._source2_obj) {
+                if (this._source1_obj.timing.from > this._source2_obj.timing.from) {
+                    // this.destroy_srcObj(this._source1_obj);
+                    this._source1_obj = newSource;
+                } else {
+                    // this.destroy_srcObj(this._source2_obj);
+                    this._source2_obj = newSource;
+                }
+            } else {
+                if (this._source1_obj) {
+                    this._source2_obj = newSource;
+                }
+                else {
+                    this._source1_obj = newSource;
+                }
+            }
 
         } else {
-            this.destroy_srcObj(true);
-            this._mainSource_obj = newSource;
+
+            if (!createAbleSource) {
+                this.destroy_srcObj(this._source1_obj);
+                this.destroy_srcObj(this._source2_obj);
+
+            } else {
+                if (this._source1_obj && this._source2_obj) {
+                    if (this._source1_obj.timing.from > this._source2_obj.timing.from) {
+                        // this.destroy_srcObj(this._source2_obj);
+                        this._source2_obj = newSource;
+                    } else {
+                        // this.destroy_srcObj(this._source1_obj);
+                        this._source1_obj = newSource;
+                    }
+                } else {
+                    if (this._source1_obj) {
+                        // this.destroy_srcObj(this._source1_obj);
+                        this._source1_obj = newSource;
+                    }
+                    else {
+                        // this.destroy_srcObj(this._source2_obj);
+                        this._source2_obj = newSource
+                    };
+                }
+            }
+
         }
 
         if (isPlaying && this.state.isPlaying === false) {
             this.play();
         }
     }
+
+    /* private _allSourceDuration: { from: number, to: number }[] = [];
+    private addSourceDuration(from: number, to: number): void {
+        this._allSourceDuration.push({ from, to });
+    }
+    private removeSourceDuration(from: number, to: number): void {
+        for (let i = 0; i < this._allSourceDuration.length; i++) {
+            let du = this._allSourceDuration[i];
+            if (from === du.from && to === du.to) {
+                this._allSourceDuration.splice(i, 1);
+                break;
+            }
+        }
+    }
+    private isSourceDurationAllow(from: number, to: number): boolean {
+        let allow = true;
+        for (let i = 0; i < this._allSourceDuration.length; i++) {
+            let du = this._allSourceDuration[i];
+            if ((from >= du.from && from <= du.to) || (to >= du.from && to <= du.to)) {
+                // if ((from > du.from && from < du.to) || (to > du.from && to < du.to)) {
+                allow = false;
+                break;
+            }
+        }
+        return allow;
+    } */
+
+
 
 
     private gotoBegining() {
