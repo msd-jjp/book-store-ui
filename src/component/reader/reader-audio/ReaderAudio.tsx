@@ -222,7 +222,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
     private _bookInstance!: AudioBookGenerator;
     private async createBook() {
-        const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
+        const bookFile = appLocalStorage.findBookMainFileById(this.book_id); // find book chapter
         if (!bookFile) {
             this.setState({ loading: false });
             this.bookFileNotFound_notify();
@@ -230,7 +230,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
 
         try {
-            this._bookInstance = await ReaderUtility.createAudioBook(this.book_id, bookFile);
+            this._bookInstance = await ReaderUtility.createAudioBook(this.book_id, bookFile); // pass book chapter
         } catch (e) {
             console.error(e);
             this.setState({ loading: false });
@@ -240,6 +240,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
     private initAudio() {
         debugger;
+        if (this.wavesurfer) {
+            this.wavesurfer.destroy();
+        }
+
         // const fileTotalDuration = this._bookInstance.getTotalDuration();
         const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
         let trackTotalDuration = 0;
