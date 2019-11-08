@@ -6,11 +6,14 @@ import { IUser } from "../../../model/model.user";
 import { TInternationalization, Setup } from "../../../config/setup";
 import { BaseComponent } from "../../_base/BaseComponent";
 import { History } from "history";
+// import { IToken } from "../../../model/model.token";
 import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { PersonService } from "../../../service/service.person";
 import { action_user_logged_in } from "../../../redux/action/user";
 import { IBook } from "../../../model/model.book";
+import { ILibrary_schema } from "../../../redux/action/library/libraryAction";
+
 import { Localization } from "../../../config/localization/localization";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { Dropdown } from "react-bootstrap";
@@ -43,11 +46,6 @@ const WaveSurfer = require('wavesurfer.js/dist/wavesurfer');
 const TimelinePlugin = require('wavesurfer.js/dist/plugin/wavesurfer.timeline');
 const CursorPlugin = require('wavesurfer.js/dist/plugin/wavesurfer.cursor');
 
-interface IAudioSourceObj {
-    timing: { from: number, to: number };
-    source: AudioBufferSourceNode | undefined;
-}
-
 interface IProps {
     logged_in_user: IUser | null;
     internationalization: TInternationalization;
@@ -56,7 +54,7 @@ interface IProps {
     network_status: NETWORK_STATUS;
     onUserLoggedIn: (user: IUser) => void;
     match: any;
-    // library: ILibrary_schema;
+    library: ILibrary_schema;
 }
 
 interface IState {
@@ -76,9 +74,30 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private book_id: string = '';
 
     private playlist = [
-        'chapter1',
-        'chapter2',
-        'chapter3',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/A%20Birthday%20Present.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/All%20The%20Dead%20Dears.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Ariel.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Battle-Scenet.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Black%20Rock%20In%20Rainy%20Weather.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Daddy.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Departure%20Of%20The%20Ghost.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Fever%20103.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Full%20Fathom%20Five.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Lady%20Lazarus.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Letter%20in%20November.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Lorelei.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Mushrooms.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Nick%20And%20The%20Candle%20Stick.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/November%20Graveyard.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/On%20The%20Decline%20Of%20Oracles.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/On%20The%20Difficulty%20Of%20Conjuring%20Up%20A%20Dryad.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/On%20The%20Plethora%20Of%20Dryads.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Perseus-The%20Triumph%20Of%20Wit%20Over%20Suffering.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Point%20Shirley.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Purdah.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/Sow.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/The%20Applicant.ogg',
+        'https://ia601307.us.archive.org/14/items/SylviaPlathOnThePlethoraOfDryads/The%20Thin%20People.ogg',
     ];
 
     state = {
@@ -107,6 +126,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
+        // this._personService.setToken(this.props.token);
         this.book_id = this.props.match.params.bookId;
     }
 
@@ -125,8 +145,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             return;
         }
 
+        // this.setBook_byId(/* this.book_id */);
         this.updateUserCurrentBook_client();
         this.updateUserCurrentBook_server();
+        // this.initAudio();
         this.generateReader();
     }
     componentWillUnmount() {
@@ -216,13 +238,15 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         await CmpUtility.waitOnMe(0);
         await this.createBook();
         if (!this._bookInstance) return;
-        this.initAudio();
+        // this.initAudio();
+        this.initAudio2();
     }
 
     private _bookInstance!: AudioBookGenerator;
     private async createBook() {
         const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
         if (!bookFile) {
+            //   this.setState({ page_loading: false });
             this.setState({ loading: false });
             this.bookFileNotFound_notify();
             return;
@@ -232,19 +256,24 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             this._bookInstance = await ReaderUtility.createAudioBook(this.book_id, bookFile);
         } catch (e) {
             console.error(e);
+            //   this.setState({ page_loading: false });
             this.setState({ loading: false });
             this.readerError_notify();
         }
     }
 
-    private initAudio() {
-        debugger;
+    private initAudio2() {
         const fileTotalDuration = this._bookInstance.getTotalDuration();
         const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
         let trackTotalDuration = 0;
         allAtoms_pos.forEach(atom => {
             trackTotalDuration += this._bookInstance.getAtomDuration(atom);
         });
+        debugger;
+        /* this._bookInstance.loadVoiceAtom(allAtoms_pos[0]);
+        let srate = this._bookInstance.getLoadedVoiceAtomSampleRate();
+        let chans = this._bookInstance.getLoadedVoiceAtomChannels();
+        console.log(this._bookInstance.getLoadedVoiceAtomDuration()); */
 
         const wsParams: any = { // WaveSurfer.WaveSurferParams = {
             // const obj: WaveSurfer.WaveSurferParams = {
@@ -258,6 +287,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             barWidth: 1,
             cursorWidth: 1,
             cursorColor: '#015e5b', // '#4a74a5',
+            // mediaControls: true,
+            // audioContext: this.getAudioContext(srate),
 
             duration: trackTotalDuration / 1000,
             // rtl: true,
@@ -279,9 +310,22 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             ]
         };
 
+
+        // let atom_10_0 = this._bookInstance.getLoadedVoiceAtom10Second(0);
+        // let atom_10_1 = this._bookInstance.getLoadedVoiceAtom10Second(10000);
+        // let atom_10_2 = this._bookInstance.getLoadedVoiceAtom10Second(20000);
+        // let atom_10_3 = this._bookInstance.getLoadedVoiceAtom10Second(30000);
+        // let atom_10_4 = this._bookInstance.getLoadedVoiceAtom10Second(40000);
+
         this.wavesurfer = WaveSurfer.create(wsParams);
+
         this.wavesurfer!.backend.setPeaks([], trackTotalDuration / 1000);
 
+        // this.createGainNode(srate);
+
+        // this.wavesurfer!.backend.audioContext = this.getAudioContext(srate);
+
+        // debugger;
         this.wavesurfer!.on('ready', () => {
             // this.wavesurfer.play();
             console.log('ready...');
@@ -308,17 +352,142 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         });
         this.wavesurfer!.on('finish', () => {
             console.log('finish...');
+            // this.gotoBegining();
+            // this.wavesurfer!.pause();
+            // this.pause();
+            // this.after_pause();
+            this.pause();
             this.stop();
         });
         this.wavesurfer!.on('loading', () => { console.log('loadingggg'); });
         this.wavesurfer!.on('destroy', () => { console.log('destroyyyyyy'); });
         this.wavesurfer!.on('audioprocess', () => { this.updateTimer(); });
-        this.wavesurfer!.on('seek', () => { this.updateTimer(undefined, true); });
+        this.wavesurfer!.on('seek', () => { this.updateTimer(); });
 
         const audioBuffer_min = this.getaudioBuffer(44100, 1, [new Float32Array(1)]); // srate
         this.wavesurfer!.loadDecodedBuffer(audioBuffer_min);
 
         this.updateTimer(0);
+
+        //     const ab = this.getaudioBuffer(srate, chans, atom_10_3);
+        //     let numOfChan = ab.numberOfChannels,
+        //   length = 441000 * numOfChan * 2 + 44,
+        //   buffer = new ArrayBuffer(length),
+        //   view = new DataView(buffer),
+        //   channels = [], i, sample,
+        //   offset = 0,
+        //   pos = 0;
+        //     this.wavesurfer!.loadBlob(new Blob([buffer], {type: 'audio/mp3'}));
+        // this.wavesurfer!.loadBlob
+
+
+        setTimeout(() => {
+            return;
+            debugger;
+
+            // this.wavesurfer!.backend.buffer = this.getaudioBuffer(srate, chans, atom_10_3);
+            // this.wavesurfer!.backend.source.buffer = this.getaudioBuffer(srate, chans, atom_10_3);
+
+            // this.wavesurfer!.backend.pause();
+            // this.test(this.getaudioBuffer(srate, chans, atom_10_3), 30);
+
+            // this.play();
+
+            // const newB4 = this.getaudioBuffer(srate, chans, atom_10_4);
+            setTimeout(() => {
+                return;
+                // this.wavesurfer!.backend.buffer = newB4;
+                // this.wavesurfer!.backend.source.buffer = newB4;
+
+                // this.test(newB4, 40);
+            }, 10000);
+
+            return;
+            // this.wavesurfer!.setCurrentTime(30);
+
+            // const ax = this.getAudioContext(srate);
+            const ax = this.wavesurfer!.backend.getAudioContext();
+            // const gn = this.getGainNode(srate);
+            ax.suspend();
+
+            const source1 = ax.createBufferSource();
+            // source1.buffer = this.getaudioBuffer(srate, chans, atom_10_3);
+            source1.connect(ax.destination);
+            // source1.connect(gn);
+            source1.start(ax.currentTime + 0);
+
+            // this.play();
+
+            const source2 = ax.createBufferSource();
+            // source2.buffer = this.getaudioBuffer(srate, chans, atom_10_4);
+            source2.connect(ax.destination);
+            // source1.connect(gn);
+            source2.start(ax.currentTime + 10);
+
+            debugger;
+
+            // ax.suspend
+            // ax.resume
+            // setTimeout(() => {
+            //     ax.suspend();
+            //     this.pause();
+            //     // debugger;
+            // }, 20000)
+        }, 1000);
+
+    }
+
+    private test(bf: AudioBuffer, startPosition: number) {
+        const backend = this.wavesurfer!.backend;
+        backend.buffer = bf;
+
+        // backend.startPosition = startPosition;
+        // backend.lastPlay = backend.ac.currentTime +startPosition;
+        // backend.buffer = bf;
+        // backend.createSource();
+
+        // backend.disconnectSource();
+        // backend.source = backend.ac.createBufferSource();
+
+        // // adjust for old browsers
+        // // backend.source.start = backend.source.start || backend.source.noteGrainOn;
+        // // backend.source.start(backend.ac.currentTime + startPosition);
+        // // backend.source.stop = backend.source.stop || backend.source.noteOff;
+
+        // backend.source.playbackRate.setValueAtTime(
+        //     backend.playbackRate,
+        //     backend.ac.currentTime + startPosition
+        // );
+        // backend.source.buffer = backend.buffer;
+        // backend.source.connect(backend.analyser);
+        // backend.source.connect(backend.ac.destination);
+
+        // backend.source.start(backend.ac.currentTime + startPosition);
+        return;
+
+        // backend.startPosition = 0;
+        // backend.lastPlay = backend.ac.currentTime;
+        // backend.buffer = bf;
+        // backend.createSource();
+        // return;
+
+
+        backend.disconnectSource();
+        backend.source = backend.ac.createBufferSource();
+
+        // adjust for old browsers
+        backend.source.start = backend.source.start || backend.source.noteGrainOn;
+        backend.source.stop = backend.source.stop || backend.source.noteOff;
+
+        backend.source.playbackRate.setValueAtTime(
+            backend.playbackRate,
+            backend.ac.currentTime
+        );
+        backend.source.buffer = bf; // backend.buffer;
+        backend.source.connect(backend.analyser);
+
+
+        backend.source.start(backend.ac.currentTime + startPosition);
     }
 
     private _audioContextObj: { audioContext: AudioContext | undefined, sampleRate: number | undefined } | undefined;
@@ -335,7 +504,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
 
     getaudioBuffer(sampleRate: number, channel: number, sourceList: Float32Array[]): AudioBuffer {
-        const ax = this.getAudioContext(sampleRate);
+        // const ax = this.getAudioContext(sampleRate);
+        const backend = this.wavesurfer!.backend;
+        const ax = backend.ac;
         let audioBuffer = ax.createBuffer(channel, sourceList[0].length, sampleRate);
         for (let i = 0; i < channel; i++) {
             audioBuffer.copyToChannel(sourceList[i], i, 0);
@@ -357,7 +528,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this._gainNode!.gain.setValueAtTime(vol, this.getAudioContext().currentTime);
     }
 
-    private processCurrentTime(currentTime: number, seek: boolean): void {
+    // private _activeAtomPos: IBookPosIndicator | undefined;
+    private processCurrentTime(currentTime: number): void {
         console.log('currentTimeeeeeee:', currentTime);
         const fileAtoms_duration = this._bookInstance.getFileAtoms_duration();
         let currentAtom_index = undefined;
@@ -384,15 +556,12 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                 currentTime,
                 currentAtom_index,
                 true,
-                0,
-                seek
+                0
             );
         }
     }
 
     private _loadedAtomPos: IBookPosIndicator | undefined;
-    private _source1_obj: IAudioSourceObj | undefined;
-    // private _source2_obj: IAudioSourceObj | undefined;
     // private _activeFromToTime: { from: number, to: number } | undefined;
     private async bindVoiceToAudioContext(
         atomPos: IBookPosIndicator,
@@ -400,87 +569,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         fromTime: number,
         atomPos_index: number,
         pauseUntilBind: boolean,
-        offset: number,
-        seek: boolean
+        offset: number
     ): Promise<void> {
         await CmpUtility.waitOnMe(0);
-
-        const loadMoreTimer = 6;
-
-        // if (!seek && this._source1_obj && this._source1_obj.timing.from <= fromTime && this._source1_obj.timing.to >= fromTime) {
-        if (!seek && this._source1_obj && this._source1_obj.timing.from < fromTime && this._source1_obj.timing.to > fromTime) {
-            if (this._source1_obj && fromTime + loadMoreTimer >= this._source1_obj.timing.to) {
-                // if (this._source2_obj && fromTime + loadMoreTimer >= this._source2_obj.timing.from) {
-                // }
-                if ((fromTime + loadMoreTimer) * 1000 >= atomFromTo.to) {
-                    const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
-                    if (allAtoms_pos.length - 1 >= atomPos_index + 1) {
-                        const fileAtoms_duration = this._bookInstance.getFileAtoms_duration();
-                        this.bindVoiceToAudioContext(
-                            allAtoms_pos[atomPos_index + 1],
-                            fileAtoms_duration[atomPos_index + 1],
-                            this._source1_obj.timing.to,
-                            atomPos_index + 1,
-                            false,
-                            loadMoreTimer,
-                            false
-                        );
-                    }
-                } else {
-                    this.bindVoiceToAudioContext(atomPos,
-                        atomFromTo, this._source1_obj.timing.to, atomPos_index, false, loadMoreTimer, false);
-                }
-            }
-            return;
-        }
-
-        if (this._source1_obj && this._source1_obj.source && seek) {
-            this._source1_obj.source.stop();
-            this._source1_obj.source.disconnect();
-        }
-        // if (this._source2_obj && this._source2_obj.source) {
-        //     this._source2_obj.source.stop();
-        //     this._source2_obj.source.disconnect();
-        // }
-        this._source1_obj = { timing: { from: fromTime, to: fromTime + 10 }, source: undefined };
-
-        const isPlaying = this.state.isPlaying;
-        if (pauseUntilBind) { if (isPlaying) { this.pause(); } }
-
-        if (this._loadedAtomPos !== atomPos) {
-            this._loadedAtomPos = atomPos;
-            this._bookInstance.loadVoiceAtom(atomPos);
-        }
-
-        const sampleRate = this._bookInstance.getLoadedVoiceAtomSampleRate();
-        const channels = this._bookInstance.getLoadedVoiceAtomChannels();
-        const atom_10 = this._bookInstance.getLoadedVoiceAtom10Second(fromTime * 1000 - atomFromTo.from);
-        const voiceTime = ((fromTime + 10) * 1000 <= atomFromTo.to) ? 10 : ((atomFromTo.to - (fromTime * 1000)) / 1000);
-
-        const audioCtx = this.getAudioContext(sampleRate);
-        const source = audioCtx.createBufferSource();
-        source.buffer = this.getaudioBuffer(sampleRate, channels, atom_10);
-        source.connect(audioCtx.destination);
-        source.start(audioCtx.currentTime + offset);
-        source.stop(audioCtx.currentTime + offset + voiceTime);
-        source.onended = (ev: Event) => {
-            console.log('------source.onended----', fromTime, fromTime + voiceTime);
-            // this.pause();
-        };
-
-        this._source1_obj.source = source;
-
-        if (isPlaying && this.state.isPlaying === false) {
-            this.play();
-        }
-
-
-
-
-
-
-
-        return;
         const earlyTime = 6;
 
         if (!this.isSourceDurationAllow(fromTime, fromTime + 10)) {
@@ -498,13 +589,12 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                             fromTime + earlyTime,
                             atomPos_index + 1,
                             false,
-                            earlyTime,
-                            false
+                            earlyTime
                         );
                     }
                 } else {
                     console.log('..........5sec early get this atom');
-                    this.bindVoiceToAudioContext(atomPos, atomFromTo, fromTime + earlyTime, atomPos_index, false, earlyTime, false);
+                    this.bindVoiceToAudioContext(atomPos, atomFromTo, fromTime + earlyTime, atomPos_index, false, earlyTime);
                 }
             }
 
@@ -512,12 +602,12 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
 
 
-        // const isPlaying = this.state.isPlaying;
-        // if (pauseUntilBind) {
-        //     if (isPlaying) {
-        //         this.pause();
-        //     }
-        // }
+        const isPlaying = this.state.isPlaying;
+        if (pauseUntilBind) {
+            if (isPlaying) {
+                this.pause();
+            }
+        }
 
         if (this._loadedAtomPos !== atomPos) {
             console.log('----------loadVoiceAtom----------');
@@ -525,11 +615,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             this._bookInstance.loadVoiceAtom(atomPos);
         }
 
-        // let sampleRate = this._bookInstance.getLoadedVoiceAtomSampleRate();
-        // let channels = this._bookInstance.getLoadedVoiceAtomChannels();
-        // // console.log(this._bookInstance.getLoadedVoiceAtomDuration());
-        // let atom_10 = this._bookInstance.getLoadedVoiceAtom10Second(fromTime * 1000 - atomFromTo.from);
-        // let voiceTime = ((fromTime + 10) * 1000 <= atomFromTo.to) ? 10 : ((atomFromTo.to - (fromTime * 1000)) / 1000);
+        let sampleRate = this._bookInstance.getLoadedVoiceAtomSampleRate();
+        let channels = this._bookInstance.getLoadedVoiceAtomChannels();
+        // console.log(this._bookInstance.getLoadedVoiceAtomDuration());
+        let atom_10 = this._bookInstance.getLoadedVoiceAtom10Second(fromTime * 1000 - atomFromTo.from);
+        let voiceTime = ((fromTime + 10) * 1000 <= atomFromTo.to) ? 10 : ((atomFromTo.to - (fromTime * 1000)) / 1000);
 
 
         this.addSourceDuration(fromTime, fromTime + voiceTime);
@@ -537,7 +627,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         const ax = this.getAudioContext(sampleRate);
         // const gn = this.getGainNode(srate);
         // ax.suspend();
-        // const source = ax.createBufferSource();
+        const source = ax.createBufferSource();
         source.buffer = this.getaudioBuffer(sampleRate, channels, atom_10);
         source.connect(ax.destination);
         // source1.connect(gn);
@@ -587,10 +677,6 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
 
 
-
-
-
-
     private gotoBegining() {
         this.wavesurfer!.setCurrentTime(0);
     }
@@ -601,7 +687,6 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     // };
     private stop() {
         this.wavesurfer!.stop();
-        this.getAudioContext().suspend();
         this.after_pause();
     };
     private play() {
@@ -653,7 +738,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.updateTimer(0);
     }
     private _current_time = '';
-    private updateTimer(currentTime?: number, seek = false) {
+    private updateTimer(currentTime?: number) {
         let formattedTime = '00:00:00';
         if (currentTime || currentTime === 0) {
             formattedTime = this.secondsToTimeFormatter(currentTime);
@@ -666,7 +751,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this._current_time = formattedTime;
         document.getElementById('time-current')!.innerText = formattedTime;
         // console.log(formattedTime);
-        this.processCurrentTime((currentTime || currentTime === 0) ? currentTime : this.wavesurfer!.getCurrentTime(), seek);
+        this.processCurrentTime((currentTime || currentTime === 0) ? currentTime : this.wavesurfer!.getCurrentTime());
     }
     private secondsToTimeFormatter(seconds: number) {
         seconds = Math.floor(seconds);
@@ -960,7 +1045,7 @@ const state2props = (state: redux_state) => {
         internationalization: state.internationalization,
         // token: state.token,
         network_status: state.network_status,
-        // library: state.library,
+        library: state.library,
     };
 };
 
