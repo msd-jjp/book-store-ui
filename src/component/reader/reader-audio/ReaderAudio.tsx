@@ -326,6 +326,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         const audioBuffer_min = this.getaudioBuffer(44100, 1, [new Float32Array(1)]); // srate
         this.wavesurfer!.loadDecodedBuffer(audioBuffer_min);
 
+        // this.getGainNode();
+        
         //todo: book progreess position;
         let bookReadedTime = 60;
         this.setWavesurferTime(bookReadedTime);
@@ -350,7 +352,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    getaudioBuffer(sampleRate: number, channel: number, sourceList: Float32Array[]): AudioBuffer {
+    private getaudioBuffer(sampleRate: number, channel: number, sourceList: Float32Array[]): AudioBuffer {
         const ax = this.getAudioContext(sampleRate);
 
         if (!sampleRate || !channel || !sourceList || !sourceList[0] || !sourceList[0].length) { debugger; }
@@ -363,7 +365,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
 
     private _gainNode: GainNode | undefined;
-    private getGainNode(sampleRate: number): GainNode {
+    private getGainNode(sampleRate?: number): GainNode {
         if (this._gainNode) return this._gainNode;
         const ax = this.getAudioContext(sampleRate);
         this._gainNode = ax.createGain();
@@ -371,8 +373,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         return this._gainNode;
     }
     private updateGainNode(vol: number) {
-        return;
-        // this._gainNode!.gain.value = vol;
+        // return;
+        console.log('updateGainNode', vol);
+        this._gainNode!.gain.value = vol;
         this._gainNode!.gain.setValueAtTime(vol, this.getAudioContext().currentTime);
     }
 
@@ -409,6 +412,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
 
     private destroy_srcObj(srcObj: IAudioSourceObj | undefined) {
+        console.log('destroy_srcObj', srcObj && srcObj.timing);
         if (srcObj && srcObj.source) {
             srcObj.source.stop();
             srcObj.source.disconnect();
@@ -516,7 +520,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             return;
         }
 
-        const newSource: IAudioSourceObj = { timing: { from: fromTime, to: fromTime + 10 }, source: undefined };
+        let newSource: IAudioSourceObj | undefined = { timing: { from: fromTime, to: fromTime + 10 }, source: undefined };
 
         const isPlaying = this.state.isPlaying;
         if (pauseUntilBind) { if (isPlaying) { this.pause(); } }
@@ -529,55 +533,75 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         const sampleRate = this._bookInstance.getLoadedVoiceAtomSampleRate();
         const channels = this._bookInstance.getLoadedVoiceAtomChannels();
         const atom_10 = this._bookInstance.getLoadedVoiceAtom10Second(fromTime * 1000 - atomFromTo.from);
+
+        let createAbleSource = true;
         if (!atom_10[0].length) {
             console.warn('!!!! atom_10[0].length', atom_10);
-            if (isPlaying && this.state.isPlaying === false) {
-                this.play();
-            }
-            return;
+            createAbleSource = false;
         }
-        const voiceTime = ((fromTime + 10) * 1000 <= atomFromTo.to) ? 10 : ((atomFromTo.to - (fromTime * 1000)) / 1000);
 
-        const audioCtx = this.getAudioContext(sampleRate);
-        const source = audioCtx.createBufferSource();
-        source.buffer = this.getaudioBuffer(sampleRate, channels, atom_10);
-        source.connect(audioCtx.destination);
-        source.start(audioCtx_currentTime + offset); // audioCtx.currentTime
-        source.stop(audioCtx_currentTime + offset + voiceTime); // audioCtx.currentTime
-        source.onended = (ev: Event) => {
-            console.log('------source.onended----', fromTime, fromTime + voiceTime);
-            // this.pause();
-        };
+        if (createAbleSource) {
+            const voiceTime = ((fromTime + 10) * 1000 <= atomFromTo.to) ? 10 : ((atomFromTo.to - (fromTime * 1000)) / 1000);
 
-        // this._source1_obj.source = source;
-        newSource.source = source;
-        // if (!mainSource) {
-        //     this._source1_obj = newSource;
-        // } else {
-        //     this._source2_obj = newSource;
-        // }
+            newSource.timing.to = newSource.timing.from + voiceTime;
+
+            const audioCtx = this.getAudioContext(sampleRate);
+            const source = audioCtx.createBufferSource();
+            source.buffer = this.getaudioBuffer(sampleRate, channels, atom_10);
+            // source.connect(audioCtx.destination);
+            
+            const gainNode = this.getGainNode(); // sampleRate
+            source.connect(gainNode);
+            // gainNode.connect(audioCtx.destination);
+
+            source.start(audioCtx_currentTime + offset); // audioCtx.currentTime
+            source.stop(audioCtx_currentTime + offset + voiceTime); // audioCtx.currentTime
+            source.onended = (ev: Event) => {
+                console.log('------source.onended----', fromTime, fromTime + voiceTime);
+                // this.pause();
+            };
+
+            newSource.source = source;
+        } else {
+            newSource = undefined;
+        }
+
         if (helperBinding) {
             if (this._source1_obj && this._source2_obj) {
                 if (this._source1_obj.timing.from > this._source2_obj.timing.from) {
+                    this.destroy_srcObj(this._source1_obj);
                     this._source1_obj = newSource;
                 } else {
+                    this.destroy_srcObj(this._source2_obj);
                     this._source2_obj = newSource;
                 }
             } else {
-                if (this._source1_obj) this._source2_obj = newSource;
-                else this._source1_obj = newSource;
+                if (this._source1_obj) {
+                    this._source2_obj = newSource;
+                }
+                else {
+                    this._source1_obj = newSource;
+                }
             }
 
         } else {
             if (this._source1_obj && this._source2_obj) {
                 if (this._source1_obj.timing.from > this._source2_obj.timing.from) {
+                    this.destroy_srcObj(this._source2_obj);
                     this._source2_obj = newSource;
                 } else {
+                    this.destroy_srcObj(this._source1_obj);
                     this._source1_obj = newSource;
                 }
             } else {
-                if (this._source1_obj) this._source1_obj = newSource;
-                else this._source2_obj = newSource;
+                if (this._source1_obj) {
+                    this.destroy_srcObj(this._source1_obj);
+                    this._source1_obj = newSource;
+                }
+                else {
+                    this.destroy_srcObj(this._source2_obj);
+                    this._source2_obj = newSource
+                };
             }
         }
 
@@ -586,7 +610,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    private _allSourceDuration: { from: number, to: number }[] = [];
+    /* private _allSourceDuration: { from: number, to: number }[] = [];
     private addSourceDuration(from: number, to: number): void {
         this._allSourceDuration.push({ from, to });
     }
@@ -610,14 +634,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             }
         }
         return allow;
-    }
-
-
-
-
-
-
-
+    } */
 
 
 
