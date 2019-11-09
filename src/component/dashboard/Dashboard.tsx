@@ -376,8 +376,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                       ? <i className="fa fa-wifi text-danger"></i> : ''
                   }
                 </Dropdown.Item>
-                <Dropdown.Item>{Localization.share_progress}</Dropdown.Item>
-                <Dropdown.Item>
+                <Dropdown.Item disabled>{Localization.share_progress}</Dropdown.Item>
+                <Dropdown.Item disabled>
                   {Localization.recommend_this_book}
                 </Dropdown.Item>
                 <Dropdown.Item

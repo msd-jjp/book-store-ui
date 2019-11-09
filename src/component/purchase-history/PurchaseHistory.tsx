@@ -175,7 +175,9 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
                       }
                     </td>
                     <td>{order.total_price ? order.total_price.toLocaleString() : ''}</td>
-                    <td><i className="fa fa-info-circle ---bars cursor-pointer" onClick={() => this.openModal_orderItems(order)}></i></td>
+                    <td className="cursor-pointer" onClick={() => this.openModal_orderItems(order)}>
+                      <i className="fa fa-info-circle"></i>
+                    </td>
                   </tr>
                 </Fragment>
               ))}
