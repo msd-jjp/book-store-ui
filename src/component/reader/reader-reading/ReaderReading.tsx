@@ -82,6 +82,12 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     this.generateReader();
   }
 
+  componentWillUnmount() {
+    // todo: check me
+    this.swiper_obj && this.swiper_obj.destroy(true, true);
+    this.swiper_obj = undefined;
+  }
+
   updateUserCurrentBook_client() {
     const book = this._libraryItem!.book;
     this.setState({ ...this.state, book: book });

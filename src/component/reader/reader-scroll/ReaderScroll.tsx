@@ -88,9 +88,9 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   componentWillUnmount() {
-    // todo:  uncommetn
-    // this.swiper_obj && this.swiper_obj.destroy(true, true);
-    // this.swiper_obj = undefined;
+    // todo: check me
+    this.swiper_obj && this.swiper_obj.destroy(true, true);
+    this.swiper_obj = undefined;
   }
 
   bookFileNotFound_notify() {
