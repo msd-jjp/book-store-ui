@@ -402,8 +402,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         return this._gainNode;
     }
     private updateGainNode(vol: number) {
-        // return;
-        console.log('updateGainNode', vol);
+        if (!this._gainNode) return;
         this._gainNode!.gain.value = vol;
         this._gainNode!.gain.setValueAtTime(vol, this.getAudioContext().currentTime);
     }
@@ -740,6 +739,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
     private _current_time = '';
     private updateTimer(currentTime?: number, seek = false) {
+        if (!this.wavesurfer) return;
+
         let formattedTime = '00:00:00';
         if (currentTime || currentTime === 0) {
             formattedTime = this.secondsToTimeFormatter(currentTime);
@@ -788,6 +789,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
     private backward_forward_step = 10;
     private backward() {
+        if (!this.wavesurfer) return;
         const currentTime = this.wavesurfer!.getCurrentTime();
         let seekTo = 0;
         if (currentTime - this.backward_forward_step > 0) {
@@ -796,6 +798,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.wavesurfer!.setCurrentTime(seekTo);
     }
     private forward() {
+        if (!this.wavesurfer) return;
         const totalTime = this.wavesurfer!.getDuration();
         const currentTime = this.wavesurfer!.getCurrentTime();
         // const remainingTime = totalTime - currentTime;
@@ -806,10 +809,13 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.wavesurfer!.setCurrentTime(currentTime + this.backward_forward_step);
     }
     private setWavesurferTime(seconds: number) {
-        this.wavesurfer && this.wavesurfer.setCurrentTime(seconds);
+        if (!this.wavesurfer) return;
+        this.wavesurfer.setCurrentTime(seconds);
     }
 
     private setPlayerVolume(vol: number) {
+        if (!this.wavesurfer) return;
+
         this.wavesurfer!.setVolume(vol);
         this.updateGainNode(vol);
     }
@@ -898,6 +904,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
 
     private onSliderChange(value: number) {
+        if (!this.wavesurfer) return;
+
         this.setState({ volume: { val: value, mute: false } }, () => {
             this.wavesurfer!.setMute(false);
             this.setPlayerVolume(value);
@@ -928,6 +936,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         )
     }
     toggleMute() {
+        if (!this.wavesurfer) return;
+
         this.wavesurfer!.toggleMute();
         const isMute = this.wavesurfer!.getMute();
         this.updateGainNode(isMute ? 0 : this.state.volume.val);

@@ -146,6 +146,7 @@
       .volume-dd-container {
         position: absolute;
         right: 1rem;
+        z-index: 3;
         // body.rtl & {
         //   right: 1rem;
         // }

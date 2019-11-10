@@ -192,3 +192,9 @@ mabe in profile: get user instead of person.
 onSync : check cart too.
 
 ====================================================================================
+
+audio:
+in safari --> start immediately after open !! 
+on change pause play bug.
+
+====================================================================================
