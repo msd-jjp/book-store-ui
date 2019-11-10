@@ -283,6 +283,15 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                         padding: '2px',
                         'font-size': '10px'
                     },
+                    formatTimeCallback: (cursorTime: number) => {
+                        return [cursorTime].map(time =>
+                            [
+                                Math.floor((time % 3600) / 60), // minutes
+                                ('00' + Math.floor(time % 60)).slice(-2), // seconds
+                                // ('000' + Math.floor((time % 1) * 1000)).slice(-3) // milliseconds
+                            ].join(':')
+                        );
+                    }
                 })
             ]
         };
@@ -320,8 +329,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.wavesurfer!.on('finish', () => {
             console.log('finish...');
             // this.stop();
-            this.destroy_srcObj(true);
-            this.destroy_srcObj(false);
+            // this.destroy_srcObj(true);
+            // this.destroy_srcObj(false);
+            // this._audioCtx_currentTime_next = undefined;
+            this.reset_srcObj();
             this.pause();
         });
         this.wavesurfer!.on('loading', () => { console.log('loadingggg'); });
@@ -335,18 +346,19 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // this.getGainNode();
 
         //todo: book progreess position;
-        let bookReadedTime = 100;
+        let bookReadedTime = 47;
         this.setWavesurferTime(bookReadedTime);
         this.updateTimer(bookReadedTime);
     }
 
+    // todo: remove sampleRate.
     private _audioContextObj: { audioContext: AudioContext | undefined, sampleRate: number | undefined } | undefined;
     private getAudioContext(sampleRate?: number): AudioContext {
         if (this._audioContextObj && (sampleRate ? this._audioContextObj.sampleRate === sampleRate : true)) {
             return this._audioContextObj!.audioContext!;
         }
         let audioCtx: AudioContext = new ((window as any).AudioContext || (window as any).webkitAudioContext)(
-            { sampleRate: sampleRate }
+            // { sampleRate: sampleRate }
         );
         audioCtx.suspend();
         this._audioContextObj = { audioContext: audioCtx, sampleRate };
@@ -356,6 +368,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         if (this._audioContextObj && this._audioContextObj.audioContext) {
             this._audioContextObj.audioContext.close();
         }
+        this._audioContextObj = undefined;
+        this._gainNode = undefined;
     }
 
     private getaudioBuffer(sampleRate: number, channel: number, sourceList: Float32Array[]): AudioBuffer {
@@ -365,7 +379,16 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
         let audioBuffer = ax.createBuffer(channel, sourceList[0].length, sampleRate);
         for (let i = 0; i < channel; i++) {
-            audioBuffer.copyToChannel(sourceList[i], i, 0);
+            // audioBuffer.copyToChannel(sourceList[i], i, 0);
+            if (audioBuffer.copyToChannel) {
+                audioBuffer.copyToChannel(sourceList[i], i, 0);
+
+            } else {
+                let buffer = audioBuffer.getChannelData(i);
+                for (let j = 0; j < buffer.length; j++) {
+                    buffer[j] = sourceList[i][j];
+                }
+            }
         }
         return audioBuffer;
     }
@@ -416,6 +439,24 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
     }
 
+    private _audioSourceList: Array<AudioBufferSourceNode | undefined> = [];
+    private reset_srcObj() {
+        // console.error('reset_srcObj');
+        this.destroy_srcObj(true);
+        this.destroy_srcObj(false);
+        this._audioCtx_currentTime_next = undefined;
+        // this.destroyAudioContext();
+        // todo error in safari invalid Object
+        this._audioSourceList.forEach(a_s => {
+            try {
+                a_s && a_s.stop();
+                a_s && a_s.disconnect();
+            } catch (e) {
+                console.log('while this._audioSourceList', e);
+            }
+        });
+        this._audioSourceList = []; // todo : add all source here
+    }
     private destroy_srcObj(mainSrc: boolean) {
         if (mainSrc) {
             console.log('destroy_srcObj main', this._mainSource_obj && this._mainSource_obj.timing, this._mainSource_obj &&
@@ -441,6 +482,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private _loadedAtomPos: IBookPosIndicator | undefined;
     private _mainSource_obj: IAudioSourceObj | undefined;
     private _helpSource_obj: IAudioSourceObj | undefined;
+    private _audioCtx_currentTime_next: number | undefined;
     private async bindVoiceToAudioContext(
         atomPos: IBookPosIndicator,
         atomFromTo: { from: number, to: number },
@@ -453,25 +495,34 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     ): Promise<void> {
 
         const audioCtx_currentTime = this.getAudioContext().currentTime;
+
         await CmpUtility.waitOnMe(0);
 
         const loadMoreTimer = 6;
 
         if (seek) {
-            this.destroy_srcObj(true);
-            this.destroy_srcObj(false);
+            // this.destroy_srcObj(true);
+            // this.destroy_srcObj(false);
+            // this._audioCtx_currentTime_next = undefined;
+            this.reset_srcObj();
         }
 
         if (this._mainSource_obj && !helperBinding) {
             console.log('exist:', fromTime, this._mainSource_obj);
             if (fromTime >= this._mainSource_obj.timing.to) {
                 if (this._helpSource_obj) {
+                    console.log(
+                        'mainSource: ',
+                        this._mainSource_obj && this._mainSource_obj.timing,
+                        '<-- **switch** -->  helpSource: ',
+                        this._helpSource_obj && this._helpSource_obj.timing,
+                    );
                     this._mainSource_obj = this._helpSource_obj;
                     this._helpSource_obj = undefined;
-                    console.log('------------ mainSource <-- **switch** --> helpSource ------------');
                     return;
                 } else {
                     console.error('why _helpSource_obj not exist??');
+                    this._audioCtx_currentTime_next = undefined;
                 }
 
             } else if (fromTime + loadMoreTimer >= this._mainSource_obj.timing.to) {
@@ -541,14 +592,21 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             console.error(
                 '!!!! atom_10_sec[0].length --> createAbleSource = false',
                 atom_10_sec,
-                atomFromTo, fromTime * 1000 - atomFromTo.from
+                atomFromTo,
+                fromTime * 1000 - atomFromTo.from
             );
             createAbleSource = false;
         }
 
         if (createAbleSource) {
-            const voiceTime = ((fromTime + 10) * 1000 <= atomFromTo.to) ? 10 : ((atomFromTo.to - (fromTime * 1000)) / 1000);
-
+            // const voiceTime = ((fromTime + 10) * 1000 <= atomFromTo.to) ? 10 : ((atomFromTo.to - (fromTime * 1000)) / 1000);
+            const voiceTime = atom_10_sec![0].length / sampleRate;
+            console.log(
+                'active atom detail:',
+                atom_10_sec,
+                sampleRate,
+                atom_10_sec![0].length / sampleRate
+            );
             newSource.timing.to = newSource.timing.from + voiceTime;
 
             const audioCtx = this.getAudioContext(sampleRate);
@@ -560,8 +618,13 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             source.connect(gainNode);
             // gainNode.connect(audioCtx.destination);
 
-            source.start(audioCtx_currentTime + offset); // audioCtx.currentTime
-            source.stop(audioCtx_currentTime + offset + voiceTime); // audioCtx.currentTime
+            // source.start(audioCtx_currentTime + offset); // audioCtx.currentTime
+            const startTime = this._audioCtx_currentTime_next ? this._audioCtx_currentTime_next : audioCtx_currentTime + offset;
+            source.start(startTime);
+            console.warn('source should start at : ', newSource.timing.from);
+            this._audioCtx_currentTime_next = startTime + voiceTime;
+            console.warn('source should end at : ', newSource.timing.to);
+            // source.stop(audioCtx_currentTime + offset + voiceTime); // audioCtx.currentTime
             source.onended = (ev: Event) => {
                 console.log(
                     '------source.onended----',
@@ -573,16 +636,37 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             };
 
             newSource.source = source;
+            this._audioSourceList.push(source);
+
+            if (voiceTime < 10) {
+                console.warn('voiceTime < 10 --> load next atom', voiceTime);
+                const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
+                if (allAtoms_pos.length - 1 >= atomPos_index + 1) {
+
+                    const fileAtoms_duration = this._bookInstance.getFileAtoms_duration();
+                    this.bindVoiceToAudioContext(
+                        allAtoms_pos[atomPos_index + 1],
+                        fileAtoms_duration[atomPos_index + 1],
+                        fromTime + voiceTime,
+                        atomPos_index + 1,
+                        false,
+                        voiceTime,
+                        false,
+                        true
+                    );
+                }
+            }
+
         } else {
             newSource = undefined;
         }
 
         if (helperBinding) {
-            this.destroy_srcObj(false);
+            // this.destroy_srcObj(false);
             this._helpSource_obj = newSource;
 
         } else {
-            this.destroy_srcObj(true);
+            // this.destroy_srcObj(true);
             this._mainSource_obj = newSource;
         }
 

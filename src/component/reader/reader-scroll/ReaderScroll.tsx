@@ -87,6 +87,12 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     this.generateReader();
   }
 
+  componentWillUnmount() {
+    // todo:  uncommetn
+    // this.swiper_obj && this.swiper_obj.destroy(true, true);
+    // this.swiper_obj = undefined;
+  }
+
   bookFileNotFound_notify() {
     const notifyBody: string = Localization.msg.ui.book_file_not_found_download_it;
     const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };

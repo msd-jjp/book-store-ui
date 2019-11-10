@@ -183,6 +183,8 @@ fetch user on app open & in layout validUser. update logedInUser state.
 
 kindle --> mark as un-read
 
+on book open(epub or audio) --> update back (do not check if book_id same as user OR keeep userProfile update)
+
 ====================================================================================
 
 mabe in profile: get user instead of person.
