@@ -620,6 +620,15 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             // source.start(audioCtx_currentTime + offset); // audioCtx.currentTime
             const startTime = this._audioCtx_currentTime_next ? this._audioCtx_currentTime_next : audioCtx_currentTime + offset;
             source.start(startTime);
+            // safari bug: start automaticly on cmpDidMount.
+            if (!isPlaying && pauseUntilBind) {
+                try {
+                    if (audioCtx.state === 'running') this.pause();
+                } catch (e) {
+                    this.pause();
+                }
+            }
+            //
             console.warn('source should start at : ', newSource.timing.from);
             this._audioCtx_currentTime_next = startTime + voiceTime;
             console.warn('source should end at : ', newSource.timing.to);
