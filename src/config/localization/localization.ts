@@ -95,6 +95,16 @@ interface ILocalization extends LocalizedStringsMethods {
             person_has_books: string;
             book_not_in_lib: string;
             online_book_count_limitation: string;
+
+            recheck_information: string;
+            analyzing_error: string;
+            server_connection_error: string;
+            sending_data_error: string;
+            payment_canceled: string;
+            buyer_cell_no_error: string;
+            minimum_payment_error: string;
+            maximum_payment_error: string;
+            payment_serial_error: string;
         }
     };
     validation: {
@@ -341,6 +351,8 @@ interface ILocalization extends LocalizedStringsMethods {
     };
     account_balance: string;
     increase_credit: string;
+    payment: string;
+    existing_credit: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

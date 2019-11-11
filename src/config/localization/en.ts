@@ -83,6 +83,16 @@ export const en = {
             person_has_books: 'person already has roles for books',
             book_not_in_lib: 'book is not in users library and cannot add to a collection',
             online_book_count_limitation: 'online book count limitation',
+
+            recheck_information: ".خطایی در دادههای ارسالی وجود دارد، لطفا اطلاعات را بررسی کنید و دوباره ارسال نمایید. (درخواست پرداخت)",
+            analyzing_error: "خطایی در تحلیل دادههای در سرور کیپو بوجود آمده است، دقایقی دیگر امتحان فرمایید.",
+            server_connection_error: "امکان برقراری ارتباط با سرور کیپو میسر نمیباشد.",
+            sending_data_error: "خطایی در دادههای ارسالی وجود دارد، لطفا اطلاعات را بررسی کنید و دوباره ارسال نمایید. (بررسی تایید پرداخت)",
+            payment_canceled: "پرداخت توسط کاربر لغو شده یا با مشکل مواجه شده است",
+            buyer_cell_no_error: "شماره تماس فروشنده مورد نظر مورد تایید نمیباشد.",
+            minimum_payment_error: "حداقل مبلغ پرداخت 1,000 ریال میباشد.",
+            maximum_payment_error: "حداکثر مبلغ پرداخت 30,0000,000 ریال میباشد.",
+            payment_serial_error: "شناسه پرداخت ارسالی مورد تایید نمیباشد."
         }
     },
     validation: {
@@ -349,4 +359,6 @@ export const en = {
     },
     account_balance: 'account balance',
     increase_credit: 'increase credit',
+    payment: 'payment',
+    existing_credit: 'existing credit',
 }

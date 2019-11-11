@@ -28,6 +28,7 @@ import { AccountService } from '../../service/service.account';
 import { Utility } from '../../asset/script/utility';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { ToastContainer } from 'react-toastify';
+import { IncreaseCredit } from '../increase-credit/IncreaseCredit';
 // import { IToken } from '../../model/model.token';
 
 interface IProps {
@@ -46,11 +47,13 @@ interface IProps {
     reset_sync: () => any;
     network_status: NETWORK_STATUS;
     reset_reader: () => any;
+    // match: any;
 }
 
 interface IState {
     modal_appInfo_show: boolean;
     modal_logout_show: boolean;
+    modal_increaseCredit_show: boolean;
     // sync: {
     //     syncing: boolean;
     //     lastSynced: number | undefined;
@@ -63,6 +66,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
     state = {
         modal_appInfo_show: false,
         modal_logout_show: false,
+        modal_increaseCredit_show: false,
         // sync: {
         //     syncing: false,
         //     lastSynced: 1569323258125
@@ -89,7 +93,6 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
 
         loader && this.setState({ mainAccount_loader: true });
         let res = await this._accountService.getUserMainAccount().catch(error => {
-            debugger;
             this.handleError({
                 error: error.response,
                 notify: toastError,
@@ -97,15 +100,17 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
             });
             this.setState({ mainAccount_loader: false });
         });
-        debugger;
         if (res) {
             let mainAccountValue = res.data.result[0].value;
             this.setState({ mainAccountValue: mainAccountValue, mainAccount_loader: false });
         }
     }
 
-    private increase_credit_modalll() {
-        debugger;
+    private openModal_increaseCredit() {
+        this.setState({ modal_increaseCredit_show: true });
+    }
+    private closeModal_increaseCredit() {
+        this.setState({ modal_increaseCredit_show: false });
     }
 
     private change(lang: string) {
@@ -338,17 +343,12 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                                 <div>
                                     <span className="text text-capitalize">{Localization.account_balance}:</span>
                                     <span className="ml-2">{Utility.prettifyNumber(this.state.mainAccountValue)}</span>
-                                    {/* <small className="ml-1 cursor-pointer" onClick={() => this.getUserMainAccount()}>
-                                        ({Localization.recalculate}
-                                        <i className="fa fa-refresh ml-1"></i>
-                                        {this.props.network_status === NETWORK_STATUS.OFFLINE
-                                            ? <i className="fa fa-wifi text-danger"></i> : ''})
-                                    </small> */}
+                                    
                                     <BtnLoader
                                         btnClassName="btn btn-sm py-0"
                                         loading={this.state.mainAccount_loader}
                                         onClick={() => this.getUserMainAccount()}
-                                    // disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                                        disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                                     >
                                         <small>({Localization.recalculate}
                                             <i className="fa fa-refresh ml-1"></i>
@@ -358,7 +358,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                                 </div>
                                 <div>
                                     <span className="badge badge-pill badge-success cursor-pointer"
-                                        onClick={() => this.increase_credit_modalll()}
+                                        onClick={() => this.openModal_increaseCredit()}
                                     >
                                         <i className="fa fa-plus-circle mr-1"></i>
                                         {Localization.increase_credit}
@@ -443,7 +443,12 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                 {this.modal_appInfo_render()}
                 {this.modal_logout_render()}
 
-                
+                <IncreaseCredit
+                    existing_credit={this.state.mainAccountValue}
+                    show={this.state.modal_increaseCredit_show}
+                    onHide={() => this.closeModal_increaseCredit()}
+                // match={this.props.match}
+                />
 
                 <ToastContainer {...this.getNotifyContainerConfig()} />
             </>

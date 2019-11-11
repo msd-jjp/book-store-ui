@@ -776,7 +776,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   goto_validation(val: any): boolean {
     if (val <= this.book_page_length && val >= 1) {
-      return true
+      return true;
     }
     return false;
   }
