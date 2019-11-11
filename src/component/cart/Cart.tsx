@@ -340,7 +340,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
                   >
                     <h4 className="mb-0 text-info">
                       {this.totalPrice_render()}
-                      <small className="ml-3">({Localization.recalculate})</small>
+                      <small className="ml-3">({Localization.recalculate} <i className="fa fa-refresh ml-1"></i>)</small>
                     </h4>
                   </BtnLoader>
                 </div>

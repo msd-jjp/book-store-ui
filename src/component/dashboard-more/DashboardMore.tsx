@@ -24,6 +24,10 @@ import { BaseService } from '../../service/service.base';
 import { appLocalStorage } from '../../service/appLocalStorage';
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { action_reset_reader } from '../../redux/action/reader';
+import { AccountService } from '../../service/service.account';
+import { Utility } from '../../asset/script/utility';
+import { BtnLoader } from '../form/btn-loader/BtnLoader';
+import { ToastContainer } from 'react-toastify';
 // import { IToken } from '../../model/model.token';
 
 interface IProps {
@@ -51,6 +55,8 @@ interface IState {
     //     syncing: boolean;
     //     lastSynced: number | undefined;
     // };
+    mainAccountValue: number;
+    mainAccount_loader: boolean;
 }
 
 class DashboardMoreComponent extends BaseComponent<IProps, IState> {
@@ -61,15 +67,45 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         //     syncing: false,
         //     lastSynced: 1569323258125
         // }
+        mainAccountValue: 0,
+        mainAccount_loader: false,
     }
     private _syncWorker = new SyncWorker(/* this.props.token */);
+    private _accountService = new AccountService();
 
     componentWillMount() {
         document.title = Localization.more;
     }
+    componentDidMount() {
+        this.getUserMainAccount(false, false);
+    }
     componentWillUnmount() {
         document.title = Localization.app_title;
         this._syncWorker.terminate();
+    }
+
+    private async getUserMainAccount(toastError: boolean = true, loader: boolean = true) {
+        if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
+
+        loader && this.setState({ mainAccount_loader: true });
+        let res = await this._accountService.getUserMainAccount().catch(error => {
+            debugger;
+            this.handleError({
+                error: error.response,
+                notify: toastError,
+                toastOptions: { toastId: 'getUserMainAccount_error' }
+            });
+            this.setState({ mainAccount_loader: false });
+        });
+        debugger;
+        if (res) {
+            let mainAccountValue = res.data.result[0].value;
+            this.setState({ mainAccountValue: mainAccountValue, mainAccount_loader: false });
+        }
+    }
+
+    private increase_credit_modalll() {
+        debugger;
     }
 
     private change(lang: string) {
@@ -295,6 +331,41 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                                 }
                             </span>
                         </li>
+                        <li className="more-item list-group-item p-align-0">
+                            <div className="icon-wrapper mr-3"><i className="fa fa-credit-card"></i></div>
+
+                            <div className="d-flex justify-content-between w-100">
+                                <div>
+                                    <span className="text text-capitalize">{Localization.account_balance}:</span>
+                                    <span className="ml-2">{Utility.prettifyNumber(this.state.mainAccountValue)}</span>
+                                    {/* <small className="ml-1 cursor-pointer" onClick={() => this.getUserMainAccount()}>
+                                        ({Localization.recalculate}
+                                        <i className="fa fa-refresh ml-1"></i>
+                                        {this.props.network_status === NETWORK_STATUS.OFFLINE
+                                            ? <i className="fa fa-wifi text-danger"></i> : ''})
+                                    </small> */}
+                                    <BtnLoader
+                                        btnClassName="btn btn-sm py-0"
+                                        loading={this.state.mainAccount_loader}
+                                        onClick={() => this.getUserMainAccount()}
+                                    // disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                                    >
+                                        <small>({Localization.recalculate}
+                                            <i className="fa fa-refresh ml-1"></i>
+                                            {this.props.network_status === NETWORK_STATUS.OFFLINE
+                                                ? <i className="fa fa-wifi text-danger"></i> : ''})</small>
+                                    </BtnLoader>
+                                </div>
+                                <div>
+                                    <span className="badge badge-pill badge-success cursor-pointer"
+                                        onClick={() => this.increase_credit_modalll()}
+                                    >
+                                        <i className="fa fa-plus-circle mr-1"></i>
+                                        {Localization.increase_credit}
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
                         <li className="more-item list-group-item p-align-0 cursor-pointer"
                             onClick={() => this.gotoPurchaseHistory()}>
                             <div className="icon-wrapper mr-3"><i className="fa fa-money"></i></div>
@@ -371,6 +442,10 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
 
                 {this.modal_appInfo_render()}
                 {this.modal_logout_render()}
+
+                
+
+                <ToastContainer {...this.getNotifyContainerConfig()} />
             </>
         )
     }

@@ -190,7 +190,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
 
   getOrderDate(order: IOrder): number | undefined {
     // return order.creation_date;
-    return order.modification_date;
+    return order.modification_date ? order.modification_date : undefined;
   }
 
   private gotoBookDetail(bookId: string) {

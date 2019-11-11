@@ -1,9 +1,9 @@
 export interface BaseModel {
     id: string;
-    // creator: "signup_user";
+    creator: string;
     creation_date: number;
     version: number;
-    // modification_date: number,
-    // modifier: "kk",
-    tags?: string[];
+    modification_date: number | null;
+    modifier: string,
+    tags: string[];
 }

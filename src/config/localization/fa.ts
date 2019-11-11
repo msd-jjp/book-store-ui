@@ -347,4 +347,6 @@ export const fa = {
         nunito: 'نونیتو',
         zar: 'زر',
     },
+    account_balance: 'موجودی حساب',
+    increase_credit: 'افزایش اعتبار',
 }

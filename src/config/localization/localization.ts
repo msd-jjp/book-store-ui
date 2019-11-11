@@ -339,6 +339,8 @@ interface ILocalization extends LocalizedStringsMethods {
         nunito: string;
         zar: string;
     };
+    account_balance: string;
+    increase_credit: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

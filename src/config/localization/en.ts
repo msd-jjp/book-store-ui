@@ -347,4 +347,6 @@ export const en = {
         nunito: 'nunito',
         zar: 'zar',
     },
+    account_balance: 'account balance',
+    increase_credit: 'increase credit',
 }
