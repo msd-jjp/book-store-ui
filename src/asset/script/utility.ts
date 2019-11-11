@@ -102,4 +102,8 @@ export abstract class Utility {
         return num;
     }
 
+    static prettifyNumber(number: number): string {
+        return number.toLocaleString();
+    }
+
 }
