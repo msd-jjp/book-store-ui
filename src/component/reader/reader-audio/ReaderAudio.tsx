@@ -568,7 +568,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
         if (this._loadedAtomPos !== atomPos) {
             this._loadedAtomPos = atomPos;
+            console.time('____________________________________________loadVoiceAtom');
             this._bookInstance.loadVoiceAtom(atomPos);
+            console.timeEnd('____________________________________________loadVoiceAtom');
         }
 
         let fromTimeInAtom = Math.ceil(fromTime * 1000 - atomFromTo.from);

@@ -194,7 +194,8 @@ onSync : check cart too.
 ====================================================================================
 
 audio:
-in safari --> start immediately after open !! 
-on change pause play bug.
+in safari --> start immediately after open !! --> done.
+on change pause play bug. ****
+memory leak.
 
 ====================================================================================
