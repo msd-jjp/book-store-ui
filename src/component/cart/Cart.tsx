@@ -19,13 +19,15 @@ import { OrderService } from "../../service/service.order";
 import { Store2 } from "../../redux/store";
 import { PriceService } from "../../service/service.price";
 import { CmpUtility } from "../_base/CmpUtility";
+import { Utility } from "../../asset/script/utility";
+import { AccountService } from "../../service/service.account";
+import { IncreaseCredit } from "../increase-credit/IncreaseCredit";
 // import { IBook } from "../../model/model.book";
 
 interface IProps {
   logged_in_user: IUser | null;
   internationalization: TInternationalization;
   history: History;
-  // token: IToken;
   cart: ICartItems;
   add_to_cart: (cartItem: ICartItem) => any;
   remove_from_cart: (cartItem: ICartItem) => any;
@@ -38,48 +40,58 @@ interface IState {
   buy_loader: boolean;
   fetchPrice_loader: boolean;
   totalPrice: number | string;
+  mainAccountValue: number;
+  mainAccount_loader: boolean;
+  modal_increaseCredit_show: boolean;
 }
 
 class CartComponent extends BaseComponent<IProps, IState> {
   state = {
-    totalPrice: 0, // this.getCartPrice(),
+    totalPrice: 0,
     buy_loader: false,
     fetchPrice_loader: false,
+    mainAccountValue: 0,
+    mainAccount_loader: false,
+    modal_increaseCredit_show: false,
   };
 
   private _orderService = new OrderService();
   private _priceService = new PriceService();
-
-  // constructor(props: IProps) {
-  //   super(props);
-
-  //   // this._orderService.setToken(this.props.token);
-  //   // this._priceService.setToken(this.props.token);
-  // }
-
+  private _accountService = new AccountService();
 
   componentDidMount() {
     this.fetchPrice(false);
+    this.getUserMainAccount(false, false);
   }
-  // componentWillReceiveProps(nextProps: IProps) {
-  //   debugger;
-  //   this.setState({ ...this.state, totalPrice: this.getCartPrice(nextProps.cart) });
-  // }
+
+  private async getUserMainAccount(toastError: boolean = true, loader: boolean = true) {
+    if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
+
+    loader && this.setState({ mainAccount_loader: true });
+    let res = await this._accountService.getUserMainAccount().catch(error => {
+      this.handleError({
+        error: error.response,
+        notify: toastError,
+        toastOptions: { toastId: 'getUserMainAccount_error' }
+      });
+      this.setState({ mainAccount_loader: false });
+    });
+    if (res) {
+      let mainAccountValue = res.data.result[0].value;
+      this.setState({ mainAccountValue: mainAccountValue, mainAccount_loader: false });
+    }
+  }
+
+  private openModal_increaseCredit() {
+    this.setState({ modal_increaseCredit_show: true });
+  }
+  private closeModal_increaseCredit() {
+    this.setState({ modal_increaseCredit_show: false });
+  }
 
   private getCartItem(): ICartItems {
     return Store2.getState().cart;
   }
-
-  // getCartPrice(cart: ICartItems = this.props.cart): number {
-  /* private getCartPrice(cart: ICartItems = this.getCartItem()): number {
-    let price = 0;
-
-    cart.forEach(cartItem => {
-      price += (cartItem.book.price || 96501) * cartItem.count; // || 0
-    });
-
-    return price;
-  } */
 
   private setCartPrice(toastError?: boolean) {
     // this.setState({ ...this.state, totalPrice: this.getCartPrice() });
@@ -346,6 +358,35 @@ class CartComponent extends BaseComponent<IProps, IState> {
                 </div>
 
                 <div className="col-12 mt-3">
+                  <div className="d-flex justify-content-between w-100">
+                    <div>
+                      <span className="text text-capitalize">{Localization.account_balance}:</span>
+                      <span className="ml-2">{Utility.prettifyNumber(this.state.mainAccountValue)}</span>
+
+                      <BtnLoader
+                        btnClassName="btn btn-sm py-0"
+                        loading={this.state.mainAccount_loader}
+                        onClick={() => this.getUserMainAccount()}
+                        disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                      >
+                        <small>({Localization.recalculate}
+                          <i className="fa fa-refresh ml-1"></i>
+                          {this.props.network_status === NETWORK_STATUS.OFFLINE
+                            ? <i className="fa fa-wifi text-danger"></i> : ''})</small>
+                      </BtnLoader>
+                    </div>
+                    <div>
+                      <span className="badge badge-pill badge-success cursor-pointer"
+                        onClick={() => this.openModal_increaseCredit()}
+                      >
+                        <i className="fa fa-plus-circle mr-1"></i>
+                        {Localization.increase_credit}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12 mt-3">
                   <BtnLoader
                     btnClassName="btn btn-system btn-block btn-lg"
                     loading={this.state.buy_loader}
@@ -363,6 +404,13 @@ class CartComponent extends BaseComponent<IProps, IState> {
               : ''
           }
         </div>
+
+        <IncreaseCredit
+          existing_credit={this.state.mainAccountValue}
+          show={this.state.modal_increaseCredit_show}
+          onHide={() => this.closeModal_increaseCredit()}
+        // match={this.props.match}
+        />
 
         <ToastContainer {...this.getNotifyContainerConfig()} />
       </>
