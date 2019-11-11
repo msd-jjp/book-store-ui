@@ -211,4 +211,6 @@ charge main acount.
 add prop default value to increaseCredit (use in cart : total - account if less than)
 add props to cmp use to callBack
 
+translation in increaseCredit
+
 ====================================================================================
