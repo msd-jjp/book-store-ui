@@ -355,6 +355,13 @@ interface ILocalization extends LocalizedStringsMethods {
     existing_credit: string;
     increase_amount_rial: string;
     min_increase_amount_rial_is: string;
+    payment_status_obj: {
+        successful: string;
+        'payment-canceled': string;
+        unknown: string;
+        'payment-amount-invalid': string;
+    };
+    payment_result: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

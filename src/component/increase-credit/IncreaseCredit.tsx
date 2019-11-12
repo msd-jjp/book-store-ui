@@ -74,7 +74,7 @@ class IncreaseCreditComponent extends BaseComponent<IProps, IState> {
   }
 
   async gotoBankPage(value: string) {
-    debugger;
+    // debugger;
     this.setState({ payment_loader: true });
     let res = await this._accountService.userPayment_send(parseFloat(value), window.location.href).catch(error => {
       this.handleError({ error: error.response, toastOptions: { toastId: 'gotoBankPage_error' } });
@@ -82,7 +82,7 @@ class IncreaseCreditComponent extends BaseComponent<IProps, IState> {
     this.setState({ payment_loader: false });
 
     if (res) {
-      debugger;
+      // debugger;
       const divEl = document.createElement("div");
       divEl.innerHTML = res.data;
       const form = divEl.querySelector('form');

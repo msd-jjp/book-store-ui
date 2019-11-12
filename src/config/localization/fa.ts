@@ -363,4 +363,11 @@ export const fa = {
     existing_credit: 'اعتبار موجود',
     increase_amount_rial: 'مبلغ افزایش (ریال)',
     min_increase_amount_rial_is: 'حداقل مبلغ افزایش {0} ریال است.',
+    payment_status_obj: {
+        successful: 'پرداخت با موفقیت انجام شد.',
+        'payment-canceled': 'پرداخت لغو شد.',
+        unknown: 'خطا در پرداخت اتفاق افتاد.',
+        'payment-amount-invalid': 'مقدار پرداخت صحیح نیست.',
+    },
+    payment_result: 'نتیجه پرداخت',
 }

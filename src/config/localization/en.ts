@@ -363,4 +363,12 @@ export const en = {
     existing_credit: 'existing credit',
     increase_amount_rial: 'increase amount(rial)',
     min_increase_amount_rial_is: 'min increase amount is {0} rial',
+    payment_status_obj: {
+        successful: 'payment was successful.',
+        'payment-canceled': 'payment canceled.',
+        unknown: 'error occurred in payment.',
+        'payment-amount-invalid': 'payment amount is invalid.',
+
+    },
+    payment_result: 'payment result',
 }

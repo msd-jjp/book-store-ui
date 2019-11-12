@@ -29,7 +29,7 @@ import { Utility } from '../../asset/script/utility';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { ToastContainer } from 'react-toastify';
 import { IncreaseCredit } from '../increase-credit/IncreaseCredit';
-// import { IToken } from '../../model/model.token';
+import { PaymentResult } from '../increase-credit/payment-result/PaymentResult';
 
 interface IProps {
     logged_in_user?: IUser | null;
@@ -47,19 +47,16 @@ interface IProps {
     reset_sync: () => any;
     network_status: NETWORK_STATUS;
     reset_reader: () => any;
-    // match: any;
+    match: any;
 }
 
 interface IState {
     modal_appInfo_show: boolean;
     modal_logout_show: boolean;
     modal_increaseCredit_show: boolean;
-    // sync: {
-    //     syncing: boolean;
-    //     lastSynced: number | undefined;
-    // };
     mainAccountValue: number;
     mainAccount_loader: boolean;
+    modal_paymentResult_show: boolean;
 }
 
 class DashboardMoreComponent extends BaseComponent<IProps, IState> {
@@ -67,18 +64,21 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         modal_appInfo_show: false,
         modal_logout_show: false,
         modal_increaseCredit_show: false,
-        // sync: {
-        //     syncing: false,
-        //     lastSynced: 1569323258125
-        // }
         mainAccountValue: 0,
         mainAccount_loader: false,
-    }
-    private _syncWorker = new SyncWorker(/* this.props.token */);
+        modal_paymentResult_show: this.is_paymentResult_visible(),
+    };
+    private _syncWorker = new SyncWorker();
     private _accountService = new AccountService();
 
     componentWillMount() {
         document.title = Localization.more;
+        this.removeParam_paymentStatus();
+    }
+    private removeParam_paymentStatus() {
+        if (this.props.match.params && this.props.match.params.paymentStatus) {
+            this.props.history.replace(`/dashboard-more`);
+        }
     }
     componentDidMount() {
         this.getUserMainAccount(false, false);
@@ -112,8 +112,26 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
     private closeModal_increaseCredit() {
         this.setState({ modal_increaseCredit_show: false });
     }
+    private is_paymentResult_visible(): boolean {
+        if (this.props.match.params && this.props.match.params.paymentStatus) {
+            return true;
+        }
+        return false;
+    }
+    private closeModal_paymentResult() {
+        this.setState({ modal_paymentResult_show: false });
+    }
+    private _modal_paymentResult_status: string | undefined;
+    private getModal_paymentResult_status(): string | undefined {
+        if (!this._modal_paymentResult_status) {
+            if (this.props.match.params && this.props.match.params.paymentStatus) {
+                this._modal_paymentResult_status = this.props.match.params.paymentStatus;
+            }
+        }
+        return this._modal_paymentResult_status;
+    }
 
-    private change(lang: string) {
+    private changeLang(lang: string) {
         // debugger;
         if (lang === 'fa') {
             // if (!this.props.internationalization.rtl) {
@@ -343,7 +361,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                                 <div>
                                     <span className="text text-capitalize">{Localization.account_balance}:</span>
                                     <span className="ml-2">{Utility.prettifyNumber(this.state.mainAccountValue)}</span>
-                                    
+
                                     <BtnLoader
                                         btnClassName="btn btn-sm py-0"
                                         loading={this.state.mainAccount_loader}
@@ -410,13 +428,13 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                         <li className="more-item list-group-item p-align-0 flag">
                             <div className="icon-wrapper mr-3"><i className="fa fa-flag"></i></div>
                             <ul className="flag-list list-group list-group-horizontal list-group-flush__ text-center  p-0">
-                                <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('fa')}>
+                                <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.changeLang('fa')}>
                                     <img src="/static/media/img/flag/ir.png" alt="فارسی" loading="lazy" />
                                 </button>
-                                <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('en')}>
+                                <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.changeLang('en')}>
                                     <img src="/static/media/img/flag/us.png" alt="english" loading="lazy" />
                                 </button>
-                                <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.change('ar')}>
+                                <button className="flag-btn list-group-item list-group-item-action" onClick={() => this.changeLang('ar')}>
                                     <img src="/static/media/img/flag/ar.png" alt="العربیه" loading="lazy" />
                                 </button>
                             </ul>
@@ -447,7 +465,13 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                     existing_credit={this.state.mainAccountValue}
                     show={this.state.modal_increaseCredit_show}
                     onHide={() => this.closeModal_increaseCredit()}
-                // match={this.props.match}
+                />
+
+                <PaymentResult
+                    existing_credit={this.state.mainAccountValue}
+                    show={this.state.modal_paymentResult_show}
+                    onHide={() => this.closeModal_paymentResult()}
+                    status={this.getModal_paymentResult_status()}
                 />
 
                 <ToastContainer {...this.getNotifyContainerConfig()} />
