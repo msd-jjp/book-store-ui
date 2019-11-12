@@ -18,7 +18,8 @@ export class CollectionService extends BaseService {
                 reject({ error: 'no internet access' });
             });
         }
-        return this.axiosTokenInstance.get('/collections');
+        // return this.axiosTokenInstance.get('/collections');
+        return this.axiosTokenInstance.post('/collections/user', {});
     }
     get_byTitle(title: string): Promise<IAPI_Response<IBook>> {
         return this.axiosTokenInstance.post(`/collections/collection`, { title });

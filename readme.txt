@@ -200,13 +200,12 @@ memory leak.
 
 ====================================================================================
 
-
+cmp profile --> add reset password to profile (edit user ham pass avaz mikone age login hasti)
 
 ====================================================================================
 
-*****************
-cart & dashboardMore
-add props to cmp use to callBack
+add storage for account --> appStorage
+in cmp cart & dashboard-more --> load stored data first.
 
 
 ====================================================================================
