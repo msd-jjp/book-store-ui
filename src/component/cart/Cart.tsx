@@ -22,6 +22,7 @@ import { CmpUtility } from "../_base/CmpUtility";
 import { Utility } from "../../asset/script/utility";
 import { AccountService } from "../../service/service.account";
 import { IncreaseCredit } from "../increase-credit/IncreaseCredit";
+import { PaymentResult } from "../increase-credit/payment-result/PaymentResult";
 // import { IBook } from "../../model/model.book";
 
 interface IProps {
@@ -34,6 +35,7 @@ interface IProps {
   update_cart_item: (cartItem: ICartItem) => any;
   clear_cart: () => any;
   network_status: NETWORK_STATUS;
+  match: any;
 }
 
 interface IState {
@@ -44,6 +46,7 @@ interface IState {
   mainAccount_loader: boolean;
   modal_increaseCredit_show: boolean;
   modal_increaseCredit_defaultValue: number | undefined;
+  modal_paymentResult_show: boolean;
 }
 
 class CartComponent extends BaseComponent<IProps, IState> {
@@ -54,13 +57,22 @@ class CartComponent extends BaseComponent<IProps, IState> {
     mainAccountValue: 0,
     mainAccount_loader: false,
     modal_increaseCredit_show: false,
-    modal_increaseCredit_defaultValue: undefined
+    modal_increaseCredit_defaultValue: undefined,
+    modal_paymentResult_show: this.is_paymentResult_visible(),
   };
 
   private _orderService = new OrderService();
   private _priceService = new PriceService();
   private _accountService = new AccountService();
 
+  componentWillMount() {
+    this.removeParam_paymentStatus();
+  }
+  private removeParam_paymentStatus() {
+    if (this.props.match.params && this.props.match.params.paymentStatus) {
+      this.props.history.replace(`/cart`);
+    }
+  }
   componentDidMount() {
     this.fetchPrice(false);
     this.getUserMainAccount(false, false);
@@ -109,6 +121,24 @@ class CartComponent extends BaseComponent<IProps, IState> {
     } else {
       return false;
     }
+  }
+  private is_paymentResult_visible(): boolean {
+    if (this.props.match.params && this.props.match.params.paymentStatus) {
+      return true;
+    }
+    return false;
+  }
+  private closeModal_paymentResult() {
+    this.setState({ modal_paymentResult_show: false });
+  }
+  private _modal_paymentResult_status: string | undefined;
+  private getModal_paymentResult_status(): string | undefined {
+    if (!this._modal_paymentResult_status) {
+      if (this.props.match.params && this.props.match.params.paymentStatus) {
+        this._modal_paymentResult_status = this.props.match.params.paymentStatus;
+      }
+    }
+    return this._modal_paymentResult_status;
   }
 
   private getCartItem(): ICartItems {
@@ -449,6 +479,13 @@ class CartComponent extends BaseComponent<IProps, IState> {
           onHide={() => this.closeModal_increaseCredit()}
           // match={this.props.match}
           defaultValue={this.state.modal_increaseCredit_defaultValue}
+        />
+
+        <PaymentResult
+          existing_credit={this.state.mainAccountValue}
+          show={this.state.modal_paymentResult_show}
+          onHide={() => this.closeModal_paymentResult()}
+          status={this.getModal_paymentResult_status()}
         />
 
         <ToastContainer {...this.getNotifyContainerConfig()} />
