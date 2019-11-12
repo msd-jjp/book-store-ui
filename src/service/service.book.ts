@@ -61,7 +61,7 @@ export class BookService extends BaseService {
                 });
             }
         }
-        return this.axiosInstance.post('/books/search-phrase', data); // axiosTokenInstance
+        return this.axiosTokenInstance.post('/books/search-phrase', data); // axiosInstance
     }
 
     wishList_add_book(book_id: string): Promise<any> {
