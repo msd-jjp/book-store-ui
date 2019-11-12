@@ -23,7 +23,7 @@ export class SearchAppStorage {
     }
 
     static search_by_query_book(
-        searchPayload: { limit: number, offset: number, filter?: Object }
+        searchPayload: { limit: number, skip: number, filter?: Object }
     ): IBook[] {
         return appLocalStorage.clc_book.chain()
             .where((book: IBook) => {
@@ -34,13 +34,13 @@ export class SearchAppStorage {
             })
             // .simplesort('creation_date', false)//, false
             .sort(SearchAppStorage.asc_sort_creation_date)
-            .offset(searchPayload.offset)
+            .offset(searchPayload.skip)
             .limit(searchPayload.limit)
             .data();
     }
 
     private static search_by_query_book_filter(
-        book: IBook, searchData: { limit: number, offset: number, filter?: Object }
+        book: IBook, searchData: { limit: number, skip: number, filter?: Object }
     ): boolean {
         // let book: IBook = { ...book };
         let filter: any = { ...searchData.filter };
@@ -77,7 +77,7 @@ export class SearchAppStorage {
     }
 
     static search_by_query_comment(
-        book_id: string, searchPayload: { limit: number, offset: number, filter?: Object }
+        book_id: string, searchPayload: { limit: number, skip: number, filter?: Object }
     ): IComment[] {
         return appLocalStorage.clc_comment.chain()
             .where((comment: IComment) => {
@@ -85,7 +85,7 @@ export class SearchAppStorage {
             })
             // .simplesort('creation_date')//, false
             .sort(SearchAppStorage.asc_sort_creation_date)
-            .offset(searchPayload.offset)
+            .offset(searchPayload.skip)
             .limit(searchPayload.limit)
             .data();
     }
@@ -113,11 +113,11 @@ export class SearchAppStorage {
     }
 
     static search_by_query_userInvoicedOrder(
-        searchPayload: { limit: number, offset: number }
+        searchPayload: { limit: number, skip: number }
     ): IOrder[] {
         return appLocalStorage.clc_userInvoicedOrder.chain()
             .sort(SearchAppStorage.asc_sort_creation_date)
-            .offset(searchPayload.offset)
+            .offset(searchPayload.skip)
             .limit(searchPayload.limit)
             .data();
     }

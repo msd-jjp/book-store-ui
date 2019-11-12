@@ -162,7 +162,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
     let res = await this._commentService.search(bookId, {
       limit: this.state.comment_actions.loadComments.pager_limit,
-      offset: this.state.comment_actions.loadComments.pager_offset
+      skip: this.state.comment_actions.loadComments.pager_offset
     }).catch(error => {
       // let res = await this._commentService.book_comments(bookId).catch(error => {
       const { body: commentErrorText } = this.handleError({

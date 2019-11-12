@@ -114,7 +114,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
         this.setState({ ...this.state, bestSellerBookError: undefined });
 
         let res = await this._bookService.search({
-            limit: 10, offset: 0, filter: { tag: "best_seller" }
+            limit: 10, skip: 0, filter: { tag: "best_seller" }
         }).catch(error => {
             let errorMsg = this.handleError({ error: error.response, notify: false });
             this.setState({ ...this.state, bestSellerBookError: errorMsg.body });

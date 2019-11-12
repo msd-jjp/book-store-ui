@@ -27,19 +27,19 @@ export class OrderService extends BaseService {
         return this.axiosTokenInstance.post(`/orders/checkout/${order_id}`);
     }
 
-    search(limit: number, offset: number, filter?: Object): Promise<IAPI_ResponseList<IOrder>> {
-        return this.axiosTokenInstance.post(`/orders/_search`, { limit, offset, filter });
+    search(limit: number, skip: number, filter?: Object): Promise<IAPI_ResponseList<IOrder>> {
+        return this.axiosTokenInstance.post(`/orders/_search`, { limit, skip, filter });
     }
 
-    search_userOrder(limit: number, offset: number, filter?: Object): Promise<IAPI_ResponseList<IOrder>> {
+    search_userOrder(limit: number, skip: number, filter?: Object): Promise<IAPI_ResponseList<IOrder>> {
         if (BaseService.isAppOffline()) {
-            let res: IOrder[] | null = appLocalStorage.search_by_query_userInvoicedOrder({ limit, offset });
+            let res: IOrder[] | null = appLocalStorage.search_by_query_userInvoicedOrder({ limit, skip });
             res = res || [];
             return new Promise((resolve, reject) => {
                 resolve({ data: { result: res! } });
             });
         }
-        return this.axiosTokenInstance.post(`/orders/user`, { limit, offset, filter });
+        return this.axiosTokenInstance.post(`/orders/user`, { limit, skip, filter });
     }
 
     getOrderItems(order_id: string): Promise<IAPI_ResponseList<IOrderItem>> {

@@ -4,7 +4,7 @@ import { ICollection } from '../model/model.collection';
 
 export class CollectionService extends BaseService {
 
-    search(data: { limit: number, offset: number, filter: Object }): Promise<IAPI_ResponseList<{
+    search(data: { limit: number, skip: number, filter: Object }): Promise<IAPI_ResponseList<{
         book: IBook,
         title: string;
         id: string;

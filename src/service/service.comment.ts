@@ -25,7 +25,7 @@ export class CommentService extends BaseService {
     //     return this.axiosTokenInstance.get(`/comments/book/${book_id}`);
     // }
 
-    search(book_id: string, data: { limit: number, offset: number, filter?: Object }): Promise<IAPI_ResponseList<IComment>> {
+    search(book_id: string, data: { limit: number, skip: number, filter?: Object }): Promise<IAPI_ResponseList<IComment>> {
         if (BaseService.isAppOffline()) {
             let lcl_comment_list: IComment[] | null = appLocalStorage.search_by_query_comment(book_id, data);
             lcl_comment_list = lcl_comment_list || [];

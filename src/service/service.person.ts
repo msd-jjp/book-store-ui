@@ -7,8 +7,8 @@ export class PersonService extends BaseService {
         return this.axiosTokenInstance.post('/persons', person);
     }
 
-    search(limit: number, offset: number, filter?: Object): Promise<IAPI_ResponseList<IPerson>> {
-        return this.axiosTokenInstance.post(`/persons/_search`, { limit, offset, filter });
+    search(limit: number, skip: number, filter?: Object): Promise<IAPI_ResponseList<IPerson>> {
+        return this.axiosTokenInstance.post(`/persons/_search`, { limit, skip, filter });
     }
 
     remove(personId: string) {

@@ -27,18 +27,18 @@ export class BookService extends BaseService {
     }
 
     bookByWriter(data: { book_id: string, writer: string }): Promise<IAPI_ResponseList<IBook>> { // writer || person_id
-        return this.search({ limit: 10, offset: 0, filter: data });
+        return this.search({ limit: 10, skip: 0, filter: data });
     }
 
     recomended(): Promise<IAPI_ResponseList<IBook>> {
-        return this.search({ limit: 10, offset: 0, filter: { genre: 'Romance' } });
+        return this.search({ limit: 10, skip: 0, filter: { genre: 'Romance' } });
     }
 
     newest(): Promise<IAPI_ResponseList<IBook>> {
-        return this.search({ limit: 10, offset: 0, filter: { tag: 'new' } });
+        return this.search({ limit: 10, skip: 0, filter: { tag: 'new' } });
     }
 
-    search(data: { limit: number, offset: number, filter: Object }): Promise<IAPI_ResponseList<IBook>> {
+    search(data: { limit: number, skip: number, filter: Object }): Promise<IAPI_ResponseList<IBook>> {
         if (BaseService.isAppOffline()) {
             let lcl_book_list: IBook[] | null = appLocalStorage.search_by_query_book(data);
             lcl_book_list = lcl_book_list || [];
@@ -76,7 +76,7 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.delete(`/wish-list`);
     }
 
-    wishList_search(data: { limit: number, offset: number }): Promise<IAPI_ResponseList<IBook>> {
+    wishList_search(data: { limit: number, skip: number }): Promise<IAPI_ResponseList<IBook>> {
         return this.axiosTokenInstance.post('/wish-list/_search', data);
     }
 

@@ -70,7 +70,7 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
             let filter: any = {};
             filter[this.state.categoryType!] = this.state.categoryTitle;
             searchRequest = this._bookService.search({
-                limit: this.state.pager_limit, offset: this.state.pager_offset, filter: filter
+                limit: this.state.pager_limit, skip: this.state.pager_offset, filter: filter
             });
         }
 
