@@ -98,7 +98,7 @@ export class SearchAppStorage {
     }
 
     static search_by_phrase_book(
-        searchPayload: { limit: number, offset: number, filter: { search_phrase: string } }
+        searchPayload: { limit: number, skip: number, filter: { search_phrase: string } }
     ): IBook[] {
         return appLocalStorage.clc_book.chain()
             .find({ title: { '$contains': searchPayload.filter.search_phrase } })
@@ -107,7 +107,7 @@ export class SearchAppStorage {
             //     // return false;
             // })
             .sort(SearchAppStorage.asc_sort_creation_date)
-            .offset(searchPayload.offset)
+            .offset(searchPayload.skip)
             .limit(searchPayload.limit)
             .data();
     }

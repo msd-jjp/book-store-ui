@@ -80,7 +80,7 @@ class SearchComponent extends BaseComponent<IProps, IState> {
 
         let res = await this._bookService.search_phrase({
             limit: this.state.pager_limit,
-            offset: this.state.pager_offset,
+            skip: this.state.pager_offset,
             filter: { search_phrase: this.searchQuery }
         }).catch(error => {
             const errorMsg = this.handleError({ error: error.response, toastOptions: { toastId: 'fetchBooks_error' } });

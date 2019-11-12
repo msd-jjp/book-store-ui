@@ -51,7 +51,7 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.post('/books/_search', data);
     }
 
-    search_phrase(data: { limit: number, offset: number, filter: { search_phrase: string } }): Promise<IAPI_ResponseList<IBook>> {
+    search_phrase(data: { limit: number, skip: number, filter: { search_phrase: string } }): Promise<IAPI_ResponseList<IBook>> {
         if (BaseService.isAppOffline()) {
             let lcl_book_list: IBook[] | null = appLocalStorage.search_by_phrase_book(data);
             lcl_book_list = lcl_book_list || [];

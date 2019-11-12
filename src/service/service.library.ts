@@ -9,7 +9,8 @@ export class LibraryService extends BaseService {
                 reject({ error: 'no internet access' });
             });
         }
-        return this.axiosTokenInstance.get('/library');
+        // return this.axiosTokenInstance.get('/library');
+        return this.axiosTokenInstance.post('/library/user', {});
     }
 
     checkChange(): Promise<IAPI_ResponseList<any>> { // todo return ?
