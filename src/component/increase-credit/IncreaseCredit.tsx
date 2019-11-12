@@ -12,15 +12,16 @@ import { BtnLoader } from "../form/btn-loader/BtnLoader";
 import { Utility } from "../../asset/script/utility";
 import { Input } from "../form/input/Input";
 import { AppRegex } from "../../config/regex";
+import { CmpUtility } from "../_base/CmpUtility";
 
 interface IProps {
   internationalization: TInternationalization;
   network_status: NETWORK_STATUS;
-  // match: any;
 
   existing_credit: number;
   show: boolean;
   onHide: () => any;
+  defaultValue?: number;
 }
 
 interface IState {
@@ -35,12 +36,42 @@ class IncreaseCreditComponent extends BaseComponent<IProps, IState> {
   state = {
     payment_loader: false,
     payment: {
-      value: undefined,
-      isValid: false,
+      // value: undefined,
+      // isValid: false
+      value: this.getPaymentDefault_value(this.props.defaultValue),
+      isValid: this.getPaymentDefault_isValid(this.props.defaultValue)
     },
   };
 
   private _accountService = new AccountService();
+
+  componentWillReceiveProps(nextProps: IProps) {
+    // debugger;
+    if (this.props.show) return;
+    if (this.props.defaultValue !== nextProps.defaultValue) {
+      // debugger;
+      this.setState({
+        ...this.state, payment: {
+          value: this.getPaymentDefault_value(nextProps.defaultValue),
+          isValid: this.getPaymentDefault_isValid(nextProps.defaultValue)
+        }
+      });
+    }
+  }
+
+  private getPaymentDefault_value(value: number | undefined): string | undefined {
+    if (!value && value !== 0) return;
+    if (this.input_validation(value)) {
+      return value.toString();
+    } else {
+      return '1000';
+    }
+  }
+  private getPaymentDefault_isValid(value: number | undefined): boolean {
+    return this.input_validation(this.getPaymentDefault_value(value));
+    // if (!this.props.defaultValue && this.props.defaultValue !== 0) return false;
+    // return this.input_validation(this.props.defaultValue);
+  }
 
   async gotoBankPage(value: string) {
     debugger;
@@ -90,35 +121,43 @@ class IncreaseCreditComponent extends BaseComponent<IProps, IState> {
     return true;
   }
 
-  closeModal() {
+  async closeModal() {
+    let keptVal = undefined;
+    let keptValIsValid = false;
     this.props.onHide();
+    // if (this.props.defaultValue || this.props.defaultValue === 0) return;
+    if (this.props.defaultValue || this.props.defaultValue === 0) {
+      // keptVal = this.props.defaultValue;
+      keptVal = this.getPaymentDefault_value(this.props.defaultValue);
+      keptValIsValid = this.getPaymentDefault_isValid(this.props.defaultValue);
+    }
+    await CmpUtility.waitOnMe(300);
+    this.setState({ ...this.state, payment: { value: keptVal, isValid: keptValIsValid } });
+    /* this.setState({ ...this.state, payment: { value: undefined, isValid: false } }, () => {
+      this.props.onHide();
+    }); */
   }
 
   modal_render() {
     return (
       <>
-        <Modal show={this.props.show} onHide={() => this.closeModal()} centered backdrop='static'>
+        <Modal show={this.props.show} onHide={() => this.closeModal()} centered backdrop='static' >
           <Modal.Header className="border-bottom-0 pb-0">
             <div className="modal-title h6 text-success"><i className="fa fa-plus mr-2"></i>{Localization.increase_credit}</div>
             <small>{Localization.existing_credit}: {Utility.prettifyNumber(this.props.existing_credit)}</small>
           </Modal.Header>
           <Modal.Body>
             <div className="row">
-              {/* <div className="col-12">
-                <p>{Localization.formatString(Localization.you_are_reading_loaction_n, this.book_active_index + 1)}</p>
-              </div> */}
               <div className="col-12">
                 <Input
                   defaultValue={this.state.payment.value}
                   onChange={(val, isValid) => { this.handle_inputChange(val, isValid) }}
                   required
-                  // hideError
-                  patternError={'حداقل مبلغ افزایش 1000 ریال است.'}
+                  patternError={Localization.formatString(Localization.min_increase_amount_rial_is, 1000) as string}
                   className="input-bordered-bottom input-border-success"
                   pattern={AppRegex.integer}
                   validationFunc={(val) => this.input_validation(val)}
-                  // label={'مبلغ افزایش'}
-                  placeholder={'مبلغ افزایش (ریال)'}
+                  placeholder={Localization.increase_amount_rial}
                 />
               </div>
             </div>

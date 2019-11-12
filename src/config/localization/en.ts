@@ -361,4 +361,6 @@ export const en = {
     increase_credit: 'increase credit',
     payment: 'payment',
     existing_credit: 'existing credit',
+    increase_amount_rial: 'increase amount(rial)',
+    min_increase_amount_rial_is: 'min increase amount is {0} rial',
 }

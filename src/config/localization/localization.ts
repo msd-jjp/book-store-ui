@@ -353,6 +353,8 @@ interface ILocalization extends LocalizedStringsMethods {
     increase_credit: string;
     payment: string;
     existing_credit: string;
+    increase_amount_rial: string;
+    min_increase_amount_rial_is: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

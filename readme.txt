@@ -200,17 +200,13 @@ memory leak.
 
 ====================================================================================
 
-cart & dashboard_more:
 
-get main acount value.
-charge main acount.
 
 ====================================================================================
 
 *****************
-add prop default value to increaseCredit (use in cart : total - account if less than)
+cart & dashboardMore
 add props to cmp use to callBack
 
-translation in increaseCredit
 
 ====================================================================================

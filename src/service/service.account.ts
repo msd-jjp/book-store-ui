@@ -24,7 +24,7 @@ export class AccountService extends BaseService {
         //     // responseType: 'document',
         // });
         // this.axiosTokenInstance.defaults.headers['Content-Type'] = 'text/html';
-        return this.axiosTokenInstance.post('/payment_send', { amount, call_back_url });
+        return this.axiosTokenInstance.post('/payment-send', { amount, call_back_url });
     }
 
 }

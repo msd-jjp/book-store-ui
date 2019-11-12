@@ -43,6 +43,7 @@ interface IState {
   mainAccountValue: number;
   mainAccount_loader: boolean;
   modal_increaseCredit_show: boolean;
+  modal_increaseCredit_defaultValue: number | undefined;
 }
 
 class CartComponent extends BaseComponent<IProps, IState> {
@@ -53,6 +54,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
     mainAccountValue: 0,
     mainAccount_loader: false,
     modal_increaseCredit_show: false,
+    modal_increaseCredit_defaultValue: undefined
   };
 
   private _orderService = new OrderService();
@@ -82,11 +84,31 @@ class CartComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  private openModal_increaseCredit() {
-    this.setState({ modal_increaseCredit_show: true });
+  private openModal_increaseCredit(modal_defaultValue: number | undefined) {
+    this.setState({ modal_increaseCredit_show: true, modal_increaseCredit_defaultValue: modal_defaultValue });
   }
   private closeModal_increaseCredit() {
     this.setState({ modal_increaseCredit_show: false });
+  }
+
+  private get_increaseCredit_defaultValue(): number | undefined {
+    if (typeof this.state.totalPrice === 'number') {
+      if (this.state.mainAccountValue < this.state.totalPrice) {
+        return this.state.totalPrice - this.state.mainAccountValue;
+      }
+    }
+  }
+
+  private is_buyable_cart(): boolean {
+    if (typeof this.state.totalPrice === 'number') {
+      if (this.state.mainAccountValue < this.state.totalPrice) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
   }
 
   private getCartItem(): ICartItems {
@@ -171,6 +193,19 @@ class CartComponent extends BaseComponent<IProps, IState> {
   private async buy() {
     if (!this.props.logged_in_user) return;
     if (!this.props.cart || !this.props.cart.length) return;
+
+
+    if (typeof this.state.totalPrice === 'number') {
+      if (this.state.mainAccountValue < this.state.totalPrice) {
+        this.openModal_increaseCredit(this.get_increaseCredit_defaultValue());
+        return false;
+      } else {
+        // return true;
+      }
+    } else {
+      return false;
+    }
+
 
     this.setState({ ...this.state, buy_loader: true });
 
@@ -377,7 +412,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
                     </div>
                     <div>
                       <span className="badge badge-pill badge-success cursor-pointer"
-                        onClick={() => this.openModal_increaseCredit()}
+                        onClick={() => this.openModal_increaseCredit(undefined)}
                       >
                         <i className="fa fa-plus-circle mr-1"></i>
                         {Localization.increase_credit}
@@ -393,7 +428,10 @@ class CartComponent extends BaseComponent<IProps, IState> {
                     onClick={() => this.buy()}
                     disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                   >
-                    <h4 className="mb-0 d-inline">{Localization.buy} <i className="fa fa-money"></i></h4>
+                    <h4 className="mb-0 d-inline">
+                      {Localization.buy}&nbsp;
+                      <i className={"fa fa-money " + (!this.is_buyable_cart() ? 'text-danger' : '')}></i>
+                    </h4>
                     {
                       this.props.network_status === NETWORK_STATUS.OFFLINE
                         ? <i className="fa fa-wifi text-danger"></i> : ''
@@ -409,7 +447,8 @@ class CartComponent extends BaseComponent<IProps, IState> {
           existing_credit={this.state.mainAccountValue}
           show={this.state.modal_increaseCredit_show}
           onHide={() => this.closeModal_increaseCredit()}
-        // match={this.props.match}
+          // match={this.props.match}
+          defaultValue={this.state.modal_increaseCredit_defaultValue}
         />
 
         <ToastContainer {...this.getNotifyContainerConfig()} />

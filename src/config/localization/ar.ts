@@ -361,4 +361,6 @@ export const ar = {
     increase_credit: 'افزایش اعتبار',
     payment: 'پرداخت',
     existing_credit: 'اعتبار موجود',
+    increase_amount_rial: 'مبلغ افزایش (ریال)',
+    min_increase_amount_rial_is: 'حداقل مبلغ افزایش {0} ریال است.',
 }
