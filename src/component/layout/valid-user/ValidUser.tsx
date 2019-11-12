@@ -35,13 +35,13 @@ const appValidUserRoutes = (
 
             <Route exact path="/" component={() => <Redirect to="/dashboard" />} />
             <RouteLayoutMain exact path="/dashboard" component={Dashboard} />
-            <RouteLayoutMain path="/dashboard-more" component={DashboardMore} />
+            <RouteLayoutMain path="/dashboard-more/:paymentStatus?" component={DashboardMore} />
             <RouteLayoutMain path="/store" component={Store} />
             <RouteLayoutMain path="/library" component={Library} />
             <RouteLayoutMain path="/book-detail/:bookId" component={BookDetail} />
             <RouteLayoutMain path="/category/:searchType/:searchValue" component={Category} />
             <RouteLayoutMain path="/search/:searchQuery" component={Search} />
-            <RouteLayoutMain path="/cart" component={Cart} />
+            <RouteLayoutMain path="/cart/:paymentStatus?" component={Cart} />
             <RouteLayoutMain path="/collection/:collectionTitle/:isUncollected?" component={Collection} />
             <RouteLayoutMain path="/collection-update/:collectionTitle" component={CollectionUpdate} />
             <RouteLayoutMain path="/profile" component={Profile} />

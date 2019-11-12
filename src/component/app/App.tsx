@@ -21,13 +21,13 @@ const appRoutes = (
 
       <Route exact path="/" component={() => <Redirect to="/dashboard" />} />
       <RouteLayoutValidUser exact path="/dashboard" />
-      <RouteLayoutValidUser path="/dashboard-more" />
+      <RouteLayoutValidUser path="/dashboard-more/:paymentStatus?" />
       <RouteLayoutValidUser path="/store" />
       <RouteLayoutValidUser path="/library" />
       <RouteLayoutValidUser path="/book-detail/:bookId" />
       <RouteLayoutValidUser path="/category/:searchType/:searchValue" />
       <RouteLayoutValidUser path="/search/:searchQuery" />
-      <RouteLayoutValidUser path="/cart" />
+      <RouteLayoutValidUser path="/cart/:paymentStatus?" />
       <RouteLayoutValidUser path="/collection/:collectionTitle/:isUncollected?" />
       <RouteLayoutValidUser path="/collection-update/:collectionTitle" />
       <RouteLayoutValidUser path="/profile" />
