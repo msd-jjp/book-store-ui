@@ -83,8 +83,7 @@ class SearchComponent extends BaseComponent<IProps, IState> {
             offset: this.state.pager_offset,
             filter: { search_phrase: this.searchQuery }
         }).catch(error => {
-
-            let errorMsg = this.handleError({ error: error.response });
+            const errorMsg = this.handleError({ error: error.response, toastOptions: { toastId: 'fetchBooks_error' } });
             this.setState({ ...this.state, bookError: errorMsg.body, loadMoreBtnLoader: false });
         });
         // debugger;
@@ -184,7 +183,7 @@ class SearchComponent extends BaseComponent<IProps, IState> {
             return (
                 <>
                     <div>{this.state.bookError}</div>
-                    <div onClick={() => this.fetchBooks()}>{Localization.retry}</div>
+                    <div onClick={() => this.fetchBooks()}>{Localization.retry}&nbsp;<i className="fa fa-refresh"></i></div>
                 </>
             );
         } else {
