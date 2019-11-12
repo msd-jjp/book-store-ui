@@ -23,6 +23,8 @@ import { Utility } from "../../asset/script/utility";
 import { AccountService } from "../../service/service.account";
 import { IncreaseCredit } from "../increase-credit/IncreaseCredit";
 import { PaymentResult } from "../increase-credit/payment-result/PaymentResult";
+import { action_set_library_data } from "../../redux/action/library";
+import { LibraryService } from "../../service/service.library";
 // import { IBook } from "../../model/model.book";
 
 interface IProps {
@@ -64,6 +66,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
   private _orderService = new OrderService();
   private _priceService = new PriceService();
   private _accountService = new AccountService();
+  private _libraryService = new LibraryService();
 
   componentWillMount() {
     this.removeParam_paymentStatus();
@@ -264,12 +267,17 @@ class CartComponent extends BaseComponent<IProps, IState> {
         this.props.clear_cart();
         this.props.history.push('/dashboard');
         this.apiSuccessNotify(Localization.msg.ui.your_purchase_completed);
+        this.updateLibrary();
       }
     }
   }
 
+  private async updateLibrary() {
+    const res = await this._libraryService.getAll().catch(error => { });
+    if (res) Store2.dispatch(action_set_library_data(res.data.result));
+  }
+
   totalPrice_render() {
-    // this.state.totalPrice.toLocaleString()
     if (typeof this.state.totalPrice === 'string') {
       return <small className="text-danger">{this.state.totalPrice}</small>
     } else {
