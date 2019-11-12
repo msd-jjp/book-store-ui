@@ -400,6 +400,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
                           placeholder={Localization.address}
                           is_textarea
                           defaultValue={this.state.person.address.value}
+                          textarea_rows={2}
                         />
                       </div>
                       <div className="col-md-12">

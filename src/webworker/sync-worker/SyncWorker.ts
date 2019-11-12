@@ -168,7 +168,7 @@ export class SyncWorker extends BaseWorker {
         this._syncStatus.whichBook_isRemoved.inProgress = true;
         this._syncStatus.whichBook_isRemoved.error = undefined;
         // await CmpUtility.waitOnMe(1500);
-        await this._orderService.search(10, 0).catch((e: AxiosError) => {
+        await this._orderService.search_userOrder(10, 0).catch((e: AxiosError) => {
             this._syncStatus.whichBook_isRemoved.error = e;
         });
         this._syncStatus.whichBook_isRemoved.inProgress = false;
@@ -188,6 +188,7 @@ export class SyncWorker extends BaseWorker {
         this.afterActionFinished();
     }
 
+    // todo: get user here & update user
     /**
      * check if "device current book" is different from "server current book".
      */
