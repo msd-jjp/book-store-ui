@@ -82,10 +82,15 @@ class CartComponent extends BaseComponent<IProps, IState> {
   }
 
   private async getUserMainAccount(toastError: boolean = true, loader: boolean = true) {
+    const res_offline = await this._accountService.getUserMainAccount(true).catch(error => { });
+    if (res_offline && res_offline.data.result.length) {
+      this.setState({ mainAccountValue: res_offline.data.result[0].value });
+    }
+
     if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
 
     loader && this.setState({ mainAccount_loader: true });
-    let res = await this._accountService.getUserMainAccount().catch(error => {
+    const res = await this._accountService.getUserMainAccount().catch(error => {
       this.handleError({
         error: error.response,
         notify: toastError,
