@@ -24,5 +24,5 @@ ReactDOM.render(
 serviceWorker.register({ onUpdate: openConfirmReloadModal });
 
 function openConfirmReloadModal(registration: ServiceWorkerRegistration) {
-    console.log('update modal should open now...')
+    console.log('update modal should open now...');
 }

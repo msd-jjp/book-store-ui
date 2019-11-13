@@ -95,6 +95,7 @@ function registerValidSW(swUrl: string, config?: Config) {
 
               const event = new Event("app-event-newContentAvailable");
               window.dispatchEvent(event);
+              console.log('-------mozila check 1:--------------- dispatchEvent app-event-newContentAvailable ------------');
 
               // if (confirm(`New content is available!. Click OK to refresh`)) {
               //   window.location.reload();

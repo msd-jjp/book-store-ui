@@ -83,6 +83,7 @@ class AppComponent extends React.Component<IProps, IState> {
     window.addEventListener("app-event-newContentAvailable", () => {
       this.setState({ ...this.state, showConfirmReloadModal: true });
     });
+    console.log('-------mozila check 2:--------------- addEventListener app-event-newContentAvailable ------------');
   }
 
   closeModal_confirmReload() {
