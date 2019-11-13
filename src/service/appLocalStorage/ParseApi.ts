@@ -40,5 +40,11 @@ export class ParseApi {
 
             appLocalStorage.storeData_userInvoicedOrderItem(response.data.result);
         }
+        else if (response.config.url &&
+            response.config.url.includes('/api/accounts/user/_search') &&
+            response.config.method === "post") {
+            
+            appLocalStorage.addDataToCollection('clc_userAccount', response.data.result);
+        }
     }
 }

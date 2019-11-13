@@ -9,6 +9,7 @@ import { SearchAppStorage } from './SearchAppStorage';
 import { StoreData } from './StoreData';
 import { IOrder, IOrderItem } from '../../model/model.order';
 import { CmpUtility } from '../../component/_base/CmpUtility';
+import { IAccount } from '../../model/model.account';
 // import { is_book_downloaded_history_reset } from '../../component/library/libraryViewTemplate';
 
 // const LokiIndexedAdapter = require('lokijs/src/loki-indexed-adapter');
@@ -25,8 +26,9 @@ export type TCollectionName =
     'clc_userInvoicedOrder' |
     'clc_userInvoicedOrderItem' |
     'clc_book_mainFile' |
-    'clc_book_sampleFile';
-export type TCollectionData = IBook | IComment | IOrder; // | IBook_file_store;
+    'clc_book_sampleFile' |
+    'clc_userAccount';
+export type TCollectionData = IBook | IComment | IOrder | IAccount; // | IBook_file_store;
 
 export class appLocalStorage {
 
@@ -59,7 +61,7 @@ export class appLocalStorage {
     static readonly collectionNameList: TCollectionName[] =
         ['clc_book', 'clc_comment', 'clc_userInvoicedOrder',
             'clc_userInvoicedOrderItem', 'clc_book_mainFile',
-            'clc_book_sampleFile'];
+            'clc_book_sampleFile', 'clc_userAccount'];
 
     static clc_book: Collection<IBook>;
     static clc_comment: Collection<IComment>;
@@ -67,6 +69,8 @@ export class appLocalStorage {
     static clc_userInvoicedOrderItem: Collection<IOrderItemStore>;
     static clc_book_mainFile: Collection<IBook_file_store>;
     static clc_book_sampleFile: Collection<IBook_file_store>;
+    static clc_userAccount: Collection<IAccount>;
+
     constructor() {
         appLocalStorage.app_db.loadDatabase({}, (err: any) => {
             // debugger;
@@ -151,6 +155,7 @@ export class appLocalStorage {
         // appLocalStorage.clearCollection('clc_book_sampleFile');
         appLocalStorage.clearCollection('clc_userInvoicedOrder');
         appLocalStorage.clearCollection('clc_userInvoicedOrderItem');
+        appLocalStorage.clearCollection('clc_userAccount');
     }
 
     static storeUsefullResponse(response: AxiosResponse<any>) {
@@ -170,5 +175,7 @@ export class appLocalStorage {
 
     static search_by_query_userInvoicedOrder = SearchAppStorage.search_by_query_userInvoicedOrder;
     static find_orderItems_by_order_id = SearchAppStorage.find_orderItems_by_order_id;
+
+    static search_userMainAccount = SearchAppStorage.search_userMainAccount;
 
 }

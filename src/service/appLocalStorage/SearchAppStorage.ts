@@ -2,6 +2,7 @@ import { appLocalStorage, TCollectionName, TCollectionData } from ".";
 import { IBook } from "../../model/model.book";
 import { IComment } from "../../model/model.comment";
 import { IOrder, IOrderItem } from "../../model/model.order";
+import { IAccount } from "../../model/model.account";
 
 export class SearchAppStorage {
     // static findById<TCollectionData>(collectionName: TCollectionName, id: string):TCollectionData |null{
@@ -126,6 +127,12 @@ export class SearchAppStorage {
         const data = appLocalStorage.clc_userInvoicedOrderItem.findOne({ id: order_id });
         if (data) return data.items;
         // else return [];
+    }
+
+    static search_userMainAccount(): IAccount[] {
+        const data = appLocalStorage.clc_userAccount.findOne({ type: 'Main' });
+        if (data) return [data];
+        else return [];
     }
 
 }
