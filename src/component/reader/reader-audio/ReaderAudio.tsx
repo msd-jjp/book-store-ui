@@ -222,7 +222,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
     private _bookInstance!: AudioBookGenerator;
     private async createBook() {
-        const bookFile = appLocalStorage.findBookMainFileById(this.book_id); // find book chapter
+        const bookFile = await appLocalStorage.findBookMainFileById(this.book_id); // find book chapter
         if (!bookFile) {
             this.setState({ loading: false });
             this.bookFileNotFound_notify();

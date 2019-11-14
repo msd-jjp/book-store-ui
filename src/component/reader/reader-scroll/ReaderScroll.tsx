@@ -146,7 +146,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
   private _bookInstance!: BookGenerator;
   private async createBook() {
-    const bookFile = appLocalStorage.findBookMainFileById(this.book_id);
+    const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
     if (!bookFile) {
       this.setState({ page_loading: false });
       this.bookFileNotFound_notify();

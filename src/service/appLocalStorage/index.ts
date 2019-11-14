@@ -10,24 +10,26 @@ import { StoreData } from './StoreData';
 import { IOrder, IOrderItem } from '../../model/model.order';
 import { CmpUtility } from '../../component/_base/CmpUtility';
 import { IAccount } from '../../model/model.account';
+import { FileStorage } from './FileStorage';
 // import { is_book_downloaded_history_reset } from '../../component/library/libraryViewTemplate';
 
 // const LokiIndexedAdapter = require('lokijs/src/loki-indexed-adapter');
 // const lfsa = require('lokijs/src/loki-fs-structured-adapter');
 
 export interface IOrderItemStore { id: IOrder['id']; items: IOrderItem[] };
-export interface IBook_file_store {
-    id: IBook['id'];
-    file: Array<number>;
-}
+// export interface IBook_file_store {
+//     id: IBook['id'];
+//     file: Array<number>;
+// }
 export type TCollectionName =
     'clc_book' |
     'clc_comment' |
     'clc_userInvoicedOrder' |
     'clc_userInvoicedOrderItem' |
-    'clc_book_mainFile' |
-    'clc_book_sampleFile' |
+    // 'clc_book_mainFile' |
+    // 'clc_book_sampleFile' |
     'clc_userAccount';
+
 export type TCollectionData = IBook | IComment | IOrder | IAccount; // | IBook_file_store;
 
 export class appLocalStorage {
@@ -60,15 +62,17 @@ export class appLocalStorage {
     // app_db.save
     static readonly collectionNameList: TCollectionName[] =
         ['clc_book', 'clc_comment', 'clc_userInvoicedOrder',
-            'clc_userInvoicedOrderItem', 'clc_book_mainFile',
-            'clc_book_sampleFile', 'clc_userAccount'];
+            'clc_userInvoicedOrderItem',
+            // 'clc_book_mainFile',
+            // 'clc_book_sampleFile',
+            'clc_userAccount'];
 
     static clc_book: Collection<IBook>;
     static clc_comment: Collection<IComment>;
     static clc_userInvoicedOrder: Collection<IOrder>;
     static clc_userInvoicedOrderItem: Collection<IOrderItemStore>;
-    static clc_book_mainFile: Collection<IBook_file_store>;
-    static clc_book_sampleFile: Collection<IBook_file_store>;
+    // static clc_book_mainFile: Collection<IBook_file_store>;
+    // static clc_book_sampleFile: Collection<IBook_file_store>;
     static clc_userAccount: Collection<IAccount>;
 
     constructor() {
@@ -76,10 +80,12 @@ export class appLocalStorage {
             // debugger;
 
             appLocalStorage.initDB(); // indexed db adaptor need this.
-            CmpUtility.is_book_downloaded_history_reset();
+            // CmpUtility.is_book_downloaded_history_reset();
             CmpUtility.refreshView();
         });
         appLocalStorage.initDB();
+
+        FileStorage.init();
     }
 
     static /* async */ initDB() {
@@ -95,6 +101,8 @@ export class appLocalStorage {
         });
 
     }
+
+
 
     static autosaveCallback(e: any) {
         // debugger;
@@ -150,8 +158,9 @@ export class appLocalStorage {
 
     static afterAppLogout() {
         // appLocalStorage.resetDB() // todo: ask if need resetDB?
-        appLocalStorage.clearCollection('clc_book_mainFile');
-        CmpUtility.is_book_downloaded_history_reset();
+        // appLocalStorage.clearCollection('clc_book_mainFile');
+        appLocalStorage.clearCollection_bookFile(true);
+        // CmpUtility.is_book_downloaded_history_reset();
         // appLocalStorage.clearCollection('clc_book_sampleFile');
         appLocalStorage.clearCollection('clc_userInvoicedOrder');
         appLocalStorage.clearCollection('clc_userInvoicedOrderItem');
@@ -165,6 +174,8 @@ export class appLocalStorage {
     static addDataToCollection = StoreData.addDataToCollection;
     static storeData_userInvoicedOrderItem = StoreData.storeData_userInvoicedOrderItem;
     static storeBookFile = StoreData.storeBookFile;
+    static removeBookFileById = FileStorage.removeBookFileById;
+    static clearCollection_bookFile = FileStorage.clearCollection_bookFile;
 
     static findById = SearchAppStorage.findById;
     static findBookMainFileById = SearchAppStorage.findBookMainFileById;
@@ -177,5 +188,6 @@ export class appLocalStorage {
     static find_orderItems_by_order_id = SearchAppStorage.find_orderItems_by_order_id;
 
     static search_userMainAccount = SearchAppStorage.search_userMainAccount;
+    static checkBookFileExist = FileStorage.checkBookFileExist;
 
 }

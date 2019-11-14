@@ -1,6 +1,7 @@
-import { appLocalStorage, TCollectionName, TCollectionData, IBook_file_store, IOrderItemStore } from ".";
+import { appLocalStorage, TCollectionName, TCollectionData, IOrderItemStore } from ".";
 import { Collection } from "lokijs";
 import { IOrderItem } from "../../model/model.order";
+import { FileStorage } from "./FileStorage";
 
 export class StoreData {
     static addDataToCollection(collectionName: TCollectionName, data: TCollectionData[] | TCollectionData) {
@@ -61,20 +62,21 @@ export class StoreData {
         appLocalStorage.manualSaveDB();
     }
 
-    static storeBookFile(book_id: string, mainFile: boolean, data: Uint8Array) {
-        let coll: Collection<IBook_file_store> = mainFile ? appLocalStorage.clc_book_mainFile : appLocalStorage.clc_book_sampleFile;
-        const newData: IBook_file_store = { id: book_id, file: Array.from(data) };
-        let found = coll.findOne({ id: book_id });
-        if (found) {
-            /* coll.findAndUpdate({ id: book_id }, oldObj => {
-                return newData;
-            }); */
-            StoreData.updateData_byId(mainFile ? 'clc_book_mainFile' : 'clc_book_sampleFile', book_id, newData);
-        } else {
-            coll.insert(newData);
-        }
+    static storeBookFile(book_id: string, mainFile: boolean, data: Uint8Array): void {
+        // let coll: Collection<IBook_file_store> = mainFile ? appLocalStorage.clc_book_mainFile : appLocalStorage.clc_book_sampleFile;
+        // const newData: IBook_file_store = { id: book_id, file: Array.from(data) };
+        // let found = coll.findOne({ id: book_id });
+        // if (found) {
+        //     /* coll.findAndUpdate({ id: book_id }, oldObj => {
+        //         return newData;
+        //     }); */
+        //     StoreData.updateData_byId(mainFile ? 'clc_book_mainFile' : 'clc_book_sampleFile', book_id, newData);
+        // } else {
+        //     coll.insert(newData);
+        // }
 
-        appLocalStorage.manualSaveDB();
+        // appLocalStorage.manualSaveDB();
+        FileStorage.setBookFileById(book_id, mainFile, data);
     }
 
     private static updateData_byId(collectionName: TCollectionName, id: string, newData: any) {

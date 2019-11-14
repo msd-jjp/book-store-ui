@@ -3,6 +3,7 @@ import { IBook } from "../../model/model.book";
 import { IComment } from "../../model/model.comment";
 import { IOrder, IOrderItem } from "../../model/model.order";
 import { IAccount } from "../../model/model.account";
+import { FileStorage } from "./FileStorage";
 
 export class SearchAppStorage {
     // static findById<TCollectionData>(collectionName: TCollectionName, id: string):TCollectionData |null{
@@ -11,16 +12,18 @@ export class SearchAppStorage {
         // appLocalStorage.books.find({ $eq: { id: bookId } });
     }
 
-    static findBookMainFileById(book_id: string): Uint8Array | undefined {
-        const data = appLocalStorage.clc_book_mainFile.findOne({ id: book_id });
+    static findBookMainFileById(book_id: string): Promise<Uint8Array | undefined> {
+        /* const data = appLocalStorage.clc_book_mainFile.findOne({ id: book_id });
         // if (data) return data.file;
-        if (data) return new Uint8Array(data.file);
+        if (data) return new Uint8Array(data.file); */
+        return FileStorage.getBookFileById(book_id, true);
     }
 
-    static findBookSampleFileById(book_id: string): Uint8Array | undefined {
-        const data = appLocalStorage.clc_book_sampleFile.findOne({ id: book_id });
+    static findBookSampleFileById(book_id: string): Promise<Uint8Array | undefined> {
+        /* const data = appLocalStorage.clc_book_sampleFile.findOne({ id: book_id });
         // if (data) return data.file;
-        if (data) return new Uint8Array(data.file);
+        if (data) return new Uint8Array(data.file); */
+        return FileStorage.getBookFileById(book_id, false);
     }
 
     static search_by_query_book(
