@@ -115,13 +115,13 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         });
 
         if (res) {
-            const file = new Uint8Array(res.data);
+            const file = new Uint8Array(res.data); // res.data; // 
             await appLocalStorage.storeBookFile(book_id, mainFile, file); // res.data
             // CmpUtility.is_book_downloaded_history_save(book_id, mainFile, true);
         }
 
         if (downloadCanceled) return;
-        
+
         this.downloadFinished(book_id, mainFile);
     }
 

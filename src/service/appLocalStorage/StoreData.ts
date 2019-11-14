@@ -62,7 +62,7 @@ export class StoreData {
         appLocalStorage.manualSaveDB();
     }
 
-    static storeBookFile(book_id: string, mainFile: boolean, data: Uint8Array): void {
+    static storeBookFile(book_id: string, mainFile: boolean, data: Uint8Array): void { // Uint8Array,ArrayBuffer
         // let coll: Collection<IBook_file_store> = mainFile ? appLocalStorage.clc_book_mainFile : appLocalStorage.clc_book_sampleFile;
         // const newData: IBook_file_store = { id: book_id, file: Array.from(data) };
         // let found = coll.findOne({ id: book_id });

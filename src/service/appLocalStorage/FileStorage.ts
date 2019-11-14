@@ -1,13 +1,6 @@
-import { IBook } from "../../model/model.book";
-
 enum FILE_STORAGE_KEY {
     FILE_BOOK_MAIN = 'FILE_BOOK_MAIN',
     FILE_BOOK_SAMPLE = 'FILE_BOOK_SAMPLE',
-}
-
-interface IBook_file_store {
-    id: IBook['id'];
-    file: Array<number>;
 }
 
 export class FileStorage {
@@ -15,10 +8,9 @@ export class FileStorage {
     private static storage: CacheStorage;
 
     static async init() {
-        debugger;
+        // debugger;
         if ('caches' in window) {
             FileStorage.storage = caches;
-            // FileStorage._isSuport = true;
             debugger;
             // caches.open('myfiless').then(function (cache_obj) {
             //     cache_obj.addAll(['/', '/img/first.png', '/img/second.png'])
@@ -33,60 +25,72 @@ export class FileStorage {
         }
     }
 
-    // private static _isSuport = false;
     static isSuport(): boolean {
-        // return FileStorage._isSuport;
         if (FileStorage.storage) return true;
         return false;
     }
 
-    private static getBookFileList_cache(mainFile: boolean): Promise<Cache> | undefined {
-        if (!FileStorage.isSuport()) return;
+    private static getBookFileList_cache(mainFile: boolean): Promise<Cache> {
         return FileStorage.storage.open(mainFile ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE);
     }
 
     static async getBookFileById(book_id: string, mainFile: boolean): Promise<Uint8Array | undefined> {
         if (!FileStorage.isSuport()) return;
         debugger;
-
+        const list = await FileStorage.getBookFileList_cache(mainFile);
+        const item = await list.match(book_id).catch(e => {
+            console.error('book file byId not exist', book_id);
+        });
+        if (item)
+            return new Uint8Array(await item.arrayBuffer());
     }
 
-    // static setFileById(id: string): void {}
-
-    static async setBookFileById(book_id: string, mainFile: boolean, data: Uint8Array): Promise<any> {
+    static async setBookFileById(book_id: string, mainFile: boolean, data: Uint8Array): Promise<any> { // Uint8Array,ArrayBuffer
         if (!FileStorage.isSuport()) return;
         debugger;
         let list = await FileStorage.getBookFileList_cache(mainFile);
         debugger;
 
-        FileStorage.is_book_downloaded_history_save(book_id, mainFile, true);
+        let save = true;
+        list.put(book_id, new Response(data)).catch(e => {
+            save = false;
+            console.error('setBookFileById put errro: ', e);
+        });
+
+        if (save)
+            FileStorage.is_book_downloaded_history_save(book_id, mainFile);
     }
-
-    // static removeBookFileById(book_id: string, mainFile: boolean): void {
-    //     if (!FileStorage.isSuport()) return;
-    //     debugger;
-    // }
-
 
     static async removeBookFileById(book_id_s: string | string[], mainFile: boolean): Promise<boolean> {
         if (!FileStorage.isSuport()) return false;
         debugger;
-        return false;
+        let list = await FileStorage.getBookFileList_cache(mainFile);
+        if (Array.isArray(book_id_s)) {
+            for (let i = 0; i < book_id_s.length; i++) {
+                const d = await list.delete(book_id_s[i]);
+                d && FileStorage.is_book_downloaded_history_remove(book_id_s[i], mainFile);
+            }
+        } else {
+            const d = await list.delete(book_id_s);
+            d && FileStorage.is_book_downloaded_history_remove(book_id_s, mainFile);
+        }
+
+        return true;
     }
 
-    static async checkBookFileExist_async(book_id: string, mainFile: boolean): Promise<boolean> {
-        if (!FileStorage.isSuport()) return false;
+    /* private static async checkBookFileExist_async(book_id: string, mainFile: boolean): Promise<boolean> {
+        // if (!FileStorage.isSuport()) return false;
         debugger;
         return false;
-    }
+    } */
 
     static checkBookFileExist(book_id: string, mainFile: boolean): boolean {
         if (!FileStorage.isSuport()) return false;
-        debugger;
-        //todo: only save id
-        if (FileStorage.is_book_downloaded_history_check(book_id, mainFile) !== undefined)
-            return FileStorage.is_book_downloaded_history_check(book_id, mainFile)!;
-        return false;
+        // debugger;
+        return FileStorage.is_book_downloaded_history_check(book_id, mainFile);
+        // if (FileStorage.is_book_downloaded_history_check(book_id, mainFile) !== undefined)
+        //     return FileStorage.is_book_downloaded_history_check(book_id, mainFile)!;
+        // return false;
     }
 
     static async clearCollection_bookFile(mainFile: boolean): Promise<boolean> {
@@ -105,51 +109,50 @@ export class FileStorage {
     }
 
     private static async loadDownloadedBook_id(): Promise<void> {
-        debugger;
-        let dsv = await FileStorage.getBookFileList_cache(true);
-        let dsvvdfgh = await FileStorage.getBookFileList_cache(false);
-        debugger;
+        // debugger;
+        const list_main = await FileStorage.getBookFileList_cache(true);
+        const list_sample = await FileStorage.getBookFileList_cache(false);
+        // debugger;
+        const list_main_keys = await list_main.keys();
+        list_main_keys.forEach(key => {
+            const bk_id = key.url.replace(window.location.origin + '/', '');
+            FileStorage.is_book_downloaded_history_save(bk_id, true);
+        });
+        const list_sample_keys = await list_sample.keys();
+        list_sample_keys.forEach(key => {
+            const bk_id = key.url.replace(window.location.origin + '/', '');
+            FileStorage.is_book_downloaded_history_save(bk_id, false);
+        });
     }
 
+    ///////////////////////////////////////////
 
-    ///////////////////////////////////////////
-    ///////////////////////////////////////////
-    ///////////////////////////////////////////
-    private static _book_downloaded_mainObj: any = {};
-    private static _book_downloaded_sampleObj: any = {};
-    private static is_book_downloaded_history_check(book_id: string, mainFile: boolean): boolean | undefined {
-        //todo: only save id
-        if (mainFile) return FileStorage._book_downloaded_mainObj[book_id];
-        return FileStorage._book_downloaded_sampleObj[book_id];
+    private static _book_downloaded_main_list: string[] = [];
+    private static _book_downloaded_sample_list: string[] = [];
+    private static is_book_downloaded_history_check(book_id: string, mainFile: boolean): boolean {
+        if (mainFile) return FileStorage._book_downloaded_main_list.includes(book_id);
+        return FileStorage._book_downloaded_sample_list.includes(book_id);
     }
-    private static is_book_downloaded_history_save(book_id: string, mainFile: boolean, value: boolean): void {
-        //todo: only save id
-        if (mainFile) FileStorage._book_downloaded_mainObj[book_id] = value;
-        else FileStorage._book_downloaded_sampleObj[book_id] = value;
+    private static is_book_downloaded_history_save(book_id: string, mainFile: boolean): void {
+        if (mainFile) {
+            if (!FileStorage._book_downloaded_main_list.includes(book_id)) {
+                FileStorage._book_downloaded_main_list.push(book_id);
+            }
+        } else {
+            if (!FileStorage._book_downloaded_sample_list.includes(book_id)) {
+                FileStorage._book_downloaded_sample_list.push(book_id);
+            }
+        }
     }
     private static is_book_downloaded_history_remove(book_id: string, mainFile: boolean) {
-        if (mainFile) delete FileStorage._book_downloaded_mainObj[book_id];
-        else delete FileStorage._book_downloaded_sampleObj[book_id];
+        if (mainFile) FileStorage._book_downloaded_main_list.splice(FileStorage._book_downloaded_main_list.indexOf(book_id), 1);
+        else FileStorage._book_downloaded_sample_list.splice(FileStorage._book_downloaded_sample_list.indexOf(book_id), 1);
     }
     private static is_book_downloaded_history_reset(mainFile: boolean) {
         if (mainFile)
-            FileStorage._book_downloaded_mainObj = {};
+            FileStorage._book_downloaded_main_list = [];
         else
-            FileStorage._book_downloaded_sampleObj = {};
+            FileStorage._book_downloaded_sample_list = [];
     }
-
-    // private static removeBookFileFromDevice(book_id_s: string | string[], mainFile: boolean) {
-    //     // appLocalStorage.removeFromCollection(mainFile ? 'clc_book_mainFile' : 'clc_book_sampleFile', book_id_s);
-    //     appLocalStorage.removeBookFileById(book_id_s, mainFile);
-
-    //     if (Array.isArray(book_id_s)) {
-    //         book_id_s.forEach(id => {
-    //             CmpUtility.is_book_downloaded_history_remove(id, mainFile);
-    //         });
-    //     } else {
-    //         CmpUtility.is_book_downloaded_history_remove(book_id_s, mainFile);
-    //     }
-    //     CmpUtility.refreshView();
-    // }
 
 }
