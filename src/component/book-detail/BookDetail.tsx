@@ -370,7 +370,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               }
             </h6>
             <h6 className="font-weight-bold">
-              {Localization.language}: <span className="text-capitalize"> {book.language}</span>
+              {Localization.language}: <span className="text-capitalize"> {Localization.language_obj[book.language]}</span>
             </h6>
             <h6 className="font-weight-bold">
               <span className="text-uppercase">{Localization.book_isben}</span>: <span> {book.isben}</span>

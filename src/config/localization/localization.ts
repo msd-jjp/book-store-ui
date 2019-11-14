@@ -6,6 +6,7 @@ import { en } from './en';
 import { ar } from './ar';
 import { BOOK_GENRE, BOOK_TYPES, BOOK_ROLES } from '../../enum/Book';
 import { IReader_schema_epub_theme } from '../../redux/action/reader/readerAction';
+import { LANGUAGES } from '../../enum/language';
 
 interface ILocalization extends LocalizedStringsMethods {
     [key: string]: any; // todo
@@ -362,6 +363,9 @@ interface ILocalization extends LocalizedStringsMethods {
         'payment-amount-invalid': string;
     };
     payment_result: string;
+    language_obj: {
+        [key in LANGUAGES]: string;
+    };
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

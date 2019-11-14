@@ -370,4 +370,12 @@ export const ar = {
         'payment-amount-invalid': 'مقدار پرداخت صحیح نیست.',
     },
     payment_result: 'نتیجه پرداخت',
+    language_obj: {
+        PERSIAN: 'فارسی',
+        ENGLISH: 'انگلیسی',
+        ARABIC: 'عربی',
+        FRENCH: 'فرانسوی',
+        GERMAN: 'آلمانی',
+        SPANISH: 'اسپانیایی',
+    },
 }

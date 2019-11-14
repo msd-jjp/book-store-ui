@@ -371,4 +371,12 @@ export const en = {
 
     },
     payment_result: 'payment result',
+    language_obj: {
+        PERSIAN: 'persian',
+        ENGLISH: 'english',
+        ARABIC: 'arabic',
+        FRENCH: 'french',
+        GERMAN: 'german',
+        SPANISH: 'spanish',
+    },
 }
