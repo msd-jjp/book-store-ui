@@ -10,7 +10,6 @@ export class FileStorage {
     static async init() {
         if ('caches' in window) {
             FileStorage.storage = caches;
-            debugger;
 
             // const cas = await FileStorage.storage.has(FILE_STORAGE_KEY.FILE_BOOK_MAIN);
 
@@ -93,10 +92,9 @@ export class FileStorage {
     }
 
     private static async loadDownloadedBook_id(): Promise<void> {
-        // debugger;
         const list_main = await FileStorage.getBookFileList_cache(true);
         const list_sample = await FileStorage.getBookFileList_cache(false);
-        // debugger;
+        
         const list_main_keys = await list_main.keys();
         list_main_keys.forEach(key => {
             const bk_id = key.url.replace(window.location.origin + '/', '');

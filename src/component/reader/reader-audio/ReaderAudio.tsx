@@ -695,11 +695,13 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     //     this.setState({ isPlaying: this.wavesurfer!.isPlaying() });
     // };
     private stop() {
+        if (!this.wavesurfer) return;
         this.wavesurfer!.stop();
         this.getAudioContext().suspend();
         this.after_pause();
     };
     private play() {
+        if (!this.wavesurfer) return;
         this.wavesurfer!.play();
         this.getAudioContext().resume();
         this.after_play();

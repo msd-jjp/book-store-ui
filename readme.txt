@@ -204,8 +204,10 @@ cmp profile --> add reset password to profile (edit user ham pass avaz mikone ag
 
 ====================================================================================
 
-add storage for account --> appStorage
-in cmp cart & dashboard-more --> load stored data first.
+test 100 meg file in storage laptop & mobile.
 
+====================================================================================
+
+readerAudio btn foucus change to active.
 
 ====================================================================================
