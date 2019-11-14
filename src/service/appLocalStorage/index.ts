@@ -81,14 +81,15 @@ export class appLocalStorage {
 
             appLocalStorage.initDB(); // indexed db adaptor need this.
             // CmpUtility.is_book_downloaded_history_reset();
-            CmpUtility.refreshView();
+            // CmpUtility.refreshView();
         });
         appLocalStorage.initDB();
 
-        FileStorage.init();
+        // FileStorage.init();
+        appLocalStorage.initFileStorage();
     }
 
-    static /* async */ initDB() {
+    private static /* async */ initDB() {
         // await CmpUtility.waitOnMe(2000);
 
         appLocalStorage.collectionNameList.forEach((colName: TCollectionName) => {
@@ -102,7 +103,10 @@ export class appLocalStorage {
 
     }
 
-
+    private static async initFileStorage() {
+        await FileStorage.init();
+        CmpUtility.refreshView();
+    }
 
     static autosaveCallback(e: any) {
         // debugger;

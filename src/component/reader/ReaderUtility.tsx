@@ -117,6 +117,7 @@ export abstract class ReaderUtility {
         const reader_epub_theme = ReaderUtility.getEpubBook_theme(reader_epub.theme);
 
         await ReaderUtility.wait_loadReaderEngine();
+        await CmpUtility.waitOnMe(1000); // todo: _DELETE_ME
 
         let valid_fontSize = reader_epub.fontSize;
         if (valid_fontSize > 50) { valid_fontSize = 50; }
@@ -388,10 +389,11 @@ export abstract class ReaderUtility {
     }
 
     static async createAudioBook(book_id: string, bookFile: Uint8Array): Promise<AudioBookGenerator> {
-        // check book exist
+        //todo: check book exist
 
         await ReaderUtility.wait_loadReaderEngine();
-        
+        await CmpUtility.waitOnMe(1000); // todo: _DELETE_ME
+
         return new AudioBookGenerator(bookFile);
     }
 

@@ -451,10 +451,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                 a_s && a_s.stop();
                 a_s && a_s.disconnect();
             } catch (e) {
-                console.log('while this._audioSourceList', e);
+                console.log('reset_srcObj  while this._audioSourceList', e);
             }
         });
-        this._audioSourceList = []; // todo : add all source here
+        this._audioSourceList = [];
     }
     private destroy_srcObj(mainSrc: boolean) {
         if (mainSrc) {
@@ -631,9 +631,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                 }
             }
             //
-            console.warn('source should start at : ', newSource.timing.from);
+            console.log('source should start at : ', newSource.timing.from);
             this._audioCtx_currentTime_next = startTime + voiceTime;
-            console.warn('source should end at : ', newSource.timing.to);
+            console.log('source should end at : ', newSource.timing.to);
             // source.stop(audioCtx_currentTime + offset + voiceTime); // audioCtx.currentTime
             source.onended = (ev: Event) => {
                 console.log(
@@ -649,7 +649,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             this._audioSourceList.push(source);
 
             if (voiceTime < 10) {
-                console.warn('voiceTime < 10 --> load next atom', voiceTime);
+                console.log('voiceTime < 10 --> load next atom', voiceTime);
                 const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
                 if (allAtoms_pos.length - 1 >= atomPos_index + 1) {
 

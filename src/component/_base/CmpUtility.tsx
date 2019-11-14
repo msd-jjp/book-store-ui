@@ -109,12 +109,6 @@ export abstract class CmpUtility {
         });
     }
 
-    // static is_book_downloaded(book_id: string): boolean {
-    //     if (appLocalStorage.findBookMainFileById(book_id))
-    //         return true;
-    //     return false;
-    // }
-
     /**
      * render all cmp with dispatch action_change_app_flag.
      */
@@ -124,16 +118,8 @@ export abstract class CmpUtility {
     }
 
     static async removeBookFileFromDevice(book_id_s: string | string[], mainFile: boolean) {
-        // appLocalStorage.removeFromCollection(mainFile ? 'clc_book_mainFile' : 'clc_book_sampleFile', book_id_s);
         await appLocalStorage.removeBookFileById(book_id_s, mainFile);
 
-        // if (Array.isArray(book_id_s)) {
-        //     book_id_s.forEach(id => {
-        //         CmpUtility.is_book_downloaded_history_remove(id, mainFile);
-        //     });
-        // } else {
-        //     CmpUtility.is_book_downloaded_history_remove(book_id_s, mainFile);
-        // }
         CmpUtility.refreshView();
     }
 

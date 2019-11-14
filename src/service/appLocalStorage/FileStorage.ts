@@ -8,20 +8,13 @@ export class FileStorage {
     private static storage: CacheStorage;
 
     static async init() {
-        // debugger;
         if ('caches' in window) {
             FileStorage.storage = caches;
             debugger;
-            // caches.open('myfiless').then(function (cache_obj) {
-            //     cache_obj.addAll(['/', '/img/first.png', '/img/second.png'])
-            //         .then(function () {
-            //             console.log('Cached!');
-            //         });
-            // });
 
             // const cas = await FileStorage.storage.has(FILE_STORAGE_KEY.FILE_BOOK_MAIN);
 
-            FileStorage.loadDownloadedBook_id();
+            await FileStorage.loadDownloadedBook_id();
         }
     }
 
@@ -58,7 +51,7 @@ export class FileStorage {
 
         if (save)
             FileStorage.is_book_downloaded_history_save(book_id, mainFile);
-            
+
         return save;
     }
 
@@ -79,19 +72,9 @@ export class FileStorage {
         return true;
     }
 
-    /* private static async checkBookFileExist_async(book_id: string, mainFile: boolean): Promise<boolean> {
-        // if (!FileStorage.isSuport()) return false;
-        debugger;
-        return false;
-    } */
-
     static checkBookFileExist(book_id: string, mainFile: boolean): boolean {
         if (!FileStorage.isSuport()) return false;
-        // debugger;
         return FileStorage.is_book_downloaded_history_check(book_id, mainFile);
-        // if (FileStorage.is_book_downloaded_history_check(book_id, mainFile) !== undefined)
-        //     return FileStorage.is_book_downloaded_history_check(book_id, mainFile)!;
-        // return false;
     }
 
     static async clearCollection_bookFile(mainFile: boolean): Promise<boolean> {
