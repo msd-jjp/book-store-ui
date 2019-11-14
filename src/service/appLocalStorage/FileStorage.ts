@@ -45,9 +45,8 @@ export class FileStorage {
             return new Uint8Array(await item.arrayBuffer());
     }
 
-    static async setBookFileById(book_id: string, mainFile: boolean, data: Uint8Array): Promise<any> { // Uint8Array,ArrayBuffer
-        if (!FileStorage.isSuport()) return;
-        debugger;
+    static async setBookFileById(book_id: string, mainFile: boolean, data: Uint8Array): Promise<boolean> { // Uint8Array,ArrayBuffer
+        if (!FileStorage.isSuport()) return false;
         let list = await FileStorage.getBookFileList_cache(mainFile);
         debugger;
 
@@ -59,6 +58,8 @@ export class FileStorage {
 
         if (save)
             FileStorage.is_book_downloaded_history_save(book_id, mainFile);
+            
+        return save;
     }
 
     static async removeBookFileById(book_id_s: string | string[], mainFile: boolean): Promise<boolean> {

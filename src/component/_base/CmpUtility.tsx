@@ -123,9 +123,9 @@ export abstract class CmpUtility {
         Store2.dispatch(action_change_app_flag(int));
     }
 
-    static removeBookFileFromDevice(book_id_s: string | string[], mainFile: boolean) {
+    static async removeBookFileFromDevice(book_id_s: string | string[], mainFile: boolean) {
         // appLocalStorage.removeFromCollection(mainFile ? 'clc_book_mainFile' : 'clc_book_sampleFile', book_id_s);
-        appLocalStorage.removeBookFileById(book_id_s, mainFile);
+        await appLocalStorage.removeBookFileById(book_id_s, mainFile);
 
         // if (Array.isArray(book_id_s)) {
         //     book_id_s.forEach(id => {
