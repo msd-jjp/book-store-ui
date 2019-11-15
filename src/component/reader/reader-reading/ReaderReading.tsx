@@ -361,7 +361,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       const vrtData: any = this.state.virtualData;
 
       let offset_dir = 'left';
-      let swiper_dir = '';
+      let swiper_dir = 'ltr';
       // if (this.props.internationalization.rtl) {
       if (this.isThisBookRtl()) {
         offset_dir = 'right';
