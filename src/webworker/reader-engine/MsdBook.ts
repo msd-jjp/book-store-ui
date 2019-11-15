@@ -423,7 +423,7 @@ export class book {
     return rtn;
   }
   renderDocPage(page: number, zoom: number): string {
-    debugger;
+    // debugger;
     let indic = msdreader.gotoBookPosIndicator(-1, page);
     // should manually check that page is in renderable pages;
 
