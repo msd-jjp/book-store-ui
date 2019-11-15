@@ -7,6 +7,7 @@ import { LANGUAGES } from "../../enum/language";
 import { CmpUtility } from "../_base/CmpUtility";
 import { IBookContent, IBookPosIndicator } from "../../webworker/reader-engine/MsdBook";
 import { AudioBookGenerator } from "../../webworker/reader-engine/AudioBookGenerator";
+import { PdfBookGenerator } from "../../webworker/reader-engine/PdfBookGenerator";
 // import { Reader2Worker } from "../../webworker/reader2-worker/Reader2Worker";
 
 interface IEpubBook_chapters_flat {
@@ -75,10 +76,14 @@ export abstract class ReaderUtility {
         }
         return false;
     }
+    static clearEpubBookInstance() {
+        ReaderUtility._createEpubBook_instance = undefined;
+    }
     static async createEpubBook(
         book_id: string,
         bookFile: Uint8Array,
-        bookPageSize?: { width: number; height: number; }
+        bookPageSize?: { width: number; height: number; },
+        isPdf?: boolean
     ): Promise<BookGenerator> {
         // debugger;
         if (ReaderUtility.checkEpubBookExist(book_id, bookPageSize)) {
@@ -142,9 +147,11 @@ export abstract class ReaderUtility {
         //     debugger;
         // });
 
+        let textBookClass: any;
+        if (isPdf) textBookClass = PdfBookGenerator;
+        else textBookClass = BookGenerator;
 
-
-        const _book = new BookGenerator(
+        const _book = new textBookClass( // BookGenerator
             bookFile,
             _bookPageSize.width,
             _bookPageSize.height,
@@ -326,10 +333,19 @@ export abstract class ReaderUtility {
     }
 
 
-    static getPageIndex_byChapter(chapterPos: IBookPosIndicator, pagePosList: number[]): number | undefined {
-        if (!chapterPos || !pagePosList.length) {
+    static getPageIndex_byChapter(chapterPos: IBookPosIndicator, pagePosList: number[], isPdf: boolean): number | undefined {
+        if (!chapterPos /* || !pagePosList.length */) {
             return;
         }
+
+        if (isPdf) {
+            return chapterPos.group !== -1 ? chapterPos.group : undefined;
+        }
+
+        if (!pagePosList.length) {
+            return;
+        }
+
         // const chapterId = chapterPos.group * 1000000 + chapterPos.atom;
         const chapterId = ReaderUtility.calc_bookContentPos_value(chapterPos);
         let pageIndex = undefined;
@@ -352,7 +368,7 @@ export abstract class ReaderUtility {
         return pageIndex;
     }
 
-    static calc_chapters_pagesIndex(pagePosList: number[], flat_chapters: IEpubBook_chapters_flat_list)
+    static calc_chapters_pagesIndex(pagePosList: number[], flat_chapters: IEpubBook_chapters_flat_list, isPdf: boolean)
         : { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] | undefined {
 
         if (!pagePosList.length) return;
@@ -366,7 +382,7 @@ export abstract class ReaderUtility {
             }
 
             const obj: { firstPageIndex: number | undefined, lastPageIndex: number | undefined } = {
-                firstPageIndex: ReaderUtility.getPageIndex_byChapter(ch.content!.pos, pagePosList),
+                firstPageIndex: ReaderUtility.getPageIndex_byChapter(ch.content!.pos, pagePosList, isPdf),
                 lastPageIndex: undefined
             };
 

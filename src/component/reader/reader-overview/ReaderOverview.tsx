@@ -15,7 +15,7 @@ import { NavLink } from "react-router-dom";
 import Swiper from 'swiper';
 import { Virtual } from 'swiper/dist/js/swiper.esm';
 import { CmpUtility } from "../../_base/CmpUtility";
-import { BOOK_ROLES } from "../../../enum/Book";
+import { BOOK_ROLES, BOOK_TYPES } from "../../../enum/Book";
 import { Input } from "../../form/input/Input";
 import { AppRegex } from "../../../config/regex";
 import { IBookPosIndicator, IBookContent } from "../../../webworker/reader-engine/MsdBook";
@@ -215,10 +215,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
 
     try {
-      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile);
+      const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
+      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, undefined, isPdf);
     } catch (e) {
       console.error(e);
       this.setState({ page_loading: false });
+      ReaderUtility.clearEpubBookInstance();
       this.readerError_notify();
     }
   }
@@ -663,6 +665,11 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   private _pagePosList: number[] = [];
   getPageIndex_withChapter(chapterPos: IBookPosIndicator): number | undefined {
+    if (this._libraryItem!.book.type === BOOK_TYPES.Pdf) { // todo: store value of isPdf
+      // return chapterPos.group !== -1 ? chapterPos.group : undefined;
+      return ReaderUtility.getPageIndex_byChapter(chapterPos, [], true);
+    }
+
     if (!this._pagePosList.length) {
       const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
       bookPosList.forEach(bpi => {
@@ -671,7 +678,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       });
     }
 
-    return ReaderUtility.getPageIndex_byChapter(chapterPos, this._pagePosList);
+    return ReaderUtility.getPageIndex_byChapter(chapterPos, this._pagePosList, false);
 
     // const chapterIndex = chapterPos.group * 1000000 + chapterPos.atom;
     // let pageIndex = undefined;

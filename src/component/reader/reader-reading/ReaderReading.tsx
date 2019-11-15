@@ -11,7 +11,6 @@ import { Localization } from "../../../config/localization/localization";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { PersonService } from "../../../service/service.person";
 import { action_user_logged_in } from "../../../redux/action/user";
-import { IBook } from "../../../model/model.book";
 import Swiper from 'swiper';
 import { Virtual } from 'swiper/dist/js/swiper.esm';
 import { appLocalStorage } from "../../../service/appLocalStorage";
@@ -23,6 +22,7 @@ import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem, updateLibraryItem_progress } from "../../library/libraryViewTemplate";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 import { CmpUtility } from "../../_base/CmpUtility";
+import { BOOK_TYPES } from "../../../enum/Book";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -35,7 +35,7 @@ interface IProps {
 }
 
 interface IState {
-  book: IBook | undefined;
+  // book: IBook | undefined;
   virtualData: {
     slides: any[];
   };
@@ -46,7 +46,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   private book_id: string = '';
 
   state = {
-    book: undefined,
+    // book: undefined,
     virtualData: {
       slides: [],
     },
@@ -90,7 +90,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
   updateUserCurrentBook_client() {
     const book = this._libraryItem!.book;
-    this.setState({ ...this.state, book: book });
+    // this.setState({ ...this.state, book: book });
 
     let logged_in_user = { ...this.props.logged_in_user! };
     if (logged_in_user.person.current_book && logged_in_user.person.current_book.id === this.book_id) {
@@ -155,10 +155,12 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
 
     try {
-      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, this.get_bookPageSize());
+      const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
+      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, this.get_bookPageSize(), isPdf);
     } catch (e) {
       console.error(e);
       this.setState({ page_loading: false });
+      ReaderUtility.clearEpubBookInstance();
       this.readerError_notify();
     }
   }
@@ -179,12 +181,13 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     if (!this._pagePosList.length) {
       const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
       bookPosList.forEach(bpi => {
-        // this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
         this._pagePosList.push(ReaderUtility.calc_bookContentPos_value(bpi));
       });
     }
 
-    this._chapters_with_page = ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat) || [];
+    const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
+    this._chapters_with_page =
+      ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat, isPdf) || [];
 
     // debugger;
     this.setState({});

@@ -23,6 +23,7 @@ import { appLocalStorage } from "../../../service/appLocalStorage";
 import { IBookContent, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
 import { Virtual } from "swiper/dist/js/swiper.esm";
 import { AppGuid } from "../../../asset/script/guid";
+import { BOOK_TYPES } from "../../../enum/Book";
 
 
 interface IReaderScrollSlide {
@@ -154,10 +155,12 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     }
 
     try {
-      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile);
+      const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
+      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, undefined, isPdf);
     } catch (e) {
       console.error(e);
       this.setState({ page_loading: false });
+      ReaderUtility.clearEpubBookInstance();
       this.readerError_notify();
     }
   }
@@ -183,7 +186,9 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       });
     }
 
-    this._chapters_with_page = ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat) || [];
+    const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
+    this._chapters_with_page =
+      ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat, isPdf) || [];
   }
 
   private getBookSlideList(): IReaderScrollSlide[] {
