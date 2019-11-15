@@ -1,33 +1,33 @@
 var Module = (window as any).Module;
 export var msdreader = {
   deleteBookPosIndicator:
-      Module.cwrap('deleteBookPosIndicator', 'number', ['number']),
+    Module.cwrap('deleteBookPosIndicator', 'number', ['number']),
   getBookFromBuf:
-      Module.cwrap('getBookFromBuf', 'number', ['number', 'number']),
+    Module.cwrap('getBookFromBuf', 'number', ['number', 'number']),
   getBookGroupsCount: Module.cwrap('getBookGroupsCount', 'number', ['number']),
   getBookAtomsCount: Module.cwrap('getBookAtomsCount', 'number', ['number']),
   getRendererFormat: Module.cwrap(
-      'getRendererFormat', 'number',
-      ['number', 'number', 'number', 'number', 'number', 'number', 'number']),
+    'getRendererFormat', 'number',
+    ['number', 'number', 'number', 'number', 'number', 'number', 'number']),
   getBookRenderer: Module.cwrap(
-      'getBookRenderer', 'number', ['number', 'number', 'number', 'number']),
+    'getBookRenderer', 'number', ['number', 'number', 'number', 'number']),
   getRendererFormatTextColor:
-      Module.cwrap('getRendererFormatTextColor', 'number', ['number']),
+    Module.cwrap('getRendererFormatTextColor', 'number', ['number']),
   getImageofPageResult:
-      Module.cwrap('getImageofPageResult', 'number', ['number']),
+    Module.cwrap('getImageofPageResult', 'number', ['number']),
   renderNextPage:
-      Module.cwrap('renderNextPage', 'number', ['number', 'number']),
+    Module.cwrap('renderNextPage', 'number', ['number', 'number']),
   renderBackPage:
-      Module.cwrap('renderBackPage', 'number', ['number', 'number']),
+    Module.cwrap('renderBackPage', 'number', ['number', 'number']),
 
   getIndicatorPart:
-      Module.cwrap('getIndicatorPart', 'number', ['number', 'number']),
+    Module.cwrap('getIndicatorPart', 'number', ['number', 'number']),
   initBookIndicator: Module.cwrap('initBookIndicator', 'number', []),
   BookNextPart: Module.cwrap('BookNextPart', 'number', ['number', 'number']),
   getFontBuffer: Module.cwrap('getFontBuffer', 'number', ['number']),
   getFontBufferLen: Module.cwrap('getFontBufferLen', 'number', ['number']),
   getBookIndicatorPartOfPageResult:
-      Module.cwrap('getBookIndicatorPartOfPageResult', 'number', ['number']),
+    Module.cwrap('getBookIndicatorPartOfPageResult', 'number', ['number']),
   is_last_atom: Module.cwrap('is_last_atom', 'number', ['number', 'number']),
   is_first_atom: Module.cwrap('is_first_atom', 'number', ['number', 'number']),
   getBookType: Module.cwrap('getBookType', 'number', ['number']),
@@ -36,31 +36,33 @@ export var msdreader = {
   getBookTotalAtoms: Module.cwrap('getBookTotalAtoms', 'number', ['number']),
   getBookProgress: Module.cwrap('getBookProgress', 'number', ['number']),
   gotoBookPosIndicator:
-      Module.cwrap('gotoBookPosIndicator', 'number', ['number', 'number']),
+    Module.cwrap('gotoBookPosIndicator', 'number', ['number', 'number']),
   getBookPosIndicators:
-      Module.cwrap('getBookPosIndicators', 'number', ['number']),
+    Module.cwrap('getBookPosIndicators', 'number', ['number']),
   getBookContentAt:
-      Module.cwrap('getBookContentAt', 'number', ['number', 'number']),
+    Module.cwrap('getBookContentAt', 'number', ['number', 'number']),
   getBookContentLength:
-      Module.cwrap('getBookContentLength', 'number', ['number']),
+    Module.cwrap('getBookContentLength', 'number', ['number']),
   renderNextPages:
-      Module.cwrap('renderNextPages', 'number', ['number', 'number', 'number']),
+    Module.cwrap('renderNextPages', 'number', ['number', 'number', 'number']),
   getBookPlayer: Module.cwrap('getBookPlayer', 'number', ['number']),
   getVoiceDuration: Module.cwrap(
-      'getVoiceDuration', 'number', ['number', 'number', 'number']),
+    'getVoiceDuration', 'number', ['number', 'number', 'number']),
   deleteBookPlayer: Module.cwrap('deleteBookPlayer', 'number', ['number']),
   getVoiceAtomWrapper:
-      Module.cwrap('getVoiceAtomWrapper', 'number', ['number', 'number']),
+    Module.cwrap('getVoiceAtomWrapper', 'number', ['number', 'number']),
   deleteVoiceAtomWrapper:
-      Module.cwrap('deleteVoiceAtomWrapper', 'number', ['number']),
+    Module.cwrap('deleteVoiceAtomWrapper', 'number', ['number']),
   getVoiceSampleRate: Module.cwrap('getVoiceSampleRate', 'number', ['number']),
   getVoiceChannelsCount:
-      Module.cwrap('getVoiceChannelsCount', 'number', ['number']),
+    Module.cwrap('getVoiceChannelsCount', 'number', ['number']),
   get10Seconds: Module.cwrap('get10Seconds', 'number', ['number', 'number']),
   getFirstAtom: Module.cwrap('getFirstAtom', 'number', ['number']),
   getLastAtom: Module.cwrap('getLastAtom', 'number', ['number']),
-  getVoiceAtomWrapperDuration: Module.cwrap('getVoiceAtomWrapperDuration','number',['number'])
-
+  getVoiceAtomWrapperDuration:
+    Module.cwrap('getVoiceAtomWrapperDuration', 'number', ['number']),
+  renderDocPage: Module.cwrap(
+    'renderDocPage', 'number', ['number', 'number', 'number', 'number'])
 };
 
 function copyBufferToHeap(u8buffer: Uint8Array): number {
@@ -93,7 +95,7 @@ function extractFromHeapBytes(size: number, ptr: number): Uint8Array {
 };
 function
 
-_arrayBufferToBase64(buffer: Uint8Array): string {
+  _arrayBufferToBase64(buffer: Uint8Array): string {
   var binary = '';
   var bytes = new Uint8Array(buffer);
   var len = bytes.byteLength;
@@ -115,7 +117,7 @@ export class audioBook {
   lastAtom = null;
   _bookDuration: number = 0;
   bookPlayerPtr = null;
-  loadedVoiceAtomPos: IBookPosIndicator = {group: -1, atom: -1};
+  loadedVoiceAtomPos: IBookPosIndicator = { group: -1, atom: -1 };
   loadedAtomVoiceWrapper = null;
   constructor(bookbuf: Uint8Array) {
     let bookheapPtr = copyBufferToHeap(bookbuf);
@@ -129,7 +131,7 @@ export class audioBook {
   getTotalDuration() {
     if (this._bookDuration) return this._bookDuration;
     this._bookDuration = msdreader.getVoiceDuration(
-        this.bookPlayerPtr, this.firstAtom, this.lastAtom);
+      this.bookPlayerPtr, this.firstAtom, this.lastAtom);
     return this._bookDuration;
   }
   bookType() {
@@ -143,12 +145,12 @@ export class audioBook {
   }
   getNextAtom(atomPos: IBookPosIndicator): IBookPosIndicator {
     let caPos = msdreader.gotoBookPosIndicator(atomPos.group, atomPos.atom);
-    if (msdreader.is_last_atom(this.bookPtr,caPos)) {
+    if (msdreader.is_last_atom(this.bookPtr, caPos)) {
       msdreader.deleteBookPosIndicator(caPos);
       throw new Error('No Next Atom');
     }
     let naPos = msdreader.BookNextPart(this.bookPtr, caPos);
-    let rtn: IBookPosIndicator = {group: 0, atom: 0};
+    let rtn: IBookPosIndicator = { group: 0, atom: 0 };
     rtn.atom = msdreader.getIndicatorPart(naPos, 1);
     rtn.group = msdreader.getIndicatorPart(naPos, 0);
     msdreader.deleteBookPosIndicator(naPos);
@@ -161,7 +163,7 @@ export class audioBook {
     return rtn;
   }
   getDurationForTwoAtoms(
-      sAtomPos: IBookPosIndicator, eAtomPos: IBookPosIndicator): number {
+    sAtomPos: IBookPosIndicator, eAtomPos: IBookPosIndicator): number {
     let saPos = msdreader.gotoBookPosIndicator(sAtomPos.group, sAtomPos.atom);
     let eaPos = msdreader.gotoBookPosIndicator(eAtomPos.group, eAtomPos.atom);
     let rtn = msdreader.getVoiceDuration(this.bookPlayerPtr, saPos, eaPos);
@@ -177,7 +179,7 @@ export class audioBook {
       }
       let caPos = msdreader.gotoBookPosIndicator(atomPos.group, atomPos.atom);
       this.loadedAtomVoiceWrapper =
-          msdreader.getVoiceAtomWrapper(this.bookPlayerPtr, caPos);
+        msdreader.getVoiceAtomWrapper(this.bookPlayerPtr, caPos);
       msdreader.deleteBookPosIndicator(caPos);
     }
   }
@@ -191,17 +193,17 @@ export class audioBook {
       throw new Error('no loaded atom found.');
     return msdreader.getVoiceChannelsCount(this.loadedAtomVoiceWrapper);
   }
-  getLoadedVoiceAtomDuration():number {
+  getLoadedVoiceAtomDuration(): number {
     if (this.loadedAtomVoiceWrapper == null)
-    throw new Error('no loaded atom found.');
-  return msdreader.getVoiceAtomWrapperDuration(this.loadedAtomVoiceWrapper);
+      throw new Error('no loaded atom found.');
+    return msdreader.getVoiceAtomWrapperDuration(this.loadedAtomVoiceWrapper);
   }
   getLoadedVoiceAtom10Second(startMilliSecond: number): Array<Float32Array> {
     // debugger;
     if (this.loadedAtomVoiceWrapper == null)
       throw new Error('no loaded atom found.');
     let rtn =
-        msdreader.get10Seconds(this.loadedAtomVoiceWrapper, startMilliSecond);
+      msdreader.get10Seconds(this.loadedAtomVoiceWrapper, startMilliSecond);
     let size = getDWORDSize(rtn);
     let bys = Module.HEAP16.subarray((rtn + 4) / 2, (rtn + size) / 2);
     msdreader.deleteBytePoniter(rtn);
@@ -238,27 +240,27 @@ export class book {
    * @param {* Background color} textBColor
    */
   constructor(
-      bookbuf: Uint8Array, screenWidth: number, screenHeight: number,
-      font: Uint8Array, fontSize: number, textFColor: number,
-      textBColor: number) {
+    bookbuf: Uint8Array, screenWidth: number, screenHeight: number,
+    font: Uint8Array, fontSize: number, textFColor: number,
+    textBColor: number) {
     // debugger;
     this.screenHeight = screenHeight;
     this.screenWidth = screenWidth;
     this.fontSize = fontSize;
     this.fontHeapPtr = copyBufferToHeap(font);
     this.rendererFormatPtr = msdreader.getRendererFormat(
-        textFColor, textBColor, textFColor, textBColor, this.fontSize,
-        this.fontHeapPtr, font.length);
+      textFColor, textBColor, textFColor, textBColor, this.fontSize,
+      this.fontHeapPtr, font.length);
     // debugger;
     let bookheapPtr = copyBufferToHeap(bookbuf);
     this.bookPtr = msdreader.getBookFromBuf(bookheapPtr, bookbuf.length);
     freeHeap(bookheapPtr);  // free heap from bin buffer;
 
     this.bookRendererPtr = msdreader.getBookRenderer(
-        this.bookPtr, this.rendererFormatPtr, screenWidth, screenHeight);
+      this.bookPtr, this.rendererFormatPtr, screenWidth, screenHeight);
     let bookIndicatorPtr = msdreader.initBookIndicator();
     this.currentBookPosIndicator =
-        msdreader.BookNextPart(this.bookPtr, bookIndicatorPtr);
+      msdreader.BookNextPart(this.bookPtr, bookIndicatorPtr);
     msdreader.deleteBookPosIndicator(bookIndicatorPtr);
   }
 
@@ -268,13 +270,13 @@ export class book {
       throw new Error('EOF');
 
     let NextPage = msdreader.renderNextPage(
-        this.bookRendererPtr, this.currentBookPosIndicator);
+      this.bookRendererPtr, this.currentBookPosIndicator);
     if (this.renderedPagePtr) {
       msdreader.deleteRenderedPage(this.renderedPagePtr);
     }
     this.lastBookPosIdicator = this.currentBookPosIndicator;
     this.currentBookPosIndicator =
-        msdreader.getBookIndicatorPartOfPageResult(NextPage);
+      msdreader.getBookIndicatorPartOfPageResult(NextPage);
     let img = msdreader.getImageofPageResult(NextPage);
     let imageSize = getDWORDSize(img);
     let pngData = extractFromHeapBytes(imageSize - 4, img + 4);
@@ -291,13 +293,13 @@ export class book {
       throw new Error('BEG');
 
     let NextPage = msdreader.renderBackPage(
-        this.bookRendererPtr, this.currentBookPosIndicator);
+      this.bookRendererPtr, this.currentBookPosIndicator);
     if (this.renderedPagePtr) {
       msdreader.deleteRenderedPage(this.renderedPagePtr);
     }
     this.lastBookPosIdicator = this.currentBookPosIndicator;
     this.currentBookPosIndicator =
-        msdreader.getBookIndicatorPartOfPageResult(NextPage);
+      msdreader.getBookIndicatorPartOfPageResult(NextPage);
     let img = msdreader.getImageofPageResult(NextPage);
     let imageSize = getDWORDSize(img);
     let pngData = extractFromHeapBytes(imageSize - 4, img + 4);
@@ -345,13 +347,13 @@ export class book {
   getProgress() {
     let atomC = msdreader.getBookTotalAtoms(this.bookPtr);
     let p =
-        msdreader.getBookProgress(this.bookPtr, this.currentBookPosIndicator);
+      msdreader.getBookProgress(this.bookPtr, this.currentBookPosIndicator);
     return p / atomC;
   }
   getCurrentBookIndicator() {
     let g = msdreader.getIndicatorPart(this.currentBookPosIndicator, 0);
     let a = msdreader.getIndicatorPart(this.currentBookPosIndicator, 1);
-    return {group: g, atom: a};
+    return { group: g, atom: a };
   }
   gotoPos(indicator: IBookPosIndicator) {
     // has memory leakage
@@ -361,7 +363,7 @@ export class book {
       msdreader.deleteRenderedPage(this.renderedPagePtr);
     }
     this.currentBookPosIndicator = msdreader.gotoBookPosIndicator(
-        indicator.group || 0, indicator.atom || 0)
+      indicator.group || 0, indicator.atom || 0)
   }
   getListOfPageIndicators(): Array<IBookPosIndicator> {
     // debugger;
@@ -372,7 +374,7 @@ export class book {
     for (let i = 0; i < c; i++) {
       let g = getDWORDSize(res + 4 + i * 8);
       let a = getDWORDSize(res + 4 + i * 8 + 4);
-      pages.push({group: g, atom: a})
+      pages.push({ group: g, atom: a })
     }
     msdreader.deleteBytePoniter(res);
     return pages;
@@ -388,7 +390,7 @@ export class book {
     }
     this.lastBookPosIdicator = this.currentBookPosIndicator;
     this.currentBookPosIndicator =
-        msdreader.getBookIndicatorPartOfPageResult(NextPage);
+      msdreader.getBookIndicatorPartOfPageResult(NextPage);
     let img = msdreader.getImageofPageResult(NextPage);
     let imageSize = getDWORDSize(img);
     let pngData = extractFromHeapBytes(imageSize - 4, img + 4);
@@ -408,16 +410,32 @@ export class book {
     let sbuf = extractFromHeapBytes(size - 4 - 4 - 4 - 2, r + 4 + 4 + 4 + 2);
     let s = new TextDecoder('utf-8').decode(sbuf);
     return {
-      pos: {group: gindex, atom: aindex}, text: s, parentIndex: parentindex
+      pos: { group: gindex, atom: aindex }, text: s, parentIndex: parentindex
     }
   }
   contentLength() {
     return msdreader.getBookContentLength(this.bookPtr);
   }
   getContentList(): Array<IBookContent> {
-    let rtn: Array < IBookContent >= [];
+    let rtn: Array<IBookContent> = [];
     let cLen = this.contentLength();
     for (let i = 0; i < cLen; i++) rtn.push(this.contentAt(i));
     return rtn;
+  }
+  renderDocPage(page: number, zoom: number): string {
+    debugger;
+    let indic = msdreader.gotoBookPosIndicator(-1, page);
+    // should manually check that page is in renderable pages;
+
+    // if (msdreader.is_last_atom(this.bookPtr, indic)) throw new Error('EOF');
+    let img = msdreader.renderDocPage(this.bookRendererPtr, indic, zoom, 0);
+
+    msdreader.deleteBookPosIndicator(indic);
+    // msdreader.deleteRenderedPage(indic);
+    let imageSize = getDWORDSize(img);
+    let pngData = extractFromHeapBytes(imageSize - 4, img + 4);
+    let pic = 'data:image/png;base64,' + _arrayBufferToBase64(pngData);
+    msdreader.deleteBytePoniter(img);
+    return pic;
   }
 }

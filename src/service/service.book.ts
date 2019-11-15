@@ -1,13 +1,9 @@
 import { BaseService, IAPI_ResponseList, IAPI_Response } from './service.base';
 import { IBook } from '../model/model.book';
 import { appLocalStorage } from './appLocalStorage';
-import { CmpUtility } from '../component/_base/CmpUtility';
-// import { sampleBookFile } from '../webworker/reader-engine/sampleBookFile';
-// import { sampleBookFile } from '../webworker/reader-engine/book.ou';
 import Axios, { CancelToken, AxiosInstance } from 'axios';
 import { getLibraryItem } from '../component/library/libraryViewTemplate';
 import { BOOK_TYPES } from '../enum/Book';
-// import { base64ToBuffer } from '../webworker/reader-engine/tools';
 
 export class BookService extends BaseService {
 
@@ -86,7 +82,7 @@ export class BookService extends BaseService {
     {
 
         return new Promise(async (resolve, reject) => {
-            await CmpUtility.waitOnMe(1000);
+            // await CmpUtility.waitOnMe(1000);
             // resolve(
             //     this.axiosTokenInstance.post(
             //         '/books/_search',
@@ -94,7 +90,7 @@ export class BookService extends BaseService {
             //         { cancelToken }
             //     )
             // );
-            debugger;
+            // debugger;
             // this.baseURL = '';
             // this.axiosTokenInstance.defaults.headers['Content-Type'] = 'multipart/form-data';
             const axiosInstance: AxiosInstance = Axios.create({
@@ -107,6 +103,9 @@ export class BookService extends BaseService {
             let libItem = getLibraryItem(book_id);
             if (libItem!.book.type === BOOK_TYPES.Audio) {
                 url = '/reader/book1.msd';
+                // url = '/reader/100MB.zip';
+            } else if (libItem!.book.type === BOOK_TYPES.Pdf) {
+                url = '/reader/pdf_book.msd';
             }
 
             resolve(

@@ -211,3 +211,7 @@ test 100 meg file in storage laptop & mobile.
 readerAudio btn foucus change to active.
 
 ====================================================================================
+
+add onEnter to login input (all other input needed like regester & payment ....)
+
+====================================================================================
