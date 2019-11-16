@@ -809,8 +809,12 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       return;
     }
 
-    let writerFullName =
-      writerList[0].person.name + " " + writerList[0].person.last_name;
+    // let writerFullName =
+    // writerList[0].person.name + " " + writerList[0].person.last_name;
+    const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(
+      this.props.logged_in_user.person.current_book,
+      BOOK_ROLES.Writer
+    );
 
     if (this.state.byWriterBookList && (this.state.byWriterBookList! || []).length) {
       return (
@@ -819,7 +823,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
             <h6 className="title">
               {Localization.formatString(
                 Localization.more_by_writer,
-                writerFullName
+                firstWriterFullName
               )}
             </h6>
             {this.carousel_render(this.state.byWriterBookList!)}
@@ -836,7 +840,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
             <h6 className="title">
               {Localization.formatString(
                 Localization.more_by_writer,
-                writerFullName
+                firstWriterFullName
               )}
             </h6>
             {this.carousel_render_error(this.state.byWriterBookError!, () => {
@@ -852,7 +856,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
             <h6 className="title">
               {Localization.formatString(
                 Localization.more_by_writer,
-                writerFullName
+                firstWriterFullName
               )}
             </h6>
             {this.carousel_render_preLoad()}
