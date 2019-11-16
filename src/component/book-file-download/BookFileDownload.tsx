@@ -21,7 +21,7 @@ interface IProps {
     reset_downloading_book_file?: () => any;
 }
 interface IState {
-
+    // is_downloadInProgress
 }
 
 class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
@@ -29,10 +29,8 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
     };
     private _bookService = new BookService();
-    // constructor(props: IProps) {
-    //     super(props);
-    //     // this._bookService.setToken(this.props.token);
-    // }
+    private is_downloadInProgress = false;
+    private downloadProgress_queue: { book_id: string; mainFile: boolean; }[] = [];
 
     componentDidMount() {
         // debugger;
@@ -80,11 +78,11 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
 
     private _cancelToken_obj: any = {};
-    private get_cancelToken(book_id: string, mainFile: boolean): CancelTokenSource {
+    private get_cancelToken(book_id: string, mainFile: boolean, ifExist?: boolean): CancelTokenSource | undefined {
         const prefix = mainFile ? 'mainFile' : 'sampleFile';
         const name = prefix + book_id;
 
-        if (this._cancelToken_obj[name]) {
+        if (this._cancelToken_obj[name] || ifExist) {
             return this._cancelToken_obj[name];
         }
 
@@ -100,11 +98,47 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         delete this._cancelToken_obj[name];
     }
     async startDownload(book_id: string, mainFile: boolean) {
+        this.downloadProgress_queue.push({ book_id, mainFile });
+
+        this.checkDownload();
+        // this.downloadRequest(book_id, mainFile);
+    }
+
+    private checkDownload() {
+        if (!this.downloadProgress_queue.length) return;
+        if (this.is_downloadInProgress) return;
+        this.is_downloadInProgress = true;
+        const firstItem = this.downloadProgress_queue[0];
+        this.downloadRequest(firstItem.book_id, firstItem.mainFile);
+    }
+
+    async stopDownload(book_id: string, mainFile: boolean) {
+        const d_index = this.downloadProgress_queue.findIndex(obj => obj.book_id === book_id && obj.mainFile === mainFile);
+        if (d_index === -1) return;
+        /* if (d_index === 0) {
+            this.is_downloadInProgress = false;
+        } */
+        this.downloadProgress_queue.splice(d_index, 1);
+
+        //stop axios
+        const _cancelTokenSource = this.get_cancelToken(book_id, mainFile, true);
+        _cancelTokenSource && _cancelTokenSource.cancel('download-canceled');
+    }
+
+    downloadFinished(book_id: string, mainFile: boolean) {
+        let dbf = [...this.props.downloading_book_file];
+        const existing_list = dbf.filter(d => !(d.book_id === book_id && d.mainFile === mainFile));
+        this.props.update_downloading_book_file!(existing_list);
+        // CmpUtility.waitOnMe(100);
+        CmpUtility.refreshView();
+    }
+
+    private async downloadRequest(book_id: string, mainFile: boolean) {
         let downloadCanceled = false;
         let res = await this._bookService.downloadFile(
             book_id,
             mainFile,
-            this.get_cancelToken(book_id, mainFile).token
+            this.get_cancelToken(book_id, mainFile)!.token
         ).catch(e => {
             debugger;
             /** if canceled called prevent calling downloadFinished (it's already removed from list). */
@@ -117,35 +151,20 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         if (res) {
             const file = new Uint8Array(res.data); // res.data; // 
             await appLocalStorage.storeBookFile(book_id, mainFile, file); // res.data
-            // CmpUtility.is_book_downloaded_history_save(book_id, mainFile, true);
         }
+
+        this.is_downloadInProgress = false;
+        this.downloadProgress_queue.splice(0, 1);
+        this.checkDownload();
 
         if (downloadCanceled) return;
 
         this.downloadFinished(book_id, mainFile);
     }
 
-    async stopDownload(book_id: string, mainFile: boolean) {
-        //stop axios
-        this.get_cancelToken(book_id, mainFile).cancel('download-canceled');
-    }
 
-    downloadFinished(book_id: string, mainFile: boolean) {
-        let dbf = [...this.props.downloading_book_file];
-        const existing_list = dbf.filter(d => !(d.book_id === book_id && d.mainFile === mainFile));
-        this.props.update_downloading_book_file!(existing_list);
-        // CmpUtility.waitOnMe(100);
-        CmpUtility.refreshView();
-    }
+    render() { return (<></>); }
 
-    render() {
-        return (
-            <>
-                {/* <div className="book-file-download-wrapper mt-3"></div> */}
-                {/* <ToastContainer {...this.getNotifyContainerConfig()} /> */}
-            </>
-        );
-    }
 }
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {

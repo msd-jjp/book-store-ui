@@ -4,6 +4,7 @@ import { appLocalStorage } from './appLocalStorage';
 import Axios, { CancelToken, AxiosInstance } from 'axios';
 import { getLibraryItem } from '../component/library/libraryViewTemplate';
 import { BOOK_TYPES } from '../enum/Book';
+import { CmpUtility } from '../component/_base/CmpUtility';
 
 export class BookService extends BaseService {
 
@@ -82,7 +83,7 @@ export class BookService extends BaseService {
     {
 
         return new Promise(async (resolve, reject) => {
-            // await CmpUtility.waitOnMe(1000);
+            await CmpUtility.waitOnMe(5000);
             // resolve(
             //     this.axiosTokenInstance.post(
             //         '/books/_search',

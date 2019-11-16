@@ -204,7 +204,7 @@ cmp profile --> add reset password to profile (edit user ham pass avaz mikone ag
 
 ====================================================================================
 
-test 100 meg file in storage laptop & mobile.
+test 100 meg file in storage safari.
 
 ====================================================================================
 
