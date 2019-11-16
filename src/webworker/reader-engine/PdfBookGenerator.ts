@@ -12,7 +12,16 @@ export class PdfBookGenerator extends book {
 
     private _allPages_pos: IBookPosIndicator[] | undefined;
     getAllPages_pos(): Array<IBookPosIndicator> {
-        if (!this._allPages_pos) this._allPages_pos = this.getListOfPageIndicators();
+        if (!this._allPages_pos) {
+            const pageCount = this.getPageCount();
+            const list: IBookPosIndicator[] = [];
+            for (let i = 0; i < pageCount; i++) {
+                list.push({
+                    group: i, atom: 0
+                });
+            }
+            this._allPages_pos = list; // this.getListOfPageIndicators();
+        }
         return this._allPages_pos;
     }
     getPage(index: number, zoom = 100): string {

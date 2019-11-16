@@ -7595,6 +7595,12 @@ var real__getLastAtom = asm["_getLastAtom"]; asm["_getLastAtom"] = function() {
   return real__getLastAtom.apply(null, arguments);
 };
 
+var real__getPageCount = asm["_getPageCount"]; asm["_getPageCount"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return real__getPageCount.apply(null, arguments);
+};
+
 var real__getRendererFormat = asm["_getRendererFormat"]; asm["_getRendererFormat"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -7939,6 +7945,10 @@ var _getLastAtom = Module["_getLastAtom"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_getLastAtom"].apply(null, arguments) };
+var _getPageCount = Module["_getPageCount"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_getPageCount"].apply(null, arguments) };
 var _getRendererFormat = Module["_getRendererFormat"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
