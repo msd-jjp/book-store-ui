@@ -9,9 +9,10 @@ import { BookService } from "../../service/service.book";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { IDownloadingBookFile_schema } from "../../redux/action/downloading-book-file/downloadingBookFileAction";
 import { action_update_downloading_book_file, action_reset_downloading_book_file } from "../../redux/action/downloading-book-file";
-import { appLocalStorage } from "../../service/appLocalStorage";
+// import { appLocalStorage } from "../../service/appLocalStorage";
 import { CmpUtility } from "../_base/CmpUtility";
-import Axios, { CancelTokenSource } from "axios";
+// import Axios, { CancelTokenSource } from "axios";
+import { PartialDownload } from "./PartialDownload";
 
 interface IProps {
     internationalization: TInternationalization;
@@ -31,6 +32,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     private _bookService = new BookService();
     private is_downloadInProgress = false;
     private downloadProgress_queue: { book_id: string; mainFile: boolean; }[] = [];
+    private _partialDownload: PartialDownload | undefined;
 
     componentDidMount() {
         // debugger;
@@ -47,6 +49,8 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     }
 
     componentWillReceiveProps(nextProps: IProps) {
+        // todo: nextProps.network_status === NETWORK_STATUS.ONLINE
+
         if (JSON.stringify(nextProps.downloading_book_file) !== JSON.stringify(this.props.downloading_book_file)) {
 
             let new_dbf = [...nextProps.downloading_book_file];
@@ -77,26 +81,26 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     }
 
 
-    private _cancelToken_obj: any = {};
-    private get_cancelToken(book_id: string, mainFile: boolean, ifExist?: boolean): CancelTokenSource | undefined {
-        const prefix = mainFile ? 'mainFile' : 'sampleFile';
-        const name = prefix + book_id;
+    // private _cancelToken_obj: any = {};
+    // private get_cancelToken(book_id: string, mainFile: boolean, ifExist?: boolean): CancelTokenSource | undefined {
+    //     const prefix = mainFile ? 'mainFile' : 'sampleFile';
+    //     const name = prefix + book_id;
 
-        if (this._cancelToken_obj[name] || ifExist) {
-            return this._cancelToken_obj[name];
-        }
+    //     if (this._cancelToken_obj[name] || ifExist) {
+    //         return this._cancelToken_obj[name];
+    //     }
 
-        const CancelToken = Axios.CancelToken;
-        const source = CancelToken.source();
+    //     const CancelToken = Axios.CancelToken;
+    //     const source = CancelToken.source();
 
-        this._cancelToken_obj[name] = source;
-        return this._cancelToken_obj[name];
-    }
-    private remove_cancelToken(book_id: string, mainFile: boolean) {
-        const prefix = mainFile ? 'mainFile' : 'sampleFile';
-        const name = prefix + book_id;
-        delete this._cancelToken_obj[name];
-    }
+    //     this._cancelToken_obj[name] = source;
+    //     return this._cancelToken_obj[name];
+    // }
+    // private remove_cancelToken(book_id: string, mainFile: boolean) {
+    //     const prefix = mainFile ? 'mainFile' : 'sampleFile';
+    //     const name = prefix + book_id;
+    //     delete this._cancelToken_obj[name];
+    // }
     async startDownload(book_id: string, mainFile: boolean) {
         this.downloadProgress_queue.push({ book_id, mainFile });
 
@@ -105,6 +109,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     }
 
     private checkDownload() {
+        console.log('downloadProgress_queue', this.downloadProgress_queue);
         if (!this.downloadProgress_queue.length) return;
         if (this.is_downloadInProgress) return;
         this.is_downloadInProgress = true;
@@ -112,6 +117,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         this.downloadRequest(firstItem.book_id, firstItem.mainFile);
     }
 
+    private canceledBook: { book_id: string, mainFile: boolean } | undefined;
     async stopDownload(book_id: string, mainFile: boolean) {
         const d_index = this.downloadProgress_queue.findIndex(obj => obj.book_id === book_id && obj.mainFile === mainFile);
         if (d_index === -1) return;
@@ -121,8 +127,13 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         this.downloadProgress_queue.splice(d_index, 1);
 
         //stop axios
-        const _cancelTokenSource = this.get_cancelToken(book_id, mainFile, true);
-        _cancelTokenSource && _cancelTokenSource.cancel('download-canceled');
+        /* const _cancelTokenSource = this.get_cancelToken(book_id, mainFile, true);
+        _cancelTokenSource && _cancelTokenSource.cancel('download-canceled'); */
+        if (d_index === 0) {
+            console.log('stopDownload book_id:', book_id);
+            this._partialDownload && this._partialDownload.cancelDownloadFile();
+            this.canceledBook = { book_id, mainFile };
+        }
     }
 
     downloadFinished(book_id: string, mainFile: boolean) {
@@ -135,35 +146,27 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
     private async downloadRequest(book_id: string, mainFile: boolean) {
         console.log('downloadRequest started: book_id', book_id);
-        let downloadCanceled = false;
-        let res = await this._bookService.downloadFile(
-            book_id,
-            mainFile,
-            this.get_cancelToken(book_id, mainFile)!.token
-        ).catch(e => {
-            debugger;
-            /** if canceled called prevent calling downloadFinished (it's already removed from list). */
-            if (e.message === 'download-canceled') {
-                this.remove_cancelToken(book_id, mainFile);
-                downloadCanceled = true;
-            }
-        });
 
-        if (res) {
-            const file = new Uint8Array(res.data); // res.data; // 
-            await appLocalStorage.storeBookFile(book_id, mainFile, file); // res.data
+        this._partialDownload = new PartialDownload(book_id, mainFile);
+        await this._partialDownload.downloadFile();
+
+        if (!(this.canceledBook && this.canceledBook.book_id === book_id && this.canceledBook.mainFile === mainFile)) {
+            this.downloadFinished(book_id, mainFile);
+            this.downloadProgress_queue.splice(0, 1);
+        } else {
+            this.canceledBook = undefined;
         }
-
+        // this.downloadFinished(book_id, mainFile);
         console.log('downloadRequest finished: book_id', book_id);
-        
+
         this.is_downloadInProgress = false;
-        this.downloadProgress_queue.splice(0, 1);
+        // this.downloadProgress_queue.splice(0, 1);
         this.checkDownload();
 
-        
-        if (downloadCanceled) return;
 
-        this.downloadFinished(book_id, mainFile);
+        // if (downloadCanceled) return;
+
+        // this.downloadFinished(book_id, mainFile);
     }
 
 
@@ -186,7 +189,4 @@ const state2props = (state: redux_state) => {
     };
 };
 
-export const BookFileDownload = connect(
-    state2props,
-    dispatch2props
-)(BookFileDownloadComponent);
+export const BookFileDownload = connect(state2props, dispatch2props)(BookFileDownloadComponent);

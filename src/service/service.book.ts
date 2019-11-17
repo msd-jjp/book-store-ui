@@ -120,13 +120,13 @@ export class BookService extends BaseService {
         });
     }
 
-    async downloadFile(book_id: string, mainFile: boolean, cancelToken: CancelToken): Promise<IAPI_Response<ArrayBuffer>> {
+    async downloadFile(book_id: string, mainFile: boolean/* , cancelToken: CancelToken */): Promise<IAPI_Response<ArrayBuffer>> {
         await CmpUtility.waitOnMe(5000);
         debugger;
         this.axiosRequestConfig = {
             baseURL: '', // todo _DELET_EME
             responseType: 'arraybuffer',
-            cancelToken
+            // cancelToken
         };
         let url = '/reader/book2.output';
         let libItem = getLibraryItem(book_id);
@@ -137,6 +137,54 @@ export class BookService extends BaseService {
             url = '/reader/pdf_book.msd';
         }
         return this.axiosTokenInstance.get(url);
+    }
+
+    async bookFile_detail(book_id: string, mainFile: boolean) {
+        this.axiosRequestConfig = {
+            baseURL: '', // todo _DELET_EME
+        };
+        // this.axiosInstance
+        // let url = 'https://book.mazarei.id.ir/reader/book1.msd';
+        // let url = '/api/reader/book1.msd';
+        // let url = '/reader/book1.msd';
+        // let url = 'https://book.mazarei.id.ir/reader/book1.msd';
+        let url = '/reader/book2.output';
+        let libItem = getLibraryItem(book_id);
+        if (libItem!.book.type === BOOK_TYPES.Audio) {
+            url = '/reader/book1.msd';
+            // url = '/reader/100MB.zip';
+        } else if (libItem!.book.type === BOOK_TYPES.Pdf) {
+            url = '/reader/pdf_book.msd';
+        }
+        return this.axiosTokenInstance.head(url);
+        // return this.axiosInstance.head(url);
+    }
+
+    async bookFile_partial(book_id: string, mainFile: boolean, range: { from: number; to: number }, cancelToken: CancelToken)
+        : Promise<IAPI_Response<ArrayBuffer>> {
+        this.axiosRequestConfig = {
+            baseURL: '', // todo _DELET_EME
+            headers: {
+                range: `bytes=${range.from}-${range.to}`
+            },
+            responseType: 'arraybuffer',
+            cancelToken
+        };
+        // this.axiosInstance
+        // let url = 'https://book.mazarei.id.ir/reader/book1.msd';
+        // let url = '/api/reader/book1.msd';
+        // let url = '/reader/book1.msd';
+        // let url = 'https://book.mazarei.id.ir/reader/book1.msd';
+        let url = '/reader/book2.output';
+        let libItem = getLibraryItem(book_id);
+        if (libItem!.book.type === BOOK_TYPES.Audio) {
+            url = '/reader/book1.msd';
+            // url = '/reader/100MB.zip';
+        } else if (libItem!.book.type === BOOK_TYPES.Pdf) {
+            url = '/reader/pdf_book.msd';
+        }
+        return this.axiosTokenInstance.get(url);
+        // return this.axiosInstance.head(url);
     }
 
 }
