@@ -134,6 +134,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     }
 
     private async downloadRequest(book_id: string, mainFile: boolean) {
+        console.log('downloadRequest started: book_id', book_id);
         let downloadCanceled = false;
         let res = await this._bookService.downloadFile(
             book_id,
@@ -153,10 +154,13 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
             await appLocalStorage.storeBookFile(book_id, mainFile, file); // res.data
         }
 
+        console.log('downloadRequest finished: book_id', book_id);
+        
         this.is_downloadInProgress = false;
         this.downloadProgress_queue.splice(0, 1);
         this.checkDownload();
 
+        
         if (downloadCanceled) return;
 
         this.downloadFinished(book_id, mainFile);

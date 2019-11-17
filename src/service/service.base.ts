@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { Setup } from '../config/setup';
 import { IToken } from '../model/model.token';
 import { Store2 } from '../redux/store';
@@ -19,42 +19,44 @@ export abstract class BaseService {
     baseURL = Setup.endpoint;
     private static token: IToken | null | undefined;
 
-    axiosInstance: AxiosInstance = axios.create({
-        baseURL: this.baseURL,
-        headers: { 'Content-Type': 'application/json' }
-    });
-
-    // _axiosTokenInstance: AxiosInstance | undefined;
+    axiosInstance: AxiosInstance = axios.create(this.axiosRequestConfig);
 
     constructor() {
         // this.set_401_interceptors();
         this.set_store_interceptors(this.axiosInstance);
     }
 
+    private _axiosRequestConfig: AxiosRequestConfig = {
+        baseURL: this.baseURL,
+        headers: { 'Content-Type': 'application/json' }
+    };
+    set axiosRequestConfig(config: AxiosRequestConfig) {
+        if (config.headers) {
+            config.headers = { ...this._axiosRequestConfig.headers, ...config.headers };
+        }
+        this._axiosRequestConfig = { ...this._axiosRequestConfig, ...config };
+    }
+    get axiosRequestConfig() {
+        return this._axiosRequestConfig;
+    }
+
     get axiosTokenInstance(): AxiosInstance {
-        // if (this._axiosTokenInstance) { return this._axiosTokenInstance; }
         let newAX_instance: AxiosInstance;
-        // const token = Store2.getState().token;
-        // console.log('const token = Store2.getState().token;', token);
-        // if (this.token && this.token.id) {
-        // if (token && token.id) {
+
         let token = BaseService.token;
         if (!BaseService.token || !BaseService.token.id) {
             token = Store2.getState().token;
             if (token) BaseService.setToken(token);
         }
         if (token && token.id) {
-            newAX_instance = axios.create({
-                baseURL: this.baseURL,
-                headers: { 'Content-Type': 'application/json', 'authorization': 'Bearer ' + token.id } // this.token.id
-            });
+            this.axiosRequestConfig = { headers: { 'authorization': 'Bearer ' + token.id } };
+            newAX_instance = axios.create(this.axiosRequestConfig);
         } else {
             newAX_instance = this.axiosInstance;
         }
         this.set_401_interceptors(newAX_instance);
         this.set_store_interceptors(newAX_instance);
         return newAX_instance;
-        // return this._axiosTokenInstance;
     }
 
     private static setToken(t: IToken) {

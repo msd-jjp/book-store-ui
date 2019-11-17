@@ -77,7 +77,7 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.post('/wish-list/_search', data);
     }
 
-    downloadFile(book_id: string, mainFile: boolean, cancelToken: CancelToken)
+    downloadFile_DELETE_ME(book_id: string, mainFile: boolean, cancelToken: CancelToken)
         : Promise<IAPI_Response<ArrayBuffer>>
     // : Promise<Uint8Array> 
     {
@@ -118,6 +118,25 @@ export class BookService extends BaseService {
             );
             // resolve({ data: base64ToBuffer(sampleBookFile) });
         });
+    }
+
+    async downloadFile(book_id: string, mainFile: boolean, cancelToken: CancelToken): Promise<IAPI_Response<ArrayBuffer>> {
+        await CmpUtility.waitOnMe(5000);
+        debugger;
+        this.axiosRequestConfig = {
+            baseURL: '', // todo _DELET_EME
+            responseType: 'arraybuffer',
+            cancelToken
+        };
+        let url = '/reader/book2.output';
+        let libItem = getLibraryItem(book_id);
+        if (libItem!.book.type === BOOK_TYPES.Audio) {
+            url = '/reader/book1.msd';
+            // url = '/reader/100MB.zip';
+        } else if (libItem!.book.type === BOOK_TYPES.Pdf) {
+            url = '/reader/pdf_book.msd';
+        }
+        return this.axiosTokenInstance.get(url);
     }
 
 }
