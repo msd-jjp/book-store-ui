@@ -6,7 +6,6 @@ import { IUser } from "../../model/model.user";
 import { TInternationalization } from "../../config/setup";
 import { BaseComponent } from "../_base/BaseComponent";
 import { History } from "history";
-// import { IToken } from "../../model/model.token";
 import { ToastContainer } from "react-toastify";
 import { ICartItems, ICartItem } from "../../redux/action/cart/cartAction";
 import { action_add_to_cart, action_remove_from_cart, action_update_cart_item, action_clear_cart } from "../../redux/action/cart";
@@ -25,7 +24,6 @@ import { IncreaseCredit } from "../increase-credit/IncreaseCredit";
 import { PaymentResult } from "../increase-credit/payment-result/PaymentResult";
 import { action_set_library_data } from "../../redux/action/library";
 import { LibraryService } from "../../service/service.library";
-// import { IBook } from "../../model/model.book";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -283,17 +281,19 @@ class CartComponent extends BaseComponent<IProps, IState> {
   }
 
   totalPrice_render() {
+    const total = (this.state.totalPrice || this.state.totalPrice === 0) ? this.state.totalPrice : '';
     if (typeof this.state.totalPrice === 'string') {
       return <small className="text-danger">{this.state.totalPrice}</small>
     } else {
-      return (this.state.totalPrice || '').toLocaleString();
+      return total.toLocaleString();
     }
   }
 
-  itemPrice_render(price: number, count: number) {
+  itemPrice_render(price: number | null | undefined, count: number) {
     if ((!price && price !== 0) || (!count && count !== 0)) return '';
-    const total = price * count;
-    return (total || '').toLocaleString();
+    let total: number | string = price * count;
+    total = (total || total === 0) ? total : '';
+    return total.toLocaleString();
   }
 
   render() {
@@ -313,10 +313,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
                       const book_image = (book.images && book.images.length && this.getImageUrl(book.images[0])) ||
                         this.defaultBookImagePath;
 
-                      book.price = book.price || 0;
-
-                      // const book_type: any = book.type;
-                      // const book_type_str: BOOK_TYPES = book_type;
+                      // book.price = book.price || 0;
 
                       return (<Fragment key={index}>
 
