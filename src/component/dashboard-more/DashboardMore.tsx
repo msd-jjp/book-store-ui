@@ -30,6 +30,7 @@ import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { ToastContainer } from 'react-toastify';
 import { IncreaseCredit } from '../increase-credit/IncreaseCredit';
 import { PaymentResult } from '../increase-credit/payment-result/PaymentResult';
+import { action_reset_downloading_book_file } from '../../redux/action/downloading-book-file';
 
 interface IProps {
     logged_in_user?: IUser | null;
@@ -48,6 +49,7 @@ interface IProps {
     network_status: NETWORK_STATUS;
     reset_reader: () => any;
     match: any;
+    reset_downloading_book_file: () => any;
 }
 
 interface IState {
@@ -183,6 +185,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.clear_collections();
         this.props.reset_sync();
         this.props.reset_reader();
+        this.props.reset_downloading_book_file();
         appLocalStorage.afterAppLogout();
         this.props.history.push('/login');
     }
@@ -496,6 +499,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
         clear_collections: () => dispatch(action_clear_collections()),
         reset_sync: () => dispatch(action_reset_sync()),
         reset_reader: () => dispatch(action_reset_reader()),
+        reset_downloading_book_file: () => dispatch(action_reset_downloading_book_file()),
     }
 }
 

@@ -164,6 +164,7 @@ export class appLocalStorage {
         // appLocalStorage.resetDB() // todo: ask if need resetDB?
         // appLocalStorage.clearCollection('clc_book_mainFile');
         appLocalStorage.clearCollection_bookFile(true);
+        appLocalStorage.clearCollection_bookFile(true, true);
         // CmpUtility.is_book_downloaded_history_reset();
         // appLocalStorage.clearCollection('clc_book_sampleFile');
         appLocalStorage.clearCollection('clc_userInvoicedOrder');

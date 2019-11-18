@@ -12,18 +12,18 @@ export class SearchAppStorage {
         // appLocalStorage.books.find({ $eq: { id: bookId } });
     }
 
-    static findBookMainFileById(book_id: string): Promise<Uint8Array | undefined> {
+    static findBookMainFileById(book_id: string, partial?: boolean): Promise<Uint8Array | undefined> {
         /* const data = appLocalStorage.clc_book_mainFile.findOne({ id: book_id });
         // if (data) return data.file;
         if (data) return new Uint8Array(data.file); */
-        return FileStorage.getBookFileById(book_id, true);
+        return FileStorage.getBookFileById(book_id, true, partial);
     }
 
-    static findBookSampleFileById(book_id: string): Promise<Uint8Array | undefined> {
+    static findBookSampleFileById(book_id: string, partial?: boolean): Promise<Uint8Array | undefined> {
         /* const data = appLocalStorage.clc_book_sampleFile.findOne({ id: book_id });
         // if (data) return data.file;
         if (data) return new Uint8Array(data.file); */
-        return FileStorage.getBookFileById(book_id, false);
+        return FileStorage.getBookFileById(book_id, false, partial);
     }
 
     static search_by_query_book(

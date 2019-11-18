@@ -62,21 +62,8 @@ export class StoreData {
         appLocalStorage.manualSaveDB();
     }
 
-    static async storeBookFile(book_id: string, mainFile: boolean, data: Uint8Array): Promise<boolean> { // Uint8Array,ArrayBuffer
-        // let coll: Collection<IBook_file_store> = mainFile ? appLocalStorage.clc_book_mainFile : appLocalStorage.clc_book_sampleFile;
-        // const newData: IBook_file_store = { id: book_id, file: Array.from(data) };
-        // let found = coll.findOne({ id: book_id });
-        // if (found) {
-        //     /* coll.findAndUpdate({ id: book_id }, oldObj => {
-        //         return newData;
-        //     }); */
-        //     StoreData.updateData_byId(mainFile ? 'clc_book_mainFile' : 'clc_book_sampleFile', book_id, newData);
-        // } else {
-        //     coll.insert(newData);
-        // }
-
-        // appLocalStorage.manualSaveDB();
-        const saved = await FileStorage.setBookFileById(book_id, mainFile, data);
+    static async storeBookFile(book_id: string, mainFile: boolean, data: Uint8Array, partial?: boolean): Promise<boolean> { // Uint8Array,ArrayBuffer
+        const saved = await FileStorage.setBookFileById(book_id, mainFile, data, partial);
         return saved;
     }
 

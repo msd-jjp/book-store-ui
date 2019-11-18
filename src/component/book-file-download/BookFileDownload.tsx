@@ -4,14 +4,13 @@ import { TInternationalization } from "../../config/setup";
 import { redux_state } from "../../redux/app_state";
 import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
-import { BookService } from "../../service/service.book";
-// import { ToastContainer } from "react-toastify";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { IDownloadingBookFile_schema } from "../../redux/action/downloading-book-file/downloadingBookFileAction";
-import { action_update_downloading_book_file, action_reset_downloading_book_file } from "../../redux/action/downloading-book-file";
-// import { appLocalStorage } from "../../service/appLocalStorage";
+import {
+    action_update_downloading_book_file
+    // , action_reset_downloading_book_file
+} from "../../redux/action/downloading-book-file";
 import { CmpUtility } from "../_base/CmpUtility";
-// import Axios, { CancelTokenSource } from "axios";
 import { PartialDownload } from "./PartialDownload";
 
 interface IProps {
@@ -19,17 +18,15 @@ interface IProps {
     network_status: NETWORK_STATUS;
     downloading_book_file: IDownloadingBookFile_schema[];
     update_downloading_book_file?: (data: IDownloadingBookFile_schema[]) => any;
-    reset_downloading_book_file?: () => any;
+    // reset_downloading_book_file?: () => any;
 }
 interface IState {
-    // is_downloadInProgress
 }
 
 class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     state = {
-
     };
-    private _bookService = new BookService();
+
     private is_downloadInProgress = false;
     private downloadProgress_queue: { book_id: string; mainFile: boolean; }[] = [];
     private _partialDownload: PartialDownload | undefined;
@@ -38,18 +35,24 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         // debugger;
         // console.log('BookFileDownloadComponent componentDidMount');
         // if inprogress stop all of them. OR clear All of them --> clear all
-        this.props.reset_downloading_book_file!();
+        // this.props.reset_downloading_book_file!();
+        this.downloadProgress_queue = this.props.downloading_book_file.map(dbf => {
+            return {
+                book_id: dbf.book_id,
+                mainFile: dbf.mainFile
+            }
+        });
+        this.checkDownload();
     }
 
     componentWillUnmount() {
-        // debugger;
-        // console.log('BookFileDownloadComponent componentWillUnmount');
-        // if inprogress stop all of them. (probebly clear all of them).
-        this.props.reset_downloading_book_file!();
+        // this.props.reset_downloading_book_file!();
     }
 
     componentWillReceiveProps(nextProps: IProps) {
-        // todo: nextProps.network_status === NETWORK_STATUS.ONLINE
+        if (nextProps.network_status === NETWORK_STATUS.ONLINE && this.props.network_status === NETWORK_STATUS.OFFLINE) {
+            this.checkDownload(nextProps);
+        }
 
         if (JSON.stringify(nextProps.downloading_book_file) !== JSON.stringify(this.props.downloading_book_file)) {
 
@@ -75,32 +78,8 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
             this.props.update_downloading_book_file!(new_dbf);
         }
 
-        // check props.bookFileDownload, if changed:
-        //  if found stop --> stop that request & remove it from redux
-        //  if found start --> start downloading & replace it with inpropgress in redux
     }
 
-
-    // private _cancelToken_obj: any = {};
-    // private get_cancelToken(book_id: string, mainFile: boolean, ifExist?: boolean): CancelTokenSource | undefined {
-    //     const prefix = mainFile ? 'mainFile' : 'sampleFile';
-    //     const name = prefix + book_id;
-
-    //     if (this._cancelToken_obj[name] || ifExist) {
-    //         return this._cancelToken_obj[name];
-    //     }
-
-    //     const CancelToken = Axios.CancelToken;
-    //     const source = CancelToken.source();
-
-    //     this._cancelToken_obj[name] = source;
-    //     return this._cancelToken_obj[name];
-    // }
-    // private remove_cancelToken(book_id: string, mainFile: boolean) {
-    //     const prefix = mainFile ? 'mainFile' : 'sampleFile';
-    //     const name = prefix + book_id;
-    //     delete this._cancelToken_obj[name];
-    // }
     async startDownload(book_id: string, mainFile: boolean) {
         this.downloadProgress_queue.push({ book_id, mainFile });
 
@@ -108,16 +87,20 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         // this.downloadRequest(book_id, mainFile);
     }
 
-    private checkDownload() {
+    private checkDownload(nextProps?: IProps) {
         console.log('downloadProgress_queue', this.downloadProgress_queue);
         if (!this.downloadProgress_queue.length) return;
         if (this.is_downloadInProgress) return;
+        // if(!nextProps || nextProps.network_status=== NETWORK_STATUS.OFFLINE)
+        if (this.props.network_status === NETWORK_STATUS.OFFLINE &&
+            !(nextProps && nextProps.network_status === NETWORK_STATUS.ONLINE)) return;
+
         this.is_downloadInProgress = true;
         const firstItem = this.downloadProgress_queue[0];
         this.downloadRequest(firstItem.book_id, firstItem.mainFile);
     }
 
-    private canceledBook: { book_id: string, mainFile: boolean } | undefined;
+    // private canceledBook: { book_id: string, mainFile: boolean } | undefined;
     async stopDownload(book_id: string, mainFile: boolean) {
         const d_index = this.downloadProgress_queue.findIndex(obj => obj.book_id === book_id && obj.mainFile === mainFile);
         if (d_index === -1) return;
@@ -132,7 +115,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         if (d_index === 0) {
             console.log('stopDownload book_id:', book_id);
             this._partialDownload && this._partialDownload.cancelDownloadFile();
-            this.canceledBook = { book_id, mainFile };
+            // this.canceledBook = { book_id, mainFile };
         }
     }
 
@@ -148,16 +131,37 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         console.log('downloadRequest started: book_id', book_id);
 
         this._partialDownload = new PartialDownload(book_id, mainFile);
-        await this._partialDownload.downloadFile();
+        let error: any = undefined;
+        let canceled = false;
+        let res = await this._partialDownload.downloadFile().catch(e => {
+            debugger;
+            error = e;
+            if (e && e.message === 'download-canceled') {
+                canceled = true;
+            }
+        });
 
-        if (!(this.canceledBook && this.canceledBook.book_id === book_id && this.canceledBook.mainFile === mainFile)) {
+        if (res) {
+            debugger;
+            this.downloadFinished(book_id, mainFile);
+            this.downloadProgress_queue.splice(0, 1);
+            console.log('downloadRequest COMPLETED: book_id', book_id);
+        } else {
+            debugger;
+            // this.canceledBook = undefined;
+            console.log('downloadRequest ERROR: book_id', book_id, error);
+        }
+
+        /* if (!(this.canceledBook && this.canceledBook.book_id === book_id && this.canceledBook.mainFile === mainFile)) {
             this.downloadFinished(book_id, mainFile);
             this.downloadProgress_queue.splice(0, 1);
         } else {
             this.canceledBook = undefined;
-        }
+        } */
         // this.downloadFinished(book_id, mainFile);
-        console.log('downloadRequest finished: book_id', book_id);
+        // console.log('downloadRequest finished: book_id', book_id);
+
+        await CmpUtility.waitOnMe((res || canceled) ? 0 : 2000);
 
         this.is_downloadInProgress = false;
         // this.downloadProgress_queue.splice(0, 1);
@@ -177,7 +181,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
         update_downloading_book_file: (data: IDownloadingBookFile_schema[]) => dispatch(action_update_downloading_book_file(data)),
-        reset_downloading_book_file: () => dispatch(action_reset_downloading_book_file()),
+        // reset_downloading_book_file: () => dispatch(action_reset_downloading_book_file()),
     };
 };
 

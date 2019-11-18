@@ -1,6 +1,8 @@
 enum FILE_STORAGE_KEY {
     FILE_BOOK_MAIN = 'FILE_BOOK_MAIN',
     FILE_BOOK_SAMPLE = 'FILE_BOOK_SAMPLE',
+    FILE_BOOK_MAIN_PARTIAL = 'FILE_BOOK_MAIN_PARTIAL',
+    FILE_BOOK_SAMPLE_PARTIAL = 'FILE_BOOK_SAMPLE_PARTIAL',
 }
 
 export class FileStorage {
@@ -22,14 +24,17 @@ export class FileStorage {
         return false;
     }
 
-    private static getBookFileList_cache(mainFile: boolean): Promise<Cache> {
+    private static getBookFileList_cache(mainFile: boolean, partial?: boolean): Promise<Cache> {
+        if (partial) {
+            return FileStorage.storage.open(mainFile ? FILE_STORAGE_KEY.FILE_BOOK_MAIN_PARTIAL : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE_PARTIAL);
+        }
         return FileStorage.storage.open(mainFile ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE);
     }
 
-    static async getBookFileById(book_id: string, mainFile: boolean): Promise<Uint8Array | undefined> {
+    static async getBookFileById(book_id: string, mainFile: boolean, partial?: boolean): Promise<Uint8Array | undefined> {
         if (!FileStorage.isSuport()) return;
         debugger;
-        const list = await FileStorage.getBookFileList_cache(mainFile);
+        const list = await FileStorage.getBookFileList_cache(mainFile, partial);
         const item = await list.match(book_id).catch(e => {
             console.error('book file byId not exist', book_id);
         });
@@ -37,9 +42,9 @@ export class FileStorage {
             return new Uint8Array(await item.arrayBuffer());
     }
 
-    static async setBookFileById(book_id: string, mainFile: boolean, data: Uint8Array): Promise<boolean> { // Uint8Array,ArrayBuffer
+    static async setBookFileById(book_id: string, mainFile: boolean, data: Uint8Array, partial?: boolean): Promise<boolean> { // Uint8Array,ArrayBuffer
         if (!FileStorage.isSuport()) return false;
-        let list = await FileStorage.getBookFileList_cache(mainFile);
+        let list = await FileStorage.getBookFileList_cache(mainFile, partial);
         debugger;
 
         let save = true;
@@ -48,24 +53,24 @@ export class FileStorage {
             console.error('setBookFileById put errro: ', e);
         });
 
-        if (save)
+        if (save && !partial)
             FileStorage.is_book_downloaded_history_save(book_id, mainFile);
 
         return save;
     }
 
-    static async removeBookFileById(book_id_s: string | string[], mainFile: boolean): Promise<boolean> {
+    static async removeBookFileById(book_id_s: string | string[], mainFile: boolean, partial?: boolean): Promise<boolean> {
         if (!FileStorage.isSuport()) return false;
         debugger;
-        let list = await FileStorage.getBookFileList_cache(mainFile);
+        let list = await FileStorage.getBookFileList_cache(mainFile, partial);
         if (Array.isArray(book_id_s)) {
             for (let i = 0; i < book_id_s.length; i++) {
                 const d = await list.delete(book_id_s[i]);
-                d && FileStorage.is_book_downloaded_history_remove(book_id_s[i], mainFile);
+                !partial && d && FileStorage.is_book_downloaded_history_remove(book_id_s[i], mainFile);
             }
         } else {
             const d = await list.delete(book_id_s);
-            d && FileStorage.is_book_downloaded_history_remove(book_id_s, mainFile);
+            !partial && d && FileStorage.is_book_downloaded_history_remove(book_id_s, mainFile);
         }
 
         return true;
@@ -76,8 +81,18 @@ export class FileStorage {
         return FileStorage.is_book_downloaded_history_check(book_id, mainFile);
     }
 
-    static async clearCollection_bookFile(mainFile: boolean): Promise<boolean> {
+    static async clearCollection_bookFile(mainFile: boolean, partial?: boolean): Promise<boolean> {
         if (!FileStorage.isSuport()) return false;
+
+        if (partial) {
+            const isDeleted_partial = await FileStorage.storage
+                .delete(mainFile ? FILE_STORAGE_KEY.FILE_BOOK_MAIN_PARTIAL : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE_PARTIAL)
+                .catch(reason => {
+                    console.error('clearCollection_bookFile PARTIAL errro: mainFile', mainFile);
+                });
+            return isDeleted_partial ? isDeleted_partial : false;
+        }
+
         const isDeleted = await FileStorage.storage
             .delete(mainFile ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE)
             .catch(reason => {
@@ -94,7 +109,7 @@ export class FileStorage {
     private static async loadDownloadedBook_id(): Promise<void> {
         const list_main = await FileStorage.getBookFileList_cache(true);
         const list_sample = await FileStorage.getBookFileList_cache(false);
-        
+
         const list_main_keys = await list_main.keys();
         list_main_keys.forEach(key => {
             const bk_id = key.url.replace(window.location.origin + '/', '');
