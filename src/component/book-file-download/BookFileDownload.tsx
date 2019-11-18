@@ -128,12 +128,12 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         });
 
         if (res) {
-            debugger;
+            // debugger;
             this.downloadFinished(book_id, mainFile);
             this.downloadProgress_queue.splice(0, 1);
             console.log('downloadRequest COMPLETED: book_id', book_id);
         } else {
-            debugger;
+            // debugger;
             console.log('downloadRequest ERROR: book_id', book_id, error);
         }
 

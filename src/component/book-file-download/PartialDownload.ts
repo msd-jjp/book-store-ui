@@ -140,7 +140,7 @@ export class PartialDownload {
     }
 
     private async saveInTempStorage(newFile: Uint8Array, to: number): Promise<boolean> {
-        debugger;
+        // debugger;
         let cu = this.tempFile ? this.tempFile.byteLength : 0;
         let nu = newFile.byteLength;
         const arr = new Uint8Array(cu + nu);
