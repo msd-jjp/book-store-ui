@@ -2,6 +2,8 @@ import { BookService } from "../../service/service.book";
 import Axios, { CancelTokenSource, AxiosError } from "axios";
 import { CmpUtility } from "../_base/CmpUtility";
 import { appLocalStorage } from "../../service/appLocalStorage";
+import { Store2 } from "../../redux/store";
+import { action_update_downloading_book_file } from "../../redux/action/downloading-book-file";
 
 export class PartialDownload {
     private _bookService = new BookService();
@@ -12,8 +14,20 @@ export class PartialDownload {
     private tempFile: Uint8Array | undefined;
 
     constructor(private book_id: string, private mainFile: boolean) {
+        this.keepViewUpdate();
     }
 
+    keepViewUpdate() {
+        setTimeout(() => {
+            console.error('PartialDownload keepViewUpdate every 1s');
+            CmpUtility.refreshView();
+            if (!this.downloadCanceled && !this.downloadFileEnded) {
+                this.keepViewUpdate();
+            }
+        }, 1000);
+    }
+
+    private downloadFileEnded = false;
     async downloadFile() {
         return new Promise(async (resolve, reject) => {
             let error: AxiosError | undefined = undefined;
@@ -49,6 +63,7 @@ export class PartialDownload {
             } else {
                 reject(error);
             }
+            this.downloadFileEnded = true;
         });
     }
 
@@ -128,9 +143,10 @@ export class PartialDownload {
             });
 
             if (res) {
-                const saved = await this.saveInTempStorage(new Uint8Array(res.data), this.currentRange!.to);
+                const saved = await this.saveInTempStorage(new Uint8Array(res.data));
                 console.log('downloaded range, book_id', this.book_id, this.currentRange, res.data);
                 downloaded = saved;
+                this.updateDownloadingProgress();
             } else {
                 downloaded = false;
             }
@@ -139,7 +155,7 @@ export class PartialDownload {
         });
     }
 
-    private async saveInTempStorage(newFile: Uint8Array, to: number): Promise<boolean> {
+    private async saveInTempStorage(newFile: Uint8Array): Promise<boolean> {
         // debugger;
         let cu = this.tempFile ? this.tempFile.byteLength : 0;
         let nu = newFile.byteLength;
@@ -178,6 +194,16 @@ export class PartialDownload {
             cleared = await this.clearTempStorage();
 
         return cleared;
+    }
+
+    private updateDownloadingProgress() {
+        const dbf = [...Store2.getState().downloading_book_file];
+        const item = dbf.find(d => (d.book_id === this.book_id && d.mainFile === this.mainFile));
+        // debugger;
+        if (item && this.currentRange && this.fileLength) {
+            item.progress = Math.floor((this.currentRange.to / this.fileLength) * 100);
+        }
+        Store2.dispatch(action_update_downloading_book_file(dbf));
     }
 
 }
