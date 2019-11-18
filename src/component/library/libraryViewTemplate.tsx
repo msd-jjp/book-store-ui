@@ -46,12 +46,22 @@ export function is_book_downloading(book_id: string, mainFile: boolean): boolean
     return !!d;
 }
 
+export function book_downloading_progress(book_id: string, mainFile: boolean): number {
+    const dbf = Store2.getState().downloading_book_file;
+    const d = dbf.find(d => d.book_id === book_id && d.mainFile === mainFile);
+    return d ? d.progress : 0;
+}
+
 export function is_libBook_downloaded(item: ILibrary): boolean {
     return is_book_downloaded(item.book.id, true);
 }
 
 export function is_libBook_downloading(item: ILibrary): boolean {
     return is_book_downloading(item.book.id, true);
+}
+
+export function libBook_downloading_progress(item: ILibrary): number {
+    return book_downloading_progress(item.book.id, true);
 }
 
 export function toggle_book_download(book_id: string, mainFile: boolean): void {
@@ -63,14 +73,16 @@ export function toggle_book_download(book_id: string, mainFile: boolean): void {
         new_dbf.push({
             book_id: book_id,
             mainFile: mainFile,
-            status: 'stop'
+            status: 'stop',
+            progress: 0
         });
         dbf = new_dbf;
     } else {
         dbf.push({
             book_id: book_id,
             mainFile: mainFile,
-            status: 'start'
+            status: 'start',
+            progress: 0
         });
     }
 
@@ -99,7 +111,8 @@ export function collection_download(title: string) {
         dbf.push({
             book_id: id,
             mainFile: true,
-            status: 'start'
+            status: 'start',
+            progress: 0
         });
     });
     Store2.dispatch(action_update_downloading_book_file(dbf));
@@ -116,7 +129,9 @@ export function libraryItem_viewList_render(
     const writerName = CmpUtility.getBook_role_fisrt_fullName(item.book, BOOK_ROLES.Writer);
     const read_percent = calc_read_percent(item);
     const is_downloaded = is_libBook_downloaded(item);
-    const is_downloading = is_libBook_downloading(item);
+    const is_downloading = is_downloaded ? false : is_libBook_downloading(item);
+    const downloading_progress = is_downloading ? libBook_downloading_progress(item) : '';
+    const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress + '%' : '';
 
     return (
         <div className="view-list-item pb-2 mb-2" >
@@ -145,8 +160,8 @@ export function libraryItem_viewList_render(
                     <i className={
                         "fa fa-check-circle-- downloaded-icon "
                         + (is_downloaded ? 'fa-check-circle' : ' ')
-                        + (is_downloading ? 'fa-refresh fa-spin' : ' ')
-                    } />
+                        + (is_downloading ? 'fa-refresh__fa-spin' : ' ')
+                    } >{downloading_progress_str}</i>
                 </div>
 
                 <div className={
@@ -170,7 +185,9 @@ export function libraryItem_viewGrid_render(
     const book_img = CmpUtility.getBook_firstImg(item.book);
     const read_percent = calc_read_percent(item);
     const is_downloaded = is_libBook_downloaded(item);
-    const is_downloading = is_libBook_downloading(item);
+    const is_downloading = is_downloaded ? false : is_libBook_downloading(item);
+    const downloading_progress = is_downloading ? libBook_downloading_progress(item) : '';
+    const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress + '%' : '';
 
     return (
         <div className="col-4 p-align-inverse-0 mb-3">
@@ -198,8 +215,8 @@ export function libraryItem_viewGrid_render(
                     <i className={
                         "fa fa-check-circle-- "
                         + (is_downloaded ? 'fa-check-circle' : ' ')
-                        + (is_downloading ? 'fa-refresh fa-spin' : ' ')
-                    } />
+                        + (is_downloading ? 'fa-refresh__fa-spin' : ' ')
+                    } >{downloading_progress_str}</i>
                 </div>
 
                 <div className={

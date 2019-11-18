@@ -20,7 +20,7 @@ import { AddToCollection } from "../library/collection/add-to-collection/AddToCo
 import { CmpUtility } from "../_base/CmpUtility";
 import { action_user_logged_in } from "../../redux/action/user";
 import { PersonService } from "../../service/service.person";
-import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem } from "../library/libraryViewTemplate";
+import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem, book_downloading_progress } from "../library/libraryViewTemplate";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import Swiper from "swiper";
@@ -267,7 +267,10 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
 
     const is_downloaded = is_book_downloaded(current_book!.id, true);
-    const is_downloading = is_book_downloading(current_book!.id, true);
+    // const is_downloading = is_book_downloading(current_book!.id, true);
+    const is_downloading = is_downloaded ? false : is_book_downloading(current_book!.id, true);
+    const downloading_progress = is_downloading ? book_downloading_progress(current_book!.id, true) : '';
+    const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress + '%' : '';
 
     const current_book_img = CmpUtility.getBook_firstImg(current_book);
     const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(current_book, BOOK_ROLES.Writer);
@@ -309,8 +312,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 <i className={
                   "fa "
                   + (is_downloaded ? 'fa-check-circle' : ' ')
-                  + (is_downloading ? 'fa-refresh fa-spin' : ' ')
-                } />
+                  + (is_downloading ? 'fa-refresh__fa-spin' : ' ')
+                } >{downloading_progress_str}</i>
               </div>
             </div>
           </div>
