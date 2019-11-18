@@ -20,16 +20,14 @@ export class PartialDownload {
             let fl = await this.getFileLength().catch(e => {
                 error = e;
             });
-            debugger;
-            //
+
             if (!this.fileLength || !fl) {
                 reject(error);
                 return;
             }
             const tempFile = await this.getFromTempStorage();
-            console.log('tempFile:', tempFile);
-            //
-            debugger;
+            console.log('book_id, tempFile: ', this.book_id, tempFile);
+
             const from = tempFile ? tempFile.byteLength : 0;
             const to = this.fileLength! <= this.downloadSize + from ? this.fileLength! : this.downloadSize + from;
             if (from >= to) {
@@ -45,7 +43,7 @@ export class PartialDownload {
             let res = await this.loopRange().catch(e => {
                 error = e;
             });
-            debugger;
+
             if (res) {
                 resolve(true);
             } else {
@@ -82,7 +80,7 @@ export class PartialDownload {
                 const to = this.fileLength! <= this.currentRange!.to + this.downloadSize
                     ? this.fileLength!
                     : this.currentRange!.to + this.downloadSize;
-                this.currentRange = { from: this.currentRange!.to, to };
+                this.currentRange = { from: this.currentRange!.to + 1, to };
 
                 let l_res = await this.loopRange().catch(e => {
                     error = e;
@@ -98,12 +96,10 @@ export class PartialDownload {
         });
     }
 
-
-    private async getFileLength() {
+    private async getFileLength(): Promise<boolean> {
         return new Promise(async (resolve, reject) => {
             let error: AxiosError | undefined = undefined;
             let res = await this._bookService.bookFile_detail(this.book_id, this.mainFile).catch(e => {
-                debugger;
                 error = e;
             });
             if (!res) {
@@ -111,7 +107,6 @@ export class PartialDownload {
                 return;
             }
             this.fileLength = parseInt(res.headers['content-length']);
-            debugger;
             resolve(true);
         });
     }
@@ -128,19 +123,17 @@ export class PartialDownload {
                 this.currentRange!,
                 this.cancelTokenSource.token
             ).catch(e => {
-                debugger;
                 downloaded = false;
                 error = e;
             });
-            debugger;
+
             if (res) {
-                console.log('downloaded range', this.currentRange, res.data);
                 const saved = await this.saveInTempStorage(new Uint8Array(res.data), this.currentRange!.to);
+                console.log('downloaded range, book_id', this.book_id, this.currentRange, res.data);
                 downloaded = saved;
             } else {
                 downloaded = false;
             }
-            // return downloaded ? true : error!;
             if (downloaded) resolve(true);
             else reject(error);
         });
@@ -148,7 +141,21 @@ export class PartialDownload {
 
     private async saveInTempStorage(newFile: Uint8Array, to: number): Promise<boolean> {
         debugger;
-        this.tempFile = new Uint8Array([...(this.tempFile as any || []), ...newFile as any]);
+        let cu = this.tempFile ? this.tempFile.byteLength : 0;
+        let nu = newFile.byteLength;
+        const arr = new Uint8Array(cu + nu);
+        if (this.tempFile && this.tempFile.length) {
+            for (let i = 0; i < this.tempFile.byteLength; i++) {
+                // arr.push(this.tempFile[i]);
+                arr[i] = this.tempFile[i];
+            }
+        }
+        for (let i = 0; i < newFile.byteLength; i++) {
+            // arr.push(newFile[i]);
+            arr[cu + i] = newFile[i];
+        }
+        // this.tempFile = new Uint8Array([...(this.tempFile as any || []), ...newFile as any]);
+        this.tempFile = arr; // new Uint8Array(arr);
         return await appLocalStorage.storeBookFile(this.book_id, this.mainFile, this.tempFile, true);
     }
 
@@ -158,12 +165,10 @@ export class PartialDownload {
     }
 
     private async clearTempStorage(): Promise<boolean> {
-        debugger;
         return await appLocalStorage.removeBookFileById(this.book_id, this.mainFile, true);
     }
 
     private async downloadCompleted(): Promise<boolean> {
-        debugger;
         let save = false;
         if (this.tempFile)
             save = await appLocalStorage.storeBookFile(this.book_id, this.mainFile, this.tempFile);

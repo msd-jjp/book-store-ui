@@ -32,9 +32,6 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     private _partialDownload: PartialDownload | undefined;
 
     componentDidMount() {
-        // debugger;
-        // console.log('BookFileDownloadComponent componentDidMount');
-        // if inprogress stop all of them. OR clear All of them --> clear all
         // this.props.reset_downloading_book_file!();
         this.downloadProgress_queue = this.props.downloading_book_file.map(dbf => {
             return {
@@ -84,14 +81,12 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         this.downloadProgress_queue.push({ book_id, mainFile });
 
         this.checkDownload();
-        // this.downloadRequest(book_id, mainFile);
     }
 
     private checkDownload(nextProps?: IProps) {
         console.log('downloadProgress_queue', this.downloadProgress_queue);
         if (!this.downloadProgress_queue.length) return;
         if (this.is_downloadInProgress) return;
-        // if(!nextProps || nextProps.network_status=== NETWORK_STATUS.OFFLINE)
         if (this.props.network_status === NETWORK_STATUS.OFFLINE &&
             !(nextProps && nextProps.network_status === NETWORK_STATUS.ONLINE)) return;
 
@@ -100,22 +95,15 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         this.downloadRequest(firstItem.book_id, firstItem.mainFile);
     }
 
-    // private canceledBook: { book_id: string, mainFile: boolean } | undefined;
     async stopDownload(book_id: string, mainFile: boolean) {
         const d_index = this.downloadProgress_queue.findIndex(obj => obj.book_id === book_id && obj.mainFile === mainFile);
         if (d_index === -1) return;
-        /* if (d_index === 0) {
-            this.is_downloadInProgress = false;
-        } */
+        
         this.downloadProgress_queue.splice(d_index, 1);
 
-        //stop axios
-        /* const _cancelTokenSource = this.get_cancelToken(book_id, mainFile, true);
-        _cancelTokenSource && _cancelTokenSource.cancel('download-canceled'); */
         if (d_index === 0) {
             console.log('stopDownload book_id:', book_id);
             this._partialDownload && this._partialDownload.cancelDownloadFile();
-            // this.canceledBook = { book_id, mainFile };
         }
     }
 
@@ -123,7 +111,6 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         let dbf = [...this.props.downloading_book_file];
         const existing_list = dbf.filter(d => !(d.book_id === book_id && d.mainFile === mainFile));
         this.props.update_downloading_book_file!(existing_list);
-        // CmpUtility.waitOnMe(100);
         CmpUtility.refreshView();
     }
 
@@ -134,7 +121,6 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         let error: any = undefined;
         let canceled = false;
         let res = await this._partialDownload.downloadFile().catch(e => {
-            debugger;
             error = e;
             if (e && e.message === 'download-canceled') {
                 canceled = true;
@@ -148,29 +134,14 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
             console.log('downloadRequest COMPLETED: book_id', book_id);
         } else {
             debugger;
-            // this.canceledBook = undefined;
             console.log('downloadRequest ERROR: book_id', book_id, error);
         }
-
-        /* if (!(this.canceledBook && this.canceledBook.book_id === book_id && this.canceledBook.mainFile === mainFile)) {
-            this.downloadFinished(book_id, mainFile);
-            this.downloadProgress_queue.splice(0, 1);
-        } else {
-            this.canceledBook = undefined;
-        } */
-        // this.downloadFinished(book_id, mainFile);
-        // console.log('downloadRequest finished: book_id', book_id);
 
         await CmpUtility.waitOnMe((res || canceled) ? 0 : 2000);
 
         this.is_downloadInProgress = false;
-        // this.downloadProgress_queue.splice(0, 1);
         this.checkDownload();
 
-
-        // if (downloadCanceled) return;
-
-        // this.downloadFinished(book_id, mainFile);
     }
 
 

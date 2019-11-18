@@ -33,7 +33,7 @@ export class FileStorage {
 
     static async getBookFileById(book_id: string, mainFile: boolean, partial?: boolean): Promise<Uint8Array | undefined> {
         if (!FileStorage.isSuport()) return;
-        debugger;
+        // debugger;
         const list = await FileStorage.getBookFileList_cache(mainFile, partial);
         const item = await list.match(book_id).catch(e => {
             console.error('book file byId not exist', book_id);
@@ -45,8 +45,7 @@ export class FileStorage {
     static async setBookFileById(book_id: string, mainFile: boolean, data: Uint8Array, partial?: boolean): Promise<boolean> { // Uint8Array,ArrayBuffer
         if (!FileStorage.isSuport()) return false;
         let list = await FileStorage.getBookFileList_cache(mainFile, partial);
-        debugger;
-
+        // debugger;
         let save = true;
         list.put(book_id, new Response(data)).catch(e => {
             save = false;
@@ -61,7 +60,7 @@ export class FileStorage {
 
     static async removeBookFileById(book_id_s: string | string[], mainFile: boolean, partial?: boolean): Promise<boolean> {
         if (!FileStorage.isSuport()) return false;
-        debugger;
+        // debugger;
         let list = await FileStorage.getBookFileList_cache(mainFile, partial);
         if (Array.isArray(book_id_s)) {
             for (let i = 0; i < book_id_s.length; i++) {
