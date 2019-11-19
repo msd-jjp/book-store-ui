@@ -6,7 +6,6 @@ import { IUser } from "../../model/model.user";
 import { TInternationalization } from "../../config/setup";
 import { BaseComponent } from "../_base/BaseComponent";
 import { History } from "history";
-// import { IToken } from "../../model/model.token";
 import { ToastContainer } from "react-toastify";
 import { Localization } from "../../config/localization/localization";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
@@ -22,7 +21,6 @@ interface IProps {
   logged_in_user: IUser | null;
   internationalization: TInternationalization;
   history: History;
-  // token: IToken;
   network_status: NETWORK_STATUS;
   onUserLoggedIn: (user: IUser) => void;
 }
@@ -67,12 +65,6 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
   };
 
   private _orderService = new OrderService();
-
-  // constructor(props: IProps) {
-  //   super(props);
-
-  //   this._orderService.setToken(this.props.token);
-  // }
 
   componentDidMount() {
     this.gotoTop();
@@ -174,7 +166,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
                           : ''
                       }
                     </td>
-                    <td>{order.total_price ? order.total_price.toLocaleString() : ''}</td>
+                    <td>{(order.total_price || order.total_price === 0) ? order.total_price.toLocaleString() : ''}</td>
                     <td className="cursor-pointer" onClick={() => this.openModal_orderItems(order)}>
                       <i className="fa fa-info-circle"></i>
                     </td>
@@ -242,7 +234,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
                       : ''
                   }
                   <div className="clearfix"></div>
-                  {Localization.total_price}:&nbsp;{modalOrder!.total_price ? modalOrder!.total_price.toLocaleString() : ''}
+                  {Localization.total_price}:&nbsp;{(modalOrder!.total_price || modalOrder!.total_price === 0) ? modalOrder!.total_price.toLocaleString() : ''}
                 </div>
               </Modal.Header> : ''
           }
@@ -294,8 +286,8 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
                           />
                         </td>
                         <td>{orderItem.count}</td>
-                        <td>{orderItem.unit_price ? orderItem.unit_price.toLocaleString() : ''}</td>
-                        <td>{orderItem.net_price ? orderItem.net_price.toLocaleString() : ''}</td>
+                        <td>{(orderItem.unit_price || orderItem.unit_price === 0) ? orderItem.unit_price.toLocaleString() : ''}</td>
+                        <td>{(orderItem.net_price || orderItem.net_price === 0) ? orderItem.net_price.toLocaleString() : ''}</td>
                       </tr>
                     </Fragment>
                   ))}

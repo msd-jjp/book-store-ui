@@ -216,7 +216,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     );
     let first_writer_fullName = '';
     if (writerList.length) {
-      // first_writer_fullName = writerList[0].person.name + ' ' + writerList[0].person.last_name;
       first_writer_fullName = this.getPersonFullName(writerList[0].person);
     }
 
@@ -237,10 +236,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 <img src={book_image} alt="book" onError={e => CmpUtility.bookImageOnError(e)}
                   className="main-img center-el-in-box" loading="lazy" />
               </div>
-              {/* <div className="book-image-wrapper">
-                <img src={CmpUtility.bookSizeImagePath} className="img-view-scaffolding" alt="book" />
-                <img src={book_image} alt="book" onError={e => this.bookImageOnError(e)} className="book-img center-el-in-box" />
-              </div> */}
             </div>
             <div className="book-info-wrapper col-7 p-align-0">
               <h5>{book.title}</h5>
@@ -250,10 +245,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 &nbsp;
                 {Localization.book_type_list[book_type_str]}
               </h6>
-              <h6 className="">
+              <h6 className={!(book.price || book.price === 0) ? "opacity-5" : ''}>
                 <span className="text-muted">{Localization.price}:</span>
                 &nbsp;
-                {book.price ? book.price.toLocaleString() : ''}
+                {(book.price || book.price === 0) ? book.price.toLocaleString() : ''}
               </h6>
 
               <Rating
