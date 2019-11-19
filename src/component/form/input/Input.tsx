@@ -137,7 +137,8 @@ class Input extends React.Component<InputProps, InputState> {
                                     'is-invalid' : ''
                                 }`
                             }
-                            value={this.props.defaultValue || ''}
+                            // value={this.props.defaultValue || ''}
+                            value={(this.props.defaultValue || this.props.defaultValue === 0) ? this.props.defaultValue : ''}
                             // defaultValue={this.props.defaultValue}
                             onChange={e => this.handleChange(e)}
                             // ref={this.props.elRef}
@@ -161,7 +162,8 @@ class Input extends React.Component<InputProps, InputState> {
                             rows={this.props.textarea_rows || 4}
 
                             // defaultValue={this.props.defaultValue}
-                            value={this.props.defaultValue || ''}
+                            // value={this.props.defaultValue || ''}
+                            value={(this.props.defaultValue || this.props.defaultValue === 0) ? this.props.defaultValue : ''}
                             onChange={e => this.handleChange(e)}
                             ref={inputEl => this.setRef(inputEl)}
                             onBlur={() => this.onBlur()}
