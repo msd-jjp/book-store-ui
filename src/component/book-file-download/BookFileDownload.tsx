@@ -98,13 +98,18 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     async stopDownload(book_id: string, mainFile: boolean) {
         const d_index = this.downloadProgress_queue.findIndex(obj => obj.book_id === book_id && obj.mainFile === mainFile);
         if (d_index === -1) return;
-        
-        this.downloadProgress_queue.splice(d_index, 1);
+
+        // this.downloadProgress_queue.splice(d_index, 1);
+        this.removeFrom_dp_queue(book_id, mainFile);
 
         if (d_index === 0) {
             // console.log('stopDownload book_id:', book_id);
             this._partialDownload && this._partialDownload.cancelDownloadFile();
         }
+    }
+
+    private removeFrom_dp_queue(book_id: string, mainFile: boolean): void {
+        this.downloadProgress_queue = this.downloadProgress_queue.filter(obj => !(obj.book_id === book_id && obj.mainFile === mainFile));
     }
 
     downloadFinished(book_id: string, mainFile: boolean) {
@@ -130,7 +135,8 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         if (res) {
             // debugger;
             this.downloadFinished(book_id, mainFile);
-            this.downloadProgress_queue.splice(0, 1);
+            // this.downloadProgress_queue.splice(0, 1);
+            this.removeFrom_dp_queue(book_id, mainFile);
             console.log('downloadRequest COMPLETED: book_id', book_id);
         } else {
             // debugger;

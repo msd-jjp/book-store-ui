@@ -44,7 +44,7 @@ export class FileStorage {
 
     static async setBookFileById(book_id: string, mainFile: boolean, data: Uint8Array, partial?: boolean): Promise<boolean> { // Uint8Array,ArrayBuffer
         if (!FileStorage.isSuport()) return false;
-        let list = await FileStorage.getBookFileList_cache(mainFile, partial);
+        const list = await FileStorage.getBookFileList_cache(mainFile, partial);
         // debugger;
         let save = true;
         list.put(book_id, new Response(data)).catch(e => {
@@ -61,18 +61,20 @@ export class FileStorage {
     static async removeBookFileById(book_id_s: string | string[], mainFile: boolean, partial?: boolean): Promise<boolean> {
         if (!FileStorage.isSuport()) return false;
         // debugger;
-        let list = await FileStorage.getBookFileList_cache(mainFile, partial);
+        let singleDeleted = true; // : any
+        const list = await FileStorage.getBookFileList_cache(mainFile, partial);
         if (Array.isArray(book_id_s)) {
             for (let i = 0; i < book_id_s.length; i++) {
                 const d = await list.delete(book_id_s[i]);
                 !partial && d && FileStorage.is_book_downloaded_history_remove(book_id_s[i], mainFile);
             }
         } else {
-            const d = await list.delete(book_id_s);
+            const d = await list.delete(book_id_s); // .catch(e => { console.error('list.delete', e); });
+            singleDeleted = d;
             !partial && d && FileStorage.is_book_downloaded_history_remove(book_id_s, mainFile);
         }
 
-        return true;
+        return singleDeleted;
     }
 
     static checkBookFileExist(book_id: string, mainFile: boolean): boolean {

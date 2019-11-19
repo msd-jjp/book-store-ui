@@ -40,7 +40,10 @@ export class PartialDownload {
     private keepViewUpdate() {
         if (this._keepViewUpdate_timer) return;
         this._keepViewUpdate_timer = setTimeout(() => {
-            console.log(`PartialDownload keepViewUpdate every ${this.refreshViewOnUpdateInterval}ms if changed.`);
+            console.log(
+                `PartialDownload keepViewUpdate every ${this.refreshViewOnUpdateInterval}ms if changed. book_id`,
+                this.book_id
+            );
             this._keepViewUpdate_timer = undefined;
             CmpUtility.refreshView();
         }, this.refreshViewOnUpdateInterval);
@@ -207,7 +210,13 @@ export class PartialDownload {
     }
 
     private async clearTempStorage(): Promise<boolean> {
-        return await appLocalStorage.removeBookFileById(this.book_id, this.mainFile, true);
+        // console.time('clearTempStorage_2*2000');
+        // await CmpUtility.waitOnMe(500);
+        const cleared = await appLocalStorage.removeBookFileById(this.book_id, this.mainFile, true);
+        // await CmpUtility.waitOnMe(500);
+        // console.timeEnd('clearTempStorage_2*2000');
+        console.error('clearTempStorage', cleared, this.book_id);
+        return cleared;
     }
 
     private async downloadCompleted(): Promise<boolean> {
@@ -216,8 +225,9 @@ export class PartialDownload {
             save = await appLocalStorage.storeBookFile(this.book_id, this.mainFile, this.tempFile);
 
         let cleared = false;
-        if (save)
+        if (save) {
             cleared = await this.clearTempStorage();
+        }
 
         return cleared;
     }
