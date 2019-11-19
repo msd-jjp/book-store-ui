@@ -84,7 +84,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     }
 
     private checkDownload(nextProps?: IProps) {
-        console.log('downloadProgress_queue', this.downloadProgress_queue);
+        // console.log('downloadProgress_queue', this.downloadProgress_queue);
         if (!this.downloadProgress_queue.length) return;
         if (this.is_downloadInProgress) return;
         if (this.props.network_status === NETWORK_STATUS.OFFLINE &&
@@ -102,7 +102,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         this.downloadProgress_queue.splice(d_index, 1);
 
         if (d_index === 0) {
-            console.log('stopDownload book_id:', book_id);
+            // console.log('stopDownload book_id:', book_id);
             this._partialDownload && this._partialDownload.cancelDownloadFile();
         }
     }

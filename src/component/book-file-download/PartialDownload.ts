@@ -8,26 +8,45 @@ import { action_update_downloading_book_file } from "../../redux/action/download
 export class PartialDownload {
     private _bookService = new BookService();
     private currentRange: { from: number; to: number } | undefined;
-    private downloadSize = 1000000;
+    private downloadSize = 100000;
+    private refreshViewOnUpdateInterval = 500;
     private cancelTokenSource: CancelTokenSource = Axios.CancelToken.source();
     private fileLength: number | undefined;
     private tempFile: Uint8Array | undefined;
 
     constructor(private book_id: string, private mainFile: boolean) {
-        this.keepViewUpdate();
+        // this.keepViewUpdate();
     }
 
-    keepViewUpdate() {
+    /* keepViewUpdate__() {
         setTimeout(() => {
-            console.error('PartialDownload keepViewUpdate every 1s');
-            CmpUtility.refreshView();
-            if (!this.downloadCanceled && !this.downloadFileEnded) {
+            if (!this.downloadCanceled && !this.downloadFileEnded && this.downloadingProgressUpdated) {
+                this.downloadingProgressUpdated = false;
+                console.error('PartialDownload keepViewUpdate every 1s if changed.');
+                CmpUtility.refreshView();
                 this.keepViewUpdate();
+            } else {
+                console.error(
+                    'PartialDownload keepViewUpdate puased: cancel, end, update',
+                    this.downloadCanceled,
+                    this.downloadFileEnded,
+                    this.downloadingProgressUpdated,
+                    this.book_id
+                );
             }
         }, 1000);
+    } */
+    private _keepViewUpdate_timer: any;
+    private keepViewUpdate() {
+        if (this._keepViewUpdate_timer) return;
+        this._keepViewUpdate_timer = setTimeout(() => {
+            console.log(`PartialDownload keepViewUpdate every ${this.refreshViewOnUpdateInterval}ms if changed.`);
+            this._keepViewUpdate_timer = undefined;
+            CmpUtility.refreshView();
+        }, this.refreshViewOnUpdateInterval);
     }
 
-    private downloadFileEnded = false;
+    // private downloadFileEnded = false;
     async downloadFile() {
         return new Promise(async (resolve, reject) => {
             let error: AxiosError | undefined = undefined;
@@ -37,21 +56,27 @@ export class PartialDownload {
 
             if (!this.fileLength || !fl) {
                 reject(error);
+                // this.downloadFileEnded = true;
+                // console.error('this.downloadFileEnded = true; book_id 48', this.book_id);
                 return;
             }
             const tempFile = await this.getFromTempStorage();
-            console.log('book_id, tempFile: ', this.book_id, tempFile);
+            // console.log('book_id, tempFile: ', this.book_id, tempFile);
 
             const from = tempFile ? tempFile.byteLength : 0;
             const to = this.fileLength! <= this.downloadSize + from ? this.fileLength! : this.downloadSize + from;
             if (from >= to) {
                 reject({ error: `file from: ${from}, to: ${to} not correct.` });
+                // this.downloadFileEnded = true;
+                // console.error('this.downloadFileEnded = true; book_id 59', this.book_id);
                 return;
             }
             this.currentRange = { from: from, to };
 
             if (this.downloadCanceled) {
                 reject({ error: `download canceled.` });
+                // this.downloadFileEnded = true;
+                // console.error('this.downloadFileEnded = true; book_id 67', this.book_id);
                 return;
             }
             let res = await this.loopRange().catch(e => {
@@ -63,7 +88,8 @@ export class PartialDownload {
             } else {
                 reject(error);
             }
-            this.downloadFileEnded = true;
+            // this.downloadFileEnded = true;
+            // console.error('this.downloadFileEnded = true; book_id 80', this.book_id);
         });
     }
 
@@ -128,7 +154,7 @@ export class PartialDownload {
 
     private async downloadRangeRequest(): Promise<boolean> {
         return new Promise(async (resolve, reject) => {
-            await CmpUtility.waitOnMe(2000);
+            // await CmpUtility.waitOnMe(2000);
 
             let downloaded = true;
             let error: AxiosError | undefined = undefined;
@@ -144,7 +170,7 @@ export class PartialDownload {
 
             if (res) {
                 const saved = await this.saveInTempStorage(new Uint8Array(res.data));
-                console.log('downloaded range, book_id', this.book_id, this.currentRange, res.data);
+                // console.log('downloaded range, book_id', this.book_id, this.currentRange, res.data);
                 downloaded = saved;
                 this.updateDownloadingProgress();
             } else {
@@ -196,6 +222,7 @@ export class PartialDownload {
         return cleared;
     }
 
+    // private downloadingProgressUpdated = false;
     private updateDownloadingProgress() {
         const dbf = [...Store2.getState().downloading_book_file];
         const item = dbf.find(d => (d.book_id === this.book_id && d.mainFile === this.mainFile));
@@ -204,6 +231,8 @@ export class PartialDownload {
             item.progress = Math.floor((this.currentRange.to / this.fileLength) * 100);
         }
         Store2.dispatch(action_update_downloading_book_file(dbf));
+        // this.downloadingProgressUpdated = true;
+        this.keepViewUpdate();
     }
 
 }

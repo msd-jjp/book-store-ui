@@ -120,7 +120,7 @@ export class BookService extends BaseService {
         });
     }
 
-    async downloadFile(book_id: string, mainFile: boolean/* , cancelToken: CancelToken */): Promise<IAPI_Response<ArrayBuffer>> {
+    async downloadFile2_DELETE_ME(book_id: string, mainFile: boolean/* , cancelToken: CancelToken */): Promise<IAPI_Response<ArrayBuffer>> {
         await CmpUtility.waitOnMe(5000);
         debugger;
         this.axiosRequestConfig = {
@@ -139,7 +139,11 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.get(url);
     }
 
-    async bookFile_detail(book_id: string, mainFile: boolean) {
+    async bookFile_detail(book_id: string, mainFile: boolean): Promise<any> {
+        if (BaseService.isAppOffline()) {
+            return new Promise((res, rej) => { rej({ error: 'app is offline' }); });
+        }
+
         this.axiosRequestConfig = {
             baseURL: '', // todo _DELET_EME
         };
@@ -162,6 +166,10 @@ export class BookService extends BaseService {
 
     async bookFile_partial(book_id: string, mainFile: boolean, range: { from: number; to: number }, cancelToken: CancelToken)
         : Promise<IAPI_Response<ArrayBuffer>> {
+        if (BaseService.isAppOffline()) {
+            return new Promise((res, rej) => { rej({ error: 'app is offline' }); });
+        }
+
         this.axiosRequestConfig = {
             baseURL: '', // todo _DELET_EME
             headers: {
