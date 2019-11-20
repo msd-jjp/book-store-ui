@@ -217,3 +217,13 @@ readerAudio btn foucus change to active.
 add onEnter to login input (all other input needed like regester & payment ....)
 
 ====================================================================================
+
+bookDetail cmp:
+    if audio --> dont show page
+    if other --> dont show duration
+
+====================================================================================
+
+header style --> remove col & row (replace with d-flex)
+
+====================================================================================

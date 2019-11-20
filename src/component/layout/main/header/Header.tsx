@@ -1,13 +1,10 @@
 import React from 'react';
-// import { NavLink } from 'react-router-dom';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
-// import { action_user_logged_out } from '../../../../redux/action/user';
 import { redux_state } from '../../../../redux/app_state';
 import { Localization } from '../../../../config/localization/localization';
 import { History } from "history";
 import { NETWORK_STATUS } from '../../../../enum/NetworkStatus';
-// import { action_set_network_status } from '../../../../redux/action/netwok-status';
 import { BaseService } from '../../../../service/service.base';
 import { ICartItems } from '../../../../redux/action/cart/cartAction';
 
@@ -15,7 +12,6 @@ interface IProps {
     history: History;
     match: any;
     network_status: NETWORK_STATUS;
-    // set_network_status?: (network_status: NETWORK_STATUS) => any;
     cart: ICartItems;
 }
 interface IState {
@@ -74,18 +70,6 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
     gotoCart() {
         this.props.history.push('/cart');
     }
-    /* check_network_status() {
-        if (this.props.network_status === NETWORK_STATUS.ONLINE) {
-            if (BaseService.isAppOffline()) {
-                this.props.set_network_status && this.props.set_network_status(NETWORK_STATUS.OFFLINE);
-            }
-
-        } else if (this.props.network_status === NETWORK_STATUS.OFFLINE) {
-            if (!BaseService.isAppOffline()) {
-                this.props.set_network_status && this.props.set_network_status(NETWORK_STATUS.ONLINE);
-            }
-        }
-    } */
 
     render() {
         return (
@@ -148,14 +132,11 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
-        // do_logout: () => dispatch(action_user_logged_out()),
-        // set_network_status: (network_status: NETWORK_STATUS) => dispatch(action_set_network_status(network_status)),
     }
 }
 
 const state2props = (state: redux_state) => {
     return {
-        // logged_in_user: state.logged_in_user,
         internationalization: state.internationalization,
         network_status: state.network_status,
         cart: state.cart,
