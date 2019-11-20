@@ -22,6 +22,7 @@ import { appLocalStorage } from "../../../service/appLocalStorage";
 import { AudioBookGenerator } from "../../../webworker/reader-engine/AudioBookGenerator";
 import { ReaderUtility } from "../ReaderUtility";
 import { IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
+// import { BookService } from "../../../service/service.book";
 //
 // import * as WaveSurferAll from 'wavesurfer.js';
 //
@@ -96,11 +97,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
     private _personService = new PersonService();
 
-    private book_page_length = 2500;
-    private book_active_page = 372;
+    // private book_page_length = 2500;
+    // private book_active_page = 372;
 
     private wavesurfer: WaveSurfer | undefined;
-    private _componentWillUnmount = false;
+    // private _componentWillUnmount = false;
     private is_small_media = false;
     private _libraryItem: ILibrary | undefined;
 
@@ -223,6 +224,15 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private _bookInstance!: AudioBookGenerator;
     private async createBook() {
         const bookFile = await appLocalStorage.findBookMainFileById(this.book_id); // find book chapter
+
+        // _DELETE_ME
+        /* const _bookService = new BookService();
+        const res = await _bookService.downloadFile2_DELETE_ME(this.book_id, true);
+        if (res) {
+            bookFile = new Uint8Array(res.data);
+        } */
+
+
         if (!bookFile) {
             this.setState({ loading: false });
             this.bookFileNotFound_notify();
@@ -247,9 +257,14 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // const fileTotalDuration = this._bookInstance.getTotalDuration();
         const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
         let trackTotalDuration = 0;
-        allAtoms_pos.forEach(atom => {
-            trackTotalDuration += this._bookInstance.getAtomDuration(atom);
-        });
+        try {
+            allAtoms_pos.forEach(atom => {
+                trackTotalDuration += this._bookInstance.getAtomDuration(atom);
+            });
+        } catch (e) {
+            // trackTotalDuration = 247560;
+            console.error('trackTotalDuration: ', e);
+        }
 
         const wsParams: any = { // WaveSurfer.WaveSurferParams = {
             // const obj: WaveSurfer.WaveSurferParams = {
@@ -346,7 +361,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // this.getGainNode();
 
         //todo: book progreess position;
-        let bookReadedTime = 47;
+        let bookReadedTime = 0; // 47, 200
         this.setWavesurferTime(bookReadedTime);
         this.updateTimer(bookReadedTime);
     }

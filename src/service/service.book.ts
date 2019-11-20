@@ -121,7 +121,7 @@ export class BookService extends BaseService {
     }
 
     async downloadFile2_DELETE_ME(book_id: string, mainFile: boolean/* , cancelToken: CancelToken */): Promise<IAPI_Response<ArrayBuffer>> {
-        await CmpUtility.waitOnMe(5000);
+        // await CmpUtility.waitOnMe(5000);
         debugger;
         this.axiosRequestConfig = {
             baseURL: '', // todo _DELET_EME
