@@ -115,7 +115,7 @@ class IncreaseCreditComponent extends BaseComponent<IProps, IState> {
   }
 
   input_validation(val: any): boolean {
-    if (val < 1000) {
+    if (!val || val < 1000) {
       return false;
     }
     return true;
