@@ -11,7 +11,6 @@ import { Localization } from "../../config/localization/localization";
 import { BOOK_ROLES, BOOK_TYPES } from "../../enum/Book";
 import Rating from 'react-rating';
 import { FollowService } from "../../service/service.follow";
-// import { IToken } from "../../model/model.token";
 import { BtnLoader } from "../form/btn-loader/BtnLoader";
 import { RateService } from "../../service/service.rate";
 import { IUser } from "../../model/model.user";
@@ -19,7 +18,6 @@ import { action_user_logged_in } from "../../redux/action/user";
 import { CommentService } from "../../service/service.comment";
 import { IComment } from "../../model/model.comment";
 import { Input } from "../form/input/Input";
-// import { Modal } from "react-bootstrap";
 import Modal from 'react-bootstrap/Modal'
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { ICartItems, ICartItem } from "../../redux/action/cart/cartAction";
@@ -27,13 +25,13 @@ import { action_add_to_cart, action_remove_from_cart } from "../../redux/action/
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { CmpUtility } from "../_base/CmpUtility";
 import { Utility } from "../../asset/script/utility";
-// import { IPerson } from "../../model/model.person";
+import { category_routeParam_categoryType } from "../category/Category";
+import { History } from "history";
 
 
 interface IProps {
   internationalization: TInternationalization;
   match: any;
-  // token: IToken;
   logged_in_user?: IUser | null;
   onUserLoggedIn?: (user: IUser) => void;
   network_status: NETWORK_STATUS;
@@ -41,6 +39,7 @@ interface IProps {
   add_to_cart: (cartItem: ICartItem) => any;
   remove_from_cart: (cartItem: ICartItem) => any;
   library: ILibrary_schema;
+  history: History;
 }
 interface IState {
   book: IBook | undefined;
@@ -268,11 +267,14 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               }
               <span className="book-total-rate pl-2">({book.rate_no})</span>
 
-              <div className="book-selled-info-container mt-2">
+              <div className="book-tags-container mt-2">
                 {/* <div className="book-selled-info">#1 Best Seller</div> */}
                 {
                   (book.tags || []).map((book_tag, book_tag_index) => (
-                    <div className="book-selled-info" key={book_tag_index}>{book_tag}</div>
+                    <div className="book-tag cursor-pointer"
+                      key={book_tag_index}
+                      onClick={() => this.gotoCategory('tag', book_tag)}
+                    >{book_tag}</div>
                   ))
                 }
                 {/* <div className="clearfix"></div> */}
@@ -469,6 +471,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
       </>
     )
+  }
+
+  private gotoCategory(searchType: category_routeParam_categoryType, searchValue: string) {
+    this.props.history.push(`/category/${searchType}/${searchValue}`);
   }
 
   /**
