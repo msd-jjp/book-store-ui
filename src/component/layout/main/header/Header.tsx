@@ -78,8 +78,10 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
                     <div className="row">
                         <div className="col-lg-4 offset-lg-4 col-md-8 offset-md-2">
 
-                            <div className="row mb-2 mx-2 align-items-center header-inner">
-                                <div className="col-10-- col-md-10-- col-md-8 col-sm-8 col-6">
+                            {/* <div className="row mb-2 mx-2 align-items-center header-inner"> */}
+                            <div className="row--- d-flex mb-2 mx-2-- align-items-center header-inner mx-3 mx-md-2 mx-lg-1">
+                                {/* <div className="col-10-- col-md-10-- col-md-8 col-sm-8 col-6"> */}
+                                <div className="mr-3 flex-grow-1">
                                     <div className="input-group">
                                         <div className="input-group-prepend">
                                             <span className="input-group-text search-icon" onClick={() => this.handleSearchIcon()}>
@@ -96,8 +98,9 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
                                         />
                                     </div>
                                 </div>
-                                <div className="col-2-- col-md-2-- col-md-4 col-sm-4 col-6">
-                                    <div className="bellcontainer">
+                                {/* <div className="col-2-- col-md-2-- col-md-4 col-sm-4 col-6"> */}
+                                <div className="">
+                                    <div className="bellcontainer d-flex">
                                         {/* fa-bell-o */}
                                         <i className={"fa fa-wifi bell  cursor-pointer " +
                                             (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'text-danger' : '')
