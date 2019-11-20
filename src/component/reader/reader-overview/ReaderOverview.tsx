@@ -187,14 +187,20 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   bookFileNotFound_notify() {
-    const notifyBody: string = Localization.msg.ui.book_file_not_found_download_it;
-    const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };
-    toast.warn(notifyBody, this.getNotifyConfig(config));
+    this.goBack();
+    setTimeout(() => {
+      const notifyBody: string = Localization.msg.ui.book_file_not_found_download_it;
+      const config: ToastOptions = { autoClose: Setup.notify.timeout.warning/* , onClose: this.goBack.bind(this) */ };
+      toast.warn(notifyBody, this.getNotifyConfig(config));
+    }, 100);
   }
   readerError_notify() {
-    const notifyBody: string = Localization.msg.ui.reader_epub_error_occurred;
-    const config: ToastOptions = { autoClose: Setup.notify.timeout.warning, onClose: this.goBack.bind(this) };
-    toast.error(notifyBody, this.getNotifyConfig(config));
+    this.goBack();
+    setTimeout(() => {
+      const notifyBody: string = Localization.msg.ui.reader_epub_error_occurred;
+      const config: ToastOptions = { autoClose: Setup.notify.timeout.warning/* , onClose: this.goBack.bind(this) */ };
+      toast.error(notifyBody, this.getNotifyConfig(config));
+    }, 100);
   }
 
   private async generateReader() {
