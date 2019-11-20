@@ -57,6 +57,7 @@ export class PartialDownload {
                 error = e;
             });
 
+            // todo: if fl && !this.fileLength prevent download again.
             if (!this.fileLength || !fl) {
                 reject(error);
                 // this.downloadFileEnded = true;
@@ -70,7 +71,8 @@ export class PartialDownload {
             const from = this.tempFile ? this.tempFile.byteLength : 0;
             const to = this.fileLength! <= this.downloadSize + from ? this.fileLength! : this.downloadSize + from;
             if (from >= to) {
-                reject({ error: `file from: ${from}, to: ${to} not correct.` });
+                const ended = await this.downloadEnded();
+                reject({ error: `file from: ${from}, to: ${to} not correct. ended downloadEnded ${ended}` });
                 // this.downloadFileEnded = true;
                 // console.error('this.downloadFileEnded = true; book_id 59', this.book_id);
                 return;
