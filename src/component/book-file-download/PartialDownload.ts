@@ -40,10 +40,10 @@ export class PartialDownload {
     private keepViewUpdate() {
         if (this._keepViewUpdate_timer) return;
         this._keepViewUpdate_timer = setTimeout(() => {
-            console.log(
+            /* console.log(
                 `PartialDownload keepViewUpdate every ${this.refreshViewOnUpdateInterval}ms if changed. book_id`,
                 this.book_id
-            );
+            ); */
             this._keepViewUpdate_timer = undefined;
             CmpUtility.refreshView();
         }, this.refreshViewOnUpdateInterval);
@@ -63,10 +63,11 @@ export class PartialDownload {
                 // console.error('this.downloadFileEnded = true; book_id 48', this.book_id);
                 return;
             }
-            const tempFile = await this.getFromTempStorage();
+            // const tempFile = await this.getFromTempStorage();
+            this.tempFile = await this.getFromTempStorage();
             // console.log('book_id, tempFile: ', this.book_id, tempFile);
 
-            const from = tempFile ? tempFile.byteLength : 0;
+            const from = this.tempFile ? this.tempFile.byteLength : 0;
             const to = this.fileLength! <= this.downloadSize + from ? this.fileLength! : this.downloadSize + from;
             if (from >= to) {
                 reject({ error: `file from: ${from}, to: ${to} not correct.` });
@@ -97,10 +98,12 @@ export class PartialDownload {
     }
 
     private downloadCanceled = false;
-    async cancelDownloadFile() {
+    async cancelDownloadFile(): Promise<boolean> {
         this.cancelTokenSource.cancel('download-canceled');
         this.downloadCanceled = true;
-        await this.clearTempStorage();
+        // await this.clearTempStorage();
+        const ended = await this.downloadEnded();
+        return ended;
     }
 
     private async loopRange(): Promise<boolean> {
@@ -205,14 +208,29 @@ export class PartialDownload {
     }
 
     private async getFromTempStorage(): Promise<Uint8Array | undefined> {
-        this.tempFile = await appLocalStorage.findBookMainFileById(this.book_id, this.mainFile);
-        return this.tempFile;
+        // this.tempFile = await appLocalStorage.findBookMainFileById(this.book_id, this.mainFile);
+        // return this.tempFile;
+        return await appLocalStorage.findBookMainFileById(this.book_id, this.mainFile);
     }
 
     private async clearTempStorage(): Promise<boolean> {
         // console.time('clearTempStorage_2*2000');
         // await CmpUtility.waitOnMe(500);
-        const cleared = await appLocalStorage.removeBookFileById(this.book_id, this.mainFile, true);
+        let cleared = await appLocalStorage.storeBookFile(this.book_id, this.mainFile, new Uint8Array(0), true);
+        cleared = await appLocalStorage.removeBookFileById(this.book_id, this.mainFile, true);
+        // await CmpUtility.waitOnMe(500);
+        /* const exist = await this.getFromTempStorage();
+        if (exist) {
+            console.error('not deleted tring again', exist);
+            // await CmpUtility.waitOnMe(1000);
+            // cleared = await appLocalStorage.removeBookFileById(this.book_id, this.mainFile, true);
+            cleared = await appLocalStorage.storeBookFile(this.book_id, this.mainFile, new Uint8Array(0), true);
+            console.error('not deleted tring again set', cleared);
+            // cleared = await appLocalStorage.removeBookFileById(this.book_id, this.mainFile, true);
+            // console.error('not deleted tring again remove', cleared);
+        } else {
+            console.error(' deleted successfuly....', exist);
+        } */
         // await CmpUtility.waitOnMe(500);
         // console.timeEnd('clearTempStorage_2*2000');
         console.error('clearTempStorage', cleared, this.book_id);
@@ -224,11 +242,20 @@ export class PartialDownload {
         if (this.tempFile)
             save = await appLocalStorage.storeBookFile(this.book_id, this.mainFile, this.tempFile);
 
-        let cleared = false;
+        // let cleared = false;
+        let ended = false;
         if (save) {
-            cleared = await this.clearTempStorage();
+            // cleared = await this.clearTempStorage();
+            ended = await this.downloadEnded();
         }
 
+        return ended;
+    }
+
+    private async downloadEnded(): Promise<boolean> {
+        this.tempFile = undefined;
+        const cleared = await this.clearTempStorage();
+        // this.tempFile = undefined;
         return cleared;
     }
 
