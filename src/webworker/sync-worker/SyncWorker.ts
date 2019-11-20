@@ -211,4 +211,7 @@ export class SyncWorker extends BaseWorker {
         this.afterActionFinished();
     }
 
+    // todo: check partial download & const dbf = [...Store2.getState().downloading_book_file];
+    // 
+
 }

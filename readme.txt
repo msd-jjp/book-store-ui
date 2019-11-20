@@ -191,6 +191,8 @@ mabe in profile: get user instead of person.
 
 onSync : check cart too.
 
+on cmp cart opened: keep cart data upToDate (if book price changed).
+
 ====================================================================================
 
 audio:
