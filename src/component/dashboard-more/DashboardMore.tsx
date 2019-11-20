@@ -365,7 +365,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                         <li className="more-item list-group-item p-align-0">
                             <div className="icon-wrapper mr-3"><i className="fa fa-credit-card"></i></div>
 
-                            <div className="d-flex justify-content-between w-100">
+                            <div className="d-flex justify-content-between w-100 flex-wrap">
                                 <div>
                                     <span className="text text-capitalize">{Localization.account_balance}:</span>
                                     <span className="ml-2">{Utility.prettifyNumber(this.state.mainAccountValue)}</span>
@@ -376,10 +376,13 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                                         onClick={() => this.getUserMainAccount()}
                                         disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                                     >
-                                        <small>({Localization.recalculate}
-                                            <i className="fa fa-refresh ml-1"></i>
+                                        <small>
+                                            {/* ({Localization.recalculate} */}
+                                            <i className="fa fa-refresh ml-1--"></i>
                                             {this.props.network_status === NETWORK_STATUS.OFFLINE
-                                                ? <i className="fa fa-wifi text-danger"></i> : ''})</small>
+                                                ? <i className="fa fa-wifi text-danger"></i> : ''}
+                                            {/* ) */}
+                                        </small>
                                     </BtnLoader>
                                 </div>
                                 <div>

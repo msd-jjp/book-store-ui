@@ -427,13 +427,15 @@ class CartComponent extends BaseComponent<IProps, IState> {
                   >
                     <h4 className="mb-0 text-info">
                       {this.totalPrice_render()}
-                      <small className="ml-3">({Localization.recalculate} <i className="fa fa-refresh ml-1"></i>)</small>
+                      <small className="ml-2 font-size-07">
+                        ({Localization.recalculate} <i className="fa fa-refresh ml-1"></i>)
+                      </small>
                     </h4>
                   </BtnLoader>
                 </div>
 
                 <div className="col-12 mt-3">
-                  <div className="d-flex justify-content-between w-100">
+                  <div className="d-flex justify-content-between w-100 flex-wrap">
                     <div>
                       <span className="text text-capitalize">{Localization.account_balance}:</span>
                       <span className="ml-2">{Utility.prettifyNumber(this.state.mainAccountValue)}</span>
@@ -444,10 +446,13 @@ class CartComponent extends BaseComponent<IProps, IState> {
                         onClick={() => this.getUserMainAccount()}
                         disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                       >
-                        <small>({Localization.recalculate}
-                          <i className="fa fa-refresh ml-1"></i>
+                        <small>
+                          {/* ({Localization.recalculate} */}
+                          <i className="fa fa-refresh ml-1--"></i>
                           {this.props.network_status === NETWORK_STATUS.OFFLINE
-                            ? <i className="fa fa-wifi text-danger"></i> : ''})</small>
+                            ? <i className="fa fa-wifi text-danger"></i> : ''}
+                          {/* ) */}
+                        </small>
                       </BtnLoader>
                     </div>
                     <div>
