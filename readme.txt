@@ -227,3 +227,13 @@ bookDetail cmp:
 header style --> remove col & row (replace with d-flex)
 
 ====================================================================================
+
+book download:
+    item click --> download;
+    progress click --> cancel;
+
+add size --> to dashborad
+
+book lib item box --> progress font-family inherit
+
+====================================================================================

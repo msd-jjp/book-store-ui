@@ -9,6 +9,7 @@ import { action_update_downloading_book_file } from "../../redux/action/download
 import { action_set_library_data } from "../../redux/action/library";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { LibraryService } from "../../service/service.library";
+import { Utility } from "../../asset/script/utility";
 
 export function calc_read_percent(item: ILibrary): string {
     return Math.floor((item.progress || 0) * 100) + '%';
@@ -52,6 +53,12 @@ export function book_downloading_progress(book_id: string, mainFile: boolean): n
     return d ? d.progress : 0;
 }
 
+export function book_download_size(book_id: string, mainFile: boolean): number | undefined {
+    const dbf = Store2.getState().downloading_book_file;
+    const d = dbf.find(d => d.book_id === book_id && d.mainFile === mainFile);
+    return d ? d.size : undefined;
+}
+
 export function is_libBook_downloaded(item: ILibrary): boolean {
     return is_book_downloaded(item.book.id, true);
 }
@@ -62,6 +69,10 @@ export function is_libBook_downloading(item: ILibrary): boolean {
 
 export function libBook_downloading_progress(item: ILibrary): number {
     return book_downloading_progress(item.book.id, true);
+}
+
+export function libBook_download_size(item: ILibrary): number | undefined {
+    return book_download_size(item.book.id, true);
 }
 
 export function toggle_book_download(book_id: string, mainFile: boolean): void {
@@ -132,6 +143,8 @@ export function libraryItem_viewList_render(
     const is_downloading = is_downloaded ? false : is_libBook_downloading(item);
     const downloading_progress = is_downloading ? libBook_downloading_progress(item) : '';
     const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress + '%' : '';
+    const download_size = is_downloading ? libBook_download_size(item) : '';
+    const download_size_str = (download_size || download_size === 0) ? Utility.byteFileSize(download_size) : '';
 
     return (
         <div className="view-list-item pb-2 mb-2" >
@@ -156,6 +169,7 @@ export function libraryItem_viewList_render(
                     </span>
                     {/* todo: size */}
                     {/* <span className="book-volume small">789.3 kb</span> */}
+                    <span className={"book-volume small " + (!download_size_str ? 'd-none' : '')}>{download_size_str}</span>
                     {/* <i className={"fa fa-check-circle downloaded-icon " + (is_downloaded ? '' : 'd-none')}></i> */}
                     <i className={
                         "fa fa-check-circle-- downloaded-icon "

@@ -106,4 +106,19 @@ export abstract class Utility {
         return number.toLocaleString();
     }
 
+    static byteFileSize(byte: number): string {
+        if (!byte && byte !== 0) return '';
+        const kb = byte / 1024;
+        const mb = kb / 1024;
+        let rtn = '';
+        if (mb > 0) {
+            rtn = Math.round(mb * 100) / 100 + ' MB';
+        } else if (kb > 0) {
+            rtn = Math.round(kb * 100) / 100 + ' KB';
+        } else {
+            rtn = Math.round(byte * 100) / 100 + ' B';
+        }
+        return rtn;
+    }
+
 }

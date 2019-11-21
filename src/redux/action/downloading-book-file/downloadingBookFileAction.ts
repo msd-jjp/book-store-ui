@@ -9,6 +9,8 @@ export interface IDownloadingBookFile_schema {
     status: 'start' | 'stop' | 'inProgress';
     /** a number between 0, 100 */
     progress: number;
+    /** file size in byte */
+    size?: number;
 }
 
 export interface IDownloadingBookFileAction extends Action<EACTIONS> {

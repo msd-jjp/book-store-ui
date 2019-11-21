@@ -4,6 +4,7 @@ import { CmpUtility } from "../_base/CmpUtility";
 import { appLocalStorage } from "../../service/appLocalStorage";
 import { Store2 } from "../../redux/store";
 import { action_update_downloading_book_file } from "../../redux/action/downloading-book-file";
+import { IDownloadingBookFile_schema } from "../../redux/action/downloading-book-file/downloadingBookFileAction";
 
 export class PartialDownload {
     private _bookService = new BookService();
@@ -64,6 +65,21 @@ export class PartialDownload {
                 // console.error('this.downloadFileEnded = true; book_id 48', this.book_id);
                 return;
             }
+
+            /** check if file changed */
+            // const dbf = [...Store2.getState().downloading_book_file];
+            // const dbf_item = dbf.find(d => (d.book_id === this.book_id && d.mainFile === this.mainFile));
+            const { item: dbf_item } = this.get_dbf_obj();
+            if (dbf_item && dbf_item.size) {
+                if (this.fileLength !== dbf_item.size) {
+                    const ended = await this.downloadEnded();
+                    reject({ error: `fileLength not match, new, old: , ${this.fileLength}, ${dbf_item.size}, ended: ${ended}` });
+                    return;
+                }
+            } else {
+                this.updateDownloadSize();
+            }
+
             // const tempFile = await this.getFromTempStorage();
             this.tempFile = await this.getFromTempStorage();
             // console.log('book_id, tempFile: ', this.book_id, tempFile);
@@ -218,6 +234,7 @@ export class PartialDownload {
     private async clearTempStorage(): Promise<boolean> {
         // console.time('clearTempStorage_2*2000');
         // await CmpUtility.waitOnMe(500);
+        //todo: _DELETE_ME
         let cleared = await appLocalStorage.storeBookFile(this.book_id, this.mainFile, new Uint8Array(0), true);
         cleared = await appLocalStorage.removeBookFileById(this.book_id, this.mainFile, true);
         // await CmpUtility.waitOnMe(500);
@@ -261,17 +278,32 @@ export class PartialDownload {
         return cleared;
     }
 
-    // private downloadingProgressUpdated = false;
     private updateDownloadingProgress() {
-        const dbf = [...Store2.getState().downloading_book_file];
-        const item = dbf.find(d => (d.book_id === this.book_id && d.mainFile === this.mainFile));
-        // debugger;
+        // const dbf = [...Store2.getState().downloading_book_file];
+        // const item = dbf.find(d => (d.book_id === this.book_id && d.mainFile === this.mainFile));
+        const { list: dbf, item } = this.get_dbf_obj();
         if (item && this.currentRange && this.fileLength) {
             item.progress = Math.floor((this.currentRange.to / this.fileLength) * 100);
         }
         Store2.dispatch(action_update_downloading_book_file(dbf));
-        // this.downloadingProgressUpdated = true;
         this.keepViewUpdate();
+    }
+
+    private updateDownloadSize() {
+        // const dbf = [...Store2.getState().downloading_book_file];
+        // const item = dbf.find(d => (d.book_id === this.book_id && d.mainFile === this.mainFile));
+        const { list: dbf, item } = this.get_dbf_obj();
+        if (item && this.fileLength) {
+            item.size = this.fileLength;
+        }
+        Store2.dispatch(action_update_downloading_book_file(dbf));
+        this.keepViewUpdate();
+    }
+
+    private get_dbf_obj(): { list: IDownloadingBookFile_schema[]; item: IDownloadingBookFile_schema | undefined; } {
+        const list = [...Store2.getState().downloading_book_file];
+        const item = list.find(d => (d.book_id === this.book_id && d.mainFile === this.mainFile));
+        return { list, item };
     }
 
 }
