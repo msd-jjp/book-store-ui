@@ -193,6 +193,10 @@ export class PartialDownload {
             });
 
             if (res) {
+                //todo: check file changed???
+                // const size = parseInt((res as any).headers['content-length']);
+                // console.log('size: ', size);
+
                 const saved = await this.saveInTempStorage(new Uint8Array(res.data));
                 // console.log('downloaded range, book_id', this.book_id, this.currentRange, res.data);
                 downloaded = saved;

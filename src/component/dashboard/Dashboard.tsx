@@ -20,10 +20,11 @@ import { AddToCollection } from "../library/collection/add-to-collection/AddToCo
 import { CmpUtility } from "../_base/CmpUtility";
 import { action_user_logged_in } from "../../redux/action/user";
 import { PersonService } from "../../service/service.person";
-import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem, book_downloading_progress } from "../library/libraryViewTemplate";
+import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem, book_downloading_progress, book_download_size } from "../library/libraryViewTemplate";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import Swiper from "swiper";
+import { Utility } from "../../asset/script/utility";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -271,6 +272,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     const is_downloading = is_downloaded ? false : is_book_downloading(current_book!.id, true);
     const downloading_progress = is_downloading ? book_downloading_progress(current_book!.id, true) : '';
     const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress + '%' : '';
+    const download_size = is_downloading ? book_download_size(current_book!.id, true) : '';
+    const download_size_str = (download_size || download_size === 0) ? Utility.byteFileSize(download_size) : '';
 
     const current_book_img = CmpUtility.getBook_firstImg(current_book);
     const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(current_book, BOOK_ROLES.Writer);
@@ -400,6 +403,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                   }</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
+
+            <div className={"mt-2 " + (!download_size_str ? 'd-none' : '')}>
+              <span className={"book-volume small "}>{download_size_str}</span>
+            </div>
+
           </div>
         </div>
 
