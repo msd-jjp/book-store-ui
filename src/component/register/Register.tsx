@@ -192,6 +192,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                                 required
                                 elRef={input => { this.inputElMobile = input; }}
                                 placeholder={Localization.mobile}
+                                onKeyUp={(e) => this.handle_keyUp_onSubmit_mobile(e)}
                             />
                         </div>
                         <div className="form-group">
@@ -214,16 +215,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         this.setState({ ...this.state, btnLoader: true });
         let res = await this._registerService.sendCode({ cell_no: this.state.mobile.value! })
             .catch(error => {
-                // debugger;
                 this.handleError({ error: error.response, toastOptions: { toastId: 'onSubmit_mobile_error' } });
-                /* let time = ((error.response || {}).data || {}).time;
-                if (time) {
-                    let msg: any = Localization.formatString(Localization.msg.back.already_has_valid_key, time);
-                    this.errorNotify(msg);
-
-                } else {
-                    this.errorNotify();
-                } */
             });
 
         if (!res) {
@@ -247,12 +239,16 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
             }
         );
     }
+    handle_keyUp_onSubmit_mobile(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === 'Enter') {
+            if (!this.state.isFormValid || this.state.btnLoader) return;
+            this.onSubmit_mobile();
+        }
+    }
     async sendAgain() {
         this.setState({ ...this.state, btnSendAgain_loader: true });
         let res = await this._registerService.sendCode({ cell_no: this.state.mobile.value! })
             .catch(error => {
-                // debugger;
-                // this.errorNotify();
                 this.handleError({ error: error.response, toastOptions: { toastId: 'sendAgain_error' } });
             });
 
@@ -313,6 +309,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                                 patternError={Localization.validation.smsCodeFormat}
                                 required
                                 elRef={input => { this.inputElCode = input; }}
+                                onKeyUp={(e) => this.handle_keyUp_onValidate_mobile(e)}
                             />
                         </div>
                         <div className="form-group">
@@ -354,8 +351,6 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         let response = await this._registerService.activateAcount(
             { cell_no: this.state.mobile.value!, activation_code: this.state.code.value! }
         ).catch(error => {
-            // debugger;
-            // this.errorNotify();
             this.handleError({ error: error.response, toastOptions: { toastId: 'onValidate_mobile_error' } });
         });
         this.setState({ ...this.state, btnLoader: false });
@@ -363,6 +358,12 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
 
         this.signup_token = response.data.signup_token;
         this.setState({ ...this.state, registerStep: REGISTER_STEP.register, isFormValid: false });
+    }
+    handle_keyUp_onValidate_mobile(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === 'Enter') {
+            if (!this.state.isFormValid || this.state.btnLoader) return;
+            this.onValidate_mobile();
+        }
     }
     from_validate_mobile_to_Submit_mobile() {
         this.setState(
@@ -396,6 +397,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                                 placeholder={Localization.name}
                                 required
                                 elRef={input => { this.inputElName = input; }}
+                                onKeyUp={(e) => this.handle_keyUp_onRegister(e)}
                             />
                             <div className="separator"></div>
                             <Input
@@ -404,6 +406,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                                 placeholder={Localization.username}
                                 required
                                 elRef={input => { this.inputElUsername = input; }}
+                                onKeyUp={(e) => this.handle_keyUp_onRegister(e)}
                             />
                             <div className="separator"></div>
                             <Input
@@ -413,6 +416,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                                 required
                                 elRef={input => { this.inputElPassword = input; }}
                                 type="password"
+                                onKeyUp={(e) => this.handle_keyUp_onRegister(e)}
                             />
                             <div className="separator"></div>
                             <Input
@@ -424,6 +428,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
                                 type="password"
                                 validationFunc={(val) => this.confirmPassword_validation(val)}
                                 patternError={Localization.validation.confirmPassword}
+                                onKeyUp={(e) => this.handle_keyUp_onRegister(e)}
                             />
                         </div>
 
@@ -442,31 +447,31 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
             )
         }
     }
+    private _registered = false;
     async onRegister() {
-        // debugger;
+        if (!this.state.isFormValid || this._registered) return;
         this.setState({ ...this.state, btnLoader: true });
         let res = await this._registerService.signUp({
-            // "user": {
             "password": this.state.password.value!,
             "username": this.state.username.value!,
-            // },
-            // "persone": {
-            // "address": '',
-            // "email": '',
-            // "last_name": '',
             "name": this.state.name.value!,
-            // "phone": '',
-            // },
             "cell_no": this.state.mobile.value!,
             "signup_token": this.signup_token,
         }).catch((error: any) => {
-            // debugger;
             this.handleError({ error: error.response, toastOptions: { toastId: 'onRegister_error' } });
         });
         this.setState({ ...this.state, btnLoader: false });
 
         if (!res) return;
+        
+        this._registered = true;
         this.signUpNotify();
+    }
+    handle_keyUp_onRegister(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === 'Enter') {
+            if (!this.state.isFormValid || this.state.btnLoader) return;
+            this.onRegister();
+        }
     }
 
     signUpNotify() {
