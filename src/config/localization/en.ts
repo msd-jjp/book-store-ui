@@ -112,6 +112,9 @@ export const en = {
     mobile: 'mobile',
     email: 'email',
     confirm_password: 'confirm password',
+    old_password: 'old password',
+    new_password: 'new password',
+    confirm_new_password: 'confirm new password',
     invalid_value: 'invalid value',
     required_field: 'required field',
     Show_password: 'Show password',
@@ -379,4 +382,5 @@ export const en = {
         GERMAN: 'german',
         SPANISH: 'spanish',
     },
+    change_password: 'change password',
 }

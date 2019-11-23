@@ -112,6 +112,9 @@ export const fa = {
     mobile: 'تلفن همراه',
     email: 'ایمیل',
     confirm_password: 'تایید رمز عبور',
+    old_password: 'رمز عبور قبلی',
+    new_password: 'رمز عبور جدید',
+    confirm_new_password: 'تایید رمز عبور جدید',
     invalid_value: 'مقدار نامعتبر است',
     required_field: 'فیلد ضروری است',
     Show_password: 'نمایش رمزعبور',
@@ -378,4 +381,5 @@ export const fa = {
         GERMAN: 'آلمانی',
         SPANISH: 'اسپانیایی',
     },
+    change_password: 'تغییر رمز عبور',
 }

@@ -19,6 +19,7 @@ import { UploadService } from "../../service/service.upload";
 import { action_user_logged_in } from "../../redux/action/user";
 import { IPerson } from "../../model/model.person";
 import { FixNumber } from "../form/fix-number/FixNumber";
+import { ChangePassword } from "./change-password/ChangePassword";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -64,6 +65,7 @@ interface IState {
   saveLoader: boolean;
   saveBtnVisibility: boolean;
   fetchPerson_loader: boolean;
+  modal_change_password_show: boolean;
 }
 
 class ProfileComponent extends BaseComponent<IProps, IState> {
@@ -102,6 +104,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
     saveLoader: false,
     saveBtnVisibility: false,
     fetchPerson_loader: false,
+    modal_change_password_show: false,
   };
 
   private _personService = new PersonService();
@@ -138,7 +141,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
     if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
 
     let res = await this._personService.byId(this.props.logged_in_user!.person.id).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'fetchPerson_error' } });
       this.setState({ ...this.state, fetchPerson_loader: false });
     });
 
@@ -319,6 +322,13 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
   }
   //#endregion
 
+  private openModal_changePassword() {
+    this.setState({ modal_change_password_show: true });
+  }
+  private closeModal_changePassword() {
+    this.setState({ modal_change_password_show: false });
+  }
+
   render() {
     return (
       <>
@@ -329,17 +339,18 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
 
                 <div className="row">
                   <div className="col-md-12 mb-3">
-                    <h6 className="text-center">
-                      <span className="text-muted">{Localization.username}:</span>&nbsp;
+                    <div className="d-flex justify-content-around">
+                      <h6 className="">
+                        <span className="text-muted"><i className="fa fa-user"></i> {Localization.username}:</span>&nbsp;
                       <span className="word-break-break-all">
-                        {this.props.logged_in_user ? this.props.logged_in_user.username : ''}
-                      </span>
-                    </h6>
-                    {/* <Input
-                      label={Localization.username}
-                      defaultValue={this.props.logged_in_user ? this.props.logged_in_user.username : ''}
-                      readOnly
-                    /> */}
+                          {this.props.logged_in_user ? this.props.logged_in_user.username : ''}
+                        </span>
+                      </h6>
+                      <h6 className="text-primary cursor-pointer" onClick={() => this.openModal_changePassword()}>
+                        <i className="fa fa-key"></i>&nbsp;
+                        <span>{Localization.change_password}</span>
+                      </h6>
+                    </div>
                   </div>
                   <div className="col-md-6">
                     <Input
@@ -503,6 +514,11 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
         </div>
 
         <ToastContainer {...this.getNotifyContainerConfig()} />
+
+        <ChangePassword
+          show={this.state.modal_change_password_show}
+          onHide={() => this.closeModal_changePassword()}
+        />
       </>
     );
   }

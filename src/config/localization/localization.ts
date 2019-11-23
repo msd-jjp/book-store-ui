@@ -125,6 +125,9 @@ interface ILocalization extends LocalizedStringsMethods {
     mobile: string;
     email: string;
     confirm_password: string;
+    old_password: string;
+    new_password: string;
+    confirm_new_password: string;
     invalid_value: string;
     required_field: string;
     Show_password: string;
@@ -366,6 +369,7 @@ interface ILocalization extends LocalizedStringsMethods {
     language_obj: {
         [key in LANGUAGES]: string;
     };
+    change_password: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
