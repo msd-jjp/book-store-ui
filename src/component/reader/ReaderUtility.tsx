@@ -9,6 +9,8 @@ import { IBookContent, IBookPosIndicator } from "../../webworker/reader-engine/M
 import { AudioBookGenerator } from "../../webworker/reader-engine/AudioBookGenerator";
 import { PdfBookGenerator } from "../../webworker/reader-engine/PdfBookGenerator";
 // import { Reader2Worker } from "../../webworker/reader2-worker/Reader2Worker";
+// import wasmWorker from 'wasm-worker';
+
 
 interface IEpubBook_chapters_flat {
     content: IBookContent | undefined;
@@ -130,22 +132,22 @@ export abstract class ReaderUtility {
 
 
 
-        // const _reader2Worker = new Reader2Worker();
-        // _reader2Worker.postMessage({
-        //     type: 'generate',
-        //     config: {
-        //         bookFile,
-        //         width: _bookPageSize.width,
-        //         height: _bookPageSize.height,
-        //         font,
-        //         fontSize: valid_fontSize,
-        //         fontColor: reader_epub_theme.fontColor,
-        //         bgColor: reader_epub_theme.bgColor
-        //     }
-        // });
-        // _reader2Worker.onmessage((book: BookGenerator) => {
-        //     debugger;
-        // });
+        /* const _reader2Worker = new Reader2Worker();
+        _reader2Worker.postMessage({
+            type: 'generate',
+            config: {
+                bookFile,
+                width: _bookPageSize.width,
+                height: _bookPageSize.height,
+                font,
+                fontSize: valid_fontSize,
+                fontColor: reader_epub_theme.fontColor,
+                bgColor: reader_epub_theme.bgColor
+            }
+        });
+        _reader2Worker.onmessage((book: BookGenerator) => {
+            debugger;
+        }); */
 
         let textBookClass: any;
         if (isPdf) textBookClass = PdfBookGenerator;
@@ -175,6 +177,23 @@ export abstract class ReaderUtility {
 
     private static wait_loadReaderEngine() {
         return new Promise(async (res, rej) => {
+
+            // debugger;
+            // wasmWorker('/reader/reader.wasm')
+            //     .then((Module: any) => {
+            //         debugger;
+            //         // return module.exports.add(1, 2);
+            //     })
+            //     // .then(sum => {
+            //     //     console.log('1 + 2 = ' + sum);
+            //     // })
+            //     .catch((ex: any) => {
+            //         debugger;
+            //         // ex is a string that represents the exception
+            //         console.error(ex);
+            //     });
+
+
             if ((window as any).Module && (window as any).Module.asm && (window as any).Module.asm._malloc) { // stackSave, _malloc
                 // if ((window as any).Module && (window as any).Module._malloc) { // stackSave, _malloc
                 // console.log('window.Module.asm', (window as any).Module._malloc);
