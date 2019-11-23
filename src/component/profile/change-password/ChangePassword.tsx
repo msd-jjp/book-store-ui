@@ -120,7 +120,7 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
 
     handle_keyUp(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.key === 'Enter') {
-            if (!this.state.isFormValid) return;
+            if (!this.state.isFormValid || this.state.loader) return;
             this.changePassword();
         }
     }

@@ -109,6 +109,12 @@ class LoginComponent extends BaseComponent<IProps, IState> {
             this.setState({ ...this.state, inputPasswordType: 'text' });
         }
     }
+    handle_keyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === 'Enter') {
+            if (!this.state.isFormValid || this.state.btnLoader) return;
+            this.onLogin();
+        }
+    }
 
     render() {
         return (
@@ -128,6 +134,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
                             required
                             elRef={input => { this.inputUsername = input; }}
                             placeholder={Localization.username}
+                            onKeyUp={(e) => this.handle_keyUp(e)}
                         />
                         <div className="separator"></div>
                         <Input
@@ -136,6 +143,7 @@ class LoginComponent extends BaseComponent<IProps, IState> {
                             required
                             type={this.state.inputPasswordType}
                             placeholder={Localization.password}
+                            onKeyUp={(e) => this.handle_keyUp(e)}
                         />
                     </div>
 
