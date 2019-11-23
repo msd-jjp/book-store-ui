@@ -117,7 +117,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  private is_buyable_cart(): boolean {
+  /* private is_buyable_cart(): boolean {
     if (typeof this.state.totalPrice === 'number') {
       if (this.state.mainAccountValue < this.state.totalPrice) {
         return false;
@@ -126,6 +126,17 @@ class CartComponent extends BaseComponent<IProps, IState> {
       }
     } else {
       return false;
+    }
+  } */
+  private buyBtn_icon_className() {
+    if (typeof this.state.totalPrice === 'number') {
+      if (this.state.mainAccountValue < this.state.totalPrice) {
+        return 'text-warning';
+      } else {
+        return '';
+      }
+    } else {
+      return 'text-danger';
     }
   }
   private is_paymentResult_visible(): boolean {
@@ -475,7 +486,8 @@ class CartComponent extends BaseComponent<IProps, IState> {
                   >
                     <h4 className="mb-0 d-inline">
                       {Localization.buy}&nbsp;
-                      <i className={"fa fa-money " + (!this.is_buyable_cart() ? 'text-danger' : '')}></i>
+                      {/* <i className={"fa fa-money " + (!this.is_buyable_cart() ? 'text-danger' : '')}></i> */}
+                      <i className={"fa fa-money " + this.buyBtn_icon_className()}></i>
                     </h4>
                     {
                       this.props.network_status === NETWORK_STATUS.OFFLINE
