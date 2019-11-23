@@ -1242,11 +1242,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 2320096,
+    STACK_BASE = 2320320,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 7562976,
-    DYNAMIC_BASE = 7562976,
-    DYNAMICTOP_PTR = 2320064;
+    STACK_MAX = 7563200,
+    DYNAMIC_BASE = 7563200,
+    DYNAMICTOP_PTR = 2320288;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1720,7 +1720,7 @@ var ASM_CONSTS = [];
 
 
 
-// STATICTOP = STATIC_BASE + 2319072;
+// STATICTOP = STATIC_BASE + 2319296;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1731,7 +1731,7 @@ var ASM_CONSTS = [];
 
 
 /* no memory initializer */
-var tempDoublePtr = 2320080
+var tempDoublePtr = 2320304
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -5530,10 +5530,10 @@ function copyTempDouble(ptr) {
     }
 
   
-  var ___tm_current=2319920;
+  var ___tm_current=2320144;
   
   
-  var ___tm_timezone=(stringToUTF8("GMT", 2319968, 4), 2319968);function _gmtime_r(time, tmPtr) {
+  var ___tm_timezone=(stringToUTF8("GMT", 2320192, 4), 2320192);function _gmtime_r(time, tmPtr) {
       var date = new Date(HEAP32[((time)>>2)]*1000);
       HEAP32[((tmPtr)>>2)]=date.getUTCSeconds();
       HEAP32[(((tmPtr)+(4))>>2)]=date.getUTCMinutes();

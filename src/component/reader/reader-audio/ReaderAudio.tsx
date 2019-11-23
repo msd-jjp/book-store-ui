@@ -366,7 +366,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // this.getGainNode();
 
         //todo: book progreess position;
-        let bookReadedTime = 0; // 47, 200
+        let bookReadedTime = 200; // 0, 47, 200
         this.setWavesurferTime(bookReadedTime);
         this.updateTimer(bookReadedTime);
     }
@@ -590,6 +590,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             this._loadedAtomPos = atomPos;
             console.time('____________________________________________loadVoiceAtom');
             this._bookInstance.loadVoiceAtom(atomPos);
+            // this._bookInstance.loadVoiceAtom({ group: 0, atom: 1 });
             console.timeEnd('____________________________________________loadVoiceAtom');
         }
 
