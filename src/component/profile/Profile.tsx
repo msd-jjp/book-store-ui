@@ -346,7 +346,8 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
                           {this.props.logged_in_user ? this.props.logged_in_user.username : ''}
                         </span>
                       </h6>
-                      <h6 className="text-primary cursor-pointer" onClick={() => this.openModal_changePassword()}>
+                      <h6 className="text-primary cursor-pointer opacity-5"
+                        onClick={() => false && this.openModal_changePassword()}>
                         <i className="fa fa-key"></i>&nbsp;
                         <span>{Localization.change_password}</span>
                       </h6>
