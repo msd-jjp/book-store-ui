@@ -118,6 +118,13 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
         return valid;
     }
 
+    handle_keyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === 'Enter') {
+            if (!this.state.isFormValid) return;
+            this.changePassword();
+        }
+    }
+
     closeModal() {
         this.props.onHide();
     }
@@ -141,6 +148,7 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
                                     defaultValue={this.state.formData.old_password.value}
                                     required
                                     type="password"
+                                    onKeyUp={(e) => this.handle_keyUp(e)}
                                 />
                             </div>
                             <div className="col-12">
@@ -151,6 +159,7 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
                                     defaultValue={this.state.formData.new_password.value}
                                     required
                                     type="password"
+                                    onKeyUp={(e) => this.handle_keyUp(e)}
                                 />
                             </div>
                             <div className="col-12">
@@ -163,6 +172,7 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
                                     validationFunc={(val) => this.confirmPassword_validation(val)}
                                     patternError={Localization.validation.confirmPassword}
                                     type="password"
+                                    onKeyUp={(e) => this.handle_keyUp(e)}
                                 />
                             </div>
                         </div>
