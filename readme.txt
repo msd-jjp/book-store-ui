@@ -232,9 +232,6 @@ book download:
     item click --> download;
     progress click --> cancel;
 
-add size --> to dashborad
-
-book lib item box --> progress font-family inherit   &&  change % to small
 
 libItem --> add size (perminently keep size)
 

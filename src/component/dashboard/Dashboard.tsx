@@ -271,7 +271,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     // const is_downloading = is_book_downloading(current_book!.id, true);
     const is_downloading = is_downloaded ? false : is_book_downloading(current_book!.id, true);
     const downloading_progress = is_downloading ? book_downloading_progress(current_book!.id, true) : '';
-    const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress + '%' : '';
+    const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress : '';
     const download_size = is_downloading ? book_download_size(current_book!.id, true) : '';
     const download_size_str = (download_size || download_size === 0) ? Utility.byteFileSize(download_size) : '';
 
@@ -312,11 +312,17 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 <i className="fa fa-check-circle" />
               </div> */}
               <div className="book-download">
-                <i className={
+                {
+                  is_downloaded ?
+                    <i className="fa fa-check-circle"></i>
+                    : is_downloading ?
+                      <i className="fa downloading">{downloading_progress_str}<small>%</small></i> : ''
+                }
+                {/* <i className={
                   "fa "
                   + (is_downloaded ? 'fa-check-circle' : ' ')
-                  + (is_downloading ? 'fa-refresh__fa-spin' : ' ')
-                } >{downloading_progress_str}</i>
+                  + (is_downloading ? 'fa-refresh__fa-spin downloading' : ' ')
+                } >{downloading_progress_str}</i> */}
               </div>
             </div>
           </div>

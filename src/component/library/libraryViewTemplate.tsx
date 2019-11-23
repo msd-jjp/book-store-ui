@@ -142,7 +142,7 @@ export function libraryItem_viewList_render(
     const is_downloaded = is_libBook_downloaded(item);
     const is_downloading = is_downloaded ? false : is_libBook_downloading(item);
     const downloading_progress = is_downloading ? libBook_downloading_progress(item) : '';
-    const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress + '%' : '';
+    const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress : '';
     const download_size = is_downloading ? libBook_download_size(item) : '';
     const download_size_str = (download_size || download_size === 0) ? Utility.byteFileSize(download_size) : '';
 
@@ -171,11 +171,17 @@ export function libraryItem_viewList_render(
                     {/* <span className="book-volume small">789.3 kb</span> */}
                     <span className={"book-volume small " + (!download_size_str ? 'd-none' : '')}>{download_size_str}</span>
                     {/* <i className={"fa fa-check-circle downloaded-icon " + (is_downloaded ? '' : 'd-none')}></i> */}
-                    <i className={
+                    {
+                        is_downloaded ?
+                            <i className="fa fa-check-circle downloaded-icon"></i>
+                            : is_downloading ?
+                                <i className="fa downloaded-icon downloading">{downloading_progress_str}<small>%</small></i> : ''
+                    }
+                    {/* <i className={
                         "fa fa-check-circle-- downloaded-icon "
                         + (is_downloaded ? 'fa-check-circle' : ' ')
-                        + (is_downloading ? 'fa-refresh__fa-spin' : ' ')
-                    } >{downloading_progress_str}</i>
+                        + (is_downloading ? 'fa-refresh__fa-spin downloading' : ' ')
+                    } >{downloading_progress_str}</i> */}
                 </div>
 
                 <div className={
@@ -201,7 +207,7 @@ export function libraryItem_viewGrid_render(
     const is_downloaded = is_libBook_downloaded(item);
     const is_downloading = is_downloaded ? false : is_libBook_downloading(item);
     const downloading_progress = is_downloading ? libBook_downloading_progress(item) : '';
-    const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress + '%' : '';
+    const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress : '';
 
     return (
         <div className="col-4 p-align-inverse-0 mb-3">
@@ -226,11 +232,17 @@ export function libraryItem_viewGrid_render(
                 </div>
                 {/* <div className={"book-download " + (is_downloaded || is_downloading ? '' : 'd-none')}> */}
                 <div className="book-download">
-                    <i className={
+                    {
+                        is_downloaded ?
+                            <i className="fa fa-check-circle"></i>
+                            : is_downloading ?
+                                <i className="fa downloading">{downloading_progress_str}<small>%</small></i> : ''
+                    }
+                    {/* <i className={
                         "fa fa-check-circle-- "
                         + (is_downloaded ? 'fa-check-circle' : ' ')
-                        + (is_downloading ? 'fa-refresh__fa-spin' : ' ')
-                    } >{downloading_progress_str}</i>
+                        + (is_downloading ? 'fa-refresh__fa-spin downloading' : ' ')
+                    } >{downloading_progress_str}</i> */}
                 </div>
 
                 <div className={

@@ -89,6 +89,9 @@
         // color: white;
         // text-align: center;
         // padding-top: 0.2rem;
+        &.downloading {
+          font-family: inherit;
+        }
       }
     }
 
@@ -175,6 +178,11 @@
         }
         body.rtl & {
           left: 1rem;
+        }
+
+        &.downloading {
+          font-family: inherit;
+          direction: ltr;
         }
       }
     }
