@@ -82,6 +82,12 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
       });
     }
   }
+  handle_keyUp_onSubmitMobile(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      if (!this.state.isFormValid || this.state.btnLoader) return;
+      this.onSubmitMobile();
+    }
+  }
 
   async onSubmitNewPassword() {
     if (!this.state.isFormValid) {
@@ -112,6 +118,12 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
         forgotPasswordStep: FORGOT_PASSWORD_STEP.submit_newPassword, isFormValid: false,
       });
     } */
+  }
+  handle_keyUp_onSubmitNewPassword(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      if (!this.state.isFormValid || this.state.btnLoader) return;
+      this.onSubmitNewPassword();
+    }
   }
   signUpNotify() {
     return toast.success(
@@ -188,6 +200,7 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
                 patternError={Localization.validation.mobileFormat}
                 required
                 placeholder={Localization.mobile}
+                onKeyUp={(e) => this.handle_keyUp_onSubmitMobile(e)}
               />
             </div>
 
@@ -233,6 +246,7 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
                 }}
                 required
                 placeholder={Localization.verification_code}
+                onKeyUp={(e) => this.handle_keyUp_onSubmitNewPassword(e)}
               />
               <div className="separator" />
               <Input
@@ -243,6 +257,7 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
                 required
                 type="password"
                 placeholder={Localization.password}
+                onKeyUp={(e) => this.handle_keyUp_onSubmitNewPassword(e)}
               />
               <div className="separator" />
               <Input
@@ -253,6 +268,7 @@ class ForgotPasswordComponent extends BaseComponent<IProps, IState> {
                 type="password"
                 validationFunc={(val) => this.confirmPassword_validation(val)}
                 patternError={Localization.validation.confirmPassword}
+                onKeyUp={(e) => this.handle_keyUp_onSubmitNewPassword(e)}
               />
             </div>
 

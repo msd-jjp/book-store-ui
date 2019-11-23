@@ -19,10 +19,11 @@ export abstract class BaseService {
     baseURL = Setup.endpoint;
     private static token: IToken | null | undefined;
 
-    axiosInstance: AxiosInstance = axios.create(this.axiosRequestConfig);
+    axiosInstance: AxiosInstance; // = axios.create(this.axiosRequestConfig);
 
     constructor() {
         // this.set_401_interceptors();
+        this.axiosInstance = axios.create(this.axiosRequestConfig);
         this.set_store_interceptors(this.axiosInstance);
     }
 
