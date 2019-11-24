@@ -1,19 +1,19 @@
-import { book, IBookPosIndicator, IBookContent } from "./MsdBook";
+import { book, IBookPosIndicator, IBookContent, WasmWorkerHandler } from "./MsdBook";
 import { CmpUtility } from "../../component/_base/CmpUtility";
 
 export class PdfBookGenerator extends book {
     private _pageStorage: any = {};
-    setToStorage(index: number, page: string): void {
+    private setToStorage(index: number, page: string): void {
         this._pageStorage[index] = page;
     }
-    getFromStorage(index: number): string | undefined {
+    private getFromStorage(index: number): string | undefined {
         return this._pageStorage[index];
     }
 
     private _allPages_pos: IBookPosIndicator[] | undefined;
-    getAllPages_pos(): Array<IBookPosIndicator> {
+    async getAllPages_pos(): Promise<Array<IBookPosIndicator>> {
         if (!this._allPages_pos) {
-            const pageCount = this.getPageCount();
+            const pageCount = await this.getPageCount();
             const list: IBookPosIndicator[] = [];
             for (let i = 0; i < pageCount; i++) {
                 list.push({
@@ -24,12 +24,12 @@ export class PdfBookGenerator extends book {
         }
         return this._allPages_pos;
     }
-    getPage(index: number, zoom = 100): string {
+    async getPage(index: number, zoom = 100): Promise<string> {
         let page = this.getFromStorage(index);
         if (!page) {
             // const allPages_pos = this.getAllPages_pos();
             // page = this.RenderSpecPage(allPages_pos[index]);
-            page = this.renderDocPage(index, zoom);
+            page = await this.renderDocPage(index, zoom);
             this.setToStorage(index, page);
         }
         return page;
@@ -42,12 +42,12 @@ export class PdfBookGenerator extends book {
     /**
      * if page not exist it will store around.
      */
-    getPage_with_storeAround(index: number, n: number, zoom = 100): string {
+    async getPage_with_storeAround(index: number, n: number, zoom = 100): Promise<string> {
         let page = this.getFromStorage(index);
         if (!page) {
             // const allPages_pos = this.getAllPages_pos();
             // page = this.RenderSpecPage(allPages_pos[index]);
-            page = this.renderDocPage(index, zoom);
+            page = await this.renderDocPage(index, zoom);
             this.setToStorage(index, page);
             this.storeAround(index, n);
         }
@@ -61,8 +61,8 @@ export class PdfBookGenerator extends book {
     }
 
     private _allChapters: IBookContent[] | undefined;
-    getAllChapters(): Array<IBookContent> {
-        if (!this._allChapters) this._allChapters = this.getContentList();
+    async getAllChapters(): Promise<Array<IBookContent>> {
+        if (!this._allChapters) this._allChapters = await this.getContentList();
         return this._allChapters;
     }
 
@@ -71,11 +71,41 @@ export class PdfBookGenerator extends book {
             this.getPage(i);
         }
     }
-    private store_n_pages_after_x(x: number, n: number): void {
-        const allPages_pos = this.getAllPages_pos();
+    private async store_n_pages_after_x(x: number, n: number): Promise<void> {
+        const allPages_pos = await this.getAllPages_pos();
         for (let i = x + 1; i < allPages_pos.length && i <= x + n; i++) {
             this.getPage(i);
         }
+    }
+
+    static async getInstace(
+        wasmWorker: WasmWorkerHandler, bookbuf: Uint8Array, screenWidth: number,
+        screenHeight: number, font: Uint8Array, fontSize: number,
+        textFColor: number, textBColor: number): Promise<PdfBookGenerator> {
+        let fontHeapPtr = await wasmWorker.copyBufferToHeap(font);
+        let rendererFormatPtr = await wasmWorker.getRendererFormat(
+            textFColor, textBColor, textFColor, textBColor, fontSize, fontHeapPtr,
+            font.length);
+        // debugger;
+        let bookheapPtr = await wasmWorker.copyBufferToHeap(bookbuf);
+        let bookPtr = await wasmWorker.getBookFromBuf(bookheapPtr, bookbuf.length);
+        await wasmWorker.freeHeap(bookheapPtr);  // free heap from bin buffer;
+
+        let bookRendererPtr = await wasmWorker.getBookRenderer(
+            bookPtr, rendererFormatPtr, screenWidth, screenHeight);
+        let bookIndicatorPtr = await wasmWorker.initBookIndicator();
+        let currentBookPosIndicator =
+            await wasmWorker.BookNextPart(bookPtr, bookIndicatorPtr);
+        await wasmWorker.deleteBookPosIndicator(bookIndicatorPtr);
+        let rtn = new PdfBookGenerator(
+            wasmWorker, screenWidth, screenHeight, font, fontSize, textFColor,
+            textBColor);
+        rtn.bookPtr = bookPtr;
+        rtn.bookRendererPtr = bookRendererPtr;
+        rtn.fontHeapPtr = fontHeapPtr;
+        rtn.rendererFormatPtr = rendererFormatPtr;
+        rtn.currentBookPosIndicator = currentBookPosIndicator;
+        return rtn;
     }
 
 }

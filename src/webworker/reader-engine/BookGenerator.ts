@@ -1,25 +1,25 @@
-import { book, IBookPosIndicator, IBookContent } from "./MsdBook";
+import { book, IBookPosIndicator, IBookContent, WasmWorkerHandler } from "./MsdBook";
 import { CmpUtility } from "../../component/_base/CmpUtility";
 
 export class BookGenerator extends book {
     private _pageStorage: any = {};
-    setToStorage(index: number, page: string): void {
+    private setToStorage(index: number, page: string): void {
         this._pageStorage[index] = page;
     }
-    getFromStorage(index: number): string | undefined {
+    private getFromStorage(index: number): string | undefined {
         return this._pageStorage[index];
     }
 
     private _allPages_pos: IBookPosIndicator[] | undefined;
-    getAllPages_pos(): Array<IBookPosIndicator> {
-        if (!this._allPages_pos) this._allPages_pos = this.getListOfPageIndicators();
+    async getAllPages_pos(): Promise<Array<IBookPosIndicator>> {
+        if (!this._allPages_pos) this._allPages_pos = await this.getListOfPageIndicators();
         return this._allPages_pos;
     }
-    getPage(index: number): string {
+    async getPage(index: number): Promise<string> {
         let page = this.getFromStorage(index);
         if (!page) {
-            const allPages_pos = this.getAllPages_pos();
-            page = this.RenderSpecPage(allPages_pos[index]);
+            const allPages_pos = await this.getAllPages_pos();
+            page = await this.RenderSpecPage(allPages_pos[index]);
             this.setToStorage(index, page);
         }
         return page;
@@ -28,37 +28,21 @@ export class BookGenerator extends book {
         let page = this.getFromStorage(index);
         return page;
     }
-    // getPage_with_storeAround_old(index: number, n: number): string {
-    //     let page = this.getFromStorage(index);
-    //     if (!page) {
-    //         const allPages_pos = this.getAllPages_pos();
-    //         page = this.RenderSpecPage(allPages_pos[index]);
-    //         this.setToStorage(index, page);
-    //         this.storeAround(index, n);
-    //     }
-    //     return page;
-    // }
 
     /**
      * if page not exist it will store around.
      */
-    getPage_with_storeAround(index: number, n: number): string {
+    async getPage_with_storeAround(index: number, n: number): Promise<string> {
         let page = this.getFromStorage(index);
         if (!page) {
-            const allPages_pos = this.getAllPages_pos();
-            page = this.RenderSpecPage(allPages_pos[index]);
+            const allPages_pos = await this.getAllPages_pos();
+            page = await this.RenderSpecPage(allPages_pos[index]);
             this.setToStorage(index, page);
             this.storeAround(index, n);
         }
         return page;
     }
-    
 
-    // private async storeAround_DELETE_ME(pageIndex: number, n: number) {
-    //     await CmpUtility.waitOnMe(0);
-    //     this.get_n_pages_before_x(pageIndex, n);
-    //     this.get_n_pages_after_x(pageIndex, n+1);
-    // }
     private async storeAround(pageIndex: number, n: number) {
         await CmpUtility.waitOnMe(0);
         this.store_n_pages_before_x(pageIndex, n);
@@ -66,50 +50,56 @@ export class BookGenerator extends book {
     }
 
     private _allChapters: IBookContent[] | undefined;
-    getAllChapters(): Array<IBookContent> {
-        if (!this._allChapters) this._allChapters = this.getContentList();
+    async getAllChapters(): Promise<Array<IBookContent>> {
+        if (!this._allChapters) this._allChapters = await this.getContentList();
         return this._allChapters;
     }
 
-    // private get_n_pages_before_x(x: number, n: number): string[] {
-    //     let y = x - n;
-    //     if (y <= 0) y = 0;
-    //     let m = x - y;
-    //     const allPages_pos = this.getAllPages_pos();
-    //     const mPages = this.renderNPages(allPages_pos[y], m);
-
-    //     for (let i = 0; i < mPages.length; i++) {
-    //         this.setToStorage(y + i, mPages[i]);
-    //     }
-
-    //     return mPages;
-    // }
-    /** get n pages from x, include x, first page is x.
-     * @param x from x
-     * @param n number of page include index x
-     */
-    // private get_n_pages_after_x(x: number, n: number): string[] {
-    //     const allPages_pos = this.getAllPages_pos();
-    //     const nPages = this.renderNPages(allPages_pos[x], n);
-
-    //     for (let i = 0; i < nPages.length; i++) {
-    //         this.setToStorage(x + i, nPages[i]);
-    //     }
-
-    //     return nPages;
-    // }
+    private _store_n_pages_progress: number[] = [];
     private store_n_pages_before_x(x: number, n: number): void {
         for (let i = x - 1; i >= x - n && i >= 0; i--) {
+            if (this._store_n_pages_progress.includes(i)) return;
+            this._store_n_pages_progress[i] = i;
             this.getPage(i);
         }
     }
-    private store_n_pages_after_x(x: number, n: number): void {
-        const allPages_pos = this.getAllPages_pos();
+    private async store_n_pages_after_x(x: number, n: number): Promise<void> {
+        const allPages_pos = await this.getAllPages_pos();
         for (let i = x + 1; i < allPages_pos.length && i <= x + n; i++) {
+            if (this._store_n_pages_progress.includes(i)) return;
+            this._store_n_pages_progress[i] = i;
             this.getPage(i);
         }
     }
 
+    static async getInstace(
+        wasmWorker: WasmWorkerHandler, bookbuf: Uint8Array, screenWidth: number,
+        screenHeight: number, font: Uint8Array, fontSize: number,
+        textFColor: number, textBColor: number): Promise<BookGenerator> {
+        let fontHeapPtr = await wasmWorker.copyBufferToHeap(font);
+        let rendererFormatPtr = await wasmWorker.getRendererFormat(
+            textFColor, textBColor, textFColor, textBColor, fontSize, fontHeapPtr,
+            font.length);
+        // debugger;
+        let bookheapPtr = await wasmWorker.copyBufferToHeap(bookbuf);
+        let bookPtr = await wasmWorker.getBookFromBuf(bookheapPtr, bookbuf.length);
+        await wasmWorker.freeHeap(bookheapPtr);  // free heap from bin buffer;
 
+        let bookRendererPtr = await wasmWorker.getBookRenderer(
+            bookPtr, rendererFormatPtr, screenWidth, screenHeight);
+        let bookIndicatorPtr = await wasmWorker.initBookIndicator();
+        let currentBookPosIndicator =
+            await wasmWorker.BookNextPart(bookPtr, bookIndicatorPtr);
+        await wasmWorker.deleteBookPosIndicator(bookIndicatorPtr);
+        let rtn = new BookGenerator(
+            wasmWorker, screenWidth, screenHeight, font, fontSize, textFColor,
+            textBColor);
+        rtn.bookPtr = bookPtr;
+        rtn.bookRendererPtr = bookRendererPtr;
+        rtn.fontHeapPtr = fontHeapPtr;
+        rtn.rendererFormatPtr = rendererFormatPtr;
+        rtn.currentBookPosIndicator = currentBookPosIndicator;
+        return rtn;
+    }
 
 }
