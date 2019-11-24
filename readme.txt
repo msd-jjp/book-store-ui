@@ -235,4 +235,14 @@ book download:
 
 libItem --> add size (perminently keep size)
 
+
+====================================================================================
+
+reader :
+    audio
+        chapter --> nested menu & load file on click
+    pdf:
+        chapter --> nested menu
+        zoom
+
 ====================================================================================

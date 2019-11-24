@@ -228,6 +228,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
     private _bookInstance!: AudioBookGenerator;
     private async createBook() {
+        this.setState({ loading: true });
         const bookFile = await appLocalStorage.findBookMainFileById(this.book_id); // find book chapter
 
         // _DELETE_ME
@@ -253,19 +254,22 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    private initAudio() {
+    private async initAudio() {
         debugger;
         if (this.wavesurfer) {
             this.wavesurfer.destroy();
         }
 
         // const fileTotalDuration = this._bookInstance.getTotalDuration();
-        const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
+        const allAtoms_pos = await this._bookInstance.getAllAtoms_pos();
         let trackTotalDuration = 0;
         try {
-            allAtoms_pos.forEach(atom => {
+            /* allAtoms_pos.forEach(atom => {
                 trackTotalDuration += this._bookInstance.getAtomDuration(atom);
-            });
+            }); */
+            for (let i = 0; i < allAtoms_pos.length; i++) {
+                trackTotalDuration += await this._bookInstance.getAtomDuration(allAtoms_pos[i]);
+            }
         } catch (e) {
             // trackTotalDuration = 247560;
             console.error('trackTotalDuration: ', e);
@@ -427,10 +431,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this._gainNode!.gain.setValueAtTime(vol, this.getAudioContext().currentTime);
     }
 
-    private processCurrentTime(currentTime: number, seek: boolean): void {
+    private async processCurrentTime(currentTime: number, seek: boolean): Promise<void> {
         console.log('processCurrentTimeeeee: currentTime, seek: ', currentTime, seek);
 
-        const fileAtoms_duration = this._bookInstance.getFileAtoms_duration();
+        const fileAtoms_duration = await this._bookInstance.getFileAtoms_duration();
         let currentAtom_index = undefined;
 
         for (let i = 0; i < fileAtoms_duration.length; i++) {
@@ -443,7 +447,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
         let currentAtomPos: IBookPosIndicator | undefined;
         if (currentAtom_index || currentAtom_index === 0) {
-            currentAtomPos = this._bookInstance.getAllAtoms_pos()[currentAtom_index];
+            currentAtomPos = (await this._bookInstance.getAllAtoms_pos())[currentAtom_index];
 
             this.bindVoiceToAudioContext(
                 currentAtomPos,
@@ -549,9 +553,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                     return;
                 }
                 if ((fromTime + loadMoreTimer) * 1000 >= atomFromTo.to) {
-                    const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
+                    const allAtoms_pos = await this._bookInstance.getAllAtoms_pos();
                     if (allAtoms_pos.length - 1 >= atomPos_index + 1) {
-                        const fileAtoms_duration = this._bookInstance.getFileAtoms_duration();
+                        const fileAtoms_duration = await this._bookInstance.getFileAtoms_duration();
                         this.bindVoiceToAudioContext(
                             allAtoms_pos[atomPos_index + 1],
                             fileAtoms_duration[atomPos_index + 1],
@@ -562,6 +566,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                             false,
                             true
                         );
+                        // return; // todo: return added returnreturnreturnreturnreturnreturnreturn??????
                     }
                 } else {
                     this.bindVoiceToAudioContext(
@@ -589,7 +594,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         if (this._loadedAtomPos !== atomPos) {
             this._loadedAtomPos = atomPos;
             console.time('____________________________________________loadVoiceAtom');
-            this._bookInstance.loadVoiceAtom(atomPos);
+            await this._bookInstance.loadVoiceAtom(atomPos);
             // this._bookInstance.loadVoiceAtom({ group: 0, atom: 1 });
             console.timeEnd('____________________________________________loadVoiceAtom');
         }
@@ -599,14 +604,14 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             console.warn('fromTimeInAtom is less than 0 !!: fromTimeInAtom changed to 0', fromTimeInAtom);
             fromTimeInAtom = 0;
         }
-        const atomActualDuration = this._bookInstance.getLoadedVoiceAtomDuration();
+        const atomActualDuration = await this._bookInstance.getLoadedVoiceAtomDuration();
 
-        const sampleRate = this._bookInstance.getLoadedVoiceAtomSampleRate();
-        const channels = this._bookInstance.getLoadedVoiceAtomChannels();
+        const sampleRate = await this._bookInstance.getLoadedVoiceAtomSampleRate();
+        const channels = await this._bookInstance.getLoadedVoiceAtomChannels();
         let atom_10_sec: Float32Array[] | undefined;
         if (fromTimeInAtom < atomActualDuration) {
             console.log('***getLoadedVoiceAtom10Second:', fromTimeInAtom, atomActualDuration, atomFromTo);
-            atom_10_sec = this._bookInstance.getLoadedVoiceAtom10Second(fromTimeInAtom);
+            atom_10_sec = await this._bookInstance.getLoadedVoiceAtom10Second(fromTimeInAtom);
         }
 
         let createAbleSource = true;
@@ -669,12 +674,12 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             newSource.source = source;
             this._audioSourceList.push(source);
 
-            if (voiceTime < 10) {
+            if (voiceTime < 10) { // todo: move me at the end.............................
                 console.log('voiceTime < 10 --> load next atom', voiceTime);
-                const allAtoms_pos = this._bookInstance.getAllAtoms_pos();
+                const allAtoms_pos = await this._bookInstance.getAllAtoms_pos();
                 if (allAtoms_pos.length - 1 >= atomPos_index + 1) {
 
-                    const fileAtoms_duration = this._bookInstance.getFileAtoms_duration();
+                    const fileAtoms_duration = await this._bookInstance.getFileAtoms_duration();
                     this.bindVoiceToAudioContext(
                         allAtoms_pos[atomPos_index + 1],
                         fileAtoms_duration[atomPos_index + 1],

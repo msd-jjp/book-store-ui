@@ -24,6 +24,7 @@ import { IBookContent, IBookPosIndicator } from "../../../webworker/reader-engin
 import { Virtual } from "swiper/dist/js/swiper.esm";
 import { AppGuid } from "../../../asset/script/guid";
 import { BOOK_TYPES } from "../../../enum/Book";
+import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
 
 
 interface IReaderScrollSlide {
@@ -151,7 +152,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
 
   private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
-  private _bookInstance!: BookGenerator;
+  private _bookInstance!: BookGenerator | PdfBookGenerator;
   private async createBook() {
     const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
     if (!bookFile) {
@@ -172,20 +173,20 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   private _createBookChapters: IEpubBook_chapters | undefined;
-  private /* async */ createBookChapters() {
+  private async createBookChapters() {
     // await CmpUtility.waitOnMe(0);
-    const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
+    const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
     this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
 
-    this.calc_chapters_with_page();
+    await this.calc_chapters_with_page();
   }
 
   private _pagePosList: number[] = [];
   private _chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
-  private /* async */ calc_chapters_with_page() {
+  private async calc_chapters_with_page() {
     // await CmpUtility.waitOnMe(0);
     if (!this._pagePosList.length) {
-      const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
+      const bookPosList: IBookPosIndicator[] = await this._bookInstance.getAllPages_pos();
       bookPosList.forEach(bpi => {
         // this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
         this._pagePosList.push(ReaderUtility.calc_bookContentPos_value(bpi));
@@ -262,9 +263,9 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     return activeSlide;
   }
 
-  initSwiper() {
-    const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
-    this.createBookChapters();
+  async initSwiper() {
+    const bookPosList: IBookPosIndicator[] = await this._bookInstance.getAllPages_pos();
+    await this.createBookChapters();
 
     this.book_page_length = bookPosList.length;
     const progress_percent = this._libraryItem!.progress || 0;
@@ -352,14 +353,12 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
   getPagePath_ifExist(pageIndex: number) {
     const page = this._bookInstance.getPage_ifExist(pageIndex);
-    if (!page) { ReaderUtility.check_swiperImg_loaded() }
+    if (!page) { ReaderUtility.check_swiperImg_with_delay(this._bookInstance) } // check_swiperImg_loaded
     return page;
   }
-  // async 
   getPagePath(pageIndex: number) {
-    // await CmpUtility.waitOnMe(0);
-    return this._bookInstance.getPage_with_storeAround(pageIndex, 5);
-    // return this._bookInstance.getPage(pageIndex);
+    this._bookInstance.getPage_with_storeAround(pageIndex, 5);
+    return pageIndex; // page;
   }
 
   swiper_item_render(slide: IReaderScrollSlide, offset: any) {

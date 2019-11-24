@@ -5,7 +5,7 @@ import { IReader_schema_epub_theme, IReader_schema_epub_fontName } from "../../r
 import { BookGenerator } from "../../webworker/reader-engine/BookGenerator";
 import { LANGUAGES } from "../../enum/language";
 import { CmpUtility } from "../_base/CmpUtility";
-import { IBookContent, IBookPosIndicator } from "../../webworker/reader-engine/MsdBook";
+import { IBookContent, IBookPosIndicator, WasmWorkerHandler } from "../../webworker/reader-engine/MsdBook";
 import { AudioBookGenerator } from "../../webworker/reader-engine/AudioBookGenerator";
 import { PdfBookGenerator } from "../../webworker/reader-engine/PdfBookGenerator";
 // import { Reader2Worker } from "../../webworker/reader2-worker/Reader2Worker";
@@ -56,7 +56,7 @@ export abstract class ReaderUtility {
         theme: IReader_schema_epub_theme;
         fontSize: number;
         fontName: IReader_schema_epub_fontName;
-        book: BookGenerator;
+        book: BookGenerator | PdfBookGenerator;
     } | undefined;
     private static checkEpubBookExist(book_id: string, bookPageSize?: { width: number; height: number; }): boolean {
         const reader_state = { ...Store2.getState().reader };
@@ -86,7 +86,7 @@ export abstract class ReaderUtility {
         bookFile: Uint8Array,
         bookPageSize?: { width: number; height: number; },
         isPdf?: boolean
-    ): Promise<BookGenerator> {
+    ): Promise<BookGenerator | PdfBookGenerator> {
         // debugger;
         if (ReaderUtility.checkEpubBookExist(book_id, bookPageSize)) {
             return ReaderUtility._createEpubBook_instance!.book;
@@ -123,8 +123,8 @@ export abstract class ReaderUtility {
 
         const reader_epub_theme = ReaderUtility.getEpubBook_theme(reader_epub.theme);
 
-        await ReaderUtility.wait_loadReaderEngine();
-        await CmpUtility.waitOnMe(1000); // todo: _DELETE_ME
+        // await ReaderUtility.wait_loadReaderEngine();
+        // await CmpUtility.waitOnMe(10000); // todo: _DELETE_ME
 
         let valid_fontSize = reader_epub.fontSize;
         if (valid_fontSize > 50) { valid_fontSize = 50; }
@@ -149,11 +149,25 @@ export abstract class ReaderUtility {
             debugger;
         }); */
 
-        let textBookClass: any;
+        let textBookClass: any; // BookGenerator | PdfBookGenerator | undefined;
         if (isPdf) textBookClass = PdfBookGenerator;
         else textBookClass = BookGenerator;
 
-        const _book = new textBookClass( // BookGenerator
+        /* const _book = new textBookClass( // BookGenerator
+            bookFile,
+            _bookPageSize.width,
+            _bookPageSize.height,
+            font,
+            valid_fontSize, // reader_epub.fontSize,
+            reader_epub_theme.fontColor,
+            reader_epub_theme.bgColor
+        ); */
+
+        let w = new Worker("/reader/reader2.js");
+        let ww = new WasmWorkerHandler(w);
+        await ReaderUtility.wait_readerEngine_init(ww);
+        const _book = await textBookClass.getInstace(
+            ww,
             bookFile,
             _bookPageSize.width,
             _bookPageSize.height,
@@ -213,6 +227,25 @@ export abstract class ReaderUtility {
             rej();
         });
     }
+    private static wait_readerEngine_init(ww: WasmWorkerHandler): Promise<any> {
+        return new Promise(async (res, rej) => {
+            for (let i = 0; i < 100; i++) { // 50
+                // await CmpUtility.waitOnMe((i + 1) * 200);
+                await CmpUtility.waitOnMe(200);
+
+                const num = await ww.aTestFunc(1).catch(e => {
+                    console.log('loading readerEngine', e); // e === Not Initialized
+                });
+
+                if (num) {
+                    res(true);
+                    break;
+                }
+
+            }
+            rej();
+        });
+    }
 
     private static rtlLanguage_list: LANGUAGES[] = [LANGUAGES.PERSIAN, LANGUAGES.ARABIC];
     static isBookRtl(lang: LANGUAGES | undefined): boolean {
@@ -220,7 +253,7 @@ export abstract class ReaderUtility {
         else return ReaderUtility.rtlLanguage_list.includes(lang);
     }
 
-    private static _check_swiperImg_loaded_timer: any;
+    /* private static _check_swiperImg_loaded_timer: any;
     static check_swiperImg_loaded(selector?: string) {
         selector = selector || '.swiper-container .swiper-slide img.page-img';
 
@@ -228,7 +261,7 @@ export abstract class ReaderUtility {
             clearTimeout(ReaderUtility._check_swiperImg_loaded_timer);
         }
 
-        ReaderUtility._check_swiperImg_loaded_timer = setTimeout(() => {
+        ReaderUtility._check_swiperImg_loaded_timer = setTimeout(async () => {
 
             const img_list = document.querySelectorAll(selector!);
             for (let i = 0; i < img_list.length; i++) {
@@ -236,6 +269,43 @@ export abstract class ReaderUtility {
                     const d_s = img_list[i].getAttribute('data-src');
                     if (d_s) {
                         img_list[i].setAttribute('src', d_s);
+                        console.log(await d_s);
+                    }
+                }
+            }
+
+        }, 300);
+    } */
+
+    private static check_swiperImg_with_delay_timer: any;
+    static check_swiperImg_with_delay(bi: BookGenerator | PdfBookGenerator, selector?: string) {
+        selector = selector || '.swiper-container .swiper-slide img.page-img';
+
+        if (ReaderUtility.check_swiperImg_with_delay_timer) {
+            clearTimeout(ReaderUtility.check_swiperImg_with_delay_timer);
+        }
+
+        ReaderUtility.check_swiperImg_with_delay_timer = setTimeout(async () => {
+
+            const img_list = document.querySelectorAll(selector!);
+            for (let i = 0; i < img_list.length; i++) {
+                if (!img_list[i].getAttribute('src')) {
+                    const d_s = img_list[i].getAttribute('data-src');
+                    if (d_s) {
+
+                        for (let t = 0; t < 10; t++) {
+                            const d_s_page = bi.getPage_ifExist(parseInt(d_s));
+                            if (!d_s_page) {
+                                console.log('check_swiperImg_with_delay', d_s, false);
+                                // await CmpUtility.waitOnMe((t + 1) * 100);
+                                await CmpUtility.waitOnMe(200);
+                            } else {
+                                console.log('check_swiperImg_with_delay', d_s, true);
+                                img_list[i].setAttribute('src', d_s_page);
+                                break;
+                            }
+                        }
+
                     }
                 }
             }
@@ -424,12 +494,18 @@ export abstract class ReaderUtility {
     }
 
     static async createAudioBook(book_id: string, bookFile: Uint8Array): Promise<AudioBookGenerator> {
+        debugger;
         //todo: check book exist
 
-        await ReaderUtility.wait_loadReaderEngine();
-        await CmpUtility.waitOnMe(1000); // todo: _DELETE_ME
+        // await ReaderUtility.wait_loadReaderEngine();
+        // await CmpUtility.waitOnMe(10000); // todo: _DELETE_ME
 
-        return new AudioBookGenerator(bookFile);
+        // return new AudioBookGenerator(bookFile);
+
+        let w = new Worker("/reader/reader2.js");
+        let ww = new WasmWorkerHandler(w);
+        await ReaderUtility.wait_readerEngine_init(ww);
+        return await AudioBookGenerator.getInstance(ww, bookFile);
     }
 
 }

@@ -31,6 +31,7 @@ import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem, updateLibraryItem_progress } from "../../library/libraryViewTemplate";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 import { Store2 } from "../../../redux/store";
+import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
 
 interface IProps {
   internationalization: TInternationalization;
@@ -211,7 +212,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
-  private _bookInstance!: BookGenerator;
+  private _bookInstance!: BookGenerator | PdfBookGenerator;
   private async createBook() {
     const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
     if (!bookFile) {
@@ -235,14 +236,14 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   private _createBookChapters: IEpubBook_chapters | undefined;
   private async  createBookChapters() {
     await CmpUtility.waitOnMe(0);
-    const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
+    const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
     // debugger;
     this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
   }
 
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];
-  private initSwiper() {
-    const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
+  private async initSwiper() {
+    const bookPosList: IBookPosIndicator[] = await this._bookInstance.getAllPages_pos();
     // const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
     this.createBookChapters();
     // debugger;
@@ -256,7 +257,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       this.book_active_index = 0;
     }
 
-    this.getSinglePagePath(this.book_active_index);
+    await this.getSinglePagePath(this.book_active_index);
 
     this.swiper_obj = new Swiper('.swiper-container', {
       // freeMode: true,
@@ -335,14 +336,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   getPagePath_ifExist(pageIndex: number) {
     const page = this._bookInstance.getPage_ifExist(pageIndex);
-    if (!page) { ReaderUtility.check_swiperImg_loaded() }
+    if (!page) { ReaderUtility.check_swiperImg_with_delay(this._bookInstance) } // check_swiperImg_loaded
     return page;
   }
-  // async 
   getPagePath(pageIndex: number) {
-    // await CmpUtility.waitOnMe(0);
-    const page = this._bookInstance.getPage_with_storeAround(pageIndex, 5);
-    return page;
+    this._bookInstance.getPage_with_storeAround(pageIndex, 5);
+    return pageIndex; // page;
   }
   getSinglePagePath(pageIndex: number) {
     return this._bookInstance.getPage(pageIndex);
@@ -659,7 +658,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
   async chapterClicked(ibc: IBookContent) {
     // debugger;
-    const pageIndex = this.getPageIndex_withChapter(ibc.pos);
+    const pageIndex = await this.getPageIndex_withChapter(ibc.pos);
     if (pageIndex || pageIndex === 0) {
       this.hideSidebar();
       await CmpUtility.waitOnMe(100);
@@ -670,14 +669,14 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   private _pagePosList: number[] = [];
-  getPageIndex_withChapter(chapterPos: IBookPosIndicator): number | undefined {
+  async getPageIndex_withChapter(chapterPos: IBookPosIndicator): Promise<number | undefined> {
     if (this._libraryItem!.book.type === BOOK_TYPES.Pdf) { // todo: store value of isPdf
       // return chapterPos.group !== -1 ? chapterPos.group : undefined;
       return ReaderUtility.getPageIndex_byChapter(chapterPos, [], true);
     }
 
     if (!this._pagePosList.length) {
-      const bookPosList: IBookPosIndicator[] = this._bookInstance.getAllPages_pos();
+      const bookPosList: IBookPosIndicator[] = await this._bookInstance.getAllPages_pos();
       bookPosList.forEach(bpi => {
         // this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
         this._pagePosList.push(ReaderUtility.calc_bookContentPos_value(bpi));
