@@ -31,6 +31,7 @@ export const en = {
             book_file_not_found_download_it: 'book file not found, please download it.',
             reader_epub_error_occurred: 'error occurred while showing book',
             reader_audio_error_occurred: 'error occurred while playing book',
+            change_password_successful: 'password successfully changed',
         },
         back: {
             user_already_exists: 'user already exists',
@@ -57,6 +58,7 @@ export const en = {
             addition_error: 'adding model to database failed',
             username_cellno_required: 'for retrieving password username or cell number must send',
             invalid_user: "the user by this data doesn't exist",
+            invalid_password: 'password is invalid',
             invalid_code: 'the code is invalid',
 
             filter_required: 'filter object is not in data',

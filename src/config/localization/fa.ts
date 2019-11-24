@@ -31,6 +31,7 @@ export const fa = {
             book_file_not_found_download_it: 'فایل کتاب پیدا نشد، لطفا آن را دانلود کنید.',
             reader_epub_error_occurred: 'در هنگام نمایش کتاب خطا رخ داد',
             reader_audio_error_occurred: 'در هنگام پخش کتاب خطا رخ داد',
+            change_password_successful: 'رمز عبور با موفقیت بروز شد',
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',
@@ -57,6 +58,7 @@ export const fa = {
             addition_error: 'adding model to database failed',
             username_cellno_required: 'برای دریافت رمز عبور نام کاربری یا شماره موبایل را وارد کنید',
             invalid_user: "با اطلاعات وارد شده کاربری وجود ندارد",
+            invalid_password: 'رمز عبور اشتباه است',
             invalid_code: 'کد تایید اشتباه است.',
 
             filter_required: 'filter object is not in data',

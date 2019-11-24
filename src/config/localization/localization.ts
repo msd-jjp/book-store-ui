@@ -43,6 +43,7 @@ interface ILocalization extends LocalizedStringsMethods {
             book_file_not_found_download_it: string;
             reader_epub_error_occurred: string;
             reader_audio_error_occurred: string;
+            change_password_successful: string;
         },
         back: {
             [key: string]: any; // todo
@@ -70,6 +71,7 @@ interface ILocalization extends LocalizedStringsMethods {
             addition_error: string;
             username_cellno_required: string;
             invalid_user: string;
+            invalid_password: string;
             invalid_code: string;
 
             filter_required: string;
