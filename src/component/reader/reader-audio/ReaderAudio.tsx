@@ -566,7 +566,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                             false,
                             true
                         );
-                        // return; // todo: return added returnreturnreturnreturnreturnreturnreturn??????
+                        return; // todo: return added returnreturnreturnreturnreturnreturnreturn??????
                     }
                 } else {
                     this.bindVoiceToAudioContext(
@@ -601,7 +601,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
         let fromTimeInAtom = Math.ceil(fromTime * 1000 - atomFromTo.from);
         if (fromTimeInAtom < 0) {
-            console.warn('fromTimeInAtom is less than 0 !!: fromTimeInAtom changed to 0', fromTimeInAtom);
+            console.warn('fromTimeInAtom is less than 0 !!: fromTimeInAtom changed to 0', fromTimeInAtom, fromTime * 1000, atomFromTo);
             fromTimeInAtom = 0;
         }
         const atomActualDuration = await this._bookInstance.getLoadedVoiceAtomDuration();
