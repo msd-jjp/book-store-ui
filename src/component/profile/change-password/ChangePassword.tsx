@@ -10,6 +10,7 @@ import { BtnLoader } from "../../form/btn-loader/BtnLoader";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { Input } from "../../form/input/Input";
 import { UserService } from "../../../service/service.user";
+import { Store2 } from "../../../redux/store";
 
 type TFormInput = 'old_password' | 'new_password' | 'r_new_password';
 
@@ -54,22 +55,21 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
     _userService = new UserService();
 
     async changePassword() {
-        debugger;
         if (!this.state.isFormValid) return;
+        const user = Store2.getState().logged_in_user;
+        if (!user) return;
         this.setState({ ...this.state, loader: true });
 
         const res = await this._userService.changePassword(
             this.state.formData.old_password.value!,
-            this.state.formData.new_password.value!
+            this.state.formData.new_password.value!,
+            user.id
         ).catch(e => {
             this.setState({ ...this.state, loader: false });
             this.handleError({ error: e.response, toastOptions: { toastId: 'changePassword_error' } });
         });
 
-
-
         if (res) {
-            // debugger;
             this.setState({
                 ...this.state,
                 loader: false,
@@ -79,7 +79,7 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
                     r_new_password: { value: undefined, isValid: false },
                 }
             });
-            this.apiSuccessNotify(); // todo new msg --> change pass success
+            this.apiSuccessNotify(Localization.msg.ui.change_password_successful);
             this.closeModal();
         }
     }
@@ -133,7 +133,7 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
         return (
             <>
                 <Modal show={this.props.show} onHide={() => this.closeModal()} centered >
-                    <Modal.Header className="border-bottom-0 pb-0">
+                    <Modal.Header className="border-bottom-0 pb-0--">
                         <div className="modal-title h6 text-primary">
                             <i className="fa fa-key mr-2"></i> {Localization.change_password}
                         </div>
@@ -144,35 +144,38 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
                                 <Input
                                     onChange={(value, isValid) => this.handleInputChange(value, isValid, "old_password")}
                                     label={Localization.old_password}
-                                    placeholder={Localization.old_password}
+                                    // placeholder={Localization.old_password}
                                     defaultValue={this.state.formData.old_password.value}
                                     required
                                     type="password"
                                     onKeyUp={(e) => this.handle_keyUp(e)}
+                                    className="input-bordered-bottom input-border-primary"
                                 />
                             </div>
                             <div className="col-12">
                                 <Input
                                     onChange={(value, isValid) => this.handleInputChange(value, isValid, "new_password")}
                                     label={Localization.new_password}
-                                    placeholder={Localization.new_password}
+                                    // placeholder={Localization.new_password}
                                     defaultValue={this.state.formData.new_password.value}
                                     required
                                     type="password"
                                     onKeyUp={(e) => this.handle_keyUp(e)}
+                                    className="input-bordered-bottom input-border-primary"
                                 />
                             </div>
                             <div className="col-12">
                                 <Input
                                     onChange={(value, isValid) => this.handleInputChange(value, isValid, "r_new_password")}
                                     label={Localization.confirm_new_password}
-                                    placeholder={Localization.confirm_new_password}
+                                    // placeholder={Localization.confirm_new_password}
                                     defaultValue={this.state.formData.r_new_password.value}
                                     required
                                     validationFunc={(val) => this.confirmPassword_validation(val)}
                                     patternError={Localization.validation.confirmPassword}
                                     type="password"
                                     onKeyUp={(e) => this.handle_keyUp(e)}
+                                    className="input-bordered-bottom input-border-primary"
                                 />
                             </div>
                         </div>
