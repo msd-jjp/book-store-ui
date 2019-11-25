@@ -4,7 +4,6 @@ import { Dispatch } from 'redux';
 import { redux_state } from '../../../redux/app_state';
 import { IUser } from '../../../model/model.user';
 import { History } from "history";
-// import { IToken } from '../../../model/model.token';
 import { BrowserRouter as Router, Route, Switch, Redirect, HashRouter } from 'react-router-dom';
 import { RouteLayoutMain } from '../main/Main';
 import { Dashboard } from '../../dashboard/Dashboard';
@@ -28,6 +27,7 @@ import { LayoutMainNotFound } from '../main/not-found/NotFound';
 import { BookFileDownload } from '../../book-file-download/BookFileDownload';
 import { FetchIntervalWorker } from '../../../webworker/fetch-interval-worker/FetchIntervalWorker';
 import { SyncWorker } from '../../../webworker/sync-worker/SyncWorker';
+import { ReaderDownload } from '../../../webworker/reader-engine/reader-download/reader-download';
 
 const appValidUserRoutes = (
     <HashRouter>
@@ -69,14 +69,13 @@ export const RouteLayoutValidUser = ({ ...rest }: { [key: string]: any }) => {
 interface IProps {
     logged_in_user: IUser | null;
     history: History;
-    // token: IToken;
     match: any;
 }
 
 class LayoutValidUserComponent extends React.Component<IProps> {
 
-    private _fetchIntervalWorker = new FetchIntervalWorker(/* this.props.token */);
-    private _syncWorker = new SyncWorker(/* this.props.token */);
+    private _fetchIntervalWorker = new FetchIntervalWorker();
+    private _syncWorker = new SyncWorker();
 
     componentWillMount() {
         // debugger;
@@ -86,6 +85,7 @@ class LayoutValidUserComponent extends React.Component<IProps> {
         } else {
             this.start_fetchingData();
             this._syncWorker.postMessage('check');
+            ReaderDownload.downloadReaderFiles();
         }
     }
 
@@ -136,7 +136,6 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
-        // token: state.token
     }
 }
 

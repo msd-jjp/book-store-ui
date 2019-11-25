@@ -8,6 +8,8 @@ import { CmpUtility } from "../_base/CmpUtility";
 import { IBookContent, IBookPosIndicator, WasmWorkerHandler } from "../../webworker/reader-engine/MsdBook";
 import { AudioBookGenerator } from "../../webworker/reader-engine/AudioBookGenerator";
 import { PdfBookGenerator } from "../../webworker/reader-engine/PdfBookGenerator";
+// import { appLocalStorage } from "../../service/appLocalStorage";
+import { ReaderDownload } from "../../webworker/reader-engine/reader-download/reader-download";
 // import { Reader2Worker } from "../../webworker/reader2-worker/Reader2Worker";
 // import wasmWorker from 'wasm-worker';
 
@@ -163,8 +165,9 @@ export abstract class ReaderUtility {
             reader_epub_theme.bgColor
         ); */
 
-        let w = new Worker("/reader/reader2.js");
-        let ww = new WasmWorkerHandler(w);
+        // let w = new Worker("/reader/reader2.js");
+        // let ww = new WasmWorkerHandler(w);
+        const ww = await ReaderDownload.getReaderWorkerHandler();
         await ReaderUtility.wait_readerEngine_init(ww);
         const _book = await textBookClass.getInstace(
             ww,
@@ -296,11 +299,11 @@ export abstract class ReaderUtility {
                         for (let t = 0; t < 10; t++) {
                             const d_s_page = bi.getPage_ifExist(parseInt(d_s));
                             if (!d_s_page) {
-                                console.log('check_swiperImg_with_delay', d_s, false);
+                                // console.log('check_swiperImg_with_delay', d_s, false);
                                 // await CmpUtility.waitOnMe((t + 1) * 100);
                                 await CmpUtility.waitOnMe(200);
                             } else {
-                                console.log('check_swiperImg_with_delay', d_s, true);
+                                // console.log('check_swiperImg_with_delay', d_s, true);
                                 img_list[i].setAttribute('src', d_s_page);
                                 break;
                             }
@@ -502,10 +505,34 @@ export abstract class ReaderUtility {
 
         // return new AudioBookGenerator(bookFile);
 
-        let w = new Worker("/reader/reader2.js");
-        let ww = new WasmWorkerHandler(w);
+        // createWorkerContent
+        /* const wasmFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.WASM_BOOK_ID);
+        const readerFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.READER2_BOOK_ID);
+        debugger;
+
+        var readerFile_string = new TextDecoder("utf-8").decode(readerFile);
+        const blob = ReaderUtility.createWorkerContent(readerFile_string);
+
+        let w = new Worker(blob); // "/reader/reader2.js"
+        w.postMessage({ bin: wasmFile });
+        let ww = new WasmWorkerHandler(w); */
+
+        const ww = await ReaderDownload.getReaderWorkerHandler();
         await ReaderUtility.wait_readerEngine_init(ww);
         return await AudioBookGenerator.getInstance(ww, bookFile);
     }
+
+    // static createWorkerContent(content: string) {
+    //     let blob;
+    //     if (Blob) {
+    //         blob = new Blob([content], { type: 'application/javascript' });
+    //     } else {
+    //         let BlobBuilder = (window as any).BlobBuilder || (window as any).WebKitBlobBuilder || (window as any).MozBlobBuilder;
+    //         blob = new BlobBuilder();
+    //         blob.append(content);
+    //         blob = blob.getBlob();
+    //     }
+    //     return URL.createObjectURL(blob);
+    // }
 
 }

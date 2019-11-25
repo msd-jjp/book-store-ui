@@ -41,6 +41,10 @@ export function is_book_downloaded(book_id: string, mainFile: boolean): boolean 
     return appLocalStorage.checkBookFileExist(book_id, mainFile);
 }
 
+export async function is_book_downloaded_async(book_id: string, mainFile: boolean): Promise<boolean> {
+    return await appLocalStorage.checkBookFileExist_async(book_id, mainFile);
+}
+
 export function is_book_downloading(book_id: string, mainFile: boolean): boolean {
     const dbf = Store2.getState().downloading_book_file;
     const d = dbf.find(d => d.book_id === book_id && d.mainFile === mainFile);

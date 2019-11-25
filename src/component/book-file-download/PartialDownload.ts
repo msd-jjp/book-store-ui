@@ -5,9 +5,13 @@ import { appLocalStorage } from "../../service/appLocalStorage";
 import { Store2 } from "../../redux/store";
 import { action_update_downloading_book_file } from "../../redux/action/downloading-book-file";
 import { IDownloadingBookFile_schema } from "../../redux/action/downloading-book-file/downloadingBookFileAction";
+import { ReaderEngineService } from "../../service/service.reader-engine";
+import { READER_FILE_NAME } from "../../webworker/reader-engine/reader-download/reader-download";
 
 export class PartialDownload {
     private _bookService = new BookService();
+    private _readerEngineService = new ReaderEngineService();
+
     private currentRange: { from: number; to: number } | undefined;
     private downloadSize = 100000;
     private refreshViewOnUpdateInterval = 500;
@@ -19,24 +23,6 @@ export class PartialDownload {
         // this.keepViewUpdate();
     }
 
-    /* keepViewUpdate__() {
-        setTimeout(() => {
-            if (!this.downloadCanceled && !this.downloadFileEnded && this.downloadingProgressUpdated) {
-                this.downloadingProgressUpdated = false;
-                console.error('PartialDownload keepViewUpdate every 1s if changed.');
-                CmpUtility.refreshView();
-                this.keepViewUpdate();
-            } else {
-                console.error(
-                    'PartialDownload keepViewUpdate puased: cancel, end, update',
-                    this.downloadCanceled,
-                    this.downloadFileEnded,
-                    this.downloadingProgressUpdated,
-                    this.book_id
-                );
-            }
-        }, 1000);
-    } */
     private _keepViewUpdate_timer: any;
     private keepViewUpdate() {
         if (this._keepViewUpdate_timer) return;
@@ -164,7 +150,17 @@ export class PartialDownload {
     private async getFileLength(): Promise<boolean> {
         return new Promise(async (resolve, reject) => {
             let error: AxiosError | undefined = undefined;
-            let res = await this._bookService.bookFile_detail(this.book_id, this.mainFile).catch(e => {
+
+            let req; //  = this._bookService.bookFile_detail(this.book_id, this.mainFile);
+            if (this.book_id === READER_FILE_NAME.WASM_BOOK_ID) {
+                req = this._readerEngineService.file_detail(READER_FILE_NAME.WASM_BOOK_ID);
+            } else if (this.book_id === READER_FILE_NAME.READER2_BOOK_ID) {
+                req = this._readerEngineService.file_detail(READER_FILE_NAME.READER2_BOOK_ID);
+            } else {
+                req = this._bookService.bookFile_detail(this.book_id, this.mainFile);
+            }
+
+            let res = await req.catch(e => {
                 error = e;
             });
             if (!res) {
@@ -182,12 +178,17 @@ export class PartialDownload {
 
             let downloaded = true;
             let error: AxiosError | undefined = undefined;
-            let res = await this._bookService.bookFile_partial(
-                this.book_id,
-                this.mainFile,
-                this.currentRange!,
-                this.cancelTokenSource.token
-            ).catch(e => {
+
+            let req; // = this._bookService.bookFile_partial(this.book_id, this.mainFile, this.currentRange!, this.cancelTokenSource.token);
+            if (this.book_id === READER_FILE_NAME.WASM_BOOK_ID) {
+                req = this._readerEngineService.file_partial(READER_FILE_NAME.WASM_BOOK_ID, this.currentRange!, this.cancelTokenSource.token);
+            } else if (this.book_id === READER_FILE_NAME.READER2_BOOK_ID) {
+                req = this._readerEngineService.file_partial(READER_FILE_NAME.READER2_BOOK_ID, this.currentRange!, this.cancelTokenSource.token);
+            } else {
+                req = this._bookService.bookFile_partial(this.book_id, this.mainFile, this.currentRange!, this.cancelTokenSource.token);
+            }
+
+            let res = await req.catch(e => {
                 downloaded = false;
                 error = e;
             });

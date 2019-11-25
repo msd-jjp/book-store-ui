@@ -1,7 +1,3 @@
-function main(binData){
-
-
-
 // Copyright 2010 The Emscripten Authors.  All rights reserved.
 // Emscripten is available under two separate licenses, the MIT license and the
 // University of Illinois/NCSA Open Source License.  Both these licenses can be
@@ -20,9 +16,9 @@ function main(binData){
 // after the generated code, you will need to define   var Module = {};
 // before the code. Then that object will be used in the code, and you
 // can continue to use Module afterwards as well.
-// debugger;
+debugger;
 var Module = typeof Module !== 'undefined' ? Module : {};
-Module['wasmBinary']=binData;
+
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
 // {{PRE_JSES}}
@@ -1584,7 +1580,6 @@ if (!isDataURI(wasmBinaryFile)) {
 }
 
 function getBinary() {
-  debugger;
   try {
     if (Module['wasmBinary']) {
       return new Uint8Array(Module['wasmBinary']);
@@ -1601,7 +1596,6 @@ function getBinary() {
 }
 
 function getBinaryPromise() {
-  debugger;
   // if we don't have the binary yet, and have the Fetch api, use that
   // in some environments, like Electron's render process, Fetch api may be present, but have a different context than expected, let's only use it on the Web
   if (!Module['wasmBinary'] && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) && typeof fetch === 'function') {
@@ -1672,14 +1666,13 @@ function createWasm(env) {
   function instantiateArrayBuffer(receiver) {
     // debugger;
     getBinaryPromise().then(function(binary) {
-      let t= WebAssembly.instantiate(binary, info);
-      return t;
+      return WebAssembly.instantiate(binary, info);
     }).then(receiver, function(reason) {
       err('failed to asynchronously prepare wasm: ' + reason);
       abort(reason);
     });
   }
-  debugger;
+  // debugger;
   // Prefer streaming instantiation if available.
   if (!Module['wasmBinary'] &&
       typeof WebAssembly.instantiateStreaming === 'function' &&
@@ -11311,17 +11304,5 @@ Module['onCustomMessage']=function(msgEvent){
 }
 Module['onRuntimeInitialized']=function(){
   // clearInterval(msd_continue_running);
-  debugger;
-  let t = Module['asm'];
-  console.log(t);
 }
 
-
-
-}
-
-onmessage=function(msg){
-  debugger;
-  var bin =msg.data.bin;
-  main(bin);
-}

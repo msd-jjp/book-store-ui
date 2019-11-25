@@ -194,5 +194,6 @@ export class appLocalStorage {
 
     static search_userMainAccount = SearchAppStorage.search_userMainAccount;
     static checkBookFileExist = FileStorage.checkBookFileExist;
+    static checkBookFileExist_async = FileStorage.checkBookFileExist_async;
 
 }

@@ -1,3 +1,5 @@
+import { Utility } from "../../asset/script/utility";
+
 enum FILE_STORAGE_KEY {
     FILE_BOOK_MAIN = 'FILE_BOOK_MAIN',
     FILE_BOOK_SAMPLE = 'FILE_BOOK_SAMPLE',
@@ -82,6 +84,18 @@ export class FileStorage {
         return FileStorage.is_book_downloaded_history_check(book_id, mainFile);
     }
 
+    static async checkBookFileExist_async(book_id: string, mainFile: boolean) {
+        /** wait until FileStorage._loadDownloadedCompleted */
+        if (!FileStorage.isSuport()) return false;
+        for (let i = 0; i < 100; i++) {
+            await Utility.waitOnMe(100);
+            if (FileStorage._loadDownloadedCompleted) break;
+            // else console.log(FileStorage._loadDownloadedCompleted);
+        }
+        // console.log('; checkBookFileExist_async', book_id, mainFile);
+        return FileStorage.is_book_downloaded_history_check(book_id, mainFile);
+    }
+
     static async clearCollection_bookFile(mainFile: boolean, partial?: boolean): Promise<boolean> {
         if (!FileStorage.isSuport()) return false;
 
@@ -107,6 +121,7 @@ export class FileStorage {
         return isDeleted ? isDeleted : false
     }
 
+    private static _loadDownloadedCompleted = false;
     private static async loadDownloadedBook_id(): Promise<void> {
         const list_main = await FileStorage.getBookFileList_cache(true);
         const list_sample = await FileStorage.getBookFileList_cache(false);
@@ -121,6 +136,8 @@ export class FileStorage {
             const bk_id = key.url.replace(window.location.origin + '/', '');
             FileStorage.is_book_downloaded_history_save(bk_id, false);
         });
+
+        FileStorage._loadDownloadedCompleted = true;
     }
 
     ///////////////////////////////////////////
