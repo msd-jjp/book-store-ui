@@ -242,7 +242,7 @@ if ('function' === typeof importScripts) {
         workbox.routing.registerRoute(...cacheConfig.fonts);
         // workbox.routing.registerRoute(...cacheConfig.manifest);
         workbox.routing.registerRoute(...cacheConfig.manifest2);
-        workbox.routing.registerRoute(...cacheConfig.wasmFiles);
+        // workbox.routing.registerRoute(...cacheConfig.wasmFiles);
 
         //todo
         /* self.addEventListener("install", event => {
