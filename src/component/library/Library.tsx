@@ -3,7 +3,7 @@ import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../redux/app_state';
 import { IUser } from '../../model/model.user';
-import { TInternationalization } from '../../config/setup';
+import { TInternationalization, Setup } from '../../config/setup';
 import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
 import { CollectionService } from '../../service/service.collection';
@@ -22,9 +22,10 @@ import { ICollection_schema } from '../../redux/action/collection/collectionActi
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { AddToCollection } from './collection/add-to-collection/AddToCollection';
 import { IBook } from '../../model/model.book';
-import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem } from './libraryViewTemplate';
+import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem, is_book_downloading } from './libraryViewTemplate';
 import { CmpUtility } from '../_base/CmpUtility';
 import { BOOK_TYPES } from '../../enum/Book';
+import { READER_FILE_NAME } from '../../webworker/reader-engine/reader-download/reader-download';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -371,6 +372,12 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         if (this.state.isLibrary_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
+            const is_re_d_ing = this.isReaderEngineDownloading();
+            if (is_re_d_ing) {
+                this.readerEngineNotify();
+                return;
+            }
+
             const isDownloaded = is_libBook_downloaded(item);
             if (!isDownloaded) {
                 toggle_libBook_download(item);
@@ -435,6 +442,16 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         } else {
             this.props.history.push(`/reader/${book_id}/reading`);
         }
+    }
+
+    isReaderEngineDownloading(): boolean {
+        const ding_wasm = is_book_downloading(READER_FILE_NAME.WASM_BOOK_ID, true);
+        const ding_reader = is_book_downloading(READER_FILE_NAME.READER2_BOOK_ID, true);
+        return ding_wasm || ding_reader;
+    }
+    readerEngineNotify(): void {
+        this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
+            { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
     }
     //#endregion
 

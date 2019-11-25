@@ -3,7 +3,7 @@ import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { redux_state } from "../../redux/app_state";
 import { IUser } from "../../model/model.user";
-import { TInternationalization } from "../../config/setup";
+import { TInternationalization, Setup } from "../../config/setup";
 import { BaseComponent } from "../_base/BaseComponent";
 // import Slider, { Settings } from "react-slick";
 import { Localization } from "../../config/localization/localization";
@@ -25,6 +25,7 @@ import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import Swiper from "swiper";
 import { Utility } from "../../asset/script/utility";
+import { READER_FILE_NAME } from "../../webworker/reader-engine/reader-download/reader-download";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -456,6 +457,12 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   before_gotoReader(book: IBook) {
+    const is_re_d_ing = this.isReaderEngineDownloading();
+    if (is_re_d_ing) {
+      this.readerEngineNotify();
+      return;
+    }
+
     const isDownloaded = is_book_downloaded(book.id, true);
     if (!isDownloaded) {
       if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
@@ -475,6 +482,15 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     } else {
       this.props.history.push(`/reader/${book_id}/reading`);
     }
+  }
+  isReaderEngineDownloading(): boolean {
+    const ding_wasm = is_book_downloading(READER_FILE_NAME.WASM_BOOK_ID, true);
+    const ding_reader = is_book_downloading(READER_FILE_NAME.READER2_BOOK_ID, true);
+    return ding_wasm || ding_reader;
+  }
+  readerEngineNotify(): void {
+    this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
+      { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
   }
 
   calc_read_percent_by_bookItem_in_lib(book_id: string): string {

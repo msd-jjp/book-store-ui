@@ -28,7 +28,9 @@ export type TCollectionName =
     'clc_userInvoicedOrderItem' |
     // 'clc_book_mainFile' |
     // 'clc_book_sampleFile' |
-    'clc_userAccount';
+    'clc_userAccount' |
+    'clc_ETag'
+    ;
 
 export type TCollectionData = IBook | IComment | IOrder | IAccount; // | IBook_file_store;
 
@@ -65,7 +67,7 @@ export class appLocalStorage {
             'clc_userInvoicedOrderItem',
             // 'clc_book_mainFile',
             // 'clc_book_sampleFile',
-            'clc_userAccount'];
+            'clc_userAccount', 'clc_ETag'];
 
     static clc_book: Collection<IBook>;
     static clc_comment: Collection<IComment>;
@@ -74,6 +76,7 @@ export class appLocalStorage {
     // static clc_book_mainFile: Collection<IBook_file_store>;
     // static clc_book_sampleFile: Collection<IBook_file_store>;
     static clc_userAccount: Collection<IAccount>;
+    static clc_ETag: Collection<{ id: string; ETag: string; }>;
 
     constructor() {
         appLocalStorage.app_db.loadDatabase({}, (err: any) => {

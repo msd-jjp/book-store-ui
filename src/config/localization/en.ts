@@ -32,6 +32,7 @@ export const en = {
             reader_epub_error_occurred: 'error occurred while showing book',
             reader_audio_error_occurred: 'error occurred while playing book',
             change_password_successful: 'password successfully changed',
+            downloading_reader_security_content: 'downloading security content, please try later',
         },
         back: {
             user_already_exists: 'user already exists',

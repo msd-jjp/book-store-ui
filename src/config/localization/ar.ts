@@ -32,6 +32,7 @@ export const ar = {
             reader_epub_error_occurred: 'در هنگام نمایش کتاب خطا رخ داد',
             reader_audio_error_occurred: 'در هنگام پخش کتاب خطا رخ داد',
             change_password_successful: 'رمز عبور با موفقیت بروز شد',
+            downloading_reader_security_content: 'در حال بارگذاری سامانه امنیت محتوا، لطفا لحظاتی بعد مجددا تلاش کنید.',
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',

@@ -320,7 +320,7 @@ var asm2wasmImports = { // special asm2wasm imports
         return x % y;
     },
     "debugger": function() {
-        debugger;
+        // debugger;
     }
 };
 
@@ -1584,7 +1584,7 @@ if (!isDataURI(wasmBinaryFile)) {
 }
 
 function getBinary() {
-  debugger;
+  // debugger;
   try {
     if (Module['wasmBinary']) {
       return new Uint8Array(Module['wasmBinary']);
@@ -1601,7 +1601,7 @@ function getBinary() {
 }
 
 function getBinaryPromise() {
-  debugger;
+  // debugger;
   // if we don't have the binary yet, and have the Fetch api, use that
   // in some environments, like Electron's render process, Fetch api may be present, but have a different context than expected, let's only use it on the Web
   if (!Module['wasmBinary'] && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) && typeof fetch === 'function') {
@@ -1679,7 +1679,7 @@ function createWasm(env) {
       abort(reason);
     });
   }
-  debugger;
+  // debugger;
   // Prefer streaming instantiation if available.
   if (!Module['wasmBinary'] &&
       typeof WebAssembly.instantiateStreaming === 'function' &&
@@ -11311,7 +11311,7 @@ Module['onCustomMessage']=function(msgEvent){
 }
 Module['onRuntimeInitialized']=function(){
   // clearInterval(msd_continue_running);
-  debugger;
+  // debugger;
   let t = Module['asm'];
   console.log(t);
 }
@@ -11321,7 +11321,7 @@ Module['onRuntimeInitialized']=function(){
 }
 
 onmessage=function(msg){
-  debugger;
+  // debugger;
   var bin =msg.data.bin;
   main(bin);
 }

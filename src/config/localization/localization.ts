@@ -44,6 +44,7 @@ interface ILocalization extends LocalizedStringsMethods {
             reader_epub_error_occurred: string;
             reader_audio_error_occurred: string;
             change_password_successful: string;
+            downloading_reader_security_content: string;
         },
         back: {
             [key: string]: any; // todo

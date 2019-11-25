@@ -12,22 +12,23 @@ export enum READER_FILE_NAME {
 }
 
 export abstract class ReaderDownload {
-    private static wasm_book_id = READER_FILE_NAME.WASM_BOOK_ID;
-    private static reader2_book_id = READER_FILE_NAME.READER2_BOOK_ID;
+    // private static wasm_book_id = READER_FILE_NAME.WASM_BOOK_ID;
+    // private static reader2_book_id = READER_FILE_NAME.READER2_BOOK_ID;
 
     static async downloadReaderFiles() {
-        debugger;
-        const ded_wasm = await is_book_downloaded_async(ReaderDownload.wasm_book_id, true);
-        const ded_reader = await is_book_downloaded_async(ReaderDownload.reader2_book_id, true);
-        const ding_wasm = is_book_downloading(ReaderDownload.wasm_book_id, true);
-        const ding_reader = is_book_downloading(ReaderDownload.reader2_book_id, true);
+        // debugger;
+        const ded_wasm = await is_book_downloaded_async(READER_FILE_NAME.WASM_BOOK_ID, true);
+        const ded_reader = await is_book_downloaded_async(READER_FILE_NAME.READER2_BOOK_ID, true);
+        const ding_wasm = is_book_downloading(READER_FILE_NAME.WASM_BOOK_ID, true);
+        const ding_reader = is_book_downloading(READER_FILE_NAME.READER2_BOOK_ID, true);
 
         if ((!ded_wasm && !ding_wasm) || (!ded_reader && !ding_reader)) {
             const dbf = [...Store2.getState().downloading_book_file];
+            //todo: remove current donloading & insert after these files.
 
             if (!ded_reader && !ding_reader) {
                 dbf.unshift({
-                    book_id: ReaderDownload.reader2_book_id,
+                    book_id: READER_FILE_NAME.READER2_BOOK_ID,
                     mainFile: true,
                     status: 'start',
                     progress: 0
@@ -36,7 +37,7 @@ export abstract class ReaderDownload {
             }
             if (!ded_wasm && !ding_wasm) {
                 dbf.unshift({
-                    book_id: ReaderDownload.wasm_book_id,
+                    book_id: READER_FILE_NAME.WASM_BOOK_ID,
                     mainFile: true,
                     status: 'start',
                     progress: 0
@@ -47,10 +48,10 @@ export abstract class ReaderDownload {
             Store2.dispatch(action_update_downloading_book_file(dbf));
 
         } else {
-            // check head --> if change --> delete & download again
+            //todo: check head --> if change --> delete & download again
         }
 
-        debugger;
+        // debugger;
     }
 
     private static _readerWasmWorkerHandler: WasmWorkerHandler | undefined;
@@ -59,7 +60,7 @@ export abstract class ReaderDownload {
 
         const wasmFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.WASM_BOOK_ID);
         const readerFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.READER2_BOOK_ID);
-        debugger;
+        // debugger;
 
         var readerFile_string = new TextDecoder("utf-8").decode(readerFile);
         const blob = ReaderDownload.createWorkerContent(readerFile_string);
