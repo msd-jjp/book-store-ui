@@ -16,7 +16,7 @@ import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { Dropdown } from "react-bootstrap";
 import RcSlider from 'rc-slider';
 import { ILibrary } from "../../../model/model.library";
-import { getLibraryItem } from "../../library/libraryViewTemplate";
+import { getLibraryItem, isReaderEngineDownloading, isReaderEngineDownloaded_async } from "../../library/libraryViewTemplate";
 import { CmpUtility } from "../../_base/CmpUtility";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { AudioBookGenerator } from "../../../webworker/reader-engine/AudioBookGenerator";
@@ -219,8 +219,24 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }, 300);
     }
 
+    readerEngineNotify(): void {
+        this.goBack();
+        setTimeout(() => {
+            this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
+                { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
+        }, 300);
+    }
+
     private async generateReader() {
         await CmpUtility.waitOnMe(0);
+
+        const is_re_d_ing = isReaderEngineDownloading();
+        const is_re_d_ed = await isReaderEngineDownloaded_async();
+        if (is_re_d_ing || !is_re_d_ed) {
+            this.readerEngineNotify();
+            return;
+        }
+
         await this.createBook();
         if (!this._bookInstance) return;
         this.initAudio();

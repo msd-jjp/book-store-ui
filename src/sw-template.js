@@ -198,7 +198,11 @@ if ('function' === typeof importScripts) {
 
         /* custom cache rules*/
         workbox.routing.registerNavigationRoute('/index.html', {
-            blacklist: [/^\/_/, /\/[^\/]+\.[^\/]+$/],
+            blacklist: [
+                /^\/_/, /\/[^\/]+\.[^\/]+$/,
+                new RegExp('reader2\.js'),
+                new RegExp('reader\.wasm'),
+            ],
         });
 
         /* workbox.routing.registerRoute(

@@ -251,3 +251,28 @@ response headers
     ETag: "5ddac0f2-3c747e"
 
 ====================================================================================
+
+const is_re_d_ing = this.isReaderEngineDownloading();
+            if (is_re_d_ing) {
+                this.readerEngineNotify();
+                return; // todo: do not return here --> if book not download -->  
+            }
+
+====================================================================================
+
+if isReaderEngineDownloading & in cmp reader(audio, ...) go back.
+
+====================================================================================
+
+separate this method --> cmp dashboard, libray, collecyion, all reader.
+readerEngineNotify(): void {
+    this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
+        { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
+}
+
+add progress to readerEngineNotify.
+
+====================================================================================
+
+
+====================================================================================

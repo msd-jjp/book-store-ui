@@ -28,7 +28,7 @@ import { action_update_reader } from "../../../redux/action/reader";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { BaseService } from "../../../service/service.base";
 import { ILibrary } from "../../../model/model.library";
-import { getLibraryItem, updateLibraryItem_progress } from "../../library/libraryViewTemplate";
+import { getLibraryItem, updateLibraryItem_progress, isReaderEngineDownloaded_async, isReaderEngineDownloading } from "../../library/libraryViewTemplate";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 import { Store2 } from "../../../redux/store";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
@@ -204,8 +204,24 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }, 300);
   }
 
+  readerEngineNotify(): void {
+    this.goBack();
+    setTimeout(() => {
+      this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
+        { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
+    }, 300);
+  }
+
   private async generateReader() {
     await CmpUtility.waitOnMe(0);
+
+    const is_re_d_ing = isReaderEngineDownloading();
+    const is_re_d_ed = await isReaderEngineDownloaded_async();
+    if (is_re_d_ing || !is_re_d_ed) {
+      this.readerEngineNotify();
+      return;
+    }
+
     await this.createBook();
     if (!this._bookInstance) return;
     this.initSwiper();

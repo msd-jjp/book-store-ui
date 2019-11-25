@@ -12,8 +12,6 @@ export enum READER_FILE_NAME {
 }
 
 export abstract class ReaderDownload {
-    // private static wasm_book_id = READER_FILE_NAME.WASM_BOOK_ID;
-    // private static reader2_book_id = READER_FILE_NAME.READER2_BOOK_ID;
 
     static async downloadReaderFiles() {
         // debugger;
@@ -62,7 +60,7 @@ export abstract class ReaderDownload {
         const readerFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.READER2_BOOK_ID);
         // debugger;
 
-        var readerFile_string = new TextDecoder("utf-8").decode(readerFile);
+        const readerFile_string = new TextDecoder("utf-8").decode(readerFile);
         const blob = ReaderDownload.createWorkerContent(readerFile_string);
 
         const w = new Worker(blob); // "/reader/reader2.js"

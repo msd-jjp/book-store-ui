@@ -21,10 +21,9 @@ import { CollectionService } from '../../../service/service.collection';
 import { AddToCollection } from './add-to-collection/AddToCollection';
 import { IBook } from '../../../model/model.book';
 import { NETWORK_STATUS } from '../../../enum/NetworkStatus';
-import { libraryItem_viewList_render, libraryItem_viewGrid_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem, is_book_downloading } from '../libraryViewTemplate';
+import { libraryItem_viewList_render, libraryItem_viewGrid_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem, isReaderEngineDownloading } from '../libraryViewTemplate';
 import { BOOK_TYPES } from '../../../enum/Book';
 import { CmpUtility } from '../../_base/CmpUtility';
-import { READER_FILE_NAME } from '../../../webworker/reader-engine/reader-download/reader-download';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -424,10 +423,10 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         if (this.state.isCollection_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
-            const is_re_d_ing = this.isReaderEngineDownloading();
+            const is_re_d_ing = isReaderEngineDownloading();
             if (is_re_d_ing) {
                 this.readerEngineNotify();
-                return;
+                // return;
             }
 
             const isDownloaded = is_libBook_downloaded(item);
@@ -435,6 +434,8 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                 toggle_libBook_download(item);
                 return;
             }
+
+            if (is_re_d_ing) return;
 
             let isAudio = false;
             if (item.book.type === BOOK_TYPES.Audio) {
@@ -510,11 +511,6 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    isReaderEngineDownloading(): boolean {
-        const ding_wasm = is_book_downloading(READER_FILE_NAME.WASM_BOOK_ID, true);
-        const ding_reader = is_book_downloading(READER_FILE_NAME.READER2_BOOK_ID, true);
-        return ding_wasm || ding_reader;
-    }
     readerEngineNotify(): void {
         this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
             { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');

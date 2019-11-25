@@ -10,6 +10,7 @@ import { action_set_library_data } from "../../redux/action/library";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { LibraryService } from "../../service/service.library";
 import { Utility } from "../../asset/script/utility";
+import { READER_FILE_NAME } from "../../webworker/reader-engine/reader-download/reader-download";
 
 export function calc_read_percent(item: ILibrary): string {
     return Math.floor((item.progress || 0) * 100) + '%';
@@ -77,6 +78,18 @@ export function libBook_downloading_progress(item: ILibrary): number {
 
 export function libBook_download_size(item: ILibrary): number | undefined {
     return book_download_size(item.book.id, true);
+}
+
+export function isReaderEngineDownloading(): boolean {
+    const ding_wasm = is_book_downloading(READER_FILE_NAME.WASM_BOOK_ID, true);
+    const ding_reader = is_book_downloading(READER_FILE_NAME.READER2_BOOK_ID, true);
+    return ding_wasm || ding_reader;
+}
+
+export async function isReaderEngineDownloaded_async(): Promise<boolean> {
+    const ded_wasm = await is_book_downloaded_async(READER_FILE_NAME.WASM_BOOK_ID, true);
+    const ded_reader = await is_book_downloaded_async(READER_FILE_NAME.READER2_BOOK_ID, true);
+    return ded_wasm && ded_reader;
 }
 
 export function toggle_book_download(book_id: string, mainFile: boolean): void {

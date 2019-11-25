@@ -20,12 +20,11 @@ import { AddToCollection } from "../library/collection/add-to-collection/AddToCo
 import { CmpUtility } from "../_base/CmpUtility";
 import { action_user_logged_in } from "../../redux/action/user";
 import { PersonService } from "../../service/service.person";
-import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem, book_downloading_progress, book_download_size } from "../library/libraryViewTemplate";
+import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem, book_downloading_progress, book_download_size, isReaderEngineDownloading } from "../library/libraryViewTemplate";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import Swiper from "swiper";
 import { Utility } from "../../asset/script/utility";
-import { READER_FILE_NAME } from "../../webworker/reader-engine/reader-download/reader-download";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -457,10 +456,10 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   before_gotoReader(book: IBook) {
-    const is_re_d_ing = this.isReaderEngineDownloading();
+    const is_re_d_ing = isReaderEngineDownloading();
     if (is_re_d_ing) {
       this.readerEngineNotify();
-      return;
+      // return;
     }
 
     const isDownloaded = is_book_downloaded(book.id, true);
@@ -469,6 +468,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       toggle_book_download(book.id, true);
       return;
     }
+
+    if (is_re_d_ing) return;
 
     let isAudio = false;
     if (book.type === BOOK_TYPES.Audio) {
@@ -482,11 +483,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     } else {
       this.props.history.push(`/reader/${book_id}/reading`);
     }
-  }
-  isReaderEngineDownloading(): boolean {
-    const ding_wasm = is_book_downloading(READER_FILE_NAME.WASM_BOOK_ID, true);
-    const ding_reader = is_book_downloading(READER_FILE_NAME.READER2_BOOK_ID, true);
-    return ding_wasm || ding_reader;
   }
   readerEngineNotify(): void {
     this.toastNotify(Localization.msg.ui.downloading_reader_security_content,

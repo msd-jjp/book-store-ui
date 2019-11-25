@@ -15,7 +15,7 @@ import { Store2 } from "../../../redux/store";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { CmpUtility } from "../../_base/CmpUtility";
 import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
-import { getLibraryItem, updateLibraryItem_progress } from "../../library/libraryViewTemplate";
+import { getLibraryItem, updateLibraryItem_progress, isReaderEngineDownloading, isReaderEngineDownloaded_async } from "../../library/libraryViewTemplate";
 import { ILibrary } from "../../../model/model.library";
 import { Localization } from "../../../config/localization/localization";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
@@ -112,8 +112,24 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     }, 300);
   }
 
+  readerEngineNotify(): void {
+    this.goBack();
+    setTimeout(() => {
+      this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
+        { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
+    }, 300);
+  }
+
   private async generateReader() {
     await CmpUtility.waitOnMe(0);
+
+    const is_re_d_ing = isReaderEngineDownloading();
+    const is_re_d_ed = await isReaderEngineDownloaded_async();
+    if (is_re_d_ing || !is_re_d_ed) {
+      this.readerEngineNotify();
+      return;
+    }
+
     await this.createBook();
     if (!this._bookInstance) return;
     this.initSwiper();
@@ -278,7 +294,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
     const slideList = this.getBookSlideList();
     const activeSlide = this.calc_active_slide(slideList, this.book_active_index);
-    debugger;
+    // debugger;
 
     // this.getSinglePagePath(this.book_active_index);
     this.getPagePath(this.book_active_index);
