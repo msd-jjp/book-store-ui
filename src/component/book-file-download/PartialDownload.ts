@@ -194,7 +194,7 @@ export class PartialDownload {
             });
 
             if (res) {
-                //todo: check file changed???
+                //todo: check file changed??? --> check ETag with loki
                 // const size = parseInt((res as any).headers['content-length']);
                 // console.log('size: ', size);
 

@@ -91,6 +91,8 @@
         // padding-top: 0.2rem;
         &.downloading {
           font-family: inherit;
+          // text-shadow: 0px 0px 10px #fff;
+          text-shadow: 0 0 10px #fff, 0 0 10px #fff;
         }
       }
     }
@@ -183,6 +185,8 @@
         &.downloading {
           font-family: inherit;
           direction: ltr;
+          // text-shadow: 0px 0px 10px #fff;
+          text-shadow: 0 0 10px #fff, 0 0 10px #fff;
         }
       }
     }
