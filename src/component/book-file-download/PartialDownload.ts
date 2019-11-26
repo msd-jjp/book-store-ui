@@ -1,7 +1,7 @@
 import { BookService } from "../../service/service.book";
-import Axios, { CancelTokenSource, AxiosError } from "axios";
+import Axios, { CancelTokenSource, AxiosError, AxiosResponse } from "axios";
 import { CmpUtility } from "../_base/CmpUtility";
-import { appLocalStorage } from "../../service/appLocalStorage";
+import { appLocalStorage, IEtag } from "../../service/appLocalStorage";
 import { Store2 } from "../../redux/store";
 import { action_update_downloading_book_file } from "../../redux/action/downloading-book-file";
 import { IDownloadingBookFile_schema } from "../../redux/action/downloading-book-file/downloadingBookFileAction";
@@ -18,9 +18,15 @@ export class PartialDownload {
     private cancelTokenSource: CancelTokenSource = Axios.CancelToken.source();
     private fileLength: number | undefined;
     private tempFile: Uint8Array | undefined;
+    private current_eTag: IEtag | null;
+    private new_eTag: IEtag | null = null;
 
     constructor(private book_id: string, private mainFile: boolean) {
-        // this.keepViewUpdate();
+        this.current_eTag = appLocalStorage.find_ETagById(PartialDownload.get_bookFile_ETag_id(book_id, mainFile));
+    }
+
+    static get_bookFile_ETag_id(book_id: string, mainFile: boolean): string {
+        return 'book_file' + (mainFile ? '_main_' : '_sample_') + book_id;
     }
 
     private _keepViewUpdate_timer: any;
@@ -47,21 +53,16 @@ export class PartialDownload {
             // todo: if fl && !this.fileLength prevent download again.
             if (!this.fileLength || !fl) {
                 reject(error);
-                // this.downloadFileEnded = true;
-                // console.error('this.downloadFileEnded = true; book_id 48', this.book_id);
                 return;
             }
 
-            /** check if file changed */
-            // const dbf = [...Store2.getState().downloading_book_file];
-            // const dbf_item = dbf.find(d => (d.book_id === this.book_id && d.mainFile === this.mainFile));
             const { item: dbf_item } = this.get_dbf_obj();
             if (dbf_item && dbf_item.size) {
-                if (this.fileLength !== dbf_item.size) {
-                    const ended = await this.downloadEnded();
-                    reject({ error: `fileLength not match, new, old: , ${this.fileLength}, ${dbf_item.size}, ended: ${ended}` });
-                    return;
-                }
+                // if (this.fileLength !== dbf_item.size) {
+                //     const ended = await this.downloadEnded();
+                //     reject({ error: `fileLength not match, new, old: , ${this.fileLength}, ${dbf_item.size}, ended: ${ended}` });
+                //     return;
+                // }
             } else {
                 this.updateDownloadSize();
             }
@@ -69,6 +70,23 @@ export class PartialDownload {
             // const tempFile = await this.getFromTempStorage();
             this.tempFile = await this.getFromTempStorage();
             // console.log('book_id, tempFile: ', this.book_id, tempFile);
+
+            if (!this.new_eTag) {
+                const ended = await this.downloadEnded();
+                reject({ error: `file new_eTag no value, ended: ${ended}` });
+                return;
+            }
+
+            if (this.tempFile) {
+                if (!this.current_eTag || this.current_eTag.eTag !== this.new_eTag.eTag) {
+                    debugger;
+                    const ended = await this.downloadEnded();
+                    reject({ error: `file eTag not match, new, old: , ${this.current_eTag}, ${this.new_eTag}, ended: ${ended}` });
+                    return;
+                }
+            } else {
+                this.current_eTag = { ...this.new_eTag }; // note: to prevent get requerst do not reject if not match.
+            }
 
             const from = this.tempFile ? this.tempFile.byteLength : 0;
             const to = this.fileLength! <= this.downloadSize + from ? this.fileLength! : this.downloadSize + from;
@@ -168,6 +186,13 @@ export class PartialDownload {
                 return;
             }
             this.fileLength = parseInt(res.headers['content-length']);
+
+            this.new_eTag = {
+                id: PartialDownload.get_bookFile_ETag_id(this.book_id, this.mainFile),
+                eTag: res.headers['etag']
+            };
+            appLocalStorage.store_ETag(this.new_eTag);
+
             resolve(true);
         });
     }
@@ -194,9 +219,18 @@ export class PartialDownload {
             });
 
             if (res) {
-                //todo: check file changed??? --> check ETag with loki
-                // const size = parseInt((res as any).headers['content-length']);
-                // console.log('size: ', size);
+
+                this.new_eTag = {
+                    id: PartialDownload.get_bookFile_ETag_id(this.book_id, this.mainFile),
+                    eTag: (res as AxiosResponse).headers['etag']
+                };
+                appLocalStorage.store_ETag(this.new_eTag);
+                if (!this.current_eTag || this.current_eTag.eTag !== this.new_eTag.eTag) {
+                    debugger;
+                    const ended = await this.downloadEnded();
+                    reject({ error: `file eTag not match, new, old: , ${this.current_eTag}, ${this.new_eTag}, ended: ${ended}` });
+                    return;
+                }
 
                 const saved = await this.saveInTempStorage(new Uint8Array(res.data));
                 // console.log('downloaded range, book_id', this.book_id, this.currentRange, res.data);

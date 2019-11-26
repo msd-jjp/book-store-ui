@@ -294,3 +294,11 @@ show notify modal to user on app version update for test:
 msdBook: WasmWorkerHandler --> onmessage --> create new book if in cmp reader.
 
 ====================================================================================
+
+on logout reader files will remove (stored in book location).
+
+====================================================================================
+
+audio reader --> try catch --> WASM BUSY
+
+====================================================================================

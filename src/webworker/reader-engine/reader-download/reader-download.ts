@@ -3,6 +3,8 @@ import { Store2 } from "../../../redux/store";
 import { action_update_downloading_book_file } from "../../../redux/action/downloading-book-file";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { WasmWorkerHandler } from "../MsdBook";
+import { PartialDownload } from "../../../component/book-file-download/PartialDownload";
+import { ReaderEngineService } from "../../../service/service.reader-engine";
 
 /** save wasm & reader2.js files as "book main" */
 
@@ -12,6 +14,7 @@ export enum READER_FILE_NAME {
 }
 
 export abstract class ReaderDownload {
+    private static _readerEngineService = new ReaderEngineService();
 
     static async downloadReaderFiles() {
         // debugger;
@@ -45,8 +48,62 @@ export abstract class ReaderDownload {
 
             Store2.dispatch(action_update_downloading_book_file(dbf));
 
-        } else {
+        } else if (!ding_wasm || !ding_reader) { //  else if (!ding_wasm && !ding_reader)
             //todo: check head --> if change --> delete & download again
+            // debugger;
+            const current_ETag_reader = appLocalStorage.find_ETagById(
+                PartialDownload.get_bookFile_ETag_id(READER_FILE_NAME.READER2_BOOK_ID, true)
+            );
+            const current_ETag_wasm = appLocalStorage.find_ETagById(
+                PartialDownload.get_bookFile_ETag_id(READER_FILE_NAME.WASM_BOOK_ID, true)
+            );
+            // debugger;
+
+            const res_reader = await ReaderDownload._readerEngineService
+                .file_detail(READER_FILE_NAME.READER2_BOOK_ID).catch(e => {
+                    // debugger;
+                    //todo: try again.
+                });
+
+            const res_wasm = await ReaderDownload._readerEngineService
+                .file_detail(READER_FILE_NAME.WASM_BOOK_ID).catch(e => {
+                    // debugger;
+                    //todo: try again.
+                });
+
+            // debugger;
+            let res_reader_etag: string = '';
+            let res_wasm_etag: string = '';
+            if (res_reader) res_reader_etag = res_reader.headers['etag'];
+            if (res_wasm) res_wasm_etag = res_wasm.headers['etag'];
+            // debugger;
+
+            if (
+                (!current_ETag_wasm || res_wasm_etag !== current_ETag_wasm.eTag) ||
+                (!current_ETag_reader || res_reader_etag !== current_ETag_reader.eTag)
+            ) {
+                const dbf = [...Store2.getState().downloading_book_file];
+                //todo: remove current donloading & insert after these files.
+
+                if ((!current_ETag_reader || res_reader_etag !== current_ETag_reader.eTag) && !ding_reader) {
+                    dbf.unshift({
+                        book_id: READER_FILE_NAME.READER2_BOOK_ID,
+                        mainFile: true,
+                        status: 'start',
+                        progress: 0
+                    });
+                }
+                if ((!current_ETag_wasm || res_wasm_etag !== current_ETag_wasm.eTag) && ding_wasm) {
+                    dbf.unshift({
+                        book_id: READER_FILE_NAME.WASM_BOOK_ID,
+                        mainFile: true,
+                        status: 'start',
+                        progress: 0
+                    });
+                }
+
+                Store2.dispatch(action_update_downloading_book_file(dbf));
+            }
         }
 
         // debugger;

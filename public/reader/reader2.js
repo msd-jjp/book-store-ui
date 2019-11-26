@@ -11336,7 +11336,7 @@ Module['onAbort']=function(what){
 }
 
 onmessage=function(msg){
-  // debugger;
+  // debugger; // 33546042;
   var bin =msg.data.bin;
   main(bin);
 }

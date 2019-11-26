@@ -1,4 +1,4 @@
-import { appLocalStorage, TCollectionName, TCollectionData, IOrderItemStore } from ".";
+import { appLocalStorage, TCollectionName, TCollectionData, IOrderItemStore, IEtag } from ".";
 import { Collection } from "lokijs";
 import { IOrderItem } from "../../model/model.order";
 import { FileStorage } from "./FileStorage";
@@ -82,6 +82,19 @@ export class StoreData {
         newDataLoki['$loki'] = oldData['$loki'];
         newDataLoki['meta'] = oldData['meta'];
         coll.update(newDataLoki);
+    }
+
+    static store_ETag(data: IEtag) {
+        let coll: Collection<any> = appLocalStorage.clc_eTag;
+
+        let found = coll.findOne({ id: data.id });
+        if (found) {
+            StoreData.updateData_byId('clc_eTag', data.id, data);
+        } else {
+            coll.insert(data);
+        }
+
+        appLocalStorage.manualSaveDB();
     }
 
 }

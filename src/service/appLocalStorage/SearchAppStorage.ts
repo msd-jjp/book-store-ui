@@ -1,4 +1,4 @@
-import { appLocalStorage, TCollectionName, TCollectionData } from ".";
+import { appLocalStorage, TCollectionName, TCollectionData, IEtag } from ".";
 import { IBook } from "../../model/model.book";
 import { IComment } from "../../model/model.comment";
 import { IOrder, IOrderItem } from "../../model/model.order";
@@ -10,6 +10,10 @@ export class SearchAppStorage {
     static findById(collectionName: TCollectionName, id: string): any {
         return appLocalStorage[collectionName].findOne({ id: id });
         // appLocalStorage.books.find({ $eq: { id: bookId } });
+    }
+
+    static find_ETagById(id: string): IEtag | null {
+        return appLocalStorage.clc_eTag.findOne({ id: id });
     }
 
     static findBookMainFileById(book_id: string, partial?: boolean): Promise<Uint8Array | undefined> {
