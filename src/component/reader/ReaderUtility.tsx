@@ -243,7 +243,7 @@ export abstract class ReaderUtility {
     } */
 
     private static check_swiperImg_with_delay_timer: any;
-    static check_swiperImg_with_delay(bi: BookGenerator | PdfBookGenerator, selector?: string) {
+    static async check_swiperImg_with_delay(bi: BookGenerator | PdfBookGenerator, selector?: string) {
         selector = selector || '.swiper-container .swiper-slide img.page-img';
 
         if (ReaderUtility.check_swiperImg_with_delay_timer) {
@@ -251,14 +251,23 @@ export abstract class ReaderUtility {
         }
 
         ReaderUtility.check_swiperImg_with_delay_timer = setTimeout(async () => {
+            
+            for (let t = 0; t < 1000; t++) {
+                let _continue = false;
 
-            const img_list = document.querySelectorAll(selector!);
-            for (let i = 0; i < img_list.length; i++) {
-                if (!img_list[i].getAttribute('src')) {
-                    const d_s = img_list[i].getAttribute('data-src');
-                    if (d_s) {
+                const img_list = document.querySelectorAll(selector!);
+                for (let i = 0; i < img_list.length; i++) {
 
-                        for (let t = 0; t < 10; t++) {
+                    const has_src = img_list[i].getAttribute('src') !== null;
+                    _continue = _continue || has_src === false;
+
+                    if (!has_src) {
+                        // console.log('---------------t', t, Date.now() / 1000);
+                        // await CmpUtility.waitOnMe(3000);
+                        const d_s = img_list[i].getAttribute('data-src');
+                        if (d_s) {
+
+                            // for (let t = 0; t < 10; t++) {
                             let d_s_page = bi.getPage_ifExist(parseInt(d_s));
                             if (!d_s_page) {
                                 try {
@@ -269,16 +278,20 @@ export abstract class ReaderUtility {
                             }
                             if (!d_s_page) {
                                 console.log('check_swiperImg_with_delay', d_s, false);
-                                // await CmpUtility.waitOnMe((t + 1) * 100);
-                                await CmpUtility.waitOnMe(200);
+                                await CmpUtility.waitOnMe(100);
                             } else {
                                 console.log('check_swiperImg_with_delay', d_s, true);
                                 img_list[i].setAttribute('src', d_s_page);
                                 break;
                             }
-                        }
 
+                        }
                     }
+                }
+
+                if (!_continue) {
+                    console.log('_continue --> breaked on: ', t, _continue);
+                    break;
                 }
             }
 
