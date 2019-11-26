@@ -251,8 +251,8 @@ export abstract class ReaderUtility {
         }
 
         ReaderUtility.check_swiperImg_with_delay_timer = setTimeout(async () => {
-            
-            for (let t = 0; t < 1000; t++) {
+
+            for (let t = 0; t < 10; t++) {
                 let _continue = false;
 
                 const img_list = document.querySelectorAll(selector!);

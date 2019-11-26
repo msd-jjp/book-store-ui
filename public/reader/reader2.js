@@ -11295,8 +11295,13 @@ Module['subArrayH16']=subArrayH16;
 // var msd_continue_running = setInterval(()=> {},1000);
 Module['onCustomMessage']=function(msgEvent){
   // debugger;
-  let data  =msgEvent.data;
+  // console.log('caaled');
+  // self.console.log('self consoel.log');
 
+    let data  =msgEvent.data;
+  if(data.funcname=='_renderDocPage'){
+    self.console.log(Date.now()/1000,'renderDocPage Called. id:',data.id," args:", data.args);
+  }
   if(runtimeInitialized==false){
     postMessage({exception: true, error: "Not Initialized.", id: data.id})
     return;
@@ -11307,13 +11312,23 @@ Module['onCustomMessage']=function(msgEvent){
     postMessage({result:rtn,id: data.id});
   }catch(e){
     postMessage({exception: true, error: e, id: data.id});
+    self.console.log("erro",e);
   }
 }
 Module['onRuntimeInitialized']=function(){
   // clearInterval(msd_continue_running);
   // debugger;
   let t = Module['asm'];
+  
   console.log(t);
+}
+Module['onAbort']=function(what){
+  debugger;
+  self.console.log('aborted');
+  setTimeout(function(){
+    postMessage({abort:true, what: what})
+  },1);
+  
 }
 
 

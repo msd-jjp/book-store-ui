@@ -290,3 +290,7 @@ show notify modal to user on app version update for test:
     your current version is 1.0.19 updated from 1.0.17.
 
 ====================================================================================
+
+msdBook: WasmWorkerHandler --> onmessage --> create new book if in cmp reader.
+
+====================================================================================

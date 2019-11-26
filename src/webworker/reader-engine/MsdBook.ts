@@ -1,3 +1,5 @@
+import { ReaderDownload } from "./reader-download/reader-download";
+
 // var Module = (window as any).Module;
 function _arrayBufferToBase64(buffer: Uint8Array): string {
   var binary = '';
@@ -14,19 +16,29 @@ interface IWorkerCallback {
 }
 export class WasmWorkerHandler {
   worker: any = null;
-  static lastRequest: Promise<any>|null;
-  handlers: Array < IWorkerCallback >= [];
+  static lastRequest: Promise<any> | null;
+  handlers: Array<IWorkerCallback> = [];
   constructor(worker: Worker) {
     // debugger;
     this.worker = worker;
-    worker.postMessage({target: 'worker-init'});
+    worker.postMessage({ target: 'worker-init' });
 
     this.worker.onmessage = this.onmessage.bind(this);
     this.handlers = [];
     WasmWorkerHandler.lastRequest = null;
   }
-  onmessage(msg: MessageEvent) {
+  async onmessage(msg: MessageEvent) {
     // debugger;
+    if (msg.data.abort === true) {
+      debugger;
+      this.worker.terminate();
+      ReaderDownload.resetReaderWorkerHandler();
+      const ww = await ReaderDownload.getReaderWorkerHandler();
+      this.worker = ww.worker;
+      //todo: create new book if in cmp reader.
+      return;
+    }
+
     let items = this.handlers.filter(x => x.id === msg.data.id);
     this.handlers = this.handlers.filter(x => items.indexOf(x) === -1);
     if (items.length > 0) {
@@ -36,7 +48,7 @@ export class WasmWorkerHandler {
     }
   }
   uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       var r = Math.random() * 16 | 0, v = c === 'x' ? r : ((r & 0x3) | 0x8);
       return v.toString(16);
     });
@@ -49,9 +61,10 @@ export class WasmWorkerHandler {
 
     let _id = this.uuidv4();
     this.worker.postMessage(
-        {target: 'custom', funcname: funcname, args: arr, id: _id})
+      { target: 'custom', funcname: funcname, args: arr, id: _id })
     let rtn = new Promise(
-        (resolve, reject) => {this.handlers.push({
+      (resolve, reject) => {
+        this.handlers.push({
           id: _id,
           callback: (msg) => {
             WasmWorkerHandler.lastRequest = null;
@@ -62,7 +75,7 @@ export class WasmWorkerHandler {
           }
         })
 
-        });
+      });
     WasmWorkerHandler.lastRequest = rtn;
     return rtn;
   }
@@ -83,15 +96,15 @@ export class WasmWorkerHandler {
     return this.general_call('_getBookAtomsCount', [p]);
   }
   async getRendererFormat(
-      a1: any, a2: any, a3: any, a4: any, a5: any, a6: any,
-      a7: any): Promise<number> {
+    a1: any, a2: any, a3: any, a4: any, a5: any, a6: any,
+    a7: any): Promise<number> {
     return this.general_call(
-               '_getRendererFormat', [a1, a2, a3, a4, a5, a6, a7]) as
-        Promise<number>;
+      '_getRendererFormat', [a1, a2, a3, a4, a5, a6, a7]) as
+      Promise<number>;
   }
   async getBookRenderer(a1: any, a2: any, a3: any, a4: any): Promise<number> {
     return this.general_call('_getBookRenderer', [a1, a2, a3, a4]) as
-        Promise<number>;
+      Promise<number>;
   }
   async getRendererFormatTextColor(a1: any) {
     return this.general_call('_getRendererFormatTextColor', [a1]);
@@ -122,7 +135,7 @@ export class WasmWorkerHandler {
   }
   async getBookIndicatorPartOfPageResult(a1: any): Promise<number> {
     return this.general_call('_getBookIndicatorPartOfPageResult', [a1]) as
-        Promise<number>;
+      Promise<number>;
   }
   async is_last_atom(a1: any, a2: any) {
     return this.general_call('_is_last_atom', [a1, a2]);
@@ -147,7 +160,7 @@ export class WasmWorkerHandler {
   }
   async gotoBookPosIndicator(a1: any, a2: any): Promise<number> {
     return this.general_call('_gotoBookPosIndicator', [a1, a2]) as
-        Promise<number>;
+      Promise<number>;
   }
   async getBookPosIndicators(a1: any): Promise<number> {
     return this.general_call('_getBookPosIndicators', [a1]) as Promise<number>;
@@ -160,7 +173,7 @@ export class WasmWorkerHandler {
   }
   async renderNextPages(a1: any, a2: any, a3: any): Promise<number> {
     return this.general_call('_renderNextPages', [a1, a2, a3]) as
-        Promise<number>;
+      Promise<number>;
   }
   async getBookPlayer(a1: any) {
     return this.general_call('_getBookPlayer', [a1]);
@@ -197,7 +210,7 @@ export class WasmWorkerHandler {
   }
   async renderDocPage(a1: any, a2: any, a3: any, a4: any): Promise<number> {
     return this.general_call('_renderDocPage', [a1, a2, a3, a4]) as
-        Promise<number>;
+      Promise<number>;
   }
   async getPageCount(a1: any): Promise<number> {
     return this.general_call('_getPageCount', [a1]) as Promise<number>;
@@ -216,7 +229,7 @@ export class WasmWorkerHandler {
   }
   async extractFromHeapBytes(m: any, n: any): Promise<Uint8Array> {
     return this.general_call('extractFromHeapBytes', [m, n]) as
-        Promise<Uint8Array>;
+      Promise<Uint8Array>;
   }
   async subArrayH16(s: any, t: any) {
     return this.general_call('subArrayH16', [s, t]);
@@ -237,7 +250,7 @@ export class audioBook {
   lastAtom: number = 0;
   _bookDuration: number = 0;
   bookPlayerPtr: number = 0;
-  loadedVoiceAtomPos: IBookPosIndicator = {group: -1, atom: -1};
+  loadedVoiceAtomPos: IBookPosIndicator = { group: -1, atom: -1 };
   loadedAtomVoiceWrapper?: number = 0;
   wasmWorker: WasmWorkerHandler;
   constructor(worker: WasmWorkerHandler) {
@@ -267,8 +280,8 @@ export class audioBook {
   async getTotalDuration() {
     if (this._bookDuration) return this._bookDuration;
     this._bookDuration =
-        await this.wasmWorker.getVoiceDuration(
-            this.bookPlayerPtr, this.firstAtom, this.lastAtom) as number;
+      await this.wasmWorker.getVoiceDuration(
+        this.bookPlayerPtr, this.firstAtom, this.lastAtom) as number;
     return this._bookDuration;
   }
   async bookType() {
@@ -277,19 +290,19 @@ export class audioBook {
   async getFirstAtom(): Promise<IBookPosIndicator> {
     return {
       group: await this.wasmWorker.getIndicatorPart(this.firstAtom, 0) as
-          number,
+        number,
       atom: await this.wasmWorker.getIndicatorPart(this.lastAtom, 1) as number
     };
   }
   async getNextAtom(atomPos: IBookPosIndicator): Promise<IBookPosIndicator> {
     let caPos =
-        await this.wasmWorker.gotoBookPosIndicator(atomPos.group, atomPos.atom);
+      await this.wasmWorker.gotoBookPosIndicator(atomPos.group, atomPos.atom);
     if (await this.wasmWorker.is_last_atom(this.bookPtr, caPos)) {
       await this.wasmWorker.deleteBookPosIndicator(caPos);
       throw new Error('No Next Atom');
     }
     let naPos = await this.wasmWorker.BookNextPart(this.bookPtr, caPos);
-    let rtn: IBookPosIndicator = {group: 0, atom: 0};
+    let rtn: IBookPosIndicator = { group: 0, atom: 0 };
     rtn.atom = await this.wasmWorker.getIndicatorPart(naPos, 1) as number;
     rtn.group = await this.wasmWorker.getIndicatorPart(naPos, 0) as number;
     await this.wasmWorker.deleteBookPosIndicator(naPos);
@@ -297,21 +310,21 @@ export class audioBook {
   }
   async getAtomDuration(atomPos: IBookPosIndicator): Promise<number> {
     let caPos =
-        await this.wasmWorker.gotoBookPosIndicator(atomPos.group, atomPos.atom);
+      await this.wasmWorker.gotoBookPosIndicator(atomPos.group, atomPos.atom);
     let rtn = await this.wasmWorker.getVoiceDuration(
-        this.bookPlayerPtr, caPos, caPos);
+      this.bookPlayerPtr, caPos, caPos);
     await this.wasmWorker.deleteBookPosIndicator(caPos);
     return rtn as number;
   }
   async getDurationForTwoAtoms(
-      sAtomPos: IBookPosIndicator,
-      eAtomPos: IBookPosIndicator): Promise<number> {
+    sAtomPos: IBookPosIndicator,
+    eAtomPos: IBookPosIndicator): Promise<number> {
     let saPos = await this.wasmWorker.gotoBookPosIndicator(
-        sAtomPos.group, sAtomPos.atom);
+      sAtomPos.group, sAtomPos.atom);
     let eaPos = await this.wasmWorker.gotoBookPosIndicator(
-        eAtomPos.group, eAtomPos.atom);
+      eAtomPos.group, eAtomPos.atom);
     let rtn = await this.wasmWorker.getVoiceDuration(
-        this.bookPlayerPtr, saPos, eaPos);
+      this.bookPlayerPtr, saPos, eaPos);
     await this.wasmWorker.deleteBookPosIndicator(saPos);
     await this.wasmWorker.deleteBookPosIndicator(eaPos);
     return rtn as number;
@@ -320,13 +333,13 @@ export class audioBook {
     if (atomPos !== this.loadedVoiceAtomPos) {
       if (this.loadedAtomVoiceWrapper != null) {
         await this.wasmWorker.deleteVoiceAtomWrapper(
-            this.loadedAtomVoiceWrapper);
+          this.loadedAtomVoiceWrapper);
         this.loadedAtomVoiceWrapper = 0;
       }
       let caPos = await this.wasmWorker.gotoBookPosIndicator(
-          atomPos.group, atomPos.atom);
+        atomPos.group, atomPos.atom);
       this.loadedAtomVoiceWrapper = await this.wasmWorker.getVoiceAtomWrapper(
-                                        this.bookPlayerPtr, caPos) as number;
+        this.bookPlayerPtr, caPos) as number;
       await this.wasmWorker.deleteBookPosIndicator(caPos);
     }
   }
@@ -334,30 +347,30 @@ export class audioBook {
     if (this.loadedAtomVoiceWrapper == null)
       throw new Error('no loaded atom found.');
     return await this.wasmWorker.getVoiceSampleRate(
-               this.loadedAtomVoiceWrapper) as number;
+      this.loadedAtomVoiceWrapper) as number;
   }
   async getLoadedVoiceAtomChannels(): Promise<number> {
     if (this.loadedAtomVoiceWrapper == null)
       throw new Error('no loaded atom found.');
     return await this.wasmWorker.getVoiceChannelsCount(
-               this.loadedAtomVoiceWrapper) as number;
+      this.loadedAtomVoiceWrapper) as number;
   }
   async getLoadedVoiceAtomDuration(): Promise<number> {
     if (this.loadedAtomVoiceWrapper == null)
       throw new Error('no loaded atom found.');
     return await this.wasmWorker.getVoiceAtomWrapperDuration(
-               this.loadedAtomVoiceWrapper) as number;
+      this.loadedAtomVoiceWrapper) as number;
   }
   async getLoadedVoiceAtom10Second(startMilliSecond: number):
-      Promise<Array<Float32Array>> {
+    Promise<Array<Float32Array>> {
     // debugger;
     if (this.loadedAtomVoiceWrapper == null)
       throw new Error('no loaded atom found.');
     let rtn = await this.wasmWorker.get10Seconds(
-                  this.loadedAtomVoiceWrapper, startMilliSecond) as number;
+      this.loadedAtomVoiceWrapper, startMilliSecond) as number;
     let size = await this.wasmWorker.getDWORDSize(rtn) as number;
     let bys = await this.wasmWorker.subArrayH16(
-                  (rtn + 4) / 2, (rtn + size) / 2) as Int16Array;
+      (rtn + 4) / 2, (rtn + size) / 2) as Int16Array;
     await this.wasmWorker.deleteBytePoniter(rtn);
     let chansCount = await this.getLoadedVoiceAtomChannels();
     let eachChannelItemCount = bys.length / chansCount;
@@ -396,9 +409,9 @@ export class book {
    * @param {* Background color} textBColor
    */
   constructor(
-      wasmWorker: WasmWorkerHandler, screenWidth: number, screenHeight: number,
-      font: Uint8Array, fontSize: number, textFColor: number,
-      textBColor: number) {
+    wasmWorker: WasmWorkerHandler, screenWidth: number, screenHeight: number,
+    font: Uint8Array, fontSize: number, textFColor: number,
+    textBColor: number) {
     this.wasmWorker = wasmWorker;
     // debugger;
     this.screenHeight = screenHeight;
@@ -406,27 +419,27 @@ export class book {
     this.fontSize = fontSize;
   }
   static async getInstace(
-      wasmWorker: WasmWorkerHandler, bookbuf: Uint8Array, screenWidth: number,
-      screenHeight: number, font: Uint8Array, fontSize: number,
-      textFColor: number, textBColor: number): Promise<book> {
+    wasmWorker: WasmWorkerHandler, bookbuf: Uint8Array, screenWidth: number,
+    screenHeight: number, font: Uint8Array, fontSize: number,
+    textFColor: number, textBColor: number): Promise<book> {
     let fontHeapPtr = await wasmWorker.copyBufferToHeap(font);
     let rendererFormatPtr = await wasmWorker.getRendererFormat(
-        textFColor, textBColor, textFColor, textBColor, fontSize, fontHeapPtr,
-        font.length);
+      textFColor, textBColor, textFColor, textBColor, fontSize, fontHeapPtr,
+      font.length);
     // debugger;
     let bookheapPtr = await wasmWorker.copyBufferToHeap(bookbuf);
     let bookPtr = await wasmWorker.getBookFromBuf(bookheapPtr, bookbuf.length);
     await wasmWorker.freeHeap(bookheapPtr);  // free heap from bin buffer;
 
     let bookRendererPtr = await wasmWorker.getBookRenderer(
-        bookPtr, rendererFormatPtr, screenWidth, screenHeight);
+      bookPtr, rendererFormatPtr, screenWidth, screenHeight);
     let bookIndicatorPtr = await wasmWorker.initBookIndicator();
     let currentBookPosIndicator =
-        await wasmWorker.BookNextPart(bookPtr, bookIndicatorPtr);
+      await wasmWorker.BookNextPart(bookPtr, bookIndicatorPtr);
     await wasmWorker.deleteBookPosIndicator(bookIndicatorPtr);
     let rtn = new book(
-        wasmWorker, screenWidth, screenHeight, font, fontSize, textFColor,
-        textBColor);
+      wasmWorker, screenWidth, screenHeight, font, fontSize, textFColor,
+      textBColor);
     rtn.bookPtr = bookPtr;
     rtn.bookRendererPtr = bookRendererPtr;
     rtn.fontHeapPtr = fontHeapPtr;
@@ -437,21 +450,21 @@ export class book {
   async renderNextPage() {
     debugger;
     if (await this.wasmWorker.is_last_atom(
-            this.bookPtr, this.currentBookPosIndicator))
+      this.bookPtr, this.currentBookPosIndicator))
       throw new Error('EOF');
 
     let NextPage = await this.wasmWorker.renderNextPage(
-        this.bookRendererPtr, this.currentBookPosIndicator);
+      this.bookRendererPtr, this.currentBookPosIndicator);
     if (this.renderedPagePtr) {
       await this.wasmWorker.deleteRenderedPage(this.renderedPagePtr);
     }
     this.lastBookPosIdicator = this.currentBookPosIndicator;
     this.currentBookPosIndicator =
-        await this.wasmWorker.getBookIndicatorPartOfPageResult(NextPage);
+      await this.wasmWorker.getBookIndicatorPartOfPageResult(NextPage);
     let img = await this.wasmWorker.getImageofPageResult(NextPage);
     let imageSize = await this.wasmWorker.getDWORDSize(img);
     let pngData =
-        await this.wasmWorker.extractFromHeapBytes(imageSize - 4, img + 4);
+      await this.wasmWorker.extractFromHeapBytes(imageSize - 4, img + 4);
     let pic = 'data:image/png;base64,' + _arrayBufferToBase64(pngData);
     await this.wasmWorker.deleteBytePoniter(img);
     this.renderedPagePtr = NextPage;
@@ -462,37 +475,37 @@ export class book {
   async renderPrevPage() {
     // debugger;
     if (await this.wasmWorker.is_first_atom(
-            this.bookPtr, this.currentBookPosIndicator))
+      this.bookPtr, this.currentBookPosIndicator))
       throw new Error('BEG');
 
     let NextPage = await this.wasmWorker.renderBackPage(
-        this.bookRendererPtr, this.currentBookPosIndicator);
+      this.bookRendererPtr, this.currentBookPosIndicator);
     if (this.renderedPagePtr) {
       await this.wasmWorker.deleteRenderedPage(this.renderedPagePtr);
     }
     this.lastBookPosIdicator = this.currentBookPosIndicator;
     this.currentBookPosIndicator =
-        await this.wasmWorker.getBookIndicatorPartOfPageResult(NextPage);
+      await this.wasmWorker.getBookIndicatorPartOfPageResult(NextPage);
     let img = await this.wasmWorker.getImageofPageResult(NextPage);
     let imageSize = await this.wasmWorker.getDWORDSize(img);
     let pngData =
-        await this.wasmWorker.extractFromHeapBytes(imageSize - 4, img + 4);
+      await this.wasmWorker.extractFromHeapBytes(imageSize - 4, img + 4);
     let pic = 'data:image/png;base64,' + _arrayBufferToBase64(pngData);
     await this.wasmWorker.deleteBytePoniter(img);
     this.renderedPagePtr = NextPage;
     return pic;
   }
   async renderNPages(fromInd: IBookPosIndicator, n: number):
-      Promise<Array<string>> {
+    Promise<Array<string>> {
     let indic =
-        await this.wasmWorker.gotoBookPosIndicator(fromInd.group, fromInd.atom);
+      await this.wasmWorker.gotoBookPosIndicator(fromInd.group, fromInd.atom);
     if (await this.wasmWorker.is_last_atom(this.bookPtr, indic)) {
       await this.wasmWorker.deleteBookPosIndicator(indic);
       throw new Error('EOF');
     }
 
     let pagesPtr =
-        await this.wasmWorker.renderNextPages(this.bookRendererPtr, indic, n);
+      await this.wasmWorker.renderNextPages(this.bookRendererPtr, indic, n);
     await this.wasmWorker.deleteBookPosIndicator(indic);
     if (pagesPtr == null) {
       throw new Error('BAD POINTER');
@@ -504,7 +517,7 @@ export class book {
       let imgPtr = await this.wasmWorker.getDWORDSize(pagesPtr + 4 + i * 4);
       let imageSize = await this.wasmWorker.getDWORDSize(imgPtr);
       let pngData =
-          await this.wasmWorker.extractFromHeapBytes(imageSize - 4, imgPtr + 4);
+        await this.wasmWorker.extractFromHeapBytes(imageSize - 4, imgPtr + 4);
       let pic = 'data:image/png;base64,' + _arrayBufferToBase64(pngData);
       images.push(pic);
       await this.wasmWorker.deleteBytePoniter(imgPtr);
@@ -517,25 +530,25 @@ export class book {
   }
   async areWeAtEnd() {
     return await this.wasmWorker.is_last_atom(
-        this.bookPtr, this.currentBookPosIndicator);
+      this.bookPtr, this.currentBookPosIndicator);
   }
   async areWeAtStart() {
     return await this.wasmWorker.is_first_atom(
-        this.bookPtr, this.currentBookPosIndicator);
+      this.bookPtr, this.currentBookPosIndicator);
   }
 
   async getProgress() {
     let atomC = await this.wasmWorker.getBookTotalAtoms(this.bookPtr);
     let p = await this.wasmWorker.getBookProgress(
-        this.bookPtr, this.currentBookPosIndicator);
+      this.bookPtr, this.currentBookPosIndicator);
     return p / atomC;
   }
   async getCurrentBookIndicator() {
     let g =
-        await this.wasmWorker.getIndicatorPart(this.currentBookPosIndicator, 0);
+      await this.wasmWorker.getIndicatorPart(this.currentBookPosIndicator, 0);
     let a =
-        await this.wasmWorker.getIndicatorPart(this.currentBookPosIndicator, 1);
-    return {group: g, atom: a};
+      await this.wasmWorker.getIndicatorPart(this.currentBookPosIndicator, 1);
+    return { group: g, atom: a };
   }
   async gotoPos(indicator: IBookPosIndicator) {
     // has memory leakage
@@ -545,7 +558,7 @@ export class book {
       await this.wasmWorker.deleteRenderedPage(this.renderedPagePtr);
     }
     this.currentBookPosIndicator = await this.wasmWorker.gotoBookPosIndicator(
-        indicator.group || 0, indicator.atom || 0)
+      indicator.group || 0, indicator.atom || 0)
   }
   async getListOfPageIndicators(): Promise<Array<IBookPosIndicator>> {
     // debugger;
@@ -556,7 +569,7 @@ export class book {
     for (let i = 0; i < c; i++) {
       let g = await this.wasmWorker.getDWORDSize(res + 4 + i * 8);
       let a = await this.wasmWorker.getDWORDSize(res + 4 + i * 8 + 4);
-      pages.push({group: g, atom: a})
+      pages.push({ group: g, atom: a })
     }
     await this.wasmWorker.deleteBytePoniter(res);
     return pages;
@@ -567,18 +580,18 @@ export class book {
       throw new Error('EOF');
 
     let NextPage =
-        await this.wasmWorker.renderNextPage(this.bookRendererPtr, indic);
+      await this.wasmWorker.renderNextPage(this.bookRendererPtr, indic);
     await this.wasmWorker.deleteBookPosIndicator(indic);
     if (this.renderedPagePtr) {
       await this.wasmWorker.deleteRenderedPage(this.renderedPagePtr);
     }
     this.lastBookPosIdicator = this.currentBookPosIndicator;
     this.currentBookPosIndicator =
-        await this.wasmWorker.getBookIndicatorPartOfPageResult(NextPage);
+      await this.wasmWorker.getBookIndicatorPartOfPageResult(NextPage);
     let img = await this.wasmWorker.getImageofPageResult(NextPage);
     let imageSize = await this.wasmWorker.getDWORDSize(img);
     let pngData =
-        await this.wasmWorker.extractFromHeapBytes(imageSize - 4, img + 4);
+      await this.wasmWorker.extractFromHeapBytes(imageSize - 4, img + 4);
     let pic = 'data:image/png;base64,' + _arrayBufferToBase64(pngData);
     await this.wasmWorker.deleteBytePoniter(img);
     this.renderedPagePtr = NextPage;
@@ -593,17 +606,17 @@ export class book {
     let aindex = await this.wasmWorker.getDWORDSize(r + 4 + 4);
     let parentindex = await this.wasmWorker.getWORDSize(r + 4 + 4 + 4);
     let sbuf = await this.wasmWorker.extractFromHeapBytes(
-        size - 4 - 4 - 4 - 2, r + 4 + 4 + 4 + 2);
+      size - 4 - 4 - 4 - 2, r + 4 + 4 + 4 + 2);
     let s = new TextDecoder('utf-8').decode(sbuf);
     return {
-      pos: {group: gindex, atom: aindex}, text: s, parentIndex: parentindex
+      pos: { group: gindex, atom: aindex }, text: s, parentIndex: parentindex
     }
   }
   async contentLength(): Promise<number> {
     return await this.wasmWorker.getBookContentLength(this.bookPtr);
   }
   async getContentList(): Promise<Array<IBookContent>> {
-    let rtn: Array < IBookContent >= [];
+    let rtn: Array<IBookContent> = [];
     let cLen = await this.contentLength();
     for (let i = 0; i < cLen; i++) rtn.push(await this.contentAt(i));
     return rtn;
@@ -616,13 +629,13 @@ export class book {
     // if (await this.wasmWorker.is_last_atom(this.bookPtr, indic)) throw new
     // Error('EOF');
     let img = await this.wasmWorker.renderDocPage(
-        this.bookRendererPtr, indic, zoom, 0);
+      this.bookRendererPtr, indic, zoom, 0);
 
     await this.wasmWorker.deleteBookPosIndicator(indic);
     // await this.wasmWorker.deleteRenderedPage(indic);
     let imageSize = await this.wasmWorker.getDWORDSize(img);
     let pngData =
-        await this.wasmWorker.extractFromHeapBytes(imageSize - 4, img + 4);
+      await this.wasmWorker.extractFromHeapBytes(imageSize - 4, img + 4);
     let pic = 'data:image/png;base64,' + _arrayBufferToBase64(pngData);
     await this.wasmWorker.deleteBytePoniter(img);
     return pic;

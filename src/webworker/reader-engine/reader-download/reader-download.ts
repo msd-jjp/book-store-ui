@@ -83,4 +83,9 @@ export abstract class ReaderDownload {
         return URL.createObjectURL(blob);
     }
 
+    static resetReaderWorkerHandler(): void {
+        debugger;
+        ReaderDownload._readerWasmWorkerHandler = undefined;
+    }
+
 }
