@@ -373,7 +373,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     return page;
   }
   getPagePath(pageIndex: number) {
-    this._bookInstance.getPage_with_storeAround(pageIndex, 5);
+    // this._bookInstance.getPage_with_storeAround(pageIndex, 5);
     return pageIndex; // page;
   }
 

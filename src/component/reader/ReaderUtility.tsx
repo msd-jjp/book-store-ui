@@ -192,44 +192,6 @@ export abstract class ReaderUtility {
         return _book;
     }
 
-    private static wait_loadReaderEngine() {
-        return new Promise(async (res, rej) => {
-
-            // debugger;
-            // wasmWorker('/reader/reader.wasm')
-            //     .then((Module: any) => {
-            //         debugger;
-            //         // return module.exports.add(1, 2);
-            //     })
-            //     // .then(sum => {
-            //     //     console.log('1 + 2 = ' + sum);
-            //     // })
-            //     .catch((ex: any) => {
-            //         debugger;
-            //         // ex is a string that represents the exception
-            //         console.error(ex);
-            //     });
-
-
-            if ((window as any).Module && (window as any).Module.asm && (window as any).Module.asm._malloc) { // stackSave, _malloc
-                // if ((window as any).Module && (window as any).Module._malloc) { // stackSave, _malloc
-                // console.log('window.Module.asm', (window as any).Module._malloc);
-                res(true);
-                return;
-            };
-
-            for (let i = 0; i < 50; i++) {
-                await CmpUtility.waitOnMe((i + 1) * 200);
-                if ((window as any).Module && (window as any).Module.asm && (window as any).Module.asm._malloc) {
-                    // if ((window as any).Module && (window as any).Module._malloc) {
-                    // console.log('window.Module.asm', (window as any).Module._malloc);
-                    res(true);
-                    break;
-                };
-            }
-            rej();
-        });
-    }
     private static wait_readerEngine_init(ww: WasmWorkerHandler): Promise<any> {
         return new Promise(async (res, rej) => {
             for (let i = 0; i < 100; i++) { // 50
@@ -297,13 +259,20 @@ export abstract class ReaderUtility {
                     if (d_s) {
 
                         for (let t = 0; t < 10; t++) {
-                            const d_s_page = bi.getPage_ifExist(parseInt(d_s));
+                            let d_s_page = bi.getPage_ifExist(parseInt(d_s));
                             if (!d_s_page) {
-                                // console.log('check_swiperImg_with_delay', d_s, false);
+                                try {
+                                    d_s_page = await bi.getPage(parseInt(d_s));
+                                } catch (e) {
+                                    console.log('d_s_page = await bi.getPage(parseInt(d_s));', d_s);
+                                }
+                            }
+                            if (!d_s_page) {
+                                console.log('check_swiperImg_with_delay', d_s, false);
                                 // await CmpUtility.waitOnMe((t + 1) * 100);
                                 await CmpUtility.waitOnMe(200);
                             } else {
-                                // console.log('check_swiperImg_with_delay', d_s, true);
+                                console.log('check_swiperImg_with_delay', d_s, true);
                                 img_list[i].setAttribute('src', d_s_page);
                                 break;
                             }

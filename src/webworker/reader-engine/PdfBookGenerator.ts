@@ -1,14 +1,7 @@
-import { book, IBookPosIndicator, IBookContent, WasmWorkerHandler } from "./MsdBook";
-import { CmpUtility } from "../../component/_base/CmpUtility";
+import { IBookPosIndicator, WasmWorkerHandler } from "./MsdBook";
+import { TextBookGenerator } from "./TextBookGenerator";
 
-export class PdfBookGenerator extends book {
-    private _pageStorage: any = {};
-    private setToStorage(index: number, page: string): void {
-        this._pageStorage[index] = page;
-    }
-    private getFromStorage(index: number): string | undefined {
-        return this._pageStorage[index];
-    }
+export class PdfBookGenerator extends TextBookGenerator {
 
     private _allPages_pos: IBookPosIndicator[] | undefined;
     async getAllPages_pos(): Promise<Array<IBookPosIndicator>> {
@@ -20,62 +13,42 @@ export class PdfBookGenerator extends book {
                     group: i, atom: 0
                 });
             }
-            this._allPages_pos = list; // this.getListOfPageIndicators();
+            this._allPages_pos = list;
         }
         return this._allPages_pos;
     }
-    async getPage(index: number, zoom = 100): Promise<string> {
+    async getPage(index: number, zoom = 100): Promise<string | undefined> {
         let page = this.getFromStorage(index);
         if (!page) {
-            // const allPages_pos = this.getAllPages_pos();
-            // page = this.RenderSpecPage(allPages_pos[index]);
-            page = await this.renderDocPage(index, zoom);
+            try {
+                page = await this.renderDocPage(index, zoom);
+            } catch (e) {
+                console.log(`getPage(${index}: number, ${zoom} = 100)`, e);
+                throw e;
+            }
+            if (!page) return;
             this.setToStorage(index, page);
         }
-        return page;
-    }
-    getPage_ifExist(index: number): string | undefined {
-        let page = this.getFromStorage(index);
         return page;
     }
 
     /**
      * if page not exist it will store around.
      */
-    async getPage_with_storeAround(index: number, n: number, zoom = 100): Promise<string> {
+    async getPage_with_storeAround(index: number, n: number, zoom = 100): Promise<string | undefined> {
         let page = this.getFromStorage(index);
         if (!page) {
-            // const allPages_pos = this.getAllPages_pos();
-            // page = this.RenderSpecPage(allPages_pos[index]);
-            page = await this.renderDocPage(index, zoom);
+            try {
+                page = await this.renderDocPage(index, zoom);
+            } catch (e) {
+                console.log(`getPage_with_storeAround(${index}: number, ${zoom} = 100)`, e);
+                throw e;
+            }
+            if (!page) return;
             this.setToStorage(index, page);
             this.storeAround(index, n);
         }
         return page;
-    }
-
-    private async storeAround(pageIndex: number, n: number) {
-        await CmpUtility.waitOnMe(0);
-        this.store_n_pages_before_x(pageIndex, n);
-        this.store_n_pages_after_x(pageIndex, n);
-    }
-
-    private _allChapters: IBookContent[] | undefined;
-    async getAllChapters(): Promise<Array<IBookContent>> {
-        if (!this._allChapters) this._allChapters = await this.getContentList();
-        return this._allChapters;
-    }
-
-    private store_n_pages_before_x(x: number, n: number): void {
-        for (let i = x - 1; i >= x - n && i >= 0; i--) {
-            this.getPage(i);
-        }
-    }
-    private async store_n_pages_after_x(x: number, n: number): Promise<void> {
-        const allPages_pos = await this.getAllPages_pos();
-        for (let i = x + 1; i < allPages_pos.length && i <= x + n; i++) {
-            this.getPage(i);
-        }
     }
 
     static async getInstace(
