@@ -14,7 +14,7 @@ export class LibraryService extends BaseService {
     }
 
     checkChange(): Promise<IAPI_ResponseList<any>> { // todo return ?
-        return this.axiosTokenInstance.head('/library');
+        return this.axiosTokenInstance.head('/library/user');
     }
 
     // update_status(

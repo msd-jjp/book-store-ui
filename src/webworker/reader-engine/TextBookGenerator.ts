@@ -1,5 +1,6 @@
 import { book, IBookPosIndicator, IBookContent } from "./MsdBook";
 import { CmpUtility } from "../../component/_base/CmpUtility";
+// import { Utility } from "../../asset/script/utility";
 
 export abstract class TextBookGenerator extends book {
     private _pageStorage: any = {};
@@ -7,14 +8,21 @@ export abstract class TextBookGenerator extends book {
         this._pageStorage[index] = page;
     }
     protected getFromStorage(index: number): string | undefined {
+        return undefined;
         return this._pageStorage[index];
     }
 
     abstract async getAllPages_pos(): Promise<Array<IBookPosIndicator>>;
-    
+
     abstract async getPage(...args: any): Promise<string | undefined>;
 
+    // async 
     getPage_ifExist(index: number): string | undefined {
+        let page = this.getFromStorage(index);
+        return page;
+    }
+    async db_getPage_ifExist(index: number): Promise<string | undefined> {
+        // Utility.waitOnMe(10);
         let page = this.getFromStorage(index);
         return page;
     }

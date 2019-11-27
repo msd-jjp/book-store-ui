@@ -242,8 +242,60 @@ export abstract class ReaderUtility {
         }, 300);
     } */
 
+    private static _renderViewablePages_isRun = false;
+    static async renderViewablePages(bi: BookGenerator | PdfBookGenerator, selector?: string) {
+        if (ReaderUtility._renderViewablePages_isRun) return;
+        ReaderUtility._renderViewablePages_isRun = true;
+        debugger;
+        selector = selector || '.swiper-container .swiper-slide img.page-img';
+
+        const img_list: Array<Element> = Array.apply(null, (document.querySelectorAll(selector!) as any)) as Array<Element>;
+        const img_pageIndex_list = img_list.map(img => parseInt(img.getAttribute('data-src') as string));
+
+        const img_has_src_list = img_list.map(img => img.getAttribute('src') !== null);
+        console.log(img_has_src_list, img_pageIndex_list);
+        const isRenderFinished = img_has_src_list.reduce((oldVal, CurrnetVal) => {
+            return oldVal && CurrnetVal;
+        }, true);
+
+        if (isRenderFinished) {
+            ReaderUtility._renderViewablePages_isRun = false;
+            return;
+        }
+        debugger;
+
+        for (let i = 0; i < img_list.length; i++) {
+            if (img_has_src_list[i]) continue;
+            if (isNaN(img_pageIndex_list[i])) {
+                // console.error('isNaN(img_pageIndex_list[i])--------------', i);
+                continue;
+            }
+
+            try {
+                let page = await bi.db_getPage_ifExist(img_pageIndex_list[i]);
+                if (page === undefined) {
+                    page = await bi.getPage(img_pageIndex_list[i]);
+                }
+
+                page && img_list[i].setAttribute('src', page);
+            } catch (e) {
+                if (e !== 'WASM BUSY') {
+                    // toast render problem
+                    console.log('e !== WASM BUSY', e);
+                    ReaderUtility._renderViewablePages_isRun = false;
+                    return;
+                }
+                break;
+            }
+
+        }
+
+        setTimeout(ReaderUtility.renderViewablePages, 100, bi, selector);
+        ReaderUtility._renderViewablePages_isRun = false;
+    }
+
     private static check_swiperImg_with_delay_timer: any;
-    static async check_swiperImg_with_delay(bi: BookGenerator | PdfBookGenerator, selector?: string) {
+    static async check_swiperImg_with_delay_DELETE_ME(bi: BookGenerator | PdfBookGenerator, selector?: string) {
         selector = selector || '.swiper-container .swiper-slide img.page-img';
 
         if (ReaderUtility.check_swiperImg_with_delay_timer) {

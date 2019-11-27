@@ -230,7 +230,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       this.book_active_index = 0;
     }
 
-    await this.getSinglePagePath(this.book_active_index);
+    // await this.getSinglePagePath(this.book_active_index);
 
     this.swiper_obj = new Swiper('.swiper-container', {
       keyboard: true,
@@ -357,16 +357,16 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
   getPagePath_ifExist(pageIndex: number) {
     const page = this._bookInstance.getPage_ifExist(pageIndex);
-    if (!page) { ReaderUtility.check_swiperImg_with_delay(this._bookInstance) } // check_swiperImg_loaded
+    // if (!page) { ReaderUtility.check_swiperImg_with_delay(this._bookInstance) } // check_swiperImg_loaded
     return page;
   }
   getPagePath(pageIndex: number) {
     // this._bookInstance.getPage_with_storeAround(pageIndex, 5);
     return pageIndex; // page;
   }
-  getSinglePagePath(pageIndex: number) {
+  /* getSinglePagePath(pageIndex: number) {
     return this._bookInstance.getPage(pageIndex);
-  }
+  } */
 
   private _isThisBookRtl: boolean | undefined = undefined;
   isThisBookRtl(): boolean {
@@ -376,8 +376,18 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     return this._isThisBookRtl;
   }
 
+  private _renderViewablePages_timeout: any;
   swiper_render() {
     if (true) {
+
+      if (this._renderViewablePages_timeout) {
+        clearTimeout(this._renderViewablePages_timeout);
+        this._renderViewablePages_timeout = undefined;
+      };
+      this._renderViewablePages_timeout = setTimeout(() => {
+        this._bookInstance && ReaderUtility.renderViewablePages(this._bookInstance);
+      }, 10);
+
       const vrtData: any = this.state.virtualData;
 
       let offset_dir = 'left';

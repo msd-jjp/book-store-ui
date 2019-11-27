@@ -302,3 +302,7 @@ on logout reader files will remove (stored in book location).
 audio reader --> try catch --> WASM BUSY
 
 ====================================================================================
+
+layout footer --> click on image while readerEngine downloading.
+
+====================================================================================

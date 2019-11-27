@@ -369,7 +369,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
   getPagePath_ifExist(pageIndex: number) {
     const page = this._bookInstance.getPage_ifExist(pageIndex);
-    if (!page) { ReaderUtility.check_swiperImg_with_delay(this._bookInstance) } // check_swiperImg_loaded
+    // if (!page) { ReaderUtility.check_swiperImg_with_delay(this._bookInstance) } // check_swiperImg_loaded
     return page;
   }
   getPagePath(pageIndex: number) {
@@ -462,8 +462,18 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     return this._isThisBookRtl;
   }
 
+  private _renderViewablePages_timeout: any;
   swiper_render() {
     if (true) {
+
+      if (this._renderViewablePages_timeout) {
+        clearTimeout(this._renderViewablePages_timeout);
+        this._renderViewablePages_timeout = undefined;
+      };
+      this._renderViewablePages_timeout = setTimeout(() => {
+        this._bookInstance && ReaderUtility.renderViewablePages(this._bookInstance);
+      }, 10);
+
       const vrtData: any = this.state.virtualData;
       // const swiper_slides: any = this.state.swiper_slides;
 
