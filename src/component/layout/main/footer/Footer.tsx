@@ -4,14 +4,14 @@ import { Localization } from "../../../../config/localization/localization";
 import { redux_state } from "../../../../redux/app_state";
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { TInternationalization } from "../../../../config/setup";
+import { TInternationalization, Setup } from "../../../../config/setup";
 import { IUser } from "../../../../model/model.user";
 import { BaseComponent } from "../../../_base/BaseComponent";
 import { CmpUtility } from "../../../_base/CmpUtility";
 import { History } from "history";
 import { IBook } from "../../../../model/model.book";
 import { BOOK_TYPES } from "../../../../enum/Book";
-import { is_book_downloaded } from "../../../library/libraryViewTemplate";
+import { is_book_downloaded, isReaderEngineDownloading } from "../../../library/libraryViewTemplate";
 
 export interface IProps {
     internationalization: TInternationalization;
@@ -65,6 +65,14 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
     //     this.props.history.push(`/reader/${book_id}/reading`);
     // }
     before_gotoReader(book: IBook) {
+        const is_re_d_ing = isReaderEngineDownloading();
+        if (is_re_d_ing) {
+            this.readerEngineNotify();
+            return;
+        }
+
+        // if (is_re_d_ing) return;
+
         let isAudio = false;
         if (book.type === BOOK_TYPES.Audio) {
             isAudio = true;
@@ -77,6 +85,11 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
         } else {
             this.props.history.push(`/reader/${book_id}/reading`);
         }
+    }
+
+    readerEngineNotify(): void {
+        this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
+            { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
     }
 
     render() {
