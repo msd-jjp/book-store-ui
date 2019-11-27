@@ -11319,6 +11319,9 @@ Module['onRuntimeInitialized']=function(){
   // clearInterval(msd_continue_running);
   // debugger;
   let t = Module['asm'];
+  setTimeout(function(){
+    postMessage({webasembely_inited:true});
+  },1);
   
   console.log(t);
 }
