@@ -168,7 +168,9 @@ export abstract class ReaderUtility {
         // let w = new Worker("/reader/reader2.js");
         // let ww = new WasmWorkerHandler(w);
         const ww = await ReaderDownload.getReaderWorkerHandler();
+        if (ww === undefined) throw 'WorkerHandler failed possible';
         await ReaderUtility.wait_readerEngine_init(ww);
+
         const _book = await textBookClass.getInstace(
             ww,
             bookFile,
@@ -246,7 +248,7 @@ export abstract class ReaderUtility {
     static async renderViewablePages(bi: BookGenerator | PdfBookGenerator, selector?: string) {
         if (ReaderUtility._renderViewablePages_isRun) return;
         ReaderUtility._renderViewablePages_isRun = true;
-        debugger;
+        
         selector = selector || '.swiper-container .swiper-slide img.page-img';
 
         const img_list: Array<Element> = Array.apply(null, (document.querySelectorAll(selector!) as any)) as Array<Element>;
@@ -262,7 +264,7 @@ export abstract class ReaderUtility {
             ReaderUtility._renderViewablePages_isRun = false;
             return;
         }
-        debugger;
+        
 
         for (let i = 0; i < img_list.length; i++) {
             if (img_has_src_list[i]) continue;
@@ -275,6 +277,8 @@ export abstract class ReaderUtility {
                 let page = await bi.db_getPage_ifExist(img_pageIndex_list[i]);
                 if (page === undefined) {
                     page = await bi.getPage(img_pageIndex_list[i]);
+                    // page = await bi.getPage(10000000000);
+
                 }
 
                 page && img_list[i].setAttribute('src', page);
@@ -552,6 +556,7 @@ export abstract class ReaderUtility {
         let ww = new WasmWorkerHandler(w); */
 
         const ww = await ReaderDownload.getReaderWorkerHandler();
+        if (ww === undefined) throw 'WorkerHandler failed possible';
         await ReaderUtility.wait_readerEngine_init(ww);
         return await AudioBookGenerator.getInstance(ww, bookFile);
     }

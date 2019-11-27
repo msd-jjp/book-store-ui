@@ -7,12 +7,14 @@ import { History } from "history";
 import { NETWORK_STATUS } from '../../../../enum/NetworkStatus';
 import { BaseService } from '../../../../service/service.base';
 import { ICartItems } from '../../../../redux/action/cart/cartAction';
+import { IReaderEngine_schema } from '../../../../redux/action/reader-engine/readerEngineAction';
 
 interface IProps {
     history: History;
     match: any;
     network_status: NETWORK_STATUS;
     cart: ICartItems;
+    reader_engine: IReaderEngine_schema;
 }
 interface IState {
     search_query: string | undefined;
@@ -71,6 +73,20 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
         this.props.history.push('/cart');
     }
 
+    readerEngineStatus() {
+        // return this.props.reader_engine.status;
+        return (
+            <i className={
+                "fa fa-bell cursor-pointer ml-3 " +
+                (this.props.reader_engine.status === 'failed' ? 'text-danger' :
+                    this.props.reader_engine.status === 'initing' ? 'text-warning' :
+                        this.props.reader_engine.status === 'inited' ? 'text-success' : ''
+                )
+            }
+            ></i>
+        )
+    }
+
     render() {
         return (
             <>
@@ -120,6 +136,9 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
                                                 >({this.props.cart.length})</small>
                                                 : ''
                                         }
+                                        {
+                                            this.readerEngineStatus()
+                                        }
 
                                     </div>
                                 </div>
@@ -143,6 +162,7 @@ const state2props = (state: redux_state) => {
         internationalization: state.internationalization,
         network_status: state.network_status,
         cart: state.cart,
+        reader_engine: state.reader_engine
     }
 }
 

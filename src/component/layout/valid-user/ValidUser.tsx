@@ -27,7 +27,7 @@ import { LayoutMainNotFound } from '../main/not-found/NotFound';
 import { BookFileDownload } from '../../book-file-download/BookFileDownload';
 import { FetchIntervalWorker } from '../../../webworker/fetch-interval-worker/FetchIntervalWorker';
 import { SyncWorker } from '../../../webworker/sync-worker/SyncWorker';
-import { ReaderDownload } from '../../../webworker/reader-engine/reader-download/reader-download';
+// import { ReaderDownload } from '../../../webworker/reader-engine/reader-download/reader-download';
 
 const appValidUserRoutes = (
     <HashRouter>
@@ -85,7 +85,7 @@ class LayoutValidUserComponent extends React.Component<IProps> {
         } else {
             this.start_fetchingData();
             this._syncWorker.postMessage('check');
-            ReaderDownload.downloadReaderFiles();
+            // ReaderDownload.downloadReaderFiles();
         }
     }
 

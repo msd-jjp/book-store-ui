@@ -54,6 +54,7 @@ const main_reducer = combineReducers(reducers);
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['reader_engine'],
 }
 
 const persistedReducer = persistReducer(persistConfig, main_reducer)

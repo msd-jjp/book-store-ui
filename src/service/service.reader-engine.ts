@@ -1,5 +1,5 @@
 import { BaseService, IAPI_Response } from './service.base';
-import { CancelToken } from 'axios';
+import Axios, { CancelToken } from 'axios';
 import { READER_FILE_NAME } from '../webworker/reader-engine/reader-download/reader-download';
 
 export class ReaderEngineService extends BaseService {
@@ -16,7 +16,9 @@ export class ReaderEngineService extends BaseService {
             url = '/reader/reader.wasm';
         }
         // debugger;
-        return this.axiosTokenInstance.head(url);
+        // return this.axiosTokenInstance.head(url);
+        const ai = Axios.create(this.axiosRequestConfig)
+        return ai.head(url);
     }
 
     async file_partial(

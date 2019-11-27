@@ -1,4 +1,6 @@
 import { ReaderDownload } from "./reader-download/reader-download";
+import { Store2 } from "../../redux/store";
+import { action_update_reader_engine } from "../../redux/action/reader-engine";
 
 // var Module = (window as any).Module;
 function _arrayBufferToBase64(buffer: Uint8Array): string {
@@ -21,7 +23,7 @@ export class WasmWorkerHandler {
   constructor(worker: Worker) {
     // debugger;
     this.worker = worker;
-    worker.postMessage({ target: 'worker-init' });
+    // worker.postMessage({ target: 'worker-init' });
 
     this.worker.onmessage = this.onmessage.bind(this);
     this.handlers = [];
@@ -35,11 +37,14 @@ export class WasmWorkerHandler {
     if (msg.data.abort === true) {
       debugger;
       this.worker.terminate();
-      ReaderDownload.resetReaderWorkerHandler();
+      Store2.dispatch(action_update_reader_engine({ status: 'failed' }));
+      return;
+      /* ReaderDownload.resetReaderWorkerHandler();
       const ww = await ReaderDownload.getReaderWorkerHandler();
+      if (ww === undefined) throw 'WorkerHandler failed possible';
       this.worker = ww.worker;
       //todo: create new book if in cmp reader.
-      return;
+      return; */
     }
 
     let items = this.handlers.filter(x => x.id === msg.data.id);

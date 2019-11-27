@@ -1,10 +1,11 @@
-import { /* is_book_downloaded, */ is_book_downloading, is_book_downloaded_async } from "../../../component/library/libraryViewTemplate";
+import { /* is_book_downloaded, */ is_book_downloading, is_book_downloaded_async, isReaderEngineDownloaded_async } from "../../../component/library/libraryViewTemplate";
 import { Store2 } from "../../../redux/store";
 import { action_update_downloading_book_file } from "../../../redux/action/downloading-book-file";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { WasmWorkerHandler } from "../MsdBook";
 import { PartialDownload } from "../../../component/book-file-download/PartialDownload";
 import { ReaderEngineService } from "../../../service/service.reader-engine";
+import { action_update_reader_engine } from "../../../redux/action/reader-engine";
 
 /** save wasm & reader2.js files as "book main" */
 
@@ -107,12 +108,10 @@ export abstract class ReaderDownload {
         }
 
         // debugger;
+        ReaderDownload.createWorkerAfterDownload();
     }
 
-    private static _readerWasmWorkerHandler: WasmWorkerHandler | undefined;
-    static async getReaderWorkerHandler(): Promise<WasmWorkerHandler> {
-        if (ReaderDownload._readerWasmWorkerHandler) return ReaderDownload._readerWasmWorkerHandler;
-
+    private static async initWorker(): Promise<Worker> {
         const wasmFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.WASM_BOOK_ID);
         const readerFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.READER2_BOOK_ID);
         // debugger;
@@ -122,21 +121,40 @@ export abstract class ReaderDownload {
 
         const w = new Worker(blob); // "/reader/reader2.js"
 
-
+        debugger;
         w.postMessage({ bin: wasmFile });
         w.postMessage({ target: 'worker-init' });
-        const initPromise = new Promise((res, rej) => {
+        return new Promise((res, rej) => {
             w.onmessage = (msg) => {
                 if (msg.data.webasembely_inited) {
-                    res(true);
+                    res(w);
                 }
                 if (msg.data.abort) {
                     rej(msg.data.what);
                 }
             }
         });
-        const ww = new WasmWorkerHandler(w);
-        ReaderDownload._readerWasmWorkerHandler = ww;
+    }
+    private static _readerWasmWorkerHandler: WasmWorkerHandler | undefined;
+    /* static async getReaderWorkerHandler__(): Promise<WasmWorkerHandler | undefined> {
+
+    } */
+    static async getReaderWorkerHandler(): Promise<WasmWorkerHandler | undefined> {
+        if (ReaderDownload._readerWasmWorkerHandler) return ReaderDownload._readerWasmWorkerHandler;
+
+        let ww: WasmWorkerHandler | undefined;
+
+        try {
+            const w = await ReaderDownload.initWorker();
+
+            let ww = new WasmWorkerHandler(w);
+            ReaderDownload._readerWasmWorkerHandler = ww;
+
+            Store2.dispatch(action_update_reader_engine({ status: 'inited' }));
+
+        } catch (e) {
+            Store2.dispatch(action_update_reader_engine({ status: 'failed' }));
+        }
 
         return ww;
     }
@@ -156,6 +174,38 @@ export abstract class ReaderDownload {
     static resetReaderWorkerHandler(): void {
         debugger;
         ReaderDownload._readerWasmWorkerHandler = undefined;
+    }
+    static checkReaderWorkerHandler(): boolean {
+        if (ReaderDownload._readerWasmWorkerHandler !== undefined) return true;
+        return false;
+    }
+
+    private static _createWorkerAfterDownload_isRuning = false;
+    static async createWorkerAfterDownload() {
+        if (ReaderDownload._createWorkerAfterDownload_isRuning) return;
+        ReaderDownload._createWorkerAfterDownload_isRuning = true;
+
+        ReaderDownload.try_createWorkerAfterDownload();
+    }
+
+    // private static _try_createWorkerAfterDownload_timer: any;
+    private static async try_createWorkerAfterDownload() {
+        const is_re_d_ed = await isReaderEngineDownloaded_async();
+
+        if (is_re_d_ed && ReaderDownload.checkReaderWorkerHandler() === false) {
+            debugger;
+            try {
+                await ReaderDownload.getReaderWorkerHandler();
+            } catch (e) {
+                debugger;
+            }
+
+        } else if (Store2.getState().reader_engine.status === 'inited' && ReaderDownload.checkReaderWorkerHandler() === true) {
+            debugger;
+        } else {
+            debugger;
+            setTimeout(ReaderDownload.try_createWorkerAfterDownload, 1000);
+        }
     }
 
 }

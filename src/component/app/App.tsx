@@ -14,6 +14,7 @@ import { AppInitService } from '../../service/service.app-init';
 import { BaseService } from '../../service/service.base';
 import { Modal } from 'react-bootstrap';
 import { RouteLayoutValidUser } from '../layout/valid-user/ValidUser';
+import { ReaderDownload } from '../../webworker/reader-engine/reader-download/reader-download';
 
 const appRoutes = (
   <HashRouter>
@@ -75,6 +76,10 @@ class AppComponent extends React.Component<IProps, IState> {
     BaseService.check_network_status();
   }
 
+  componentWillMount() {
+    ReaderDownload.downloadReaderFiles();
+    ReaderDownload.createWorkerAfterDownload();
+  }
   componentDidMount() {
     this.event_confirmReloadModal();
   }
