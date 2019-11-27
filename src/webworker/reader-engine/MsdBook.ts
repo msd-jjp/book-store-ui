@@ -29,6 +29,9 @@ export class WasmWorkerHandler {
   }
   async onmessage(msg: MessageEvent) {
     // debugger;
+    // if (msg.data.webasembely_inited) {
+    //   debugger;
+    // }
     if (msg.data.abort === true) {
       debugger;
       this.worker.terminate();

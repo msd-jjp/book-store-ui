@@ -15,6 +15,7 @@ import { reducer as CollectionReducer } from './reducer/collection';
 import { reducer as SyncReducer } from './reducer/sync';
 import { reducer as DownloadingBookFileReducer } from './reducer/downloading-book-file';
 import { reducer as ReaderReducer } from './reducer/reader';
+import { reducer as ReaderEngineReducer } from './reducer/reader-engine';
 
 // import logger from 'redux-logger';
 //
@@ -27,6 +28,7 @@ import { ICollection_schema } from './action/collection/collectionAction';
 import { ISync_schema } from './action/sync/syncAction';
 import { IDownloadingBookFile_schema } from './action/downloading-book-file/downloadingBookFileAction';
 import { IReader_schema } from './action/reader/readerAction';
+import { IReaderEngine_schema } from './action/reader-engine/readerEngineAction';
 
 const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
   logged_in_user: UserReducer as Reducer<IUser | null, AnyAction>,
@@ -40,6 +42,7 @@ const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
   sync: SyncReducer as Reducer<ISync_schema, AnyAction>,
   downloading_book_file: DownloadingBookFileReducer as Reducer<IDownloadingBookFile_schema[], AnyAction>,
   reader: ReaderReducer as Reducer<IReader_schema, AnyAction>,
+  reader_engine: ReaderEngineReducer as Reducer<IReaderEngine_schema, AnyAction>,
 }
 
 const main_reducer = combineReducers(reducers);

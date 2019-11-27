@@ -121,7 +121,20 @@ export abstract class ReaderDownload {
         const blob = ReaderDownload.createWorkerContent(readerFile_string);
 
         const w = new Worker(blob); // "/reader/reader2.js"
+
+
         w.postMessage({ bin: wasmFile });
+        w.postMessage({ target: 'worker-init' });
+        const initPromise = new Promise((res, rej) => {
+            w.onmessage = (msg) => {
+                if (msg.data.webasembely_inited) {
+                    res(true);
+                }
+                if (msg.data.abort) {
+                    rej(msg.data.what);
+                }
+            }
+        });
         const ww = new WasmWorkerHandler(w);
         ReaderDownload._readerWasmWorkerHandler = ww;
 
