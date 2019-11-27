@@ -306,3 +306,7 @@ audio reader --> try catch --> WASM BUSY
 layout footer --> click on image while readerEngine downloading.
 
 ====================================================================================
+
+call method createWorkerAfterDownload in cmp Reader (reading overview ...) after will_receve_props readerEngine failed
+
+====================================================================================

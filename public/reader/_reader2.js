@@ -11320,6 +11320,7 @@ function main(binData){
   Module['onRuntimeInitialized']=function(){
     // clearInterval(msd_continue_running);
     // debugger;
+    self.console.log('________________ onRuntimeInitialized______________________');
     self.console.log('worker inited.');
     postMessage({webasembely_inited: true});
     // let t = Module['asm'];
@@ -11340,7 +11341,7 @@ function main(binData){
   }
   
   onmessage=function(msg){
-    // debugger; // 33546042;
+    // debugger; // 33524042;
     var bin =msg.data.bin;
     main(bin);
   }

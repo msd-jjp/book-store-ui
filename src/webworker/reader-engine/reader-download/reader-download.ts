@@ -185,7 +185,9 @@ export abstract class ReaderDownload {
         if (ReaderDownload._createWorkerAfterDownload_isRuning) return;
         ReaderDownload._createWorkerAfterDownload_isRuning = true;
 
-        ReaderDownload.try_createWorkerAfterDownload();
+        await ReaderDownload.try_createWorkerAfterDownload();
+        
+        ReaderDownload._createWorkerAfterDownload_isRuning = false;
     }
 
     // private static _try_createWorkerAfterDownload_timer: any;

@@ -38,13 +38,14 @@ export class WasmWorkerHandler {
       debugger;
       this.worker.terminate();
       Store2.dispatch(action_update_reader_engine({ status: 'failed' }));
-      return;
-      /* ReaderDownload.resetReaderWorkerHandler();
-      const ww = await ReaderDownload.getReaderWorkerHandler();
-      if (ww === undefined) throw 'WorkerHandler failed possible';
-      this.worker = ww.worker;
+      // return;
+      ReaderDownload.resetReaderWorkerHandler();
+      // ReaderDownload.createWorkerAfterDownload();
+      // const ww = await ReaderDownload.getReaderWorkerHandler();
+      // if (ww === undefined) throw 'WorkerHandler failed possible';
+      // this.worker = ww.worker;
       //todo: create new book if in cmp reader.
-      return; */
+      return;
     }
 
     let items = this.handlers.filter(x => x.id === msg.data.id);

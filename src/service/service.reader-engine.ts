@@ -11,9 +11,9 @@ export class ReaderEngineService extends BaseService {
         this.axiosRequestConfig = {
             baseURL: '', // todo _DELET_EME
         };
-        let url = '/reader/reader2.js';
+        let url = '/reader/_reader2.js';
         if (fileType === READER_FILE_NAME.WASM_BOOK_ID) {
-            url = '/reader/reader.wasm';
+            url = '/reader/_reader.wasm';
         }
         // debugger;
         // return this.axiosTokenInstance.head(url);
@@ -39,9 +39,9 @@ export class ReaderEngineService extends BaseService {
             cancelToken
         };
 
-        let url = '/reader/reader2.js';
+        let url = '/reader/_reader2.js';
         if (fileType === READER_FILE_NAME.WASM_BOOK_ID) {
-            url = '/reader/reader.wasm';
+            url = '/reader/_reader.wasm';
         }
         // debugger;
         return this.axiosTokenInstance.get(url);

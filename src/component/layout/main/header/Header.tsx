@@ -77,7 +77,7 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
         // return this.props.reader_engine.status;
         return (
             <i className={
-                "fa fa-bell cursor-pointer ml-3 " +
+                "fa fa-lock cursor-pointer ml-3 " +
                 (this.props.reader_engine.status === 'failed' ? 'text-danger' :
                     this.props.reader_engine.status === 'initing' ? 'text-warning' :
                         this.props.reader_engine.status === 'inited' ? 'text-success' : ''
