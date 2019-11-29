@@ -622,12 +622,18 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
         const atomActualDuration = await this._bookInstance.getLoadedVoiceAtomDuration();
 
+        //todo: sampleRate & channels --> uniqe for every chapter(file).
         const sampleRate = await this._bookInstance.getLoadedVoiceAtomSampleRate();
         const channels = await this._bookInstance.getLoadedVoiceAtomChannels();
+
         let atom_10_sec: Float32Array[] | undefined;
         if (fromTimeInAtom < atomActualDuration) {
             console.log('***getLoadedVoiceAtom10Second:', fromTimeInAtom, atomActualDuration, atomFromTo);
-            atom_10_sec = await this._bookInstance.getLoadedVoiceAtom10Second(fromTimeInAtom);
+            try {
+                atom_10_sec = await this._bookInstance.getLoadedVoiceAtom10Second(fromTimeInAtom);
+            } catch (e) {
+                this.readerError_notify();
+            }
         }
 
         let createAbleSource = true;

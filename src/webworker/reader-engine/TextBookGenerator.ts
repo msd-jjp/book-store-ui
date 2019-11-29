@@ -5,11 +5,11 @@ import { CmpUtility } from "../../component/_base/CmpUtility";
 export abstract class TextBookGenerator extends book {
     private _pageStorage: any = {};
     protected setToStorage(index: number, page: string): void {
-        this._pageStorage[index] = page;
+        // this._pageStorage[index] = page;
     }
     protected getFromStorage(index: number): string | undefined {
         return undefined;
-        return this._pageStorage[index];
+        // return this._pageStorage[index];
     }
 
     abstract async getAllPages_pos(): Promise<Array<IBookPosIndicator>>;

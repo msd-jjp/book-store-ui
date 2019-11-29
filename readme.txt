@@ -310,3 +310,10 @@ layout footer --> click on image while readerEngine downloading.
 call method createWorkerAfterDownload in cmp Reader (reading overview ...) after will_receve_props readerEngine failed
 
 ====================================================================================
+
+add page setting
+    btn 
+        remove *workbox    from cache
+        remove wasm & reader    from cache
+
+====================================================================================

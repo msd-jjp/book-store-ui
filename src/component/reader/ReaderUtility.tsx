@@ -168,7 +168,7 @@ export abstract class ReaderUtility {
         // let w = new Worker("/reader/reader2.js");
         // let ww = new WasmWorkerHandler(w);
         const ww = await ReaderDownload.getReaderWorkerHandler();
-        if (ww === undefined) throw 'WorkerHandler failed possible';
+        if (ww === undefined) throw new Error('WorkerHandler failed possible');
         await ReaderUtility.wait_readerEngine_init(ww);
 
         const _book = await textBookClass.getInstace(
@@ -556,7 +556,7 @@ export abstract class ReaderUtility {
         let ww = new WasmWorkerHandler(w); */
 
         const ww = await ReaderDownload.getReaderWorkerHandler();
-        if (ww === undefined) throw 'WorkerHandler failed possible';
+        if (ww === undefined) throw new Error('WorkerHandler failed possible');
         await ReaderUtility.wait_readerEngine_init(ww);
         return await AudioBookGenerator.getInstance(ww, bookFile);
     }

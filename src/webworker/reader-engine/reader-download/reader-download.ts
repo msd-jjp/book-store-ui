@@ -121,7 +121,7 @@ export abstract class ReaderDownload {
 
         const w = new Worker(blob); // "/reader/reader2.js"
 
-        debugger;
+        // debugger;
         w.postMessage({ bin: wasmFile });
         w.postMessage({ target: 'worker-init' });
         return new Promise((res, rej) => {
@@ -195,17 +195,17 @@ export abstract class ReaderDownload {
         const is_re_d_ed = await isReaderEngineDownloaded_async();
 
         if (is_re_d_ed && ReaderDownload.checkReaderWorkerHandler() === false) {
-            debugger;
+            // debugger;
             try {
                 await ReaderDownload.getReaderWorkerHandler();
             } catch (e) {
-                debugger;
+                // debugger;
             }
 
         } else if (Store2.getState().reader_engine.status === 'inited' && ReaderDownload.checkReaderWorkerHandler() === true) {
             debugger;
         } else {
-            debugger;
+            // debugger;
             setTimeout(ReaderDownload.try_createWorkerAfterDownload, 1000);
         }
     }
