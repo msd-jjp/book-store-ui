@@ -373,6 +373,11 @@ interface ILocalization extends LocalizedStringsMethods {
         [key in LANGUAGES]: string;
     };
     change_password: string;
+    storage: string;
+    clear_general_content: string;
+    clear_content_security_system: string;
+    state: string;
+    reset_reader: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

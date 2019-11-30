@@ -272,6 +272,10 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.history.push('/profile');
     }
 
+    private gotoSettings() {
+        this.props.history.push('/settings');
+    }
+
     private async onSync_clicked() {
         if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
         if (this.props.sync.isSyncing_visible) return;
@@ -431,7 +435,8 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             </span>
                         </li>
 
-                        <li className="more-item list-group-item p-align-0 disabled">
+                        <li className="more-item list-group-item p-align-0 cursor-pointer"
+                            onClick={() => this.gotoSettings()}>
                             <div className="icon-wrapper mr-3"><i className="fa fa-cog"></i></div>
                             <span className="text text-capitalize">{Localization.settings}</span>
                         </li>
@@ -463,7 +468,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
 
                         <li className="more-item list-group-item p-align-0 cursor-pointer"
                             onClick={() => this.openModal_logout()}>
-                            <i className="icon-wrapper mr-3"><i className="fa fa-sign-out"></i></i>
+                            <div className="icon-wrapper mr-3"><i className="fa fa-sign-out"></i></div>
                             <span className="text text-capitalize">{Localization.log_out}</span>
                         </li>
                     </ul>

@@ -27,6 +27,7 @@ import { LayoutMainNotFound } from '../main/not-found/NotFound';
 import { BookFileDownload } from '../../book-file-download/BookFileDownload';
 import { FetchIntervalWorker } from '../../../webworker/fetch-interval-worker/FetchIntervalWorker';
 import { SyncWorker } from '../../../webworker/sync-worker/SyncWorker';
+import { Settings } from '../../settings/Settings';
 // import { ReaderDownload } from '../../../webworker/reader-engine/reader-download/reader-download';
 
 const appValidUserRoutes = (
@@ -51,6 +52,8 @@ const appValidUserRoutes = (
             <RouteLayoutNoWrap path="/reader/:bookId/reading" component={ReaderReading} />
             <RouteLayoutNoWrap path="/reader/:bookId/scroll" component={ReaderScroll} />
             <RouteLayoutNoWrap path="/reader/:bookId/audio" component={ReaderAudio} />
+
+            <RouteLayoutMain path="/settings"  component={Settings} />
 
             <RouteLayoutMain component={LayoutMainNotFound} />
 

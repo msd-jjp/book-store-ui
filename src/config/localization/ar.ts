@@ -385,4 +385,9 @@ export const ar = {
         SPANISH: 'اسپانیایی',
     },
     change_password: 'تغییر رمز عبور',
+    storage: 'مخزن',
+    clear_general_content: 'پاکسازی محتوا عمومی',
+    clear_content_security_system: 'پاکسازی سیستم امنیت محتوا',
+    state: 'وضعیت',
+    reset_reader: 'تازه سازی کتابخوان',
 }

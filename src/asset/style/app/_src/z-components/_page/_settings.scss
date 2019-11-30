@@ -1,0 +1,26 @@
+.settings-wrapper {
+  .settings-list {
+    // border-bottom: 1px solid rgb(224, 224, 224);
+    .settings-item {
+      background-color: transparent;
+      border: 0;
+      border-bottom: 1px solid rgb(224, 224, 224);
+      // cursor: pointer;
+      // display: flex;
+      // align-items: center;
+
+      .icon-wrapper {
+        font-size: 1.3rem;
+        width: 2rem;
+        // display: flex;
+      }
+      .text {
+        font-weight: 500;
+      }
+      // .sub-text {
+      //   font-size: 0.8rem;
+      // }
+      
+    }
+  }
+}

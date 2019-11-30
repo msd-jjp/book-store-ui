@@ -386,4 +386,9 @@ export const en = {
         SPANISH: 'spanish',
     },
     change_password: 'change password',
+    storage: 'storage',
+    clear_general_content: 'clear general content',
+    clear_content_security_system: 'clear content security system',
+    state: 'state',
+    reset_reader: 'reset reader',
 }

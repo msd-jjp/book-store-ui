@@ -43,6 +43,8 @@ const appRoutes = (
       <RouteLayoutValidUser path="/reader/:bookId/scroll" />
       <RouteLayoutValidUser path="/reader/:bookId/audio" />
 
+      <RouteLayoutValidUser path="/settings" />
+
       <RouteLayoutValidUser />
 
     </Switch>
