@@ -212,4 +212,6 @@ export class appLocalStorage {
     static checkFileExist = FileStorage.checkFileExist;
     static checkFileExist_async = FileStorage.checkFileExist_async;
 
+    static clearWorkbox =  FileStorage.clearWorkbox;
+
 }

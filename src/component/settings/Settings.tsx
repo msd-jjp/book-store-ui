@@ -8,22 +8,32 @@ import { Localization } from '../../config/localization/localization';
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { ToastContainer } from 'react-toastify';
 import { ConfirmNotify } from '../form/confirm-notify/ConfirmNotify';
+import { action_reset_reader } from '../../redux/action/reader';
+import { appLocalStorage } from '../../service/appLocalStorage';
+import { Store2 } from '../../redux/store';
+import { action_update_reader_engine } from '../../redux/action/reader-engine';
+import { READER_FILE_NAME } from '../../webworker/reader-engine/reader-download/reader-download';
+import { FILE_STORAGE_KEY } from '../../service/appLocalStorage/FileStorage';
+import { is_file_downloading } from '../library/libraryViewTemplate';
 
 interface IProps {
     internationalization: TInternationalization;
     network_status: NETWORK_STATUS;
+    reset_reader: () => any;
 }
 
 interface IState {
     confirmNotify_gc_show: boolean;
-    confirmNotify_css_show: boolean;
+    confirmNotify_css_js_show: boolean;
+    confirmNotify_css_wasm_show: boolean;
     confirmNotify_rr_show: boolean;
 }
 
 class SettingsComponent extends BaseComponent<IProps, IState> {
     state = {
         confirmNotify_gc_show: false,
-        confirmNotify_css_show: false,
+        confirmNotify_css_js_show: false,
+        confirmNotify_css_wasm_show: false,
         confirmNotify_rr_show: false,
     };
 
@@ -47,8 +57,57 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
     private close_confirmNotify_gc() {
         this.setState({ confirmNotify_gc_show: false });
     }
-    private confirmNotify_onConfirm_gc() {
-        debugger;
+    private async confirmNotify_onConfirm_gc() {
+        const deleted = await appLocalStorage.clearWorkbox();
+        if (!deleted) {
+            console.error('wokbox cache not deleted OR already deleted................');
+        }
+        this.setState({ confirmNotify_gc_show: false });
+    }
+
+    private open_confirmNotify_rr() {
+        this.setState({ confirmNotify_rr_show: true });
+    }
+    private close_confirmNotify_rr() {
+        this.setState({ confirmNotify_rr_show: false });
+    }
+    private confirmNotify_onConfirm_rr() {
+        this.props.reset_reader();
+        this.setState({ confirmNotify_rr_show: false });
+    }
+
+    private open_confirmNotify_css_js() {
+        this.setState({ confirmNotify_css_js_show: true });
+    }
+    private close_confirmNotify_css_js() {
+        this.setState({ confirmNotify_css_js_show: false });
+    }
+    private async confirmNotify_onConfirm_css_js() {
+        // debugger;
+        const ding_wasm = is_file_downloading(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
+        if (ding_wasm) return;
+        await appLocalStorage.removeFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
+        if (Store2.getState().reader_engine.status !== 'failed') {
+            Store2.dispatch(action_update_reader_engine({ status: 'failed' }));
+        }
+        this.setState({ confirmNotify_css_js_show: false });
+    }
+
+    private open_confirmNotify_css_wasm() {
+        this.setState({ confirmNotify_css_wasm_show: true });
+    }
+    private close_confirmNotify_css_wasm() {
+        this.setState({ confirmNotify_css_wasm_show: false });
+    }
+    private async confirmNotify_onConfirm_css_wasm() {
+        // debugger;
+        const ding_wasm = is_file_downloading(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
+        if (ding_wasm) return;
+        await appLocalStorage.removeFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
+        if (Store2.getState().reader_engine.status !== 'failed') {
+            Store2.dispatch(action_update_reader_engine({ status: 'failed' }));
+        }
+        this.setState({ confirmNotify_css_wasm_show: false });
     }
 
 
@@ -69,9 +128,16 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
                             <span className="text text-capitalize">{Localization.clear_general_content}</span>
                         </li>
 
-                        <li className="settings-item d-flex align-items-center list-group-item p-align-0 cursor-pointer"
-                            onClick={() => this.funccc()}>
-                            <span className="text text-capitalize">{Localization.clear_content_security_system}</span>
+                        <li className="settings-item d-flex align-items-center list-group-item p-align-0">
+                            <span className="text text-capitalize">{Localization.clear_content_security_system}:</span>
+                            <div>
+                                <button className="btn text-warning"
+                                    onClick={() => this.open_confirmNotify_css_js()}
+                                >{Localization.javscript_file}</button>
+                                <button className="btn text-warning"
+                                    onClick={() => this.open_confirmNotify_css_wasm()}
+                                >{Localization.webassembly_file}</button>
+                            </div>
                         </li>
 
                         <li className="settings-item d-flex align-items-center list-group-item p-align-0 pb-1 mt-4">
@@ -80,7 +146,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
                         </li>
 
                         <li className="settings-item d-flex align-items-center list-group-item p-align-0 cursor-pointer"
-                            onClick={() => this.funccc()}>
+                            onClick={() => this.open_confirmNotify_rr()}>
                             <span className="text text-capitalize">{Localization.reset_reader}</span>
                         </li>
 
@@ -95,6 +161,30 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
                     confirmBtn_className='text-warning'
                 />
 
+                <ConfirmNotify
+                    show={this.state.confirmNotify_rr_show}
+                    onHide={() => this.close_confirmNotify_rr()}
+                    onConfirm={() => this.confirmNotify_onConfirm_rr()}
+                    msg={Localization.reset_reader}
+                    confirmBtn_className='text-warning'
+                />
+
+                <ConfirmNotify
+                    show={this.state.confirmNotify_css_js_show}
+                    onHide={() => this.close_confirmNotify_css_js()}
+                    onConfirm={() => this.confirmNotify_onConfirm_css_js()}
+                    msg={Localization.clear_content_security_system + ": " + Localization.javscript_file}
+                    confirmBtn_className='text-warning'
+                />
+
+                <ConfirmNotify
+                    show={this.state.confirmNotify_css_wasm_show}
+                    onHide={() => this.close_confirmNotify_css_wasm()}
+                    onConfirm={() => this.confirmNotify_onConfirm_css_wasm()}
+                    msg={Localization.clear_content_security_system + ": " + Localization.webassembly_file}
+                    confirmBtn_className='text-warning'
+                />
+
                 <ToastContainer {...this.getNotifyContainerConfig()} />
             </>
         )
@@ -103,6 +193,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
+        reset_reader: () => dispatch(action_reset_reader()),
     }
 }
 

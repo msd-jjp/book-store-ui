@@ -380,6 +380,8 @@ interface ILocalization extends LocalizedStringsMethods {
     state: string;
     reset_reader: string;
     confirm: string;
+    javscript_file: string;
+    webassembly_file: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

@@ -392,4 +392,6 @@ export const ar = {
     state: 'وضعیت',
     reset_reader: 'تازه سازی کتابخوان',
     confirm: 'تایید',
+    javscript_file: 'فایل جاوااسکریپت',
+    webassembly_file: 'فایل وب اسمبلی',
 }

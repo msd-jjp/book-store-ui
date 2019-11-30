@@ -393,4 +393,6 @@ export const en = {
     state: 'state',
     reset_reader: 'reset reader',
     confirm: 'confirm',
+    javscript_file: 'javscript file',
+    webassembly_file: 'webassembly file',
 }

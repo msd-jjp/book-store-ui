@@ -123,7 +123,7 @@ export abstract class ReaderDownload {
 
         const wasmFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
         const readerFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
-        debugger;
+        // debugger;
 
         const readerFile_string = new TextDecoder("utf-8").decode(readerFile);
         const blob = ReaderDownload.createWorkerContent(readerFile_string);
