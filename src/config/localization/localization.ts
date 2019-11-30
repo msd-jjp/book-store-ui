@@ -45,6 +45,7 @@ interface ILocalization extends LocalizedStringsMethods {
             reader_audio_error_occurred: string;
             change_password_successful: string;
             downloading_reader_security_content: string;
+            clear_general_content: string;
         },
         back: {
             [key: string]: any; // todo
@@ -378,6 +379,7 @@ interface ILocalization extends LocalizedStringsMethods {
     clear_content_security_system: string;
     state: string;
     reset_reader: string;
+    confirm: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

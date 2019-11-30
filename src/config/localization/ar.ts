@@ -33,6 +33,7 @@ export const ar = {
             reader_audio_error_occurred: 'در هنگام پخش کتاب خطا رخ داد',
             change_password_successful: 'رمز عبور با موفقیت بروز شد',
             downloading_reader_security_content: 'در حال بارگذاری سامانه امنیت محتوا، لطفا لحظاتی بعد مجددا تلاش کنید.',
+            clear_general_content: 'فایل های ذخیره شده مانند: html، عکس های پیشفرض و js پاک خواهد شد.'
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',
@@ -390,4 +391,5 @@ export const ar = {
     clear_content_security_system: 'پاکسازی سیستم امنیت محتوا',
     state: 'وضعیت',
     reset_reader: 'تازه سازی کتابخوان',
+    confirm: 'تایید',
 }

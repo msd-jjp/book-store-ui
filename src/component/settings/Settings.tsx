@@ -7,6 +7,7 @@ import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { ToastContainer } from 'react-toastify';
+import { ConfirmNotify } from '../form/confirm-notify/ConfirmNotify';
 
 interface IProps {
     internationalization: TInternationalization;
@@ -14,12 +15,16 @@ interface IProps {
 }
 
 interface IState {
-    modal_logout_show: boolean;
+    confirmNotify_gc_show: boolean;
+    confirmNotify_css_show: boolean;
+    confirmNotify_rr_show: boolean;
 }
 
 class SettingsComponent extends BaseComponent<IProps, IState> {
     state = {
-        modal_logout_show: false,
+        confirmNotify_gc_show: false,
+        confirmNotify_css_show: false,
+        confirmNotify_rr_show: false,
     };
 
     componentWillMount() {
@@ -33,6 +38,16 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
     }
 
     private funccc() {
+        debugger;
+    }
+
+    private open_confirmNotify_gc() {
+        this.setState({ confirmNotify_gc_show: true });
+    }
+    private close_confirmNotify_gc() {
+        this.setState({ confirmNotify_gc_show: false });
+    }
+    private confirmNotify_onConfirm_gc() {
         debugger;
     }
 
@@ -50,7 +65,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
                         </li>
 
                         <li className="settings-item d-flex align-items-center list-group-item p-align-0 cursor-pointer"
-                            onClick={() => this.funccc()}>
+                            onClick={() => this.open_confirmNotify_gc()}>
                             <span className="text text-capitalize">{Localization.clear_general_content}</span>
                         </li>
 
@@ -71,6 +86,14 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
 
                     </ul>
                 </div>
+
+                <ConfirmNotify
+                    show={this.state.confirmNotify_gc_show}
+                    onHide={() => this.close_confirmNotify_gc()}
+                    onConfirm={() => this.confirmNotify_onConfirm_gc()}
+                    msg={Localization.msg.ui.clear_general_content}
+                    confirmBtn_className='text-warning'
+                />
 
                 <ToastContainer {...this.getNotifyContainerConfig()} />
             </>

@@ -3,7 +3,7 @@ import { IBook } from "../../model/model.book";
 import { IComment } from "../../model/model.comment";
 import { IOrder, IOrderItem } from "../../model/model.order";
 import { IAccount } from "../../model/model.account";
-import { FileStorage } from "./FileStorage";
+// import { FileStorage } from "./FileStorage";
 
 export class SearchAppStorage {
     // static findById<TCollectionData>(collectionName: TCollectionName, id: string):TCollectionData |null{
@@ -16,19 +16,19 @@ export class SearchAppStorage {
         return appLocalStorage.clc_eTag.findOne({ id: id });
     }
 
-    static findBookMainFileById(book_id: string, partial?: boolean): Promise<Uint8Array | undefined> {
-        /* const data = appLocalStorage.clc_book_mainFile.findOne({ id: book_id });
-        // if (data) return data.file;
-        if (data) return new Uint8Array(data.file); */
-        return FileStorage.getBookFileById(book_id, true, partial);
-    }
+    // static findBookMainFileById(book_id: string, partial?: boolean): Promise<Uint8Array | undefined> {
+    //     /* const data = appLocalStorage.clc_book_mainFile.findOne({ id: book_id });
+    //     // if (data) return data.file;
+    //     if (data) return new Uint8Array(data.file); */
+    //     return FileStorage.getBookFileById(book_id, true, partial);
+    // }
 
-    static findBookSampleFileById(book_id: string, partial?: boolean): Promise<Uint8Array | undefined> {
-        /* const data = appLocalStorage.clc_book_sampleFile.findOne({ id: book_id });
-        // if (data) return data.file;
-        if (data) return new Uint8Array(data.file); */
-        return FileStorage.getBookFileById(book_id, false, partial);
-    }
+    // static findBookSampleFileById(book_id: string, partial?: boolean): Promise<Uint8Array | undefined> {
+    //     /* const data = appLocalStorage.clc_book_sampleFile.findOne({ id: book_id });
+    //     // if (data) return data.file;
+    //     if (data) return new Uint8Array(data.file); */
+    //     return FileStorage.getBookFileById(book_id, false, partial);
+    // }
 
     static search_by_query_book(
         searchPayload: { limit: number, skip: number, filter?: Object }

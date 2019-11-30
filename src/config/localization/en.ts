@@ -33,6 +33,7 @@ export const en = {
             reader_audio_error_occurred: 'error occurred while playing book',
             change_password_successful: 'password successfully changed',
             downloading_reader_security_content: 'downloading security content, please try later',
+            clear_general_content: 'cached files like: html, default images, js will be removed.'
         },
         back: {
             user_already_exists: 'user already exists',
@@ -391,4 +392,5 @@ export const en = {
     clear_content_security_system: 'clear content security system',
     state: 'state',
     reset_reader: 'reset reader',
+    confirm: 'confirm',
 }

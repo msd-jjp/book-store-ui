@@ -1,7 +1,7 @@
 import { appLocalStorage, TCollectionName, TCollectionData, IOrderItemStore, IEtag } from ".";
 import { Collection } from "lokijs";
 import { IOrderItem } from "../../model/model.order";
-import { FileStorage } from "./FileStorage";
+// import { FileStorage } from "./FileStorage";
 
 export class StoreData {
     static addDataToCollection(collectionName: TCollectionName, data: TCollectionData[] | TCollectionData) {
@@ -62,10 +62,10 @@ export class StoreData {
         appLocalStorage.manualSaveDB();
     }
 
-    static async storeBookFile(book_id: string, mainFile: boolean, data: Uint8Array, partial?: boolean): Promise<boolean> { // Uint8Array,ArrayBuffer
+    /* static async storeBookFile(book_id: string, mainFile: boolean, data: Uint8Array, partial?: boolean): Promise<boolean> { // Uint8Array,ArrayBuffer
         const saved = await FileStorage.setBookFileById(book_id, mainFile, data, partial);
         return saved;
-    }
+    } */
 
     private static updateData_byId(collectionName: TCollectionName, id: string, newData: any) {
         let coll: Collection<any> = appLocalStorage[collectionName];

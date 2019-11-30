@@ -28,10 +28,11 @@ import { action_update_reader } from "../../../redux/action/reader";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { BaseService } from "../../../service/service.base";
 import { ILibrary } from "../../../model/model.library";
-import { getLibraryItem, updateLibraryItem_progress, isReaderEngineDownloaded_async, isReaderEngineDownloading } from "../../library/libraryViewTemplate";
+import { getLibraryItem, updateLibraryItem_progress, isReaderEngineDownloaded_async, isReaderEngineDownloading, getBookFileId } from "../../library/libraryViewTemplate";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 import { Store2 } from "../../../redux/store";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
+import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 
 interface IProps {
   internationalization: TInternationalization;
@@ -230,7 +231,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
   private _bookInstance!: BookGenerator | PdfBookGenerator;
   private async createBook() {
-    const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
+    // const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
+    const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
     if (!bookFile) {
       this.setState({ page_loading: false });
       this.bookFileNotFound_notify();

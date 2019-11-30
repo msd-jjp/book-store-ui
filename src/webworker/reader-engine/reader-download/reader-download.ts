@@ -1,4 +1,4 @@
-import { /* is_book_downloaded, */ is_book_downloading, is_book_downloaded_async, isReaderEngineDownloaded_async } from "../../../component/library/libraryViewTemplate";
+import { isReaderEngineDownloaded_async, is_file_downloaded_async, is_file_downloading } from "../../../component/library/libraryViewTemplate";
 import { Store2 } from "../../../redux/store";
 import { action_update_downloading_book_file } from "../../../redux/action/downloading-book-file";
 import { appLocalStorage } from "../../../service/appLocalStorage";
@@ -6,6 +6,7 @@ import { WasmWorkerHandler } from "../MsdBook";
 import { PartialDownload } from "../../../component/book-file-download/PartialDownload";
 import { ReaderEngineService } from "../../../service/service.reader-engine";
 import { action_update_reader_engine } from "../../../redux/action/reader-engine";
+import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 
 /** save wasm & reader2.js files as "book main" */
 
@@ -19,10 +20,15 @@ export abstract class ReaderDownload {
 
     static async downloadReaderFiles() {
         // debugger;
-        const ded_wasm = await is_book_downloaded_async(READER_FILE_NAME.WASM_BOOK_ID, true);
-        const ded_reader = await is_book_downloaded_async(READER_FILE_NAME.READER2_BOOK_ID, true);
-        const ding_wasm = is_book_downloading(READER_FILE_NAME.WASM_BOOK_ID, true);
-        const ding_reader = is_book_downloading(READER_FILE_NAME.READER2_BOOK_ID, true);
+        // const ded_wasm = await is_book_downloaded_async(READER_FILE_NAME.WASM_BOOK_ID, true);
+        // const ded_reader = await is_book_downloaded_async(READER_FILE_NAME.READER2_BOOK_ID, true);
+        // const ding_wasm = is_book_downloading(READER_FILE_NAME.WASM_BOOK_ID, true);
+        // const ding_reader = is_book_downloading(READER_FILE_NAME.READER2_BOOK_ID, true);
+
+        const ded_wasm = await is_file_downloaded_async(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
+        const ded_reader = await is_file_downloaded_async(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
+        const ding_wasm = is_file_downloading(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
+        const ding_reader = is_file_downloading(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
 
         if ((!ded_wasm && !ding_wasm) || (!ded_reader && !ding_reader)) {
             const dbf = [...Store2.getState().downloading_book_file];
@@ -30,8 +36,8 @@ export abstract class ReaderDownload {
 
             if (!ded_reader && !ding_reader) {
                 dbf.unshift({
-                    book_id: READER_FILE_NAME.READER2_BOOK_ID,
-                    mainFile: true,
+                    fileId: READER_FILE_NAME.READER2_BOOK_ID,
+                    collectionName: FILE_STORAGE_KEY.READER_ENGINE,
                     status: 'start',
                     progress: 0
                 });
@@ -39,8 +45,8 @@ export abstract class ReaderDownload {
             }
             if (!ded_wasm && !ding_wasm) {
                 dbf.unshift({
-                    book_id: READER_FILE_NAME.WASM_BOOK_ID,
-                    mainFile: true,
+                    fileId: READER_FILE_NAME.WASM_BOOK_ID,
+                    collectionName: FILE_STORAGE_KEY.READER_ENGINE,
                     status: 'start',
                     progress: 0
                 });
@@ -88,16 +94,16 @@ export abstract class ReaderDownload {
 
                 if ((!current_ETag_reader || res_reader_etag !== current_ETag_reader.eTag) && !ding_reader) {
                     dbf.unshift({
-                        book_id: READER_FILE_NAME.READER2_BOOK_ID,
-                        mainFile: true,
+                        fileId: READER_FILE_NAME.READER2_BOOK_ID,
+                        collectionName: FILE_STORAGE_KEY.READER_ENGINE,
                         status: 'start',
                         progress: 0
                     });
                 }
                 if ((!current_ETag_wasm || res_wasm_etag !== current_ETag_wasm.eTag) && ding_wasm) {
                     dbf.unshift({
-                        book_id: READER_FILE_NAME.WASM_BOOK_ID,
-                        mainFile: true,
+                        fileId: READER_FILE_NAME.WASM_BOOK_ID,
+                        collectionName: FILE_STORAGE_KEY.READER_ENGINE,
                         status: 'start',
                         progress: 0
                     });
@@ -112,9 +118,12 @@ export abstract class ReaderDownload {
     }
 
     private static async initWorker(): Promise<Worker> {
-        const wasmFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.WASM_BOOK_ID);
-        const readerFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.READER2_BOOK_ID);
-        // debugger;
+        // const wasmFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.WASM_BOOK_ID);
+        // const readerFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.READER2_BOOK_ID);
+
+        const wasmFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
+        const readerFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
+        debugger;
 
         const readerFile_string = new TextDecoder("utf-8").decode(readerFile);
         const blob = ReaderDownload.createWorkerContent(readerFile_string);
@@ -186,7 +195,7 @@ export abstract class ReaderDownload {
         ReaderDownload._createWorkerAfterDownload_isRuning = true;
 
         await ReaderDownload.try_createWorkerAfterDownload();
-        
+
         ReaderDownload._createWorkerAfterDownload_isRuning = false;
     }
 

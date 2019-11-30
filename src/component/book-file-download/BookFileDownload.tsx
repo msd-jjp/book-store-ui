@@ -12,6 +12,7 @@ import {
 } from "../../redux/action/downloading-book-file";
 import { CmpUtility } from "../_base/CmpUtility";
 import { PartialDownload } from "./PartialDownload";
+import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
 
 interface IProps {
     internationalization: TInternationalization;
@@ -28,15 +29,15 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     };
 
     private is_downloadInProgress = false;
-    private downloadProgress_queue: { book_id: string; mainFile: boolean; }[] = [];
+    private downloadProgress_queue: { fileId: string; collectionName: FILE_STORAGE_KEY; }[] = [];
     private _partialDownload: PartialDownload | undefined;
 
     componentDidMount() {
         // this.props.reset_downloading_book_file!();
         this.downloadProgress_queue = this.props.downloading_book_file.map(dbf => {
             return {
-                book_id: dbf.book_id,
-                mainFile: dbf.mainFile
+                fileId: dbf.fileId,
+                collectionName: dbf.collectionName
             }
         });
         this.checkDownload();
@@ -58,17 +59,17 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
             nextProps.downloading_book_file.forEach(d => {
                 if (d.status === 'start') {
                     debugger;
-                    const filtered_dbf = new_dbf.filter(nd => !(nd.book_id === d.book_id && nd.mainFile === d.mainFile));
+                    const filtered_dbf = new_dbf.filter(nd => !(nd.fileId === d.fileId && nd.collectionName === d.collectionName));
                     new_dbf = filtered_dbf;
                     const new_d: IDownloadingBookFile_schema = { ...d, status: 'inProgress' };
                     new_dbf.push(new_d);
-                    this.startDownload(d.book_id, d.mainFile);
+                    this.startDownload(d.fileId, d.collectionName);
 
                 } else if (d.status === 'stop') {
                     debugger;
-                    const filtered_dbf = new_dbf.filter(nd => !(nd.book_id === d.book_id && nd.mainFile === d.mainFile));
+                    const filtered_dbf = new_dbf.filter(nd => !(nd.fileId === d.fileId && nd.collectionName === d.collectionName));
                     new_dbf = filtered_dbf;
-                    this.stopDownload(d.book_id, d.mainFile);
+                    this.stopDownload(d.fileId, d.collectionName);
                 }
             });
 
@@ -77,8 +78,8 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
     }
 
-    async startDownload(book_id: string, mainFile: boolean) {
-        this.downloadProgress_queue.push({ book_id, mainFile });
+    async startDownload(fileId: string, collectionName: FILE_STORAGE_KEY) {
+        this.downloadProgress_queue.push({ fileId, collectionName });
 
         this.checkDownload();
     }
@@ -92,15 +93,15 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
         this.is_downloadInProgress = true;
         const firstItem = this.downloadProgress_queue[0];
-        this.downloadRequest(firstItem.book_id, firstItem.mainFile);
+        this.downloadRequest(firstItem.fileId, firstItem.collectionName);
     }
 
-    async stopDownload(book_id: string, mainFile: boolean) {
-        const d_index = this.downloadProgress_queue.findIndex(obj => obj.book_id === book_id && obj.mainFile === mainFile);
+    async stopDownload(fileId: string, collectionName: FILE_STORAGE_KEY) {
+        const d_index = this.downloadProgress_queue.findIndex(obj => obj.fileId === fileId && obj.collectionName === collectionName);
         if (d_index === -1) return;
 
         // this.downloadProgress_queue.splice(d_index, 1);
-        this.removeFrom_dp_queue(book_id, mainFile);
+        this.removeFrom_dp_queue(fileId, collectionName);
 
         if (d_index === 0) {
             // console.log('stopDownload book_id:', book_id);
@@ -108,21 +109,21 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    private removeFrom_dp_queue(book_id: string, mainFile: boolean): void {
-        this.downloadProgress_queue = this.downloadProgress_queue.filter(obj => !(obj.book_id === book_id && obj.mainFile === mainFile));
+    private removeFrom_dp_queue(fileId: string, collectionName: FILE_STORAGE_KEY): void {
+        this.downloadProgress_queue = this.downloadProgress_queue.filter(obj => !(obj.fileId === fileId && obj.collectionName === collectionName));
     }
 
-    downloadFinished(book_id: string, mainFile: boolean) {
+    downloadFinished(fileId: string, collectionName: FILE_STORAGE_KEY) {
         let dbf = [...this.props.downloading_book_file];
-        const existing_list = dbf.filter(d => !(d.book_id === book_id && d.mainFile === mainFile));
+        const existing_list = dbf.filter(d => !(d.fileId === fileId && d.collectionName === collectionName));
         this.props.update_downloading_book_file!(existing_list);
         CmpUtility.refreshView();
     }
 
-    private async downloadRequest(book_id: string, mainFile: boolean) {
-        console.log('downloadRequest started: book_id', book_id);
+    private async downloadRequest(fileId: string, collectionName: FILE_STORAGE_KEY) {
+        console.log('downloadRequest started: book_id', fileId);
 
-        this._partialDownload = new PartialDownload(book_id, mainFile);
+        this._partialDownload = new PartialDownload(fileId, collectionName);
         let error: any = undefined;
         let canceled = false;
         let res = await this._partialDownload.downloadFile().catch(e => {
@@ -134,13 +135,13 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
         if (res) {
             // debugger;
-            this.downloadFinished(book_id, mainFile);
+            this.downloadFinished(fileId, collectionName);
             // this.downloadProgress_queue.splice(0, 1);
-            this.removeFrom_dp_queue(book_id, mainFile);
-            console.log('downloadRequest COMPLETED: book_id', book_id);
+            this.removeFrom_dp_queue(fileId, collectionName);
+            console.log('downloadRequest COMPLETED: book_id', fileId);
         } else {
             // debugger;
-            console.log('downloadRequest ERROR: book_id', book_id, error);
+            console.log('downloadRequest ERROR: book_id', fileId, error);
         }
 
         await CmpUtility.waitOnMe((res || canceled) ? 0 : 2000);

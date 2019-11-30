@@ -7,6 +7,9 @@ import { action_update_downloading_book_file } from "../../redux/action/download
 import { IDownloadingBookFile_schema } from "../../redux/action/downloading-book-file/downloadingBookFileAction";
 import { ReaderEngineService } from "../../service/service.reader-engine";
 import { READER_FILE_NAME } from "../../webworker/reader-engine/reader-download/reader-download";
+import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
+import { getBookId_from_fileId } from "../library/libraryViewTemplate";
+
 
 export class PartialDownload {
     private _bookService = new BookService();
@@ -21,8 +24,10 @@ export class PartialDownload {
     private current_eTag: IEtag | null;
     private new_eTag: IEtag | null = null;
 
-    constructor(private book_id: string, private mainFile: boolean) {
-        this.current_eTag = appLocalStorage.find_ETagById(PartialDownload.get_bookFile_ETag_id(book_id, mainFile));
+    constructor(private fileId: string, private collectionName: FILE_STORAGE_KEY) {
+        this.current_eTag = appLocalStorage.find_ETagById(
+            PartialDownload.get_bookFile_ETag_id(fileId, collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN)
+        );
     }
 
     static get_bookFile_ETag_id(book_id: string, mainFile: boolean): string {
@@ -170,12 +175,12 @@ export class PartialDownload {
             let error: AxiosError | undefined = undefined;
 
             let req; //  = this._bookService.bookFile_detail(this.book_id, this.mainFile);
-            if (this.book_id === READER_FILE_NAME.WASM_BOOK_ID) {
+            if (this.fileId === READER_FILE_NAME.WASM_BOOK_ID) {
                 req = this._readerEngineService.file_detail(READER_FILE_NAME.WASM_BOOK_ID);
-            } else if (this.book_id === READER_FILE_NAME.READER2_BOOK_ID) {
+            } else if (this.fileId === READER_FILE_NAME.READER2_BOOK_ID) {
                 req = this._readerEngineService.file_detail(READER_FILE_NAME.READER2_BOOK_ID);
             } else {
-                req = this._bookService.bookFile_detail(this.book_id, this.mainFile);
+                req = this._bookService.bookFile_detail(getBookId_from_fileId(this.fileId), this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
             }
 
             let res = await req.catch(e => {
@@ -188,7 +193,7 @@ export class PartialDownload {
             this.fileLength = parseInt(res.headers['content-length']);
 
             this.new_eTag = {
-                id: PartialDownload.get_bookFile_ETag_id(this.book_id, this.mainFile),
+                id: PartialDownload.get_bookFile_ETag_id(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN),
                 eTag: res.headers['etag']
             };
             appLocalStorage.store_ETag(this.new_eTag);
@@ -200,17 +205,16 @@ export class PartialDownload {
     private async downloadRangeRequest(): Promise<boolean> {
         return new Promise(async (resolve, reject) => {
             // await CmpUtility.waitOnMe(2000);
-
             let downloaded = true;
             let error: AxiosError | undefined = undefined;
 
             let req; // = this._bookService.bookFile_partial(this.book_id, this.mainFile, this.currentRange!, this.cancelTokenSource.token);
-            if (this.book_id === READER_FILE_NAME.WASM_BOOK_ID) {
+            if (this.fileId === READER_FILE_NAME.WASM_BOOK_ID) {
                 req = this._readerEngineService.file_partial(READER_FILE_NAME.WASM_BOOK_ID, this.currentRange!, this.cancelTokenSource.token);
-            } else if (this.book_id === READER_FILE_NAME.READER2_BOOK_ID) {
+            } else if (this.fileId === READER_FILE_NAME.READER2_BOOK_ID) {
                 req = this._readerEngineService.file_partial(READER_FILE_NAME.READER2_BOOK_ID, this.currentRange!, this.cancelTokenSource.token);
             } else {
-                req = this._bookService.bookFile_partial(this.book_id, this.mainFile, this.currentRange!, this.cancelTokenSource.token);
+                req = this._bookService.bookFile_partial(getBookId_from_fileId(this.fileId), this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.currentRange!, this.cancelTokenSource.token);
             }
 
             let res = await req.catch(e => {
@@ -221,7 +225,7 @@ export class PartialDownload {
             if (res) {
 
                 this.new_eTag = {
-                    id: PartialDownload.get_bookFile_ETag_id(this.book_id, this.mainFile),
+                    id: PartialDownload.get_bookFile_ETag_id(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN),
                     eTag: (res as AxiosResponse).headers['etag']
                 };
                 appLocalStorage.store_ETag(this.new_eTag);
@@ -261,21 +265,27 @@ export class PartialDownload {
         }
         // this.tempFile = new Uint8Array([...(this.tempFile as any || []), ...newFile as any]);
         this.tempFile = arr; // new Uint8Array(arr);
-        return await appLocalStorage.storeBookFile(this.book_id, this.mainFile, this.tempFile, true);
+        // return await appLocalStorage.storeBookFile(this.book_id, this.mainFile, this.tempFile, true);
+        return await appLocalStorage.saveFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId, this.tempFile);
     }
 
     private async getFromTempStorage(): Promise<Uint8Array | undefined> {
         // this.tempFile = await appLocalStorage.findBookMainFileById(this.book_id, this.mainFile);
         // return this.tempFile;
-        return await appLocalStorage.findBookMainFileById(this.book_id, this.mainFile);
+        // return await appLocalStorage.findBookMainFileById(this.book_id, this.mainFile);
+        return await appLocalStorage.getFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId);
     }
 
     private async clearTempStorage(): Promise<boolean> {
         // console.time('clearTempStorage_2*2000');
         // await CmpUtility.waitOnMe(500);
         //todo: _DELETE_ME
-        let cleared = await appLocalStorage.storeBookFile(this.book_id, this.mainFile, new Uint8Array(0), true);
-        cleared = await appLocalStorage.removeBookFileById(this.book_id, this.mainFile, true);
+        /* let cleared = await appLocalStorage.storeBookFile(this.book_id, this.mainFile, new Uint8Array(0), true);
+        cleared = await appLocalStorage.removeBookFileById(this.book_id, this.mainFile, true); */
+
+        let cleared = await appLocalStorage.saveFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId, new Uint8Array(0));
+        cleared = await appLocalStorage.removeFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId);
+
         // await CmpUtility.waitOnMe(500);
         /* const exist = await this.getFromTempStorage();
         if (exist) {
@@ -291,14 +301,15 @@ export class PartialDownload {
         } */
         // await CmpUtility.waitOnMe(500);
         // console.timeEnd('clearTempStorage_2*2000');
-        console.error('clearTempStorage', cleared, this.book_id);
+        console.error('clearTempStorage', cleared, this.fileId);
         return cleared;
     }
 
     private async downloadCompleted(): Promise<boolean> {
         let save = false;
         if (this.tempFile)
-            save = await appLocalStorage.storeBookFile(this.book_id, this.mainFile, this.tempFile);
+            // save = await appLocalStorage.storeBookFile(this.book_id, this.mainFile, this.tempFile);
+            save = await appLocalStorage.saveFileById(this.collectionName, this.fileId, this.tempFile);
 
         // let cleared = false;
         let ended = false;
@@ -341,7 +352,7 @@ export class PartialDownload {
 
     private get_dbf_obj(): { list: IDownloadingBookFile_schema[]; item: IDownloadingBookFile_schema | undefined; } {
         const list = [...Store2.getState().downloading_book_file];
-        const item = list.find(d => (d.book_id === this.book_id && d.mainFile === this.mainFile));
+        const item = list.find(d => (d.fileId === this.fileId && d.collectionName === this.collectionName));
         return { list, item };
     }
 

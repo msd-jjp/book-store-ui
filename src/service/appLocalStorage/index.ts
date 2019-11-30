@@ -10,7 +10,7 @@ import { StoreData } from './StoreData';
 import { IOrder, IOrderItem } from '../../model/model.order';
 import { CmpUtility } from '../../component/_base/CmpUtility';
 import { IAccount } from '../../model/model.account';
-import { FileStorage } from './FileStorage';
+import { FileStorage, FILE_STORAGE_KEY } from './FileStorage';
 // import { is_book_downloaded_history_reset } from '../../component/library/libraryViewTemplate';
 
 // const LokiIndexedAdapter = require('lokijs/src/loki-indexed-adapter');
@@ -168,8 +168,10 @@ export class appLocalStorage {
     static afterAppLogout() {
         // appLocalStorage.resetDB() // todo: ask if need resetDB?
         // appLocalStorage.clearCollection('clc_book_mainFile');
-        appLocalStorage.clearCollection_bookFile(true);
-        appLocalStorage.clearCollection_bookFile(true, true);
+        // appLocalStorage.clearCollection_bookFile(true);
+        // appLocalStorage.clearCollection_bookFile(true, true);
+        appLocalStorage.clearFileCollection(FILE_STORAGE_KEY.FILE_BOOK_MAIN);
+        appLocalStorage.clearFileCollection(FILE_STORAGE_KEY.FILE_BOOK_MAIN_PARTIAL);
         // CmpUtility.is_book_downloaded_history_reset();
         // appLocalStorage.clearCollection('clc_book_sampleFile');
         appLocalStorage.clearCollection('clc_userInvoicedOrder');
@@ -183,14 +185,14 @@ export class appLocalStorage {
 
     static addDataToCollection = StoreData.addDataToCollection;
     static storeData_userInvoicedOrderItem = StoreData.storeData_userInvoicedOrderItem;
-    static storeBookFile = StoreData.storeBookFile;
-    static removeBookFileById = FileStorage.removeBookFileById;
-    static clearCollection_bookFile = FileStorage.clearCollection_bookFile;
+    // static storeBookFile = StoreData.storeBookFile;
+    // static removeBookFileById = FileStorage.removeBookFileById;
+    // static clearCollection_bookFile = FileStorage.clearCollection_bookFile;
     static store_ETag = StoreData.store_ETag;
 
     static findById = SearchAppStorage.findById;
-    static findBookMainFileById = SearchAppStorage.findBookMainFileById;
-    static findBookSampleFileById = SearchAppStorage.findBookSampleFileById;
+    // static findBookMainFileById = SearchAppStorage.findBookMainFileById;
+    // static findBookSampleFileById = SearchAppStorage.findBookSampleFileById;
     static search_by_query_book = SearchAppStorage.search_by_query_book;
     static search_by_query_comment = SearchAppStorage.search_by_query_comment;
     static search_by_phrase_book = SearchAppStorage.search_by_phrase_book;
@@ -199,8 +201,15 @@ export class appLocalStorage {
     static find_orderItems_by_order_id = SearchAppStorage.find_orderItems_by_order_id;
 
     static search_userMainAccount = SearchAppStorage.search_userMainAccount;
-    static checkBookFileExist = FileStorage.checkBookFileExist;
-    static checkBookFileExist_async = FileStorage.checkBookFileExist_async;
+    // static checkBookFileExist = FileStorage.checkBookFileExist;
+    // static checkBookFileExist_async = FileStorage.checkBookFileExist_async;
     static find_ETagById = SearchAppStorage.find_ETagById;
+
+    static getFileById = FileStorage.getFileById;
+    static saveFileById = FileStorage.saveFileById;
+    static removeFileById = FileStorage.removeFileById;
+    static clearFileCollection = FileStorage.clearFileCollection;
+    static checkFileExist = FileStorage.checkFileExist;
+    static checkFileExist_async = FileStorage.checkFileExist_async;
 
 }

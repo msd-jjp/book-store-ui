@@ -11,6 +11,7 @@ import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { LibraryService } from "../../service/service.library";
 import { Utility } from "../../asset/script/utility";
 import { READER_FILE_NAME } from "../../webworker/reader-engine/reader-download/reader-download";
+import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
 
 export function calc_read_percent(item: ILibrary): string {
     return Math.floor((item.progress || 0) * 100) + '%';
@@ -38,29 +39,61 @@ export function calc_read_percent(item: ILibrary): string {
     // }
 }
 
+export function is_file_downloaded(collectionName: FILE_STORAGE_KEY, fileId: string): boolean {
+    return appLocalStorage.checkFileExist(collectionName, fileId);
+}
+
 export function is_book_downloaded(book_id: string, mainFile: boolean): boolean {
-    return appLocalStorage.checkBookFileExist(book_id, mainFile);
+    // return appLocalStorage.checkBookFileExist(book_id, mainFile);
+    return appLocalStorage.checkFileExist(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
+}
+
+export async function is_file_downloaded_async(collectionName: FILE_STORAGE_KEY, fileId: string): Promise<boolean> {
+    return await appLocalStorage.checkFileExist_async(collectionName, fileId);
 }
 
 export async function is_book_downloaded_async(book_id: string, mainFile: boolean): Promise<boolean> {
-    return await appLocalStorage.checkBookFileExist_async(book_id, mainFile);
+    // return await appLocalStorage.checkBookFileExist_async(book_id, mainFile);
+    return await appLocalStorage.checkFileExist_async(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
+}
+
+export function is_file_downloading(collectionName: FILE_STORAGE_KEY, fileId: string): boolean {
+    const dbf = Store2.getState().downloading_book_file;
+    const d = dbf.find(d => d.fileId === fileId && d.collectionName === collectionName);
+    return !!d;
 }
 
 export function is_book_downloading(book_id: string, mainFile: boolean): boolean {
-    const dbf = Store2.getState().downloading_book_file;
-    const d = dbf.find(d => d.book_id === book_id && d.mainFile === mainFile);
-    return !!d;
+    return is_file_downloading(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
+    // const dbf = Store2.getState().downloading_book_file;
+    // const d = dbf.find(d => d.fileId === getBookFileId(book_id, mainFile) && d.collectionName === getBookFileCollectionName(book_id, mainFile));
+    // return !!d;
+}
+
+export function getBookFileId(book_id: string, mainFile: boolean): string {
+    return (mainFile ? 'main_' : 'sample_') + book_id;
+}
+
+export function getBookId_from_fileId(fileId: string): string {
+    if (fileId.includes('main_')) {
+        return fileId.replace('main_', '');
+    }
+    return fileId.replace('sample_', '');
+}
+
+export function getBookFileCollectionName(book_id: string, mainFile: boolean): FILE_STORAGE_KEY.FILE_BOOK_MAIN | FILE_STORAGE_KEY.FILE_BOOK_SAMPLE {
+    return mainFile ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE;
 }
 
 export function book_downloading_progress(book_id: string, mainFile: boolean): number {
     const dbf = Store2.getState().downloading_book_file;
-    const d = dbf.find(d => d.book_id === book_id && d.mainFile === mainFile);
+    const d = dbf.find(d => d.fileId === getBookFileId(book_id, mainFile) && d.collectionName === getBookFileCollectionName(book_id, mainFile));
     return d ? d.progress : 0;
 }
 
 export function book_download_size(book_id: string, mainFile: boolean): number | undefined {
     const dbf = Store2.getState().downloading_book_file;
-    const d = dbf.find(d => d.book_id === book_id && d.mainFile === mainFile);
+    const d = dbf.find(d => d.fileId === getBookFileId(book_id, mainFile) && d.collectionName === getBookFileCollectionName(book_id, mainFile));
     return d ? d.size : undefined;
 }
 
@@ -81,14 +114,18 @@ export function libBook_download_size(item: ILibrary): number | undefined {
 }
 
 export function isReaderEngineDownloading(): boolean {
-    const ding_wasm = is_book_downloading(READER_FILE_NAME.WASM_BOOK_ID, true);
-    const ding_reader = is_book_downloading(READER_FILE_NAME.READER2_BOOK_ID, true);
+    // const ding_wasm = is_book_downloading(READER_FILE_NAME.WASM_BOOK_ID, true);
+    // const ding_reader = is_book_downloading(READER_FILE_NAME.READER2_BOOK_ID, true);
+    const ding_wasm = is_file_downloading(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
+    const ding_reader = is_file_downloading(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
     return ding_wasm || ding_reader;
 }
 
 export async function isReaderEngineDownloaded_async(): Promise<boolean> {
-    const ded_wasm = await is_book_downloaded_async(READER_FILE_NAME.WASM_BOOK_ID, true);
-    const ded_reader = await is_book_downloaded_async(READER_FILE_NAME.READER2_BOOK_ID, true);
+    // const ded_wasm = await is_book_downloaded_async(READER_FILE_NAME.WASM_BOOK_ID, true);
+    // const ded_reader = await is_book_downloaded_async(READER_FILE_NAME.READER2_BOOK_ID, true);
+    const ded_wasm = await is_file_downloaded_async(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
+    const ded_reader = await is_file_downloaded_async(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
     return ded_wasm && ded_reader;
 }
 
@@ -97,18 +134,18 @@ export function toggle_book_download(book_id: string, mainFile: boolean): void {
     let dbf = [...Store2.getState().downloading_book_file];
 
     if (isDownloading) {
-        const new_dbf = dbf.filter(d => !(d.book_id === book_id && d.mainFile === mainFile));
+        const new_dbf = dbf.filter(d => !(d.fileId === getBookFileId(book_id, mainFile) && d.collectionName === getBookFileCollectionName(book_id, mainFile)));
         new_dbf.push({
-            book_id: book_id,
-            mainFile: mainFile,
+            fileId: getBookFileId(book_id, mainFile),
+            collectionName: getBookFileCollectionName(book_id, mainFile),
             status: 'stop',
             progress: 0
         });
         dbf = new_dbf;
     } else {
         dbf.push({
-            book_id: book_id,
-            mainFile: mainFile,
+            fileId: getBookFileId(book_id, mainFile),
+            collectionName: getBookFileCollectionName(book_id, mainFile),
             status: 'start',
             progress: 0
         });
@@ -137,8 +174,10 @@ export function collection_download(title: string) {
     let dbf = [...Store2.getState().downloading_book_file];
     book_not_down_list.forEach(id => {
         dbf.push({
-            book_id: id,
-            mainFile: true,
+            // book_id: id,
+            // mainFile: true,
+            fileId: getBookFileId(id, true),
+            collectionName: getBookFileCollectionName(id, true),
             status: 'start',
             progress: 0
         });

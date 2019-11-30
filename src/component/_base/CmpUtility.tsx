@@ -5,6 +5,7 @@ import { BOOK_ROLES, BOOK_TYPES } from "../../enum/Book";
 import { Store2 } from "../../redux/store";
 import { action_change_app_flag } from "../../redux/action/internationalization";
 import { appLocalStorage } from "../../service/appLocalStorage";
+import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
 
 // import React from 'react';
 
@@ -118,8 +119,11 @@ export abstract class CmpUtility {
     }
 
     static async removeBookFileFromDevice(book_id_s: string | string[], mainFile: boolean) {
-        await appLocalStorage.removeBookFileById(book_id_s, mainFile);
-
+        // await appLocalStorage.removeBookFileById(book_id_s, mainFile);
+        await appLocalStorage.removeFileById(
+            mainFile ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE,
+            book_id_s
+        );
         CmpUtility.refreshView();
     }
 

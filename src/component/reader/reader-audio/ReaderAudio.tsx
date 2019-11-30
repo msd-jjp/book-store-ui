@@ -16,12 +16,13 @@ import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { Dropdown } from "react-bootstrap";
 import RcSlider from 'rc-slider';
 import { ILibrary } from "../../../model/model.library";
-import { getLibraryItem, isReaderEngineDownloading, isReaderEngineDownloaded_async } from "../../library/libraryViewTemplate";
+import { getLibraryItem, isReaderEngineDownloading, isReaderEngineDownloaded_async, getBookFileId } from "../../library/libraryViewTemplate";
 import { CmpUtility } from "../../_base/CmpUtility";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { AudioBookGenerator } from "../../../webworker/reader-engine/AudioBookGenerator";
 import { ReaderUtility } from "../ReaderUtility";
 import { IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
+import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 // import { BookService } from "../../../service/service.book";
 //
 // import * as WaveSurferAll from 'wavesurfer.js';
@@ -245,7 +246,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private _bookInstance!: AudioBookGenerator;
     private async createBook() {
         this.setState({ loading: true });
-        const bookFile = await appLocalStorage.findBookMainFileById(this.book_id); // find book chapter
+        // const bookFile = await appLocalStorage.findBookMainFileById(this.book_id); // find book chapter
+        const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
 
         // _DELETE_ME
         /* const _bookService = new BookService();

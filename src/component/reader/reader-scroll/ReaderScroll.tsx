@@ -15,7 +15,7 @@ import { Store2 } from "../../../redux/store";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { CmpUtility } from "../../_base/CmpUtility";
 import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
-import { getLibraryItem, updateLibraryItem_progress, isReaderEngineDownloading, isReaderEngineDownloaded_async } from "../../library/libraryViewTemplate";
+import { getLibraryItem, updateLibraryItem_progress, isReaderEngineDownloading, isReaderEngineDownloaded_async, getBookFileId } from "../../library/libraryViewTemplate";
 import { ILibrary } from "../../../model/model.library";
 import { Localization } from "../../../config/localization/localization";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
@@ -25,6 +25,7 @@ import { Virtual } from "swiper/dist/js/swiper.esm";
 import { AppGuid } from "../../../asset/script/guid";
 import { BOOK_TYPES } from "../../../enum/Book";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
+import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 
 
 interface IReaderScrollSlide {
@@ -170,7 +171,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
   private _bookInstance!: BookGenerator | PdfBookGenerator;
   private async createBook() {
-    const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
+    // const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
+    const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
     if (!bookFile) {
       this.setState({ page_loading: false });
       this.bookFileNotFound_notify();
