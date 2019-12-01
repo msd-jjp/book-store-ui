@@ -30,6 +30,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
     private is_downloadInProgress = false;
     private downloadProgress_queue: { fileId: string; collectionName: FILE_STORAGE_KEY; }[] = [];
+    // private downloadInProgress: { fileId: string; collectionName: FILE_STORAGE_KEY; } | undefined;
     private _partialDownload: PartialDownload | undefined;
 
     componentDidMount() {
@@ -44,6 +45,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     }
 
     componentWillUnmount() {
+        // todo: in Unmount, no auth --> stop downloading.
         // this.props.reset_downloading_book_file!();
     }
 
