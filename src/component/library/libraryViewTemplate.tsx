@@ -45,7 +45,8 @@ export function is_file_downloaded(collectionName: FILE_STORAGE_KEY, fileId: str
 
 export function is_book_downloaded(book_id: string, mainFile: boolean): boolean {
     // return appLocalStorage.checkBookFileExist(book_id, mainFile);
-    return appLocalStorage.checkFileExist(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
+    // return appLocalStorage.checkFileExist(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
+    return is_file_downloaded(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
 }
 
 export async function is_file_downloaded_async(collectionName: FILE_STORAGE_KEY, fileId: string): Promise<boolean> {
@@ -54,7 +55,8 @@ export async function is_file_downloaded_async(collectionName: FILE_STORAGE_KEY,
 
 export async function is_book_downloaded_async(book_id: string, mainFile: boolean): Promise<boolean> {
     // return await appLocalStorage.checkBookFileExist_async(book_id, mainFile);
-    return await appLocalStorage.checkFileExist_async(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
+    // return await appLocalStorage.checkFileExist_async(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
+    return await is_file_downloaded_async(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
 }
 
 export function is_file_downloading(collectionName: FILE_STORAGE_KEY, fileId: string): boolean {

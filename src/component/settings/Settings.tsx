@@ -113,11 +113,11 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
     css_js_text_render() {
         const creationDateObj = appLocalStorage.find_creationDateById(READER_FILE_NAME.READER2_BOOK_ID);
         const title = creationDateObj ?
-            this.timestamp_to_fullFormat(creationDateObj.date) + ' ' + this.getFromNowDate(creationDateObj.date / 1000)
+            this.timestamp_to_fullFormat(creationDateObj.date) + '   ' + this.getFromNowDate(creationDateObj.date / 1000)
             : '';
         return (
             <span title={title}>
-                <span>{Localization.javscript_file}</span>
+                <span>{Localization.javscript_file} </span>
                 {creationDateObj ?
                     <small className="text-muted">({this.timestamp_to_date(creationDateObj.date / 1000)})</small>
                     : ''}
@@ -128,11 +128,11 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
     css_wasm_text_render() {
         const creationDateObj = appLocalStorage.find_creationDateById(READER_FILE_NAME.WASM_BOOK_ID);
         const title = creationDateObj ?
-            this.timestamp_to_fullFormat(creationDateObj.date) + ' ' + this.getFromNowDate(creationDateObj.date / 1000)
+            this.timestamp_to_fullFormat(creationDateObj.date) + '   ' + this.getFromNowDate(creationDateObj.date / 1000)
             : '';
         return (
             <span title={title}>
-                <span>{Localization.webassembly_file}</span>
+                <span>{Localization.webassembly_file} </span>
                 {creationDateObj ?
                     <small className="text-muted">({this.timestamp_to_date(creationDateObj.date / 1000)})</small>
                     : ''}
