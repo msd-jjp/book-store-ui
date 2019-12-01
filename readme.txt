@@ -202,7 +202,7 @@ memory leak.
 
 ====================================================================================
 
-cmp profile --> add reset password to profile (edit user ham pass avaz mikone age login hasti)
+
 
 ====================================================================================
 
@@ -214,7 +214,7 @@ readerAudio btn foucus change to active.
 
 ====================================================================================
 
-add onEnter to login input (all other input needed like regester & payment ....)
+
 
 ====================================================================================
 
@@ -246,9 +246,7 @@ reader :
         zoom
 
 ====================================================================================
-response headers
 
-    ETag: "5ddac0f2-3c747e"
 
 ====================================================================================
 
@@ -295,7 +293,7 @@ msdBook: WasmWorkerHandler --> onmessage --> create new book if in cmp reader.
 
 ====================================================================================
 
-on logout reader files will remove (stored in book location).
+
 
 ====================================================================================
 
@@ -311,9 +309,15 @@ call method createWorkerAfterDownload in cmp Reader (reading overview ...) after
 
 ====================================================================================
 
-add page setting
-    btn 
-        remove *workbox    from cache
-        remove wasm & reader    from cache
+
+====================================================================================
+
+Done --> check if has any sideEffect
+.layout-main-wrapper .main {
+    min-height: calc(100vh - 8rem);
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+    padding-bottom: 2rem;
+}
 
 ====================================================================================

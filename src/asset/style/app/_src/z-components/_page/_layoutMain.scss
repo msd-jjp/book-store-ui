@@ -47,7 +47,9 @@
     @include calc(min-height, "100vh - 8rem");
     // background: linear-gradient(to bottom, rgb(244, 244, 244), rgb(255, 255, 255));
     margin-top: 4rem;
-    margin-bottom: 6rem;
+    // margin-bottom: 6rem;
+    margin-bottom: 4rem;
+    padding-bottom: 2rem;
   }
 
   .footer {
