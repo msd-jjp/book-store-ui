@@ -11,7 +11,8 @@ import { CmpUtility } from "../../../_base/CmpUtility";
 import { History } from "history";
 import { IBook } from "../../../../model/model.book";
 import { BOOK_TYPES } from "../../../../enum/Book";
-import { is_book_downloaded, isReaderEngineDownloading } from "../../../library/libraryViewTemplate";
+import { is_book_downloaded } from "../../../library/libraryViewTemplate";
+import { Store2 } from "../../../../redux/store";
 
 export interface IProps {
     internationalization: TInternationalization;
@@ -61,17 +62,13 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
 
     }
 
-    // gotoReader(book_id: string) {
-    //     this.props.history.push(`/reader/${book_id}/reading`);
-    // }
     before_gotoReader(book: IBook) {
-        const is_re_d_ing = isReaderEngineDownloading();
-        if (is_re_d_ing) {
-            this.readerEngineNotify();
+        if (Store2.getState().reader_engine.status !== 'inited') {
+            const reader_engine_downloading = Store2.getState().reader_engine.reader_status === 'downloading' ||
+                Store2.getState().reader_engine.wasm_status === 'downloading';
+            this.readerEngineNotify(reader_engine_downloading);
             return;
         }
-
-        // if (is_re_d_ing) return;
 
         let isAudio = false;
         if (book.type === BOOK_TYPES.Audio) {
@@ -87,8 +84,10 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
         }
     }
 
-    readerEngineNotify(): void {
-        this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
+    readerEngineNotify(downloading: boolean): void {
+        let msg = Localization.msg.ui.initing_reader_security_content;
+        if (downloading) msg = Localization.msg.ui.downloading_reader_security_content;
+        this.toastNotify(msg,
             { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
     }
 

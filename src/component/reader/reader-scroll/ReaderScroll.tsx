@@ -15,7 +15,7 @@ import { Store2 } from "../../../redux/store";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { CmpUtility } from "../../_base/CmpUtility";
 import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
-import { getLibraryItem, updateLibraryItem_progress, isReaderEngineDownloading, isReaderEngineDownloaded_async, getBookFileId } from "../../library/libraryViewTemplate";
+import { getLibraryItem, updateLibraryItem_progress, getBookFileId } from "../../library/libraryViewTemplate";
 import { ILibrary } from "../../../model/model.library";
 import { Localization } from "../../../config/localization/localization";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
@@ -26,13 +26,14 @@ import { AppGuid } from "../../../asset/script/guid";
 import { BOOK_TYPES } from "../../../enum/Book";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
+import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
 
 
 interface IReaderScrollSlide {
   id: string;
   isTitle: boolean;
   chapterTitle: string;
-  pages: number[]; // { url: string; number: number }[];
+  pages: number[];
   level: number | undefined;
 }
 
@@ -42,6 +43,7 @@ interface IProps {
   network_status: NETWORK_STATUS;
   match: any;
   reader: IReader_schema;
+  reader_engine: IReaderEngine_schema;
 }
 
 interface IState {
@@ -113,10 +115,12 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     }, 300);
   }
 
-  readerEngineNotify(): void {
+  readerEngineNotify(downloading: boolean): void {
+    let msg = Localization.msg.ui.initing_reader_security_content;
+    if (downloading) msg = Localization.msg.ui.downloading_reader_security_content;
     this.goBack();
     setTimeout(() => {
-      this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
+      this.toastNotify(msg,
         { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
     }, 300);
   }
@@ -124,10 +128,10 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   private async generateReader() {
     await CmpUtility.waitOnMe(0);
 
-    const is_re_d_ing = isReaderEngineDownloading();
-    const is_re_d_ed = await isReaderEngineDownloaded_async();
-    if (is_re_d_ing || !is_re_d_ed) {
-      this.readerEngineNotify();
+    if (this.props.reader_engine.status !== 'inited') {
+      const reader_engine_downloading = this.props.reader_engine.reader_status === 'downloading' ||
+        this.props.reader_engine.wasm_status === 'downloading';
+      this.readerEngineNotify(reader_engine_downloading);
       return;
     }
 
@@ -563,7 +567,8 @@ const state2props = (state: redux_state) => {
   return {
     internationalization: state.internationalization,
     network_status: state.network_status,
-    reader: state.reader
+    reader: state.reader,
+    reader_engine: state.reader_engine
   };
 };
 

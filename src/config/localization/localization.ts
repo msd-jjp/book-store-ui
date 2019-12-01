@@ -45,6 +45,7 @@ interface ILocalization extends LocalizedStringsMethods {
             reader_audio_error_occurred: string;
             change_password_successful: string;
             downloading_reader_security_content: string;
+            initing_reader_security_content: string;
             clear_general_content: string;
         },
         back: {

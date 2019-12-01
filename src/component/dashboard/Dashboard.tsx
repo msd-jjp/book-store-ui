@@ -20,11 +20,12 @@ import { AddToCollection } from "../library/collection/add-to-collection/AddToCo
 import { CmpUtility } from "../_base/CmpUtility";
 import { action_user_logged_in } from "../../redux/action/user";
 import { PersonService } from "../../service/service.person";
-import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem, book_downloading_progress, book_download_size, isReaderEngineDownloading } from "../library/libraryViewTemplate";
+import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem, book_downloading_progress, book_download_size } from "../library/libraryViewTemplate";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import Swiper from "swiper";
 import { Utility } from "../../asset/script/utility";
+import { Store2 } from "../../redux/store";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -456,12 +457,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   before_gotoReader(book: IBook) {
-    const is_re_d_ing = isReaderEngineDownloading();
-    if (is_re_d_ing) {
-      this.readerEngineNotify();
-      // return;
-    }
-
     const isDownloaded = is_book_downloaded(book.id, true);
     if (!isDownloaded) {
       if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
@@ -469,7 +464,12 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       return;
     }
 
-    if (is_re_d_ing) return;
+    if (Store2.getState().reader_engine.status !== 'inited') {
+      const reader_engine_downloading = Store2.getState().reader_engine.reader_status === 'downloading' ||
+        Store2.getState().reader_engine.wasm_status === 'downloading';
+      this.readerEngineNotify(reader_engine_downloading);
+      return;
+    }
 
     let isAudio = false;
     if (book.type === BOOK_TYPES.Audio) {
@@ -484,8 +484,11 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       this.props.history.push(`/reader/${book_id}/reading`);
     }
   }
-  readerEngineNotify(): void {
-    this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
+
+  readerEngineNotify(downloading: boolean): void {
+    let msg = Localization.msg.ui.initing_reader_security_content;
+    if (downloading) msg = Localization.msg.ui.downloading_reader_security_content;
+    this.toastNotify(msg,
       { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
   }
 

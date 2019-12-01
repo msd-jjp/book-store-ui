@@ -22,9 +22,10 @@ import { ICollection_schema } from '../../redux/action/collection/collectionActi
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { AddToCollection } from './collection/add-to-collection/AddToCollection';
 import { IBook } from '../../model/model.book';
-import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem, isReaderEngineDownloading } from './libraryViewTemplate';
+import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem } from './libraryViewTemplate';
 import { CmpUtility } from '../_base/CmpUtility';
 import { BOOK_TYPES } from '../../enum/Book';
+import { Store2 } from '../../redux/store';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -371,11 +372,11 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         if (this.state.isLibrary_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
-            const is_re_d_ing = isReaderEngineDownloading();
+            /* const is_re_d_ing = isReaderEngineDownloading();
             if (is_re_d_ing) {
                 this.readerEngineNotify();
                 // return;
-            }
+            } */
 
             const isDownloaded = is_libBook_downloaded(item);
             if (!isDownloaded) {
@@ -383,7 +384,12 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                 return;
             }
 
-            if (is_re_d_ing) return;
+            if (Store2.getState().reader_engine.status !== 'inited') {
+                const reader_engine_downloading = Store2.getState().reader_engine.reader_status === 'downloading' ||
+                    Store2.getState().reader_engine.wasm_status === 'downloading';
+                this.readerEngineNotify(reader_engine_downloading);
+                return;
+            }
 
             let isAudio = false;
             if (item.book.type === BOOK_TYPES.Audio) {
@@ -445,8 +451,10 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    readerEngineNotify(): void {
-        this.toastNotify(Localization.msg.ui.downloading_reader_security_content,
+    readerEngineNotify(downloading: boolean): void {
+        let msg = Localization.msg.ui.initing_reader_security_content;
+        if (downloading) msg = Localization.msg.ui.downloading_reader_security_content;
+        this.toastNotify(msg,
             { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
     }
     //#endregion
