@@ -164,6 +164,9 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         return this.image_pre_url + '/' + imageId;
     }
 
+    /**
+     * @param timestamp: number in second
+     */
     protected getFromNowDate(timestamp: number): string {
         moment.locale(this.props.internationalization.flag);
         return moment.unix(timestamp).fromNow();
@@ -175,6 +178,9 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         return +date.format('x');
     } */
 
+    /**
+     * @param timestamp: number in second
+     */
     protected timestamp_to_fullFormat(timestamp: number): string {
         if (this.props.internationalization.flag === 'fa') {
             // moment_jalaali.locale('en');
@@ -189,6 +195,9 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         }
     }
 
+    /**
+     * @param timestamp: number in milisecond
+     */
     protected timestamp_to_date(timestamp: number) {
         try {
             if (this.props.internationalization.flag === "fa") {

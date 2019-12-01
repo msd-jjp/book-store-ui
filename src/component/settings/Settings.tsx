@@ -110,6 +110,35 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
         this.setState({ confirmNotify_css_wasm_show: false });
     }
 
+    css_js_text_render() {
+        const creationDateObj = appLocalStorage.find_creationDateById(READER_FILE_NAME.READER2_BOOK_ID);
+        const title = creationDateObj ?
+            this.timestamp_to_fullFormat(creationDateObj.date) + ' ' + this.getFromNowDate(creationDateObj.date / 1000)
+            : '';
+        return (
+            <span title={title}>
+                <span>{Localization.javscript_file}</span>
+                {creationDateObj ?
+                    <small className="text-muted">({this.timestamp_to_date(creationDateObj.date / 1000)})</small>
+                    : ''}
+            </span>
+        )
+    }
+
+    css_wasm_text_render() {
+        const creationDateObj = appLocalStorage.find_creationDateById(READER_FILE_NAME.WASM_BOOK_ID);
+        const title = creationDateObj ?
+            this.timestamp_to_fullFormat(creationDateObj.date) + ' ' + this.getFromNowDate(creationDateObj.date / 1000)
+            : '';
+        return (
+            <span title={title}>
+                <span>{Localization.webassembly_file}</span>
+                {creationDateObj ?
+                    <small className="text-muted">({this.timestamp_to_date(creationDateObj.date / 1000)})</small>
+                    : ''}
+            </span>
+        )
+    }
 
     render() {
 
@@ -128,15 +157,13 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
                             <span className="text text-capitalize">{Localization.clear_general_content}</span>
                         </li>
 
-                        <li className="settings-item d-flex align-items-center list-group-item p-align-0">
+                        <li className="settings-item d-flex align-items-center list-group-item p-align-0 flex-wrap">
                             <span className="text text-capitalize">{Localization.clear_content_security_system}:</span>
                             <div>
-                                <button className="btn text-warning"
-                                    onClick={() => this.open_confirmNotify_css_js()}
-                                >{Localization.javscript_file}</button>
-                                <button className="btn text-warning"
-                                    onClick={() => this.open_confirmNotify_css_wasm()}
-                                >{Localization.webassembly_file}</button>
+                                <button className="btn text-warning" onClick={() => this.open_confirmNotify_css_js()}
+                                >{this.css_js_text_render()}</button>
+                                <button className="btn text-warning" onClick={() => this.open_confirmNotify_css_wasm()}
+                                >{this.css_wasm_text_render()}</button>
                             </div>
                         </li>
 

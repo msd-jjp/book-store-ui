@@ -11320,7 +11320,7 @@ function main(binData){
   Module['onRuntimeInitialized']=function(){
     // clearInterval(msd_continue_running);
     // debugger;
-    self.console.log('________________ onRuntimeInitialized______________________');
+    self.console.log('________________ onRuntimeInitialized ______________________');
     self.console.log('worker inited.');
     postMessage({webasembely_inited: true});
     // let t = Module['asm'];

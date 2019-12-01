@@ -301,23 +301,6 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
             return Localization.last_synced_on + ' ' + this.timestamp_to_fullFormat(this.props.sync.syncDate!);
         }
         return;
-        // return (
-        //     <>
-        //         {
-        //             this.props.sync.isSyncing_visible ?
-        //                 Localization.syncing_with_dots :
-        //                 (
-        //                     this.props.sync.syncDate ?
-        //                         (
-        //                             Localization.last_synced_on +
-        //                             ' ' +
-        //                             this.timestamp_to_fullFormat(this.props.sync.syncDate!)
-        //                         ) :
-        //                         ''
-        //                 )
-        //         }
-        //     </>
-        // )
     }
 
     render() {

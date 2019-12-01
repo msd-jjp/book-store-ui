@@ -25,18 +25,19 @@ export class PartialDownload {
     private new_eTag: IEtag | null = null;
 
     constructor(private fileId: string, private collectionName: FILE_STORAGE_KEY) {
-        let id = '';
+        /* let id = '';
         if (fileId.includes(READER_FILE_NAME.READER2_BOOK_ID) || fileId.includes(READER_FILE_NAME.WASM_BOOK_ID)) {
-            id = PartialDownload.get_bookFile_ETag_id(fileId, true);
+            // id = PartialDownload.get_bookFile_ETag_id(fileId, true);
+            id = fileId;
         } else {
             id = PartialDownload.get_bookFile_ETag_id(fileId, collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
-        }
-        this.current_eTag = appLocalStorage.find_eTagById(id);
+        } */
+        this.current_eTag = appLocalStorage.find_eTagById(fileId);
     }
 
-    static get_bookFile_ETag_id(book_id: string, mainFile: boolean): string {
-        return 'book_file' + (mainFile ? '_main_' : '_sample_') + book_id;
-    }
+    // static get_bookFile_ETag_id(book_id: string, mainFile: boolean): string {
+    //     return 'book_file' + (mainFile ? '_main_' : '_sample_') + book_id;
+    // }
 
     private _keepViewUpdate_timer: any;
     private keepViewUpdate() {
@@ -94,7 +95,10 @@ export class PartialDownload {
                     return;
                 }
             } else {
-                this.current_eTag = { ...this.new_eTag }; // note: to prevent get requerst do not reject if not match.
+                // note: here no temp file found:
+                // do not reject here
+                // to prevent rejecting in get requerst --> if not match set equal.
+                this.current_eTag = { ...this.new_eTag };
             }
 
             const from = this.tempFile ? this.tempFile.byteLength : 0;
@@ -256,14 +260,15 @@ export class PartialDownload {
     }
 
     private store_new_eTag(eTag: string) {
-        let id = '';
+        /* let id = '';
         if (this.fileId.includes(READER_FILE_NAME.READER2_BOOK_ID) || this.fileId.includes(READER_FILE_NAME.WASM_BOOK_ID)) {
-            id = PartialDownload.get_bookFile_ETag_id(this.fileId, true);
+            // id = PartialDownload.get_bookFile_ETag_id(this.fileId, true);
+            id = this.fileId;
         } else {
             id = PartialDownload.get_bookFile_ETag_id(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
-        }
+        } */
         this.new_eTag = {
-            id: id,
+            id: this.fileId,
             eTag: eTag
         };
         appLocalStorage.store_eTag(this.new_eTag);
@@ -336,6 +341,13 @@ export class PartialDownload {
         let ended = false;
         if (save) {
             // cleared = await this.clearTempStorage();
+            /* let id = '';
+            if (this.fileId.includes(READER_FILE_NAME.READER2_BOOK_ID) || this.fileId.includes(READER_FILE_NAME.WASM_BOOK_ID)) {
+                id = this.fileId;
+            } else {
+                id = PartialDownload.get_bookFile_ETag_id(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
+            } */
+            appLocalStorage.store_creationDate({ id: this.fileId, date: new Date().getTime() });
             ended = await this.downloadEnded();
         }
 

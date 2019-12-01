@@ -3,7 +3,7 @@ import { Store2 } from "../../../redux/store";
 import { action_update_downloading_book_file } from "../../../redux/action/downloading-book-file";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { WasmWorkerHandler } from "../MsdBook";
-import { PartialDownload } from "../../../component/book-file-download/PartialDownload";
+// import { PartialDownload } from "../../../component/book-file-download/PartialDownload";
 import { ReaderEngineService } from "../../../service/service.reader-engine";
 import { action_update_reader_engine } from "../../../redux/action/reader-engine";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
@@ -59,10 +59,12 @@ export abstract class ReaderDownload {
             //todo: check head --> if change --> delete & download again
             // debugger;
             const current_ETag_reader = appLocalStorage.find_eTagById(
-                PartialDownload.get_bookFile_ETag_id(READER_FILE_NAME.READER2_BOOK_ID, true)
+                READER_FILE_NAME.READER2_BOOK_ID
+                // PartialDownload.get_bookFile_ETag_id(READER_FILE_NAME.READER2_BOOK_ID, true)
             );
             const current_ETag_wasm = appLocalStorage.find_eTagById(
-                PartialDownload.get_bookFile_ETag_id(READER_FILE_NAME.WASM_BOOK_ID, true)
+                READER_FILE_NAME.WASM_BOOK_ID
+                // PartialDownload.get_bookFile_ETag_id(READER_FILE_NAME.WASM_BOOK_ID, true)
             );
             // debugger;
 

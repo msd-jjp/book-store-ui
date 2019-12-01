@@ -11,29 +11,24 @@ import { IOrder, IOrderItem } from '../../model/model.order';
 import { CmpUtility } from '../../component/_base/CmpUtility';
 import { IAccount } from '../../model/model.account';
 import { FileStorage, FILE_STORAGE_KEY } from './FileStorage';
-// import { is_book_downloaded_history_reset } from '../../component/library/libraryViewTemplate';
-
 // const LokiIndexedAdapter = require('lokijs/src/loki-indexed-adapter');
 // const lfsa = require('lokijs/src/loki-fs-structured-adapter');
 
 export interface IOrderItemStore { id: IOrder['id']; items: IOrderItem[] };
 export interface IEtag { id: string; eTag: string; };
-// export interface IBook_file_store {
-//     id: IBook['id'];
-//     file: Array<number>;
-// }
+export interface ICreationDate { id: string; date: number; };
+
 export type TCollectionName =
     'clc_book' |
     'clc_comment' |
     'clc_userInvoicedOrder' |
     'clc_userInvoicedOrderItem' |
-    // 'clc_book_mainFile' |
-    // 'clc_book_sampleFile' |
     'clc_userAccount' |
-    'clc_eTag'
+    'clc_eTag' |
+    'clc_creationDate'
     ;
 
-export type TCollectionData = IBook | IComment | IOrder | IAccount; // | IEtag; // | IBook_file_store;
+export type TCollectionData = IBook | IComment | IOrder | IAccount; // | IEtag;
 
 export class appLocalStorage {
 
@@ -65,27 +60,23 @@ export class appLocalStorage {
     // app_db.save
     static readonly collectionNameList: TCollectionName[] = [
         'clc_book', 'clc_comment', 'clc_userInvoicedOrder',
-        'clc_userInvoicedOrderItem',
-        // 'clc_book_mainFile',
-        // 'clc_book_sampleFile',
-        'clc_userAccount', 'clc_eTag'
+        'clc_userInvoicedOrderItem', 'clc_userAccount', 'clc_eTag',
+        'clc_creationDate'
     ];
 
     static clc_book: Collection<IBook>;
     static clc_comment: Collection<IComment>;
     static clc_userInvoicedOrder: Collection<IOrder>;
     static clc_userInvoicedOrderItem: Collection<IOrderItemStore>;
-    // static clc_book_mainFile: Collection<IBook_file_store>;
-    // static clc_book_sampleFile: Collection<IBook_file_store>;
     static clc_userAccount: Collection<IAccount>;
     static clc_eTag: Collection<IEtag>;
+    static clc_creationDate: Collection<ICreationDate>;
 
     constructor() {
         appLocalStorage.app_db.loadDatabase({}, (err: any) => {
             // debugger;
 
             appLocalStorage.initDB(); // indexed db adaptor need this.
-            // CmpUtility.is_book_downloaded_history_reset();
             // CmpUtility.refreshView();
         });
         appLocalStorage.initDB();
@@ -167,12 +158,10 @@ export class appLocalStorage {
 
     static afterAppLogout() {
         // appLocalStorage.resetDB() // todo: ask if need resetDB?
-        // appLocalStorage.clearCollection('clc_book_mainFile');
         // appLocalStorage.clearCollection_bookFile(true);
         // appLocalStorage.clearCollection_bookFile(true, true);
         appLocalStorage.clearFileCollection(FILE_STORAGE_KEY.FILE_BOOK_MAIN);
         appLocalStorage.clearFileCollection(FILE_STORAGE_KEY.FILE_BOOK_MAIN_PARTIAL);
-        // CmpUtility.is_book_downloaded_history_reset();
         // appLocalStorage.clearCollection('clc_book_sampleFile');
         appLocalStorage.clearCollection('clc_userInvoicedOrder');
         appLocalStorage.clearCollection('clc_userInvoicedOrderItem');
@@ -189,6 +178,7 @@ export class appLocalStorage {
     // static removeBookFileById = FileStorage.removeBookFileById;
     // static clearCollection_bookFile = FileStorage.clearCollection_bookFile;
     static store_eTag = StoreData.store_eTag;
+    static store_creationDate = StoreData.store_creationDate;
 
     static findById = SearchAppStorage.findById;
     // static findBookMainFileById = SearchAppStorage.findBookMainFileById;
@@ -204,6 +194,7 @@ export class appLocalStorage {
     // static checkBookFileExist = FileStorage.checkBookFileExist;
     // static checkBookFileExist_async = FileStorage.checkBookFileExist_async;
     static find_eTagById = SearchAppStorage.find_eTagById;
+    static find_creationDateById = SearchAppStorage.find_creationDateById;
 
     static getFileById = FileStorage.getFileById;
     static saveFileById = FileStorage.saveFileById;
@@ -212,6 +203,6 @@ export class appLocalStorage {
     static checkFileExist = FileStorage.checkFileExist;
     static checkFileExist_async = FileStorage.checkFileExist_async;
 
-    static clearWorkbox =  FileStorage.clearWorkbox;
+    static clearWorkbox = FileStorage.clearWorkbox;
 
 }
