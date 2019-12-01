@@ -111,6 +111,13 @@ export abstract class ReaderDownload {
             }
         }
 
+        if (ding_wasm || ding_reader) {
+            const re = { ...Store2.getState().reader_engine };
+            if (ding_reader) re.reader_status = 'downloading';
+            if (ding_wasm) re.wasm_status = 'downloading';
+            Store2.dispatch(action_update_reader_engine(re));
+        }
+
         // debugger;
         ReaderDownload.createWorkerAfterDownload();
     }
