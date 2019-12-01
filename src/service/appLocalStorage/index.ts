@@ -188,7 +188,7 @@ export class appLocalStorage {
     // static storeBookFile = StoreData.storeBookFile;
     // static removeBookFileById = FileStorage.removeBookFileById;
     // static clearCollection_bookFile = FileStorage.clearCollection_bookFile;
-    static store_ETag = StoreData.store_ETag;
+    static store_eTag = StoreData.store_eTag;
 
     static findById = SearchAppStorage.findById;
     // static findBookMainFileById = SearchAppStorage.findBookMainFileById;
@@ -203,7 +203,7 @@ export class appLocalStorage {
     static search_userMainAccount = SearchAppStorage.search_userMainAccount;
     // static checkBookFileExist = FileStorage.checkBookFileExist;
     // static checkBookFileExist_async = FileStorage.checkBookFileExist_async;
-    static find_ETagById = SearchAppStorage.find_ETagById;
+    static find_eTagById = SearchAppStorage.find_eTagById;
 
     static getFileById = FileStorage.getFileById;
     static saveFileById = FileStorage.saveFileById;

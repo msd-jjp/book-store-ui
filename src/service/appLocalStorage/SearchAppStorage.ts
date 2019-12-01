@@ -12,7 +12,7 @@ export class SearchAppStorage {
         // appLocalStorage.books.find({ $eq: { id: bookId } });
     }
 
-    static find_ETagById(id: string): IEtag | null {
+    static find_eTagById(id: string): IEtag | null {
         return appLocalStorage.clc_eTag.findOne({ id: id });
     }
 

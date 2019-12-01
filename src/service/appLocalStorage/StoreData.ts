@@ -84,7 +84,7 @@ export class StoreData {
         coll.update(newDataLoki);
     }
 
-    static store_ETag(data: IEtag) {
+    static store_eTag(data: IEtag) {
         let coll: Collection<any> = appLocalStorage.clc_eTag;
 
         let found = coll.findOne({ id: data.id });

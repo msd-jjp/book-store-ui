@@ -25,9 +25,13 @@ export class PartialDownload {
     private new_eTag: IEtag | null = null;
 
     constructor(private fileId: string, private collectionName: FILE_STORAGE_KEY) {
-        this.current_eTag = appLocalStorage.find_ETagById(
-            PartialDownload.get_bookFile_ETag_id(fileId, collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN)
-        );
+        let id = '';
+        if (fileId.includes(READER_FILE_NAME.READER2_BOOK_ID) || fileId.includes(READER_FILE_NAME.WASM_BOOK_ID)) {
+            id = PartialDownload.get_bookFile_ETag_id(fileId, true);
+        } else {
+            id = PartialDownload.get_bookFile_ETag_id(fileId, collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
+        }
+        this.current_eTag = appLocalStorage.find_eTagById(id);
     }
 
     static get_bookFile_ETag_id(book_id: string, mainFile: boolean): string {
@@ -192,11 +196,12 @@ export class PartialDownload {
             }
             this.fileLength = parseInt(res.headers['content-length']);
 
-            this.new_eTag = {
+            /* this.new_eTag = {
                 id: PartialDownload.get_bookFile_ETag_id(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN),
                 eTag: res.headers['etag']
             };
-            appLocalStorage.store_ETag(this.new_eTag);
+            appLocalStorage.store_eTag(this.new_eTag); */
+            this.store_new_eTag(res.headers['etag']);
 
             resolve(true);
         });
@@ -224,12 +229,14 @@ export class PartialDownload {
 
             if (res) {
 
-                this.new_eTag = {
+                /* this.new_eTag = {
                     id: PartialDownload.get_bookFile_ETag_id(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN),
                     eTag: (res as AxiosResponse).headers['etag']
                 };
-                appLocalStorage.store_ETag(this.new_eTag);
-                if (!this.current_eTag || this.current_eTag.eTag !== this.new_eTag.eTag) {
+                appLocalStorage.store_eTag(this.new_eTag); */
+                this.store_new_eTag((res as AxiosResponse).headers['etag']);
+
+                if (!this.current_eTag || this.current_eTag.eTag !== this.new_eTag!.eTag) {
                     debugger;
                     const ended = await this.downloadEnded();
                     reject({ error: `file eTag not match, new, old: , ${this.current_eTag}, ${this.new_eTag}, ended: ${ended}` });
@@ -246,6 +253,20 @@ export class PartialDownload {
             if (downloaded) resolve(true);
             else reject(error);
         });
+    }
+
+    private store_new_eTag(eTag: string) {
+        let id = '';
+        if (this.fileId.includes(READER_FILE_NAME.READER2_BOOK_ID) || this.fileId.includes(READER_FILE_NAME.WASM_BOOK_ID)) {
+            id = PartialDownload.get_bookFile_ETag_id(this.fileId, true);
+        } else {
+            id = PartialDownload.get_bookFile_ETag_id(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
+        }
+        this.new_eTag = {
+            id: id,
+            eTag: eTag
+        };
+        appLocalStorage.store_eTag(this.new_eTag);
     }
 
     private async saveInTempStorage(newFile: Uint8Array): Promise<boolean> {

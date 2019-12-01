@@ -58,10 +58,10 @@ export abstract class ReaderDownload {
         } else if (!ding_wasm || !ding_reader) { //  else if (!ding_wasm && !ding_reader)
             //todo: check head --> if change --> delete & download again
             // debugger;
-            const current_ETag_reader = appLocalStorage.find_ETagById(
+            const current_ETag_reader = appLocalStorage.find_eTagById(
                 PartialDownload.get_bookFile_ETag_id(READER_FILE_NAME.READER2_BOOK_ID, true)
             );
-            const current_ETag_wasm = appLocalStorage.find_ETagById(
+            const current_ETag_wasm = appLocalStorage.find_eTagById(
                 PartialDownload.get_bookFile_ETag_id(READER_FILE_NAME.WASM_BOOK_ID, true)
             );
             // debugger;
@@ -100,7 +100,7 @@ export abstract class ReaderDownload {
                         progress: 0
                     });
                 }
-                if ((!current_ETag_wasm || res_wasm_etag !== current_ETag_wasm.eTag) && ding_wasm) {
+                if ((!current_ETag_wasm || res_wasm_etag !== current_ETag_wasm.eTag) && !ding_wasm) {
                     dbf.unshift({
                         fileId: READER_FILE_NAME.WASM_BOOK_ID,
                         collectionName: FILE_STORAGE_KEY.READER_ENGINE,
