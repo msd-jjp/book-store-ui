@@ -88,7 +88,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
         if (ding_wasm) return;
         await appLocalStorage.removeFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
         if (Store2.getState().reader_engine.status !== 'failed') {
-            Store2.dispatch(action_update_reader_engine({ status: 'failed' }));
+            Store2.dispatch(action_update_reader_engine({ ...Store2.getState().reader_engine, status: 'failed' }));
         }
         this.setState({ confirmNotify_css_js_show: false });
     }
@@ -105,7 +105,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
         if (ding_wasm) return;
         await appLocalStorage.removeFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
         if (Store2.getState().reader_engine.status !== 'failed') {
-            Store2.dispatch(action_update_reader_engine({ status: 'failed' }));
+            Store2.dispatch(action_update_reader_engine({ ...Store2.getState().reader_engine, status: 'failed' }));
         }
         this.setState({ confirmNotify_css_wasm_show: false });
     }

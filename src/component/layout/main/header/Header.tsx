@@ -75,13 +75,19 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
 
     readerEngineStatus() {
         // return this.props.reader_engine.status;
+        const className_color = this.props.reader_engine.status === 'failed' ? 'text-danger' :
+            this.props.reader_engine.status === 'initing' ? 'text-warning' :
+                this.props.reader_engine.status === 'inited' ? 'text-success' : '';
+
+        const downloading = this.props.reader_engine.reader_status === 'downloading' ||
+            this.props.reader_engine.wasm_status === 'downloading';
+
+        const className_icon = downloading ? 'fa-download' : 'fa-lock'
+
         return (
             <i className={
-                "fa fa-lock cursor-pointer ml-3 " +
-                (this.props.reader_engine.status === 'failed' ? 'text-danger' :
-                    this.props.reader_engine.status === 'initing' ? 'text-warning' :
-                        this.props.reader_engine.status === 'inited' ? 'text-success' : ''
-                )
+                "fa fa-lock-- cursor-pointer ml-3 " +
+                className_color + ' ' + className_icon
             }
             ></i>
         )
@@ -94,9 +100,7 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
                     <div className="row">
                         <div className="col-lg-4 offset-lg-4 col-md-8 offset-md-2">
 
-                            {/* <div className="row mb-2 mx-2 align-items-center header-inner"> */}
-                            <div className="row--- d-flex mb-2 mx-2-- align-items-center header-inner mx-3 mx-md-2 mx-lg-1">
-                                {/* <div className="col-10-- col-md-10-- col-md-8 col-sm-8 col-6"> */}
+                            <div className="d-flex mb-2 mx-2-- align-items-center header-inner mx-3 mx-md-2 mx-lg-1">
                                 <div className="mr-3 flex-grow-1">
                                     <div className="input-group">
                                         <div className="input-group-prepend">
@@ -114,34 +118,32 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
                                         />
                                     </div>
                                 </div>
-                                {/* <div className="col-2-- col-md-2-- col-md-4 col-sm-4 col-6"> */}
-                                <div className="">
-                                    <div className="bellcontainer d-flex">
-                                        {/* fa-bell-o */}
-                                        <i className={"fa fa-wifi bell  cursor-pointer " +
-                                            (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'text-danger' : '')
-                                        }
-                                            onClick={() => BaseService.check_network_status()}
-                                        ></i>
 
-                                        <i className="fa fa-shopping-cart bell ml-3 cursor-pointer"
-                                            title={Localization.shopping_cart}
-                                            onClick={() => this.gotoCart()}
-                                        ></i>
-                                        {
-                                            this.props.cart.length ?
-                                                <small className="font-weight-bold cursor-pointer"
-                                                    title={Localization.shopping_cart}
-                                                    onClick={() => this.gotoCart()}
-                                                >({this.props.cart.length})</small>
-                                                : ''
-                                        }
-                                        {
-                                            this.readerEngineStatus()
-                                        }
+                                {/* <div className=""> */}
+                                <div className="bellcontainer d-flex">
+                                    {/* fa-bell-o */}
+                                    <i className={"fa fa-wifi bell  cursor-pointer " +
+                                        (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'text-danger' : '')
+                                    }
+                                        onClick={() => BaseService.check_network_status()}
+                                    ></i>
 
-                                    </div>
+                                    <i className="fa fa-shopping-cart bell ml-3 cursor-pointer"
+                                        title={Localization.shopping_cart}
+                                        onClick={() => this.gotoCart()}
+                                    ></i>
+                                    {
+                                        this.props.cart.length ?
+                                            <small className="font-weight-bold cursor-pointer"
+                                                title={Localization.shopping_cart}
+                                                onClick={() => this.gotoCart()}
+                                            >({this.props.cart.length})</small>
+                                            : ''
+                                    }
+                                    {this.readerEngineStatus()}
+
                                 </div>
+                                {/* </div> */}
                             </div>
 
                         </div>

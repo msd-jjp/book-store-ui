@@ -37,7 +37,7 @@ export class WasmWorkerHandler {
     if (msg.data.abort === true) {
       debugger;
       this.worker.terminate();
-      Store2.dispatch(action_update_reader_engine({ status: 'failed' }));
+      Store2.dispatch(action_update_reader_engine({ ...Store2.getState().reader_engine, status: 'failed' }));
       // return;
       ReaderDownload.resetReaderWorkerHandler();
       // ReaderDownload.createWorkerAfterDownload();

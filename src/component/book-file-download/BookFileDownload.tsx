@@ -13,6 +13,7 @@ import {
 import { CmpUtility } from "../_base/CmpUtility";
 import { PartialDownload } from "./PartialDownload";
 import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
+import { ReaderDownload } from "../../webworker/reader-engine/reader-download/reader-download";
 
 interface IProps {
     internationalization: TInternationalization;
@@ -120,6 +121,8 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         const existing_list = dbf.filter(d => !(d.fileId === fileId && d.collectionName === collectionName));
         this.props.update_downloading_book_file!(existing_list);
         CmpUtility.refreshView();
+
+        ReaderDownload.checkReaderEngineStatus(fileId, collectionName);
     }
 
     private async downloadRequest(fileId: string, collectionName: FILE_STORAGE_KEY) {
