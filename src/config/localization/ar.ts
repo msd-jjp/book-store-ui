@@ -34,6 +34,7 @@ export const ar = {
             change_password_successful: 'رمز عبور با موفقیت بروز شد',
             downloading_reader_security_content: 'در حال بارگذاری سامانه امنیت محتوا، لطفا لحظاتی بعد مجددا تلاش کنید.',
             initing_reader_security_content: 'در حال آماده سازی سامانه امنیت محتوا، لطفا لحظاتی بعد مجددا تلاش کنید.',
+            reader_security_content_failed: 'سامانه امنیت محتوا با خطا مواجه شد. لطفا برنامه را مجددا بارگیری نمائید',
             clear_general_content: 'فایل های ذخیره شده مانند: html، عکس های پیشفرض و js پاک خواهد شد.'
         },
         back: {

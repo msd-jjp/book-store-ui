@@ -4,7 +4,7 @@ import { Localization } from "../../../../config/localization/localization";
 import { redux_state } from "../../../../redux/app_state";
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { TInternationalization, Setup } from "../../../../config/setup";
+import { TInternationalization } from "../../../../config/setup";
 import { IUser } from "../../../../model/model.user";
 import { BaseComponent } from "../../../_base/BaseComponent";
 import { CmpUtility } from "../../../_base/CmpUtility";
@@ -64,9 +64,7 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
 
     before_gotoReader(book: IBook) {
         if (Store2.getState().reader_engine.status !== 'inited') {
-            const reader_engine_downloading = Store2.getState().reader_engine.reader_status === 'downloading' ||
-                Store2.getState().reader_engine.wasm_status === 'downloading';
-            this.readerEngineNotify(reader_engine_downloading);
+            this.readerEngineNotify();
             return;
         }
 
@@ -82,13 +80,6 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
         } else {
             this.props.history.push(`/reader/${book_id}/reading`);
         }
-    }
-
-    readerEngineNotify(downloading: boolean): void {
-        let msg = Localization.msg.ui.initing_reader_security_content;
-        if (downloading) msg = Localization.msg.ui.downloading_reader_security_content;
-        this.toastNotify(msg,
-            { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
     }
 
     render() {

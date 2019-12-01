@@ -207,23 +207,12 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }, 300);
   }
 
-  readerEngineNotify(downloading: boolean): void {
-    let msg = Localization.msg.ui.initing_reader_security_content;
-    if (downloading) msg = Localization.msg.ui.downloading_reader_security_content;
-    this.goBack();
-    setTimeout(() => {
-      this.toastNotify(msg,
-        { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
-    }, 300);
-  }
-
   private async generateReader() {
     await CmpUtility.waitOnMe(0);
 
     if (this.props.reader_engine.status !== 'inited') {
-      const reader_engine_downloading = this.props.reader_engine.reader_status === 'downloading' ||
-        this.props.reader_engine.wasm_status === 'downloading';
-      this.readerEngineNotify(reader_engine_downloading);
+      this.goBack();
+      setTimeout(() => { this.readerEngineNotify(); }, 300);
       return;
     }
 

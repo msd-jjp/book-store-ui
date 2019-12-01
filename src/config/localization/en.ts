@@ -34,6 +34,7 @@ export const en = {
             change_password_successful: 'password successfully changed',
             downloading_reader_security_content: 'downloading security content, please try later',
             initing_reader_security_content: 'initing security content, please try later',
+            reader_security_content_failed: 'security content failed, please reload app',
             clear_general_content: 'cached files like: html, default images, js will be removed.'
         },
         back: {

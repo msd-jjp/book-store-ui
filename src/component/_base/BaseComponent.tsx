@@ -10,6 +10,7 @@ import 'moment/locale/ar';
 import { Utility } from '../../asset/script/utility';
 import { IPerson } from '../../model/model.person';
 import { CmpUtility } from './CmpUtility';
+import { Store2 } from '../../redux/store';
 
 interface IHandleError {
     error?: any;
@@ -236,5 +237,20 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         return (name + last_name).trim();
     }
 
+    readerEngineNotify(): void {
+        const downloading = Store2.getState().reader_engine.reader_status === 'downloading' ||
+            Store2.getState().reader_engine.wasm_status === 'downloading';
+        const failed = Store2.getState().reader_engine.status === 'failed';
+
+        let msg = Localization.msg.ui.initing_reader_security_content;
+        let color: "info" | "error" = 'info';
+
+        if (failed) {
+            msg = Localization.msg.ui.reader_security_content_failed;
+            color = 'error';
+        } else if (downloading) { msg = Localization.msg.ui.downloading_reader_security_content; }
+
+        this.toastNotify(msg, { autoClose: Setup.notify.timeout[color], toastId: 'readerEngineNotify_info' }, color);
+    }
 
 }

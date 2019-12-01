@@ -3,7 +3,7 @@ import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../redux/app_state';
 import { IUser } from '../../model/model.user';
-import { TInternationalization, Setup } from '../../config/setup';
+import { TInternationalization } from '../../config/setup';
 import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
 import { CollectionService } from '../../service/service.collection';
@@ -385,9 +385,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             }
 
             if (Store2.getState().reader_engine.status !== 'inited') {
-                const reader_engine_downloading = Store2.getState().reader_engine.reader_status === 'downloading' ||
-                    Store2.getState().reader_engine.wasm_status === 'downloading';
-                this.readerEngineNotify(reader_engine_downloading);
+                this.readerEngineNotify();
                 return;
             }
 
@@ -451,12 +449,6 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    readerEngineNotify(downloading: boolean): void {
-        let msg = Localization.msg.ui.initing_reader_security_content;
-        if (downloading) msg = Localization.msg.ui.downloading_reader_security_content;
-        this.toastNotify(msg,
-            { autoClose: Setup.notify.timeout.info, toastId: 'readerEngineNotify_info' }, 'info');
-    }
     //#endregion
 
     view_collection_render() {

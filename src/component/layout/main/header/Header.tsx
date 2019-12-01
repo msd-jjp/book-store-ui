@@ -82,7 +82,7 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
         const downloading = this.props.reader_engine.reader_status === 'downloading' ||
             this.props.reader_engine.wasm_status === 'downloading';
 
-        const className_icon = downloading ? 'fa-download' : 'fa-lock'
+        const className_icon = downloading ? 'fa-download' : 'fa-shield'
 
         return (
             <i className={
