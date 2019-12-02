@@ -8,7 +8,7 @@ import { IDownloadingBookFile_schema } from "../../redux/action/downloading-book
 import { ReaderEngineService } from "../../service/service.reader-engine";
 import { READER_FILE_NAME } from "../../webworker/reader-engine/reader-download/reader-download";
 import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
-import { getBookId_from_fileId } from "../library/libraryViewTemplate";
+// import { getBookId_from_fileId } from "../library/libraryViewTemplate";
 
 
 export class PartialDownload {
@@ -188,7 +188,8 @@ export class PartialDownload {
             } else if (this.fileId === READER_FILE_NAME.READER2_BOOK_ID) {
                 req = this._readerEngineService.file_detail(READER_FILE_NAME.READER2_BOOK_ID);
             } else {
-                req = this._bookService.bookFile_detail(getBookId_from_fileId(this.fileId), this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
+                // req = this._bookService.bookFile_detail(getBookId_from_fileId(this.fileId), this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
+                req = this._bookService.bookFile_detail(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
             }
 
             let res = await req.catch(e => {
@@ -223,7 +224,8 @@ export class PartialDownload {
             } else if (this.fileId === READER_FILE_NAME.READER2_BOOK_ID) {
                 req = this._readerEngineService.file_partial(READER_FILE_NAME.READER2_BOOK_ID, this.currentRange!, this.cancelTokenSource.token);
             } else {
-                req = this._bookService.bookFile_partial(getBookId_from_fileId(this.fileId), this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.currentRange!, this.cancelTokenSource.token);
+                // req = this._bookService.bookFile_partial(getBookId_from_fileId(this.fileId), this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.currentRange!, this.cancelTokenSource.token);
+                req = this._bookService.bookFile_partial(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.currentRange!, this.cancelTokenSource.token);
             }
 
             let res = await req.catch(e => {

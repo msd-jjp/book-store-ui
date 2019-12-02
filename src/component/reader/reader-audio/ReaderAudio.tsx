@@ -16,7 +16,7 @@ import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { Dropdown } from "react-bootstrap";
 import RcSlider from 'rc-slider';
 import { ILibrary } from "../../../model/model.library";
-import { getLibraryItem, getBookFileId } from "../../library/libraryViewTemplate";
+import { getLibraryItem/* , getBookFileId */ } from "../../library/libraryViewTemplate";
 import { CmpUtility } from "../../_base/CmpUtility";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { AudioBookGenerator } from "../../../webworker/reader-engine/AudioBookGenerator";
@@ -24,6 +24,7 @@ import { ReaderUtility } from "../ReaderUtility";
 import { IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
+import { Utility } from "../../../asset/script/utility";
 // import { BookService } from "../../../service/service.book";
 //
 // import * as WaveSurferAll from 'wavesurfer.js';
@@ -239,7 +240,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private async createBook() {
         this.setState({ loading: true });
         // const bookFile = await appLocalStorage.findBookMainFileById(this.book_id); // find book chapter
-        const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
+        // const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
+        const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.book_id);
 
         // _DELETE_ME
         /* const _bookService = new BookService();
@@ -616,6 +618,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         if (fromTimeInAtom < atomActualDuration) {
             console.log('***getLoadedVoiceAtom10Second:', fromTimeInAtom, atomActualDuration, atomFromTo);
             try {
+                // await Utility.waitOnMe(1000);
                 atom_10_sec = await this._bookInstance.getLoadedVoiceAtom10Second(fromTimeInAtom);
             } catch (e) {
                 this.readerError_notify();

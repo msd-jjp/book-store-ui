@@ -15,7 +15,7 @@ import { Store2 } from "../../../redux/store";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { CmpUtility } from "../../_base/CmpUtility";
 import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
-import { getLibraryItem, updateLibraryItem_progress, getBookFileId } from "../../library/libraryViewTemplate";
+import { getLibraryItem, updateLibraryItem_progress/* , getBookFileId */ } from "../../library/libraryViewTemplate";
 import { ILibrary } from "../../../model/model.library";
 import { Localization } from "../../../config/localization/localization";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
@@ -134,7 +134,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   //   this._readerWorker = new ReaderWorker();
   //   if (!this._readerWorker) return;
 
-  
+
   //   this._readerWorker.postMessage({
   //     book_active_page: this.book_active_page
   //   });
@@ -166,7 +166,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   private _bookInstance!: BookGenerator | PdfBookGenerator;
   private async createBook() {
     // const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
-    const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
+    // const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
+    const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.book_id);
     if (!bookFile) {
       this.setState({ page_loading: false });
       this.bookFileNotFound_notify();

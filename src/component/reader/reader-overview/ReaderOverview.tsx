@@ -28,7 +28,7 @@ import { action_update_reader } from "../../../redux/action/reader";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { BaseService } from "../../../service/service.base";
 import { ILibrary } from "../../../model/model.library";
-import { getLibraryItem, updateLibraryItem_progress, getBookFileId } from "../../library/libraryViewTemplate";
+import { getLibraryItem, updateLibraryItem_progress/* , getBookFileId */ } from "../../library/libraryViewTemplate";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 import { Store2 } from "../../../redux/store";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
@@ -225,7 +225,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   private _bookInstance!: BookGenerator | PdfBookGenerator;
   private async createBook() {
     // const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
-    const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
+    // const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
+    const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.book_id);
     if (!bookFile) {
       this.setState({ page_loading: false });
       this.bookFileNotFound_notify();

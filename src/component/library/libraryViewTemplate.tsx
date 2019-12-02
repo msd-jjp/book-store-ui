@@ -1,5 +1,5 @@
 import { ILibrary } from "../../model/model.library";
-import { /* BOOK_TYPES, */ BOOK_ROLES } from "../../enum/Book";
+import { BOOK_ROLES } from "../../enum/Book";
 import React from 'react';
 import { CmpUtility } from "../_base/CmpUtility";
 import { Localization } from "../../config/localization/localization";
@@ -44,9 +44,8 @@ export function is_file_downloaded(collectionName: FILE_STORAGE_KEY, fileId: str
 }
 
 export function is_book_downloaded(book_id: string, mainFile: boolean): boolean {
-    // return appLocalStorage.checkBookFileExist(book_id, mainFile);
-    // return appLocalStorage.checkFileExist(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
-    return is_file_downloaded(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
+    // return is_file_downloaded(getBookFileCollectionName(mainFile), getBookFileId(book_id, mainFile));
+    return is_file_downloaded(getBookFileCollectionName(mainFile), book_id);
 }
 
 export async function is_file_downloaded_async(collectionName: FILE_STORAGE_KEY, fileId: string): Promise<boolean> {
@@ -54,9 +53,8 @@ export async function is_file_downloaded_async(collectionName: FILE_STORAGE_KEY,
 }
 
 export async function is_book_downloaded_async(book_id: string, mainFile: boolean): Promise<boolean> {
-    // return await appLocalStorage.checkBookFileExist_async(book_id, mainFile);
-    // return await appLocalStorage.checkFileExist_async(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
-    return await is_file_downloaded_async(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
+    // return await is_file_downloaded_async(getBookFileCollectionName(mainFile), getBookFileId(book_id, mainFile));
+    return await is_file_downloaded_async(getBookFileCollectionName(mainFile), book_id);
 }
 
 export function is_file_downloading(collectionName: FILE_STORAGE_KEY, fileId: string): boolean {
@@ -66,36 +64,36 @@ export function is_file_downloading(collectionName: FILE_STORAGE_KEY, fileId: st
 }
 
 export function is_book_downloading(book_id: string, mainFile: boolean): boolean {
-    return is_file_downloading(getBookFileCollectionName(book_id, mainFile), getBookFileId(book_id, mainFile));
-    // const dbf = Store2.getState().downloading_book_file;
-    // const d = dbf.find(d => d.fileId === getBookFileId(book_id, mainFile) && d.collectionName === getBookFileCollectionName(book_id, mainFile));
-    // return !!d;
+    // return is_file_downloading(getBookFileCollectionName(mainFile), getBookFileId(book_id, mainFile));
+    return is_file_downloading(getBookFileCollectionName(mainFile), book_id);
 }
 
-export function getBookFileId(book_id: string, mainFile: boolean): string {
+/* export function getBookFileId(book_id: string, mainFile: boolean): string {
     return (mainFile ? 'main_' : 'sample_') + book_id;
-}
+} */
 
-export function getBookId_from_fileId(fileId: string): string {
+/* export function getBookId_from_fileId(fileId: string): string {
     if (fileId.includes('main_')) {
         return fileId.replace('main_', '');
     }
     return fileId.replace('sample_', '');
-}
+} */
 
-export function getBookFileCollectionName(book_id: string, mainFile: boolean): FILE_STORAGE_KEY.FILE_BOOK_MAIN | FILE_STORAGE_KEY.FILE_BOOK_SAMPLE {
+export function getBookFileCollectionName(mainFile: boolean): FILE_STORAGE_KEY.FILE_BOOK_MAIN | FILE_STORAGE_KEY.FILE_BOOK_SAMPLE {
     return mainFile ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE;
 }
 
 export function book_downloading_progress(book_id: string, mainFile: boolean): number {
     const dbf = Store2.getState().downloading_book_file;
-    const d = dbf.find(d => d.fileId === getBookFileId(book_id, mainFile) && d.collectionName === getBookFileCollectionName(book_id, mainFile));
+    // const d = dbf.find(d => d.fileId === getBookFileId(book_id, mainFile) && d.collectionName === getBookFileCollectionName(mainFile));
+    const d = dbf.find(d => d.fileId === book_id && d.collectionName === getBookFileCollectionName(mainFile));
     return d ? d.progress : 0;
 }
 
 export function book_download_size(book_id: string, mainFile: boolean): number | undefined {
     const dbf = Store2.getState().downloading_book_file;
-    const d = dbf.find(d => d.fileId === getBookFileId(book_id, mainFile) && d.collectionName === getBookFileCollectionName(book_id, mainFile));
+    // const d = dbf.find(d => d.fileId === getBookFileId(book_id, mainFile) && d.collectionName === getBookFileCollectionName(mainFile));
+    const d = dbf.find(d => d.fileId === book_id && d.collectionName === getBookFileCollectionName(mainFile));
     return d ? d.size : undefined;
 }
 
@@ -116,16 +114,12 @@ export function libBook_download_size(item: ILibrary): number | undefined {
 }
 
 export function isReaderEngineDownloading(): boolean {
-    // const ding_wasm = is_book_downloading(READER_FILE_NAME.WASM_BOOK_ID, true);
-    // const ding_reader = is_book_downloading(READER_FILE_NAME.READER2_BOOK_ID, true);
     const ding_wasm = is_file_downloading(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
     const ding_reader = is_file_downloading(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
     return ding_wasm || ding_reader;
 }
 
 export async function isReaderEngineDownloaded_async(): Promise<boolean> {
-    // const ded_wasm = await is_book_downloaded_async(READER_FILE_NAME.WASM_BOOK_ID, true);
-    // const ded_reader = await is_book_downloaded_async(READER_FILE_NAME.READER2_BOOK_ID, true);
     const ded_wasm = await is_file_downloaded_async(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
     const ded_reader = await is_file_downloaded_async(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
     return ded_wasm && ded_reader;
@@ -136,18 +130,21 @@ export function toggle_book_download(book_id: string, mainFile: boolean): void {
     let dbf = [...Store2.getState().downloading_book_file];
 
     if (isDownloading) {
-        const new_dbf = dbf.filter(d => !(d.fileId === getBookFileId(book_id, mainFile) && d.collectionName === getBookFileCollectionName(book_id, mainFile)));
+        // const new_dbf = dbf.filter(d => !(d.fileId === getBookFileId(book_id, mainFile) && d.collectionName === getBookFileCollectionName(mainFile)));
+        const new_dbf = dbf.filter(d => !(d.fileId === book_id && d.collectionName === getBookFileCollectionName(mainFile)));
         new_dbf.push({
-            fileId: getBookFileId(book_id, mainFile),
-            collectionName: getBookFileCollectionName(book_id, mainFile),
+            // fileId: getBookFileId(book_id, mainFile),
+            fileId: book_id,
+            collectionName: getBookFileCollectionName(mainFile),
             status: 'stop',
             progress: 0
         });
         dbf = new_dbf;
     } else {
         dbf.push({
-            fileId: getBookFileId(book_id, mainFile),
-            collectionName: getBookFileCollectionName(book_id, mainFile),
+            // fileId: getBookFileId(book_id, mainFile),
+            fileId: book_id,
+            collectionName: getBookFileCollectionName(mainFile),
             status: 'start',
             progress: 0
         });
@@ -176,10 +173,9 @@ export function collection_download(title: string) {
     let dbf = [...Store2.getState().downloading_book_file];
     book_not_down_list.forEach(id => {
         dbf.push({
-            // book_id: id,
-            // mainFile: true,
-            fileId: getBookFileId(id, true),
-            collectionName: getBookFileCollectionName(id, true),
+            // fileId: getBookFileId(id, true),
+            fileId: id,
+            collectionName: getBookFileCollectionName(true),
             status: 'start',
             progress: 0
         });
@@ -194,7 +190,6 @@ export function libraryItem_viewList_render(
     isItemSelected: (item: ILibrary) => any
 ): JSX.Element {
     const book_img = CmpUtility.getBook_firstImg(item.book);
-    // const writerName = CmpUtility.getBook_firstWriterFullName(item.book);
     const writerName = CmpUtility.getBook_role_fisrt_fullName(item.book, BOOK_ROLES.Writer);
     const read_percent = calc_read_percent(item);
     const is_downloaded = is_libBook_downloaded(item);
