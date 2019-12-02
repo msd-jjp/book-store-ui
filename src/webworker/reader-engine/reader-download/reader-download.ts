@@ -50,7 +50,6 @@ export abstract class ReaderDownload {
             }
 
             Store2.dispatch(action_update_downloading_book_file(dbf));
-            // Store2.dispatch(action_update_reader_engine({ ...Store2.getState().reader_engine, downloadStatus: 'downloading' }));
             Store2.dispatch(action_update_reader_engine(re));
 
         } else if (!ding_wasm || !ding_reader) { //  else if (!ding_wasm && !ding_reader)
@@ -59,16 +58,10 @@ export abstract class ReaderDownload {
             // debugger;
 
             const res_reader = await ReaderDownload._readerEngineService
-                .file_detail(READER_FILE_NAME.READER2_BOOK_ID).catch(e => {
-                    // debugger;
-                    //todo: try again.
-                });
+                .file_detail(READER_FILE_NAME.READER2_BOOK_ID).catch(e => { });
 
             const res_wasm = await ReaderDownload._readerEngineService
-                .file_detail(READER_FILE_NAME.WASM_BOOK_ID).catch(e => {
-                    // debugger;
-                    //todo: try again.
-                });
+                .file_detail(READER_FILE_NAME.WASM_BOOK_ID).catch(e => { });
 
             // debugger;
             let res_reader_etag: string = '';
@@ -78,16 +71,14 @@ export abstract class ReaderDownload {
             // debugger;
 
             if (
-                // (!current_ETag_wasm || res_wasm_etag !== current_ETag_wasm.eTag) ||
-                // (!current_ETag_reader || res_reader_etag !== current_ETag_reader.eTag)
-                ((!current_ETag_reader || res_reader_etag !== current_ETag_reader.eTag) && !ding_reader) ||
-                ((!current_ETag_wasm || res_wasm_etag !== current_ETag_wasm.eTag) && !ding_wasm)
+                ((!current_ETag_reader || res_reader_etag !== current_ETag_reader.eTag) && res_reader_etag !== '' && !ding_reader) ||
+                ((!current_ETag_wasm || res_wasm_etag !== current_ETag_wasm.eTag) && res_wasm_etag !== '' && !ding_wasm)
             ) {
                 const dbf = [...Store2.getState().downloading_book_file];
                 //todo: remove current donloading & insert after these files.
 
                 const re = { ...Store2.getState().reader_engine };
-                if ((!current_ETag_reader || res_reader_etag !== current_ETag_reader.eTag) && !ding_reader) {
+                if ((!current_ETag_reader || res_reader_etag !== current_ETag_reader.eTag) && res_reader_etag !== '' && !ding_reader) {
                     re.reader_status = 'downloading';
                     dbf.unshift({
                         fileId: READER_FILE_NAME.READER2_BOOK_ID,
@@ -96,7 +87,7 @@ export abstract class ReaderDownload {
                         progress: 0
                     });
                 }
-                if ((!current_ETag_wasm || res_wasm_etag !== current_ETag_wasm.eTag) && !ding_wasm) {
+                if ((!current_ETag_wasm || res_wasm_etag !== current_ETag_wasm.eTag) && res_wasm_etag !== '' && !ding_wasm) {
                     re.wasm_status = 'downloading';
                     dbf.unshift({
                         fileId: READER_FILE_NAME.WASM_BOOK_ID,
@@ -221,14 +212,9 @@ export abstract class ReaderDownload {
 
     static checkReaderEngineStatus(fileId: string, collectionName: FILE_STORAGE_KEY) {
         if (fileId === READER_FILE_NAME.READER2_BOOK_ID && collectionName === FILE_STORAGE_KEY.READER_ENGINE) {
-            // const re = { ...Store2.getState().reader_engine, reader_status: 'idle' };
-            // if (re.is_wasm_downloaded === true) re.downloadStatus = 'idle';
             Store2.dispatch(action_update_reader_engine({ ...Store2.getState().reader_engine, reader_status: 'idle' }));
 
         } else if (fileId === READER_FILE_NAME.WASM_BOOK_ID && collectionName === FILE_STORAGE_KEY.READER_ENGINE) {
-            // const re = { ...Store2.getState().reader_engine, is_wasm_downloaded: true };
-            // if (re.is_reader_downloaded === true) re.downloadStatus = 'idle';
-            // Store2.dispatch(action_update_reader_engine(re));
             Store2.dispatch(action_update_reader_engine({ ...Store2.getState().reader_engine, wasm_status: 'idle' }));
         }
     }
