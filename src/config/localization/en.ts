@@ -397,4 +397,5 @@ export const en = {
     confirm: 'confirm',
     javscript_file: 'javscript file',
     webassembly_file: 'webassembly file',
+    clear: 'clear',
 }

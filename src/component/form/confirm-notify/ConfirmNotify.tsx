@@ -19,6 +19,7 @@ interface IProps {
     msgFunc?: () => any;
     btnLoader?: boolean;
     confirmBtn_className?: string;
+    confirmBtn_text?: string | (() => JSX.Element);
 }
 
 interface IState {
@@ -53,7 +54,13 @@ class ConfirmNotifyComponent extends BaseComponent<IProps, IState> {
                             loading={this.props.btnLoader!}
                             onClick={() => this.props.onConfirm()}
                         >
-                            {Localization.confirm}
+                            {
+                                this.props.confirmBtn_text ?
+                                    (typeof this.props.confirmBtn_text === 'string' ?
+                                        this.props.confirmBtn_text : this.props.confirmBtn_text())
+                                    :
+                                    Localization.confirm
+                            }
                         </BtnLoader>
                     </Modal.Footer>
                 </Modal>

@@ -396,4 +396,5 @@ export const ar = {
     confirm: 'تایید',
     javscript_file: 'فایل جاوااسکریپت',
     webassembly_file: 'فایل وب اسمبلی',
+    clear: 'پاک کن',
 }

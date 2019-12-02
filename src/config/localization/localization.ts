@@ -384,6 +384,7 @@ interface ILocalization extends LocalizedStringsMethods {
     confirm: string;
     javscript_file: string;
     webassembly_file: string;
+    clear: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

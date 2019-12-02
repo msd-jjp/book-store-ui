@@ -192,6 +192,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
                     onConfirm={() => this.confirmNotify_onConfirm_gc()}
                     msg={Localization.msg.ui.clear_general_content}
                     confirmBtn_className='text-warning'
+                    confirmBtn_text={Localization.clear}
                 />
 
                 <ConfirmNotify
@@ -208,6 +209,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
                     onConfirm={() => this.confirmNotify_onConfirm_css_js()}
                     msg={Localization.clear_content_security_system + ": " + Localization.javscript_file}
                     confirmBtn_className='text-warning'
+                    confirmBtn_text={Localization.clear}
                 />
 
                 <ConfirmNotify
@@ -216,6 +218,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
                     onConfirm={() => this.confirmNotify_onConfirm_css_wasm()}
                     msg={Localization.clear_content_security_system + ": " + Localization.webassembly_file}
                     confirmBtn_className='text-warning'
+                    confirmBtn_text={Localization.clear}
                 />
 
                 <ToastContainer {...this.getNotifyContainerConfig()} />
