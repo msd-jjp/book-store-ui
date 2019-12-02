@@ -385,29 +385,24 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.updateTimer(bookReadedTime);
     }
 
-    // todo: remove sampleRate.
-    private _audioContextObj: { audioContext: AudioContext | undefined, sampleRate: number | undefined } | undefined;
-    private getAudioContext(sampleRate?: number): AudioContext {
-        if (this._audioContextObj && (sampleRate ? this._audioContextObj.sampleRate === sampleRate : true)) {
-            return this._audioContextObj!.audioContext!;
-        }
-        let audioCtx: AudioContext = new ((window as any).AudioContext || (window as any).webkitAudioContext)(
-            // { sampleRate: sampleRate }
-        );
+    private _audioContext: AudioContext | undefined;
+    private getAudioContext(): AudioContext {
+        if (this._audioContext) return this._audioContext;
+        const audioCtx: AudioContext = new ((window as any).AudioContext || (window as any).webkitAudioContext)();
         audioCtx.suspend();
-        this._audioContextObj = { audioContext: audioCtx, sampleRate };
-        return this._audioContextObj!.audioContext!;
+        this._audioContext = audioCtx;
+        return this._audioContext;
     }
     private destroyAudioContext() {
-        if (this._audioContextObj && this._audioContextObj.audioContext) {
-            this._audioContextObj.audioContext.close();
+        if (this._audioContext) {
+            this._audioContext.close();
         }
-        this._audioContextObj = undefined;
+        this._audioContext = undefined;
         this._gainNode = undefined;
     }
 
     private getaudioBuffer(sampleRate: number, channel: number, sourceList: Float32Array[]): AudioBuffer {
-        const ax = this.getAudioContext(sampleRate);
+        const ax = this.getAudioContext();
 
         if (!sampleRate || !channel || !sourceList || !sourceList[0] || !sourceList[0].length) { debugger; }
 
@@ -428,9 +423,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
 
     private _gainNode: GainNode | undefined;
-    private getGainNode(sampleRate?: number): GainNode {
+    private getGainNode(): GainNode {
         if (this._gainNode) return this._gainNode;
-        const ax = this.getAudioContext(sampleRate);
+        const ax = this.getAudioContext();
         this._gainNode = ax.createGain();
         this._gainNode.connect(ax.destination);
         return this._gainNode;
@@ -534,9 +529,6 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         const loadMoreTimer = 6;
 
         if (seek) {
-            // this.destroy_srcObj(true);
-            // this.destroy_srcObj(false);
-            // this._audioCtx_currentTime_next = undefined;
             this.reset_srcObj();
         }
 
@@ -652,7 +644,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             );
             newSource.timing.to = newSource.timing.from + voiceTime;
 
-            const audioCtx = this.getAudioContext(sampleRate);
+            const audioCtx = this.getAudioContext();
             const source = audioCtx.createBufferSource();
             source.buffer = this.getaudioBuffer(sampleRate, channels, atom_10_sec!);
             // source.connect(audioCtx.destination);
