@@ -440,8 +440,46 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
 
     private async processCurrentTime(currentTime: number, seek: boolean): Promise<void> {
+        // this.runAtom3();
+        // return;
         try { this.bindGeneratedAudio(currentTime, seek, 0); } catch (e) { console.error('bindGeneratedAudio(curren...', e); }
     }
+
+
+
+    private runnig = false;
+    private async runAtom3() {
+        if (this.runnig) return;
+        this.runnig = true;
+
+        console.log('runAtom');
+        await this._bookInstance.loadVoiceAtom({ group: 0, atom: 2 });
+
+        for (let i = 0; i < 60;) { // 200 -- 247560
+            console.log(i);
+            try {
+                const voice = await this._bookInstance.getLoadedVoiceAtom10Second(i * 1000);
+
+                const sampleRate = await this.getSampleRate();
+                const channels = await this.getChannels();
+
+                const audioCtx = this.getAudioContext();
+                const source = audioCtx.createBufferSource();
+                source.buffer = this.getaudioBuffer(sampleRate, channels, voice);
+                const gainNode = this.getGainNode();
+                source.connect(gainNode);
+
+                source.start(i);
+
+                console.log('voice[0].length / sampleRate', voice[0].length / sampleRate);
+
+                i += 10;
+            } catch (e) { console.log(e); break; }
+        }
+    }
+
+
+
 
     private _b_progress_to: number | undefined;
     private _b_inProgress: boolean = false;
@@ -453,16 +491,20 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
      * @param from number in second
      */
     private async bindGeneratedAudio(from: number, seek: boolean, delay: number) {
-        // debugger;
+
+        const audioCtx_time = this.getAudioContext().currentTime;
+        const wasPlaying = this.state.isPlaying;
+
         console.log(`
         start bindGeneratedAudio: from ${from}
         , seek: ${seek}'
         , delay: ${delay}
         , _b_inProgress: ${this._b_inProgress}
         , _b_progress_to: ${this._b_progress_to}
+        , wasPlaying: ${wasPlaying}
         `);
 
-        const audioCtx_time = this.getAudioContext().currentTime;
+
 
         if (seek) {
             this._b_reset_binding();
@@ -486,10 +528,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             }
         }
 
-        const wasPlaying = this.state.isPlaying;
+
 
         if ((!this._b_progress_to || from >= this._b_progress_to) && delay === 0 && wasPlaying) {
-            console.error(`puase REQ** from : ${from} >= this._b_progress_to: ${this._b_progress_to}`);
+            console.log(`puase REQ** from : ${from} >= this._b_progress_to: ${this._b_progress_to}`);
             // if (wasPlaying) { this.pause(); }
             this.pause();
         }
@@ -497,7 +539,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
         this._b_inProgress = true;
 
-        await Utility.waitOnMe(1000);
+        // await Utility.waitOnMe(1000);
 
         let voice;
         try { voice = await this.getAudioDataByTime(from); } catch (e) {
@@ -520,43 +562,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
         }
 
-
-
         const voiceTime = await this.connectSource(from, voice, audioCtx_time, delay);
-
-
-
-
-        /* const sampleRate = await this.getSampleRate();
-        const channels = await this.getChannels();
-
-        const voiceTime = voice[0].length / sampleRate;
-
-        const audioCtx = this.getAudioContext();
-        const source = audioCtx.createBufferSource();
-        source.buffer = this.getaudioBuffer(sampleRate, channels, voice);
-        const gainNode = this.getGainNode();
-        source.connect(gainNode);
-        const startTime = this._b_audioCtx_time_next ? this._b_audioCtx_time_next : audioCtx_time + delay;
-        source.start(startTime);
-        // safari bug: start automaticly on cmpDidMount.
-        if (!wasPlaying) {
-            try {
-                if (audioCtx.state === 'running') this.pause();
-            } catch (e) {
-                this.pause();
-            }
-        }
-        this._b_audioCtx_time_next = startTime + voiceTime;
-        this._b_progress_to = from + voiceTime;
-
-        this._b_audioSourceList.push(source); */
-
-
-
-
-
-
+        console.warn('voiceTime', voiceTime);
 
         this._b_inProgress = false;
 
@@ -566,6 +573,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         , delay: ${delay}
         , _b_inProgress: ${this._b_inProgress}
         , _b_progress_to: ${this._b_progress_to}
+        , wasPlaying: ${wasPlaying}
+        , state.isPlaying: ${this.state.isPlaying}
         `);
 
         if (wasPlaying && this.state.isPlaying === false) {
@@ -598,11 +607,13 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
      */
     private async getAudioDataByTime(from: number): Promise<Float32Array[] | undefined> {
         const atomDetail = await this._bookInstance.getAtomDetailByTime(from * 1000);
+
         if (!atomDetail) {
             return;
         }
         if (this._b_loaded_atom !== atomDetail.atom) {
             this._b_loaded_atom = atomDetail.atom;
+            console.warn('atomDetail', atomDetail);
             await this._bookInstance.loadVoiceAtom(atomDetail.atom);
         }
         let from_atom = Math.ceil(from * 1000 - atomDetail.fromTo.from);
@@ -611,6 +622,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             from_atom = 0;
         }
         const atomActualDuration = await this._bookInstance.getLoadedVoiceAtomDuration();
+        console.warn('atomActualDuration', atomActualDuration);
+
         let voice: Float32Array[] | undefined;
         if (from_atom < atomActualDuration) {
             voice = await this._bookInstance.getLoadedVoiceAtom10Second(from_atom);
@@ -622,6 +635,35 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                 await this._bookInstance.loadVoiceAtom(atomDetail2.atom);
                 voice = await this._bookInstance.getLoadedVoiceAtom10Second(0);
             }
+        }
+        else {
+            /* if (atomActualDuration - from_atom < 11000 && atomActualDuration - from_atom > 10000) {
+                const voiceTime = await this.getVoiceTime(voice);
+                console.error('atomActualDuration,from_atom, voiceTime: ', atomActualDuration, from_atom, voiceTime);
+                if (voiceTime === 10) {
+                    console.log('voice', voice);
+                    for (let i = 0; i < voice.length; i++) {
+                        voice[i] = voice[i].slice(0, Math.floor(voice[0].length / 2));
+                    }
+                }
+            } */
+            /* const voiceTime = await this.getVoiceTime(voice);
+            if (voiceTime <= this._b_timeToBindNext) {
+                const atomDetail2 = await this._bookInstance.getAtomDetailByIndex(atomDetail.index + 1);
+                if (atomDetail2) {
+                    this._b_loaded_atom = atomDetail2.atom;
+                    await this._bookInstance.loadVoiceAtom(atomDetail2.atom);
+                    const newVoice = await this._bookInstance.getLoadedVoiceAtom10Second(0);
+                    if (newVoice && newVoice.length) {
+                        // voice = new Float32Array([...voice, ...newVoice] as any) as any;
+                        // const dfvdg = new Float32Array([1,5]);
+
+                        for (let i = 0; i < voice!.length; i++) {
+                            voice[i] = Utility.float32Concat(voice[i], newVoice[i]);
+                        }
+                    }
+                }
+            } */
         }
         return voice;
     }
@@ -638,7 +680,12 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this._b_progress_to = undefined;
     }
 
-    private async connectSource(from: number, voice: Float32Array[], audioCtx_time: number, delay: number): Promise<number> {
+    private async getVoiceTime(voice: Float32Array[]): Promise<number> {
+        const sampleRate = await this.getSampleRate();
+        const voiceTime = voice[0].length / sampleRate;
+        return voiceTime;
+    }
+    private async connectSource(from: number, voice: Float32Array[], audioCtx_time: number, delay: number): Promise<number> { // number,void
         const sampleRate = await this.getSampleRate();
         const channels = await this.getChannels();
 
