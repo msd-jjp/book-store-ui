@@ -325,3 +325,24 @@ Done --> check if has any sideEffect
 reader --> pdf: font, color,.. disable & enable zoom.
 
 ====================================================================================
+afzudan list download dar setting
+    har kodum ro khast cancel kone. (hata reader2js & wasm)
+
+====================================================================================
+
+1)
+ایجاد آی دی برای دستگاه
+security:
+    api create_device_id --> { id, string }
+
+
+2)
+دانلود کتاب
+download --> 404 --> prepare -->204 --> prepare -->200 --> download
+
+3)
+indexedDb
+store page (pdf, msdFormat)
+download performance
+
+====================================================================================

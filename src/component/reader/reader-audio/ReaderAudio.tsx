@@ -24,7 +24,7 @@ import { ReaderUtility } from "../ReaderUtility";
 import { IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
-import { Utility } from "../../../asset/script/utility";
+// import { Utility } from "../../../asset/script/utility";
 // import { BookService } from "../../../service/service.book";
 //
 // import * as WaveSurferAll from 'wavesurfer.js';
@@ -383,7 +383,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // this.getGainNode();
 
         //todo: book progreess position;
-        let bookReadedTime = 200; // 0, 47, 200
+        let bookReadedTime = 201; // 0, 47, 200
         this.setWavesurferTime(bookReadedTime);
         this.updateTimer(bookReadedTime);
     }
