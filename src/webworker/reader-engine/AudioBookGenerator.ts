@@ -9,7 +9,6 @@ export class AudioBookGenerator extends audioBook {
         if (!this._allAtoms_pos) {
             let pos = await this.getFirstAtom();
             let lastPos = await this.getLastAtom();
-            // this._allAtoms_pos = [pos];
             this._allAtoms_pos = [];
 
             while (pos.atom !== lastPos.atom || pos.group !== lastPos.group) {
@@ -22,24 +21,13 @@ export class AudioBookGenerator extends audioBook {
         return this._allAtoms_pos;
     }
 
-    /* getFirstAtom(): IBookPosIndicator {
-        return {
-            group: msdreader.getIndicatorPart(this.firstAtom, 0),
-            atom: msdreader.getIndicatorPart(this.firstAtom, 1)
-        };
-    } */
     async getFirstAtom(): Promise<IBookPosIndicator> {
         return {
             group: await this.wasmWorker.getIndicatorPart(this.firstAtom, 0) as number,
             atom: await this.wasmWorker.getIndicatorPart(this.firstAtom, 1) as number
         };
     }
-    /* getLastAtom(): IBookPosIndicator {
-        return {
-            group: msdreader.getIndicatorPart(this.lastAtom, 0),
-            atom: msdreader.getIndicatorPart(this.lastAtom, 1)
-        };
-    } */
+
     async getLastAtom(): Promise<IBookPosIndicator> {
         return {
             group: await this.wasmWorker.getIndicatorPart(this.lastAtom, 0) as number,
@@ -55,11 +43,7 @@ export class AudioBookGenerator extends audioBook {
         this._fileAtoms_duration = [];
 
         let last_to = 0;
-        /* allAtoms_pos.forEach((atom, atom_i) => {
-            const atom_d = this.getAtomDuration(atom);
-            this._fileAtoms_duration![atom_i] = { from: last_to, to: last_to + atom_d };
-            last_to += atom_d;
-        }); */
+
         for (let i = 0; i < allAtoms_pos.length; i++) {
             const atom = allAtoms_pos[i];
             const atom_d = await this.getAtomDuration(atom);
@@ -83,6 +67,51 @@ export class AudioBookGenerator extends audioBook {
         rtn.lastAtom = lastAtom as number;
         rtn.bookPlayerPtr = bookPlayerPtr as number
         return rtn;
+    }
+
+    /**
+     * @param time number in milisecond
+     * @returns atomDetail
+     */
+    async getAtomDetailByTime(time: number)
+        : Promise<{ atom: IBookPosIndicator, index: number, fromTo: { from: number, to: number } } | undefined> {
+
+        const fileAtoms_duration = await this.getFileAtoms_duration();
+        if (!fileAtoms_duration || !fileAtoms_duration.length) return;
+        let atom_index = undefined;
+        let atomFromTo = undefined;
+        for (let i = 0; i < fileAtoms_duration.length; i++) {
+            atomFromTo = fileAtoms_duration[i];
+            if (atomFromTo.from <= time && atomFromTo.to >= time) {
+                atom_index = i;
+                break;
+            }
+        }
+        let atom: IBookPosIndicator | undefined;
+        if (atom_index || atom_index === 0) {
+            const atomList = await this.getAllAtoms_pos();
+            if (!atomList || !atomList.length) return;
+            atom = atomList[atom_index];
+            if (!atom) return;
+            return { atom, index: atom_index, fromTo: atomFromTo! };
+        }
+    }
+    /**
+     * @param index number: atom index
+     * @returns atomDetail
+     */
+    async getAtomDetailByIndex(index: number)
+        : Promise<{ atom: IBookPosIndicator, index: number, fromTo: { from: number, to: number } } | undefined> {
+
+        const fileAtoms_duration = await this.getFileAtoms_duration();
+        if (!fileAtoms_duration || !fileAtoms_duration.length) return;
+        let atomFromTo = fileAtoms_duration[index];
+        let atom: IBookPosIndicator | undefined;
+        const atomList = await this.getAllAtoms_pos();
+        if (!atomList || !atomList.length) return;
+        atom = atomList[index];
+        if (!atom) return;
+        return { atom, index, fromTo: atomFromTo! };
     }
 
 }

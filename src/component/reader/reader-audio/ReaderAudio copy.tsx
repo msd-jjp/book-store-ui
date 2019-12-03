@@ -368,8 +368,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             // this.destroy_srcObj(true);
             // this.destroy_srcObj(false);
             // this._audioCtx_currentTime_next = undefined;
-            // this.reset_srcObj();
-            this._b_reset_binding();
+            this.reset_srcObj();
             this.pause();
         });
         this.wavesurfer!.on('loading', () => { console.log('loadingggg'); });
@@ -440,237 +439,318 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
 
     private async processCurrentTime(currentTime: number, seek: boolean): Promise<void> {
-        try { this.bindGeneratedAudio(currentTime, seek, 0); } catch (e) { console.error('bindGeneratedAudio(curren...', e); }
+        console.log('processCurrentTimeeeee: currentTime, seek: ', currentTime, seek);
+
+        const fileAtoms_duration = await this._bookInstance.getFileAtoms_duration();
+        let currentAtom_index = undefined;
+
+        for (let i = 0; i < fileAtoms_duration.length; i++) {
+            const atomFromTo = fileAtoms_duration[i];
+            if (atomFromTo.from / 1000 <= currentTime && atomFromTo.to / 1000 >= currentTime) {
+                currentAtom_index = i;
+                break;
+            }
+        }
+
+        let currentAtomPos: IBookPosIndicator | undefined;
+        if (currentAtom_index || currentAtom_index === 0) {
+            currentAtomPos = (await this._bookInstance.getAllAtoms_pos())[currentAtom_index];
+
+            this.bindVoiceToAudioContext(
+                currentAtomPos,
+                fileAtoms_duration[currentAtom_index],
+                currentTime,
+                currentAtom_index,
+                true,
+                0,
+                seek,
+                false
+            );
+        }
     }
 
-    private _b_progress_to: number | undefined;
-    private _b_inProgress: boolean = false;
-    private _b_seek_from: number | undefined;
-    private _b_audioSourceList: Array<AudioBufferSourceNode> = [];
-    private readonly _b_timeToBindNext = 6;
-    private _b_audioCtx_time_next: number | undefined;
-    /**
-     * @param from number in second
-     */
-    private async bindGeneratedAudio(from: number, seek: boolean, delay: number) {
-        // debugger;
-        console.log(`
-        start bindGeneratedAudio: from ${from}
-        , seek: ${seek}'
-        , delay: ${delay}
-        , _b_inProgress: ${this._b_inProgress}
-        , _b_progress_to: ${this._b_progress_to}
-        `);
+    private _audioSourceList: Array<AudioBufferSourceNode> = []; // | undefined
+    private reset_srcObj() {
+        // console.error('reset_srcObj');
+        this.destroy_srcObj(true);
+        this.destroy_srcObj(false);
+        this._audioCtx_currentTime_next = undefined;
+        // this.destroyAudioContext();
+        // todo error in safari invalid Object
+        this._audioSourceList.forEach(a_s => {
+            try {
+                a_s && a_s.stop();
+                a_s && a_s.disconnect();
+            } catch (e) {
+                console.error('reset_srcObj  while this._audioSourceList', e);
+            }
+        });
+        this._audioSourceList = [];
+    }
+    private destroy_srcObj(mainSrc: boolean) {
+        if (mainSrc) {
+            console.log('destroy_srcObj main', this._mainSource_obj && this._mainSource_obj.timing, this._mainSource_obj &&
+                this._mainSource_obj.source);
 
-        const audioCtx_time = this.getAudioContext().currentTime;
+            if (this._mainSource_obj && this._mainSource_obj.source) {
+                this._mainSource_obj.source.stop();
+                this._mainSource_obj.source.disconnect();
+            }
+            this._mainSource_obj = undefined;
+
+        } else {
+            console.log('destroy_srcObj helper', this._helpSource_obj && this._helpSource_obj.timing, this._helpSource_obj &&
+                this._helpSource_obj.source);
+
+            if (this._helpSource_obj && this._helpSource_obj.source) {
+                this._helpSource_obj.source.stop();
+                this._helpSource_obj.source.disconnect();
+            }
+            this._helpSource_obj = undefined;
+        }
+    }
+    private _loadedAtomPos: IBookPosIndicator | undefined;
+    private _mainSource_obj: IAudioSourceObj | undefined;
+    private _helpSource_obj: IAudioSourceObj | undefined;
+    private _audioCtx_currentTime_next: number | undefined;
+    private _loadVoice_inProgress = false;
+    private _seek_inProgress: number | undefined;
+    private async bindVoiceToAudioContext(
+        atomPos: IBookPosIndicator,
+        atomFromTo: { from: number, to: number },
+        fromTime: number,
+        atomPos_index: number,
+        pauseUntilBind: boolean,
+        offset: number,
+        seek: boolean,
+        helperBinding: boolean,
+    ): Promise<void> {
+
+        const audioCtx_currentTime = this.getAudioContext().currentTime;
+        await CmpUtility.waitOnMe(0);
+        const loadMoreTimer = 6;
+        const isPlaying = this.state.isPlaying;
 
         if (seek) {
-            this._b_reset_binding();
-            this._b_seek_from = from;
+            if (pauseUntilBind) { if (isPlaying) { this.pause(); } }
+            this.reset_srcObj();
+            this._loadVoice_inProgress = false;
+            this._seek_inProgress = fromTime;
+            console.log('this._seek_inProgress = fromTime;', fromTime);
         }
+        if (this._loadVoice_inProgress) return;
 
-        if (this._b_inProgress) return;
+        if (this._mainSource_obj && !helperBinding) {
+            console.log('exist:', fromTime, this._mainSource_obj);
+            // if (this._loadVoice_inProgress) return;
 
-        if (!seek && this._b_progress_to !== undefined && delay === 0) {
-            // if (from + this._b_timeToBindNext <= this._b_progress_to) return;
-            // else if (from = this._b_progress_to) { console.log(from); }
-            // else
-            if (from + this._b_timeToBindNext >= this._b_progress_to) {
-                this.bindGeneratedAudio(this._b_progress_to, false, this._b_timeToBindNext);
+            if (fromTime >= this._mainSource_obj.timing.to) {
+                if (this._helpSource_obj) {
+                    console.log(
+                        'mainSource: ',
+                        this._mainSource_obj && this._mainSource_obj.timing,
+                        '<-- **switch** -->  helpSource: ',
+                        this._helpSource_obj && this._helpSource_obj.timing,
+                    );
+                    this._mainSource_obj = this._helpSource_obj;
+                    this._helpSource_obj = undefined;
+                    return;
+                } else {
+                    console.error('why _helpSource_obj not exist??');
+                    this._audioCtx_currentTime_next = undefined;
+                    pauseUntilBind = true;
+                }
+
+            } else if (fromTime + loadMoreTimer >= this._mainSource_obj.timing.to) {
+                if (this._helpSource_obj) { // && ...
+                    return;
+                }
+                if ((fromTime + loadMoreTimer) * 1000 >= atomFromTo.to) {
+                    const allAtoms_pos = await this._bookInstance.getAllAtoms_pos();
+                    if (allAtoms_pos.length - 1 >= atomPos_index + 1) {
+                        const fileAtoms_duration = await this._bookInstance.getFileAtoms_duration();
+                        this.bindVoiceToAudioContext(
+                            allAtoms_pos[atomPos_index + 1],
+                            fileAtoms_duration[atomPos_index + 1],
+                            this._mainSource_obj.timing.to,
+                            atomPos_index + 1,
+                            false,
+                            loadMoreTimer,
+                            false,
+                            true
+                        );
+                        return; // todo: return added returnreturnreturnreturnreturnreturnreturn??????
+                    }
+                } else {
+                    this.bindVoiceToAudioContext(
+                        atomPos,
+                        atomFromTo,
+                        this._mainSource_obj.timing.to,
+                        atomPos_index,
+                        false,
+                        loadMoreTimer,
+                        false,
+                        true
+                    );
+                }
+                return;
+            } else {
                 return;
             }
-            else if (from < this._b_progress_to) return;
-            else if (from >= this._b_progress_to) {
-                // todo: remove all and get new like seek
-                console.error('else if (from >= this._b_progress_to) {');
-            }
         }
 
-        const wasPlaying = this.state.isPlaying;
+        let newSource: IAudioSourceObj | undefined = { timing: { from: fromTime, to: fromTime + 10 }, source: undefined };
 
-        if ((!this._b_progress_to || from >= this._b_progress_to) && delay === 0 && wasPlaying) {
-            console.error(`puase REQ** from : ${from} >= this._b_progress_to: ${this._b_progress_to}`);
-            // if (wasPlaying) { this.pause(); }
-            this.pause();
+        if (pauseUntilBind && !seek) {
+            console.error('-------------------------if (pauseUntilBind && !seek) {');
+            if (isPlaying) { this.pause(); }
         }
 
-
-        this._b_inProgress = true;
-
-        await Utility.waitOnMe(1000);
-
-        let voice;
-        try { voice = await this.getAudioDataByTime(from); } catch (e) {
-            console.error('try getAudioByTime(from) failed', e);
+        if (this._loadedAtomPos !== atomPos) {
+            this._loadedAtomPos = atomPos;
+            console.time('____________________________________________loadVoiceAtom');
+            await this._bookInstance.loadVoiceAtom(atomPos);
+            // this._bookInstance.loadVoiceAtom({ group: 0, atom: 1 });
+            console.timeEnd('____________________________________________loadVoiceAtom');
         }
 
-        if (this._b_seek_from || this._b_seek_from === 0) {
-            if (!seek || this._b_seek_from !== from) {
-                // todo play if wasPlaying?????
-                return;
-            }
-            this._b_seek_from = undefined;
-        }
-
-        if (!voice || !voice.length) {
-            this._b_inProgress = false;
-            // todo play if wasPlaying?????
-            return;
-        } else {
-
-        }
-
-
-
-        const voiceTime = await this.connectSource(from, voice, audioCtx_time, delay);
-
-
-
-
-        /* const sampleRate = await this.getSampleRate();
-        const channels = await this.getChannels();
-
-        const voiceTime = voice[0].length / sampleRate;
-
-        const audioCtx = this.getAudioContext();
-        const source = audioCtx.createBufferSource();
-        source.buffer = this.getaudioBuffer(sampleRate, channels, voice);
-        const gainNode = this.getGainNode();
-        source.connect(gainNode);
-        const startTime = this._b_audioCtx_time_next ? this._b_audioCtx_time_next : audioCtx_time + delay;
-        source.start(startTime);
-        // safari bug: start automaticly on cmpDidMount.
-        if (!wasPlaying) {
-            try {
-                if (audioCtx.state === 'running') this.pause();
-            } catch (e) {
-                this.pause();
-            }
-        }
-        this._b_audioCtx_time_next = startTime + voiceTime;
-        this._b_progress_to = from + voiceTime;
-
-        this._b_audioSourceList.push(source); */
-
-
-
-
-
-
-
-        this._b_inProgress = false;
-
-        console.log(`
-        end bindGeneratedAudio: from ${from}
-        , seek: ${seek}'
-        , delay: ${delay}
-        , _b_inProgress: ${this._b_inProgress}
-        , _b_progress_to: ${this._b_progress_to}
-        `);
-
-        if (wasPlaying && this.state.isPlaying === false) {
-            this.play();
-        }
-
-        if (voiceTime <= this._b_timeToBindNext) {
-            this.bindGeneratedAudio(this._b_progress_to!, false, voiceTime);
-        }
-    }
-
-    private _sampleRate: number | undefined;
-    private async getSampleRate(): Promise<number> {
-        if (this._sampleRate === undefined)
-            this._sampleRate = await this._bookInstance.getLoadedVoiceAtomSampleRate();
-        return this._sampleRate;
-    }
-    private clearSampleRate(): void { this._sampleRate = undefined; }
-    private _channels: number | undefined;
-    private async getChannels(): Promise<number> {
-        if (this._channels === undefined)
-            this._channels = await this._bookInstance.getLoadedVoiceAtomChannels();
-        return this._channels;
-    }
-    private clearChannels(): void { this._channels = undefined; }
-
-    private _b_loaded_atom: IBookPosIndicator | undefined;
-    /**
-     * @param from number in second
-     */
-    private async getAudioDataByTime(from: number): Promise<Float32Array[] | undefined> {
-        const atomDetail = await this._bookInstance.getAtomDetailByTime(from * 1000);
-        if (!atomDetail) {
-            return;
-        }
-        if (this._b_loaded_atom !== atomDetail.atom) {
-            this._b_loaded_atom = atomDetail.atom;
-            await this._bookInstance.loadVoiceAtom(atomDetail.atom);
-        }
-        let from_atom = Math.ceil(from * 1000 - atomDetail.fromTo.from);
-        if (from_atom < 0) {
-            console.warn('from_atom is less than 0 !!: from_atom changed to 0', from_atom, from, atomDetail);
-            from_atom = 0;
+        let fromTimeInAtom = Math.ceil(fromTime * 1000 - atomFromTo.from);
+        if (fromTimeInAtom < 0) {
+            console.warn('fromTimeInAtom is less than 0 !!: fromTimeInAtom changed to 0', fromTimeInAtom, fromTime * 1000, atomFromTo);
+            fromTimeInAtom = 0;
         }
         const atomActualDuration = await this._bookInstance.getLoadedVoiceAtomDuration();
-        let voice: Float32Array[] | undefined;
-        if (from_atom < atomActualDuration) {
-            voice = await this._bookInstance.getLoadedVoiceAtom10Second(from_atom);
-        }
-        if (!voice) {
-            const atomDetail2 = await this._bookInstance.getAtomDetailByIndex(atomDetail.index + 1);
-            if (atomDetail2) {
-                this._b_loaded_atom = atomDetail2.atom;
-                await this._bookInstance.loadVoiceAtom(atomDetail2.atom);
-                voice = await this._bookInstance.getLoadedVoiceAtom10Second(0);
-            }
-        }
-        return voice;
-    }
 
-    private _b_reset_binding() {
-        this._b_seek_from = undefined;
-        this._b_audioSourceList.forEach(a_s => {
-            try { if (a_s) { a_s.stop(); a_s.disconnect(); } }
-            catch (e) { console.error('reset_srcObj  while this._audioSourceList', e); }
-        });
-        this._b_audioSourceList = [];
-        this._b_inProgress = false;
-        this._b_audioCtx_time_next = undefined;
-        this._b_progress_to = undefined;
-    }
+        //todo: sampleRate & channels --> uniqe for every chapter(file).
+        const sampleRate = await this._bookInstance.getLoadedVoiceAtomSampleRate();
+        const channels = await this._bookInstance.getLoadedVoiceAtomChannels();
 
-    private async connectSource(from: number, voice: Float32Array[], audioCtx_time: number, delay: number): Promise<number> {
-        const sampleRate = await this.getSampleRate();
-        const channels = await this.getChannels();
-
-        const voiceTime = voice[0].length / sampleRate;
-
-        const audioCtx = this.getAudioContext();
-        const source = audioCtx.createBufferSource();
-        source.buffer = this.getaudioBuffer(sampleRate, channels, voice);
-        const gainNode = this.getGainNode();
-        source.connect(gainNode);
-        const startTime = this._b_audioCtx_time_next ? this._b_audioCtx_time_next : audioCtx_time + delay;
-        source.start(startTime);
-        // safari bug: start automaticly on cmpDidMount.
-        if (!this.state.isPlaying) {// wasPlaying
+        let atom_10_sec: Float32Array[] | undefined;
+        if (fromTimeInAtom < atomActualDuration) {
+            console.log('***getLoadedVoiceAtom10Second:', fromTimeInAtom, atomActualDuration, atomFromTo);
             try {
-                if (audioCtx.state === 'running') this.pause();
+                console.log('***await Utility.waitOnMe(2000);:');
+                this._loadVoice_inProgress = true;
+                // this._seek_inProgress = false;
+                await Utility.waitOnMe(2000);
+                console.time('____________________________________________getLoadedVoiceAtom10Second');
+                atom_10_sec = await this._bookInstance.getLoadedVoiceAtom10Second(fromTimeInAtom);
+                console.timeEnd('____________________________________________getLoadedVoiceAtom10Second');
+                this._loadVoice_inProgress = false;
             } catch (e) {
-                this.pause();
+                this._loadVoice_inProgress = false;
+                this.readerError_notify();
             }
         }
-        this._b_audioCtx_time_next = startTime + voiceTime;
-        this._b_progress_to = from + voiceTime;
 
-        this._b_audioSourceList.push(source);
+        if (seek && this._seek_inProgress !== fromTime) {
+            console.log('seek && this._seek_inProgress !== fromTime', seek, this._seek_inProgress, fromTime);
+            return;
+        } else {
+            this._seek_inProgress = undefined;
+        }
 
-        return voiceTime;
+        let createAbleSource = true;
+        if (!atom_10_sec || !atom_10_sec[0].length) {
+            console.error(
+                '!!!! atom_10_sec[0].length --> createAbleSource = false',
+                atom_10_sec,
+                atomFromTo,
+                fromTime * 1000 - atomFromTo.from
+            );
+            createAbleSource = false;
+        }
+
+        if (createAbleSource) {
+            // const voiceTime = ((fromTime + 10) * 1000 <= atomFromTo.to) ? 10 : ((atomFromTo.to - (fromTime * 1000)) / 1000);
+            const voiceTime = atom_10_sec![0].length / sampleRate;
+
+            newSource.timing.to = newSource.timing.from + voiceTime;
+
+            const audioCtx = this.getAudioContext();
+            const source = audioCtx.createBufferSource();
+            source.buffer = this.getaudioBuffer(sampleRate, channels, atom_10_sec!);
+            // source.connect(audioCtx.destination);
+
+            const gainNode = this.getGainNode(); // sampleRate
+            source.connect(gainNode);
+            // gainNode.connect(audioCtx.destination);
+
+            // source.start(audioCtx_currentTime + offset); // audioCtx.currentTime
+            const startTime = this._audioCtx_currentTime_next ? this._audioCtx_currentTime_next : audioCtx_currentTime + offset;
+            console.log(
+                `_-_-_-_ binding new audioBuffer
+                , voiceTime: ${voiceTime}
+                , this._audioCtx_currentTime_next: ${this._audioCtx_currentTime_next}
+                , audioCtx_currentTime: ${audioCtx_currentTime}
+                , offset: ${offset}
+                , startTime: ${startTime}
+                , endTime: ${startTime + voiceTime}`
+            );
+            source.start(startTime);
+            // safari bug: start automaticly on cmpDidMount.
+            if (!isPlaying && pauseUntilBind) {
+                try {
+                    if (audioCtx.state === 'running') this.pause();
+                } catch (e) {
+                    this.pause();
+                }
+            }
+            //
+            console.log('source should start at : ', newSource.timing.from);
+            this._audioCtx_currentTime_next = startTime + voiceTime;
+            console.log('source should end at : ', newSource.timing.to);
+            // source.stop(audioCtx_currentTime + offset + voiceTime); // audioCtx.currentTime
+            source.onended = (ev: Event) => {
+                console.log(
+                    '------source.onended----',
+                    fromTime,
+                    fromTime + voiceTime,
+                    voiceTime,
+                    ev
+                );
+                // this.pause();
+            };
+
+            newSource.source = source;
+            this._audioSourceList.push(source);
+
+            if (voiceTime < 10) { // todo: move me at the end.............................
+                console.log('voiceTime < 10 --> load next atom', voiceTime);
+                const allAtoms_pos = await this._bookInstance.getAllAtoms_pos();
+                if (allAtoms_pos.length - 1 >= atomPos_index + 1) {
+
+                    const fileAtoms_duration = await this._bookInstance.getFileAtoms_duration();
+                    this.bindVoiceToAudioContext(
+                        allAtoms_pos[atomPos_index + 1],
+                        fileAtoms_duration[atomPos_index + 1],
+                        fromTime + voiceTime,
+                        atomPos_index + 1,
+                        false,
+                        voiceTime,
+                        false,
+                        true
+                    );
+                }
+            }
+
+        } else {
+            newSource = undefined;
+        }
+
+        if (helperBinding) {
+            // this.destroy_srcObj(false);
+            this._helpSource_obj = newSource;
+
+        } else {
+            // this.destroy_srcObj(true);
+            this._mainSource_obj = newSource;
+        }
+
+        if (isPlaying && this.state.isPlaying === false) {
+            this.play();
+        }
     }
-
-
-
-
-
 
 
     private gotoBegining() {

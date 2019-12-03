@@ -535,43 +535,13 @@ export abstract class ReaderUtility {
     }
 
     static async createAudioBook(book_id: string, bookFile: Uint8Array): Promise<AudioBookGenerator> {
-        debugger;
+        // debugger;
         //todo: check book exist
-
-        // await ReaderUtility.wait_loadReaderEngine();
-        // await CmpUtility.waitOnMe(10000); // todo: _DELETE_ME
-
-        // return new AudioBookGenerator(bookFile);
-
-        // createWorkerContent
-        /* const wasmFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.WASM_BOOK_ID);
-        const readerFile = await appLocalStorage.findBookMainFileById(READER_FILE_NAME.READER2_BOOK_ID);
-        debugger;
-
-        var readerFile_string = new TextDecoder("utf-8").decode(readerFile);
-        const blob = ReaderUtility.createWorkerContent(readerFile_string);
-
-        let w = new Worker(blob); // "/reader/reader2.js"
-        w.postMessage({ bin: wasmFile });
-        let ww = new WasmWorkerHandler(w); */
 
         const ww = await ReaderDownload.getReaderWorkerHandler();
         if (ww === undefined) throw new Error('WorkerHandler failed possible');
         await ReaderUtility.wait_readerEngine_init(ww);
         return await AudioBookGenerator.getInstance(ww, bookFile);
     }
-
-    // static createWorkerContent(content: string) {
-    //     let blob;
-    //     if (Blob) {
-    //         blob = new Blob([content], { type: 'application/javascript' });
-    //     } else {
-    //         let BlobBuilder = (window as any).BlobBuilder || (window as any).WebKitBlobBuilder || (window as any).MozBlobBuilder;
-    //         blob = new BlobBuilder();
-    //         blob.append(content);
-    //         blob = blob.getBlob();
-    //     }
-    //     return URL.createObjectURL(blob);
-    // }
 
 }
