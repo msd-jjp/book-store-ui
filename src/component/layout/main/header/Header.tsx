@@ -8,6 +8,9 @@ import { NETWORK_STATUS } from '../../../../enum/NetworkStatus';
 import { BaseService } from '../../../../service/service.base';
 import { ICartItems } from '../../../../redux/action/cart/cartAction';
 import { IReaderEngine_schema } from '../../../../redux/action/reader-engine/readerEngineAction';
+import { Store2 } from '../../../../redux/store';
+import { READER_FILE_NAME } from '../../../../webworker/reader-engine/reader-download/reader-download';
+import { FILE_STORAGE_KEY } from '../../../../service/appLocalStorage/FileStorage';
 
 interface IProps {
     history: History;
@@ -82,14 +85,26 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
         const downloading = this.props.reader_engine.reader_status === 'downloading' ||
             this.props.reader_engine.wasm_status === 'downloading';
 
-        const className_icon = downloading ? 'fa-download' : 'fa-shield'
+        const className_icon = downloading ? 'fa-download' : 'fa-shield';
+
+        let progress = '';
+        if (downloading) {
+            const dbf = Store2.getState().downloading_book_file;
+            const d = dbf.find(d => d.fileId === READER_FILE_NAME.WASM_BOOK_ID && d.collectionName === FILE_STORAGE_KEY.READER_ENGINE);
+            if (d) {
+                progress = d.progress + '%';
+            }
+        }
 
         return (
-            <i className={
-                "fa fa-lock-- cursor-pointer ml-3 " +
-                className_color + ' ' + className_icon
-            }
-            ></i>
+            <>
+                <i className={
+                    "fa fa-lock-- cursor-pointer ml-3 " +
+                    className_color + ' ' + className_icon
+                }
+                ></i>
+                {progress ? <small className="font-weight-bold">({progress})</small> : ''}
+            </>
         )
     }
 
