@@ -35,7 +35,9 @@ export const ar = {
             downloading_reader_security_content: 'در حال بارگذاری سامانه امنیت محتوا، لطفا لحظاتی بعد مجددا تلاش کنید.',
             initing_reader_security_content: 'در حال آماده سازی سامانه امنیت محتوا، لطفا لحظاتی بعد مجددا تلاش کنید.',
             reader_security_content_failed: 'سامانه امنیت محتوا با خطا مواجه شد. لطفا برنامه را مجددا بارگیری نمائید',
-            clear_general_content: 'فایل های ذخیره شده مانند: html، عکس های پیشفرض و js پاک خواهد شد.'
+            clear_general_content: 'فایل های ذخیره شده مانند: html، عکس های پیشفرض و js پاک خواهد شد.',
+            book_x_file_not_exist: 'کتاب {0} فایلی برای دانلود ندارد',
+            book_x_file_problem: "فایل کتاب {0} خراب است و قابل بارگیری نیست",
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',

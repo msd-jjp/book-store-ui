@@ -35,7 +35,9 @@ export const en = {
             downloading_reader_security_content: 'downloading security content, please try later',
             initing_reader_security_content: 'initing security content, please try later',
             reader_security_content_failed: 'security content failed, please reload app',
-            clear_general_content: 'cached files like: html, default images, js will be removed.'
+            clear_general_content: 'cached files like: html, default images, js will be removed.',
+            book_x_file_not_exist: 'book {0} has no file to download',
+            book_x_file_problem: "book {0} has corrupted file and it can't download",
         },
         back: {
             user_already_exists: 'user already exists',

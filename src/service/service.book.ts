@@ -1,7 +1,7 @@
 import { BaseService, IAPI_ResponseList, IAPI_Response } from './service.base';
 import { IBook } from '../model/model.book';
 import { appLocalStorage } from './appLocalStorage';
-import Axios, { CancelToken, AxiosInstance } from 'axios';
+import Axios, { CancelToken, AxiosInstance, AxiosResponse } from 'axios';
 import { getLibraryItem } from '../component/library/libraryViewTemplate';
 import { BOOK_TYPES } from '../enum/Book';
 import { CmpUtility } from '../component/_base/CmpUtility';
@@ -193,6 +193,22 @@ export class BookService extends BaseService {
         }
         return this.axiosTokenInstance.get(url);
         // return this.axiosInstance.head(url);
+    }
+
+    prepare_book(book_id: string, device_id: string): Promise<IAPI_Response<{ Brief: string; Original: string; }>> {
+        return this.axiosTokenInstance.post('/prepare-book', { book_id, device_id });
+    }
+
+    get_file_info(file_id: string): Promise<AxiosResponse<any>> {
+        return this.axiosTokenInstance.head(BaseService.file_pre_url + '/' + file_id);
+    }
+    get_file_partial(file_id: string, range: { from: number; to: number }, cancelToken: CancelToken): Promise<IAPI_Response<ArrayBuffer>> {
+        this.axiosRequestConfig = {
+            headers: { range: `bytes=${range.from}-${range.to}` },
+            responseType: 'arraybuffer',
+            cancelToken
+        };
+        return this.axiosTokenInstance.get(BaseService.file_pre_url + '/' + file_id);
     }
 
 }

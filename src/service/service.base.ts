@@ -17,6 +17,7 @@ export interface IAPI_Response<T> {
 
 export abstract class BaseService {
     baseURL = Setup.endpoint;
+    static file_pre_url = '/serve-files';
     private static token: IToken | null | undefined;
 
     axiosInstance: AxiosInstance; // = axios.create(this.axiosRequestConfig);

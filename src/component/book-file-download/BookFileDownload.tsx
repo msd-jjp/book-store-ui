@@ -1,6 +1,6 @@
 import React from "react";
 import { BaseComponent } from "../_base/BaseComponent";
-import { TInternationalization } from "../../config/setup";
+import { TInternationalization, Setup } from "../../config/setup";
 import { redux_state } from "../../redux/app_state";
 import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -14,6 +14,11 @@ import { CmpUtility } from "../_base/CmpUtility";
 import { PartialDownload } from "./PartialDownload";
 import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
 import { ReaderDownload } from "../../webworker/reader-engine/reader-download/reader-download";
+import { AxiosError } from "axios";
+import { Localization } from "../../config/localization/localization";
+import { appLocalStorage } from "../../service/appLocalStorage";
+import { Store2 } from "../../redux/store";
+import { IBook } from "../../model/model.book";
 
 interface IProps {
     internationalization: TInternationalization;
@@ -118,6 +123,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         let dbf = [...this.props.downloading_book_file];
         const existing_list = dbf.filter(d => !(d.fileId === fileId && d.collectionName === collectionName));
         this.props.update_downloading_book_file!(existing_list);
+        this.removeFrom_dp_queue(fileId, collectionName); // 
         CmpUtility.refreshView();
 
         ReaderDownload.checkReaderEngineStatus(fileId, collectionName);
@@ -138,10 +144,11 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
         if (res) {
             this.downloadFinished(fileId, collectionName);
-            this.removeFrom_dp_queue(fileId, collectionName);
+            // this.removeFrom_dp_queue(fileId, collectionName);
             console.log('downloadRequest COMPLETED: book_id', fileId);
         } else {
             console.log('downloadRequest ERROR: book_id', fileId, error);
+            this.check_book_error(fileId, collectionName, error);
         }
 
         await CmpUtility.waitOnMe((res || canceled) ? 0 : 2000);
@@ -149,6 +156,52 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         this.is_downloadInProgress = false;
         this.checkDownload();
 
+    }
+
+    check_book_error(fileId: string, collectionName: FILE_STORAGE_KEY, error: AxiosError | any) {
+        if (collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN || collectionName === FILE_STORAGE_KEY.FILE_BOOK_SAMPLE) {
+            debugger;
+
+            if (
+                error
+                &&
+                (
+                    (error.response && (error.response.status === 404 || (error.response.data || {}).msg === "not_found"))
+                    || error === 'file_length_problem'
+                )
+            ) {
+                this.downloadFinished(fileId, collectionName);
+                let bookTitle = '';
+                const bookObj: IBook | null = appLocalStorage.findById('clc_book', fileId);
+                if (bookObj) {
+                    bookTitle = bookObj.title;
+                }
+                if (!bookTitle) {
+                    const libList = Store2.getState().library.data;
+                    for (let i = 0; i < libList.length; i++) {
+                        const libItem = libList[i];
+                        if (libItem.book.id === fileId) {
+                            bookTitle = libItem.book.title;
+                        }
+                    }
+                }
+                if (bookTitle) bookTitle = `"${bookTitle}"`; // «»
+                let msg = '';
+
+                if (error === 'file_length_problem') {
+                    msg = Localization.formatString(Localization.msg.ui.book_x_file_problem, bookTitle) as string;
+                } else {
+                    msg = Localization.formatString(Localization.msg.ui.book_x_file_not_exist, bookTitle) as string;
+                }
+
+                this.toastNotify(
+                    msg,
+                    { autoClose: Setup.notify.timeout.error, toastId: 'check_book_error_not_found' },
+                    'error'
+                );
+            }
+
+        }
     }
 
     render() { return (<></>); }

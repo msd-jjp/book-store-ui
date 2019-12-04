@@ -123,7 +123,7 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
 
     toastNotify(notifyBody: string, config: ToastOptions, toastType: 'info' | 'success' | 'error' | 'warn') {
         if (config.toastId && toast.isActive(config.toastId)) {
-            toast.update(config.toastId, this.getNotifyConfig(config));
+            toast.update(config.toastId, this.getNotifyConfig({ ...config, ...{ render: notifyBody } }));
         } else {
             toast[toastType](notifyBody, this.getNotifyConfig(config));
         }

@@ -21,6 +21,7 @@ export class PartialDownload {
     private tempFile: Uint8Array | undefined;
     private current_eTag: IEtag | null;
     private new_eTag: IEtag | null = null;
+    private book_file_url: string | undefined;
 
     constructor(private fileId: string, private collectionName: FILE_STORAGE_KEY) {
         this.current_eTag = appLocalStorage.find_eTagById(fileId);
@@ -42,8 +43,13 @@ export class PartialDownload {
                 error = e;
             });
 
-            if (!this.fileLength || !fl) {
+            if (!fl) {
                 reject(error);
+                return;
+            }
+
+            if (!this.fileLength) {
+                reject('file_length_problem');
                 return;
             }
 
@@ -157,10 +163,32 @@ export class PartialDownload {
             if (this.collectionName === FILE_STORAGE_KEY.READER_ENGINE) {
                 req = this._readerEngineService.file_detail(this.fileId as READER_FILE_NAME);
             } else if (
-                this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN ||
-                this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_SAMPLE
+                this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN || this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_SAMPLE
             ) {
-                req = this._bookService.bookFile_detail(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
+                let user_id;
+                const user = Store2.getState().logged_in_user;
+                if (user) user_id = user.id;
+                if (!user_id) {
+                    reject('not logged in');
+                    return;
+                }
+                const _deviceKey = appLocalStorage.find_deviceKeyByUserId(user_id);
+                if (!_deviceKey) {
+                    reject('device key not found');
+                    return;
+                }
+                let prepareError;
+                const prepare = await this._bookService.prepare_book(this.fileId, _deviceKey.id).catch(e => {
+                    prepareError = e;
+                });
+                if (!prepare) {
+                    reject(prepareError);
+                    return;
+                }
+                // debugger;
+                // req = this._bookService.bookFile_detail(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
+                this.book_file_url = this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN ? prepare.data.Original : prepare.data.Brief;
+                req = this._bookService.get_file_info(this.book_file_url);
             }
 
             /* if (this.fileId === READER_FILE_NAME.WASM_BOOK_ID) {
@@ -178,7 +206,9 @@ export class PartialDownload {
 
             let res = await req.catch(e => {
                 error = e;
+                debugger;
             });
+            debugger;
             if (!res) {
                 reject(error);
                 return;
@@ -203,7 +233,12 @@ export class PartialDownload {
                 this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN ||
                 this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_SAMPLE
             ) {
-                req = this._bookService.bookFile_partial(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.currentRange!, this.cancelTokenSource.token);
+                // req = this._bookService.bookFile_partial(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.currentRange!, this.cancelTokenSource.token);
+                if (!this.book_file_url) {
+                    reject('this.book_file_url not found');
+                    return;
+                }
+                req = this._bookService.get_file_partial(this.book_file_url, this.currentRange!, this.cancelTokenSource.token);
             }
 
             /* if (this.fileId === READER_FILE_NAME.WASM_BOOK_ID) {
@@ -222,7 +257,9 @@ export class PartialDownload {
             let res = await req.catch(e => {
                 downloaded = false;
                 error = e;
+                debugger;
             });
+            debugger;
 
             if (res) {
 
