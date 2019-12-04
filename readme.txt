@@ -286,3 +286,14 @@ setting
 list device haye faal ezafe kon
 
 ====================================================================================
+
+create first layer cmp
+level valid User?
+
+cmp has:
+    one modal for list of active device(has remove btn)
+    one modal show notify only
+
+    show generate btn if device has not registered.
+
+====================================================================================
