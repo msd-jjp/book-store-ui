@@ -103,11 +103,9 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         const d_index = this.downloadProgress_queue.findIndex(obj => obj.fileId === fileId && obj.collectionName === collectionName);
         if (d_index === -1) return;
 
-        // this.downloadProgress_queue.splice(d_index, 1);
         this.removeFrom_dp_queue(fileId, collectionName);
 
         if (d_index === 0) {
-            // console.log('stopDownload book_id:', book_id);
             this._partialDownload && this._partialDownload.cancelDownloadFile();
         }
     }
@@ -139,13 +137,10 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         });
 
         if (res) {
-            // debugger;
             this.downloadFinished(fileId, collectionName);
-            // this.downloadProgress_queue.splice(0, 1);
             this.removeFrom_dp_queue(fileId, collectionName);
             console.log('downloadRequest COMPLETED: book_id', fileId);
         } else {
-            // debugger;
             console.log('downloadRequest ERROR: book_id', fileId, error);
         }
 
@@ -156,9 +151,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
     }
 
-
     render() { return (<></>); }
-
 }
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
