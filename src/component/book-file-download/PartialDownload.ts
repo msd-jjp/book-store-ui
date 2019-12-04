@@ -169,12 +169,12 @@ export class PartialDownload {
                 const user = Store2.getState().logged_in_user;
                 if (user) user_id = user.id;
                 if (!user_id) {
-                    reject('not logged in');
+                    reject('not_logged_in');
                     return;
                 }
                 const _deviceKey = appLocalStorage.find_deviceKeyByUserId(user_id);
                 if (!_deviceKey) {
-                    reject('device key not found');
+                    reject('device_key_not_found');
                     return;
                 }
                 let prepareError;

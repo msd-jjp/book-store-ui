@@ -195,11 +195,22 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
 
             this.toastNotify(
                 msg,
-                { autoClose: Setup.notify.timeout.error, toastId: 'check_book_error_not_found' },
+                { autoClose: Setup.notify.timeout.error, toastId: 'check_book_error_error' },
                 'error'
             );
         }
-
+        else if (error && error === 'not_logged_in') {
+            this.downloadFinished(fileId, collectionName);
+        }
+        else if (error && error === 'device_key_not_found') {
+            // todo if not allowed new device key --> notify remove one
+            this.downloadFinished(fileId, collectionName);
+            this.toastNotify(
+                Localization.msg.ui.device_key_not_found_reload,
+                { autoClose: false, toastId: 'check_book_error_error' },
+                'error'
+            );
+        }
     }
 
     render() { return (<></>); }

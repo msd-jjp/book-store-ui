@@ -38,6 +38,7 @@ export const ar = {
             clear_general_content: 'فایل های ذخیره شده مانند: html، عکس های پیشفرض و js پاک خواهد شد.',
             book_x_file_not_exist: 'کتاب {0} فایلی برای دانلود ندارد',
             book_x_file_problem: "فایل کتاب {0} خراب است و قابل بارگیری نیست",
+            device_key_not_found_reload: 'دستگاه شما هنوز ثبت نشده است، لطفا از اتصال اینترنت خود مطمئن شده و برنامه را مجددا بارگیری نمائید',
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',

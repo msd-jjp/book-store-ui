@@ -21,6 +21,12 @@ export class DeviceKey {
                 // todo:
                 // _deviceKey nadari kolan,
                 // error notify --> net ro vasl kon & reload kon. (show modal).
+                
+                /* this.toastNotify(
+                    Localization.msg.ui.device_key_not_found_reload,
+                    { autoClose: false, toastId: 'check_book_error_error' },
+                    'error'
+                ); */
                 return;
             }
 
@@ -43,6 +49,9 @@ export class DeviceKey {
             // todo: if not allowed --> tell user: u reached maximum device number, remove at least one.
             //      show list of device
             debugger;
+            if (e && e.response && e.response.data && e.response.data.msg === 'maximum_active_device') {
+                //todo: open modal show list of active device
+            }
         });
     }
 }

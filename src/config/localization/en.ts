@@ -38,6 +38,7 @@ export const en = {
             clear_general_content: 'cached files like: html, default images, js will be removed.',
             book_x_file_not_exist: 'book {0} has no file to download',
             book_x_file_problem: "book {0} has corrupted file and it can't download",
+            device_key_not_found_reload: 'your device not registered yet, make sure you have stable internet and reload app',
         },
         back: {
             user_already_exists: 'user already exists',

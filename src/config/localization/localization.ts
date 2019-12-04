@@ -50,6 +50,7 @@ interface ILocalization extends LocalizedStringsMethods {
             clear_general_content: string;
             book_x_file_not_exist: string;
             book_x_file_problem: string;
+            device_key_not_found_reload: string;
         },
         back: {
             [key: string]: any; // todo
