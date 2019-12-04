@@ -87,25 +87,19 @@ class LayoutMainHeaderComponent extends React.Component<IProps, IState> {
 
         const className_icon = downloading ? 'fa-download' : 'fa-shield';
 
-        let progress = '';
+        let progress_wasm = '';
         if (downloading) {
             const dbf = Store2.getState().downloading_book_file;
-            const d = dbf.find(d => d.fileId === READER_FILE_NAME.WASM_BOOK_ID && d.collectionName === FILE_STORAGE_KEY.READER_ENGINE);
-            if (d) {
-                progress = d.progress + '%';
-            }
+            const d = dbf.find(
+                d => d.fileId === READER_FILE_NAME.WASM_BOOK_ID && d.collectionName === FILE_STORAGE_KEY.READER_ENGINE
+            );
+            if (d) { progress_wasm = d.progress + '%'; }
         }
 
-        return (
-            <>
-                <i className={
-                    "fa fa-lock-- cursor-pointer ml-3 " +
-                    className_color + ' ' + className_icon
-                }
-                ></i>
-                {progress ? <small className="font-weight-bold">({progress})</small> : ''}
-            </>
-        )
+        return (<>
+            <i className={"fa fa-lock-- cursor-pointer ml-3 " + className_color + ' ' + className_icon}></i>
+            {progress_wasm ? <small className="font-weight-bold">({progress_wasm})</small> : ''}
+        </>)
     }
 
     render() {
