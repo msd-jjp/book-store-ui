@@ -148,7 +148,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
             console.log('downloadRequest COMPLETED: book_id', fileId);
         } else {
             console.log('downloadRequest ERROR: book_id', fileId, error);
-            this.check_book_error(fileId, collectionName, error);
+            if (!canceled) this.check_book_error(fileId, collectionName, error);
         }
 
         await CmpUtility.waitOnMe((res || canceled) ? 0 : 2000);
@@ -159,49 +159,47 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     }
 
     check_book_error(fileId: string, collectionName: FILE_STORAGE_KEY, error: AxiosError | any) {
-        if (collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN || collectionName === FILE_STORAGE_KEY.FILE_BOOK_SAMPLE) {
-            debugger;
-
-            if (
-                error
-                &&
-                (
-                    (error.response && (error.response.status === 404 || (error.response.data || {}).msg === "not_found"))
-                    || error === 'file_length_problem'
-                )
-            ) {
-                this.downloadFinished(fileId, collectionName);
-                let bookTitle = '';
-                const bookObj: IBook | null = appLocalStorage.findById('clc_book', fileId);
-                if (bookObj) {
-                    bookTitle = bookObj.title;
-                }
-                if (!bookTitle) {
-                    const libList = Store2.getState().library.data;
-                    for (let i = 0; i < libList.length; i++) {
-                        const libItem = libList[i];
-                        if (libItem.book.id === fileId) {
-                            bookTitle = libItem.book.title;
-                        }
+        if (collectionName !== FILE_STORAGE_KEY.FILE_BOOK_MAIN && collectionName !== FILE_STORAGE_KEY.FILE_BOOK_SAMPLE) return;
+        debugger;
+        if (
+            error
+            &&
+            (
+                (error.response && (error.response.status === 404 || (error.response.data || {}).msg === "not_found"))
+                || error === 'file_length_problem'
+            )
+        ) {
+            this.downloadFinished(fileId, collectionName);
+            let bookTitle = '';
+            const bookObj: IBook | null = appLocalStorage.findById('clc_book', fileId);
+            if (bookObj) {
+                bookTitle = bookObj.title;
+            }
+            if (!bookTitle) {
+                const libList = Store2.getState().library.data;
+                for (let i = 0; i < libList.length; i++) {
+                    const libItem = libList[i];
+                    if (libItem.book.id === fileId) {
+                        bookTitle = libItem.book.title;
                     }
                 }
-                if (bookTitle) bookTitle = `"${bookTitle}"`; // «»
-                let msg = '';
+            }
+            if (bookTitle) bookTitle = `"${bookTitle}"`; // «»
+            let msg = '';
 
-                if (error === 'file_length_problem') {
-                    msg = Localization.formatString(Localization.msg.ui.book_x_file_problem, bookTitle) as string;
-                } else {
-                    msg = Localization.formatString(Localization.msg.ui.book_x_file_not_exist, bookTitle) as string;
-                }
-
-                this.toastNotify(
-                    msg,
-                    { autoClose: Setup.notify.timeout.error, toastId: 'check_book_error_not_found' },
-                    'error'
-                );
+            if (error === 'file_length_problem') {
+                msg = Localization.formatString(Localization.msg.ui.book_x_file_problem, bookTitle) as string;
+            } else {
+                msg = Localization.formatString(Localization.msg.ui.book_x_file_not_exist, bookTitle) as string;
             }
 
+            this.toastNotify(
+                msg,
+                { autoClose: Setup.notify.timeout.error, toastId: 'check_book_error_not_found' },
+                'error'
+            );
         }
+
     }
 
     render() { return (<></>); }

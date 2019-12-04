@@ -1,4 +1,5 @@
 import { Utility } from "../../asset/script/utility";
+import { appLocalStorage } from ".";
 
 export enum FILE_STORAGE_KEY {
     FILE_BOOK_MAIN = 'FILE_BOOK_MAIN',
@@ -69,11 +70,23 @@ export class FileStorage {
         if (Array.isArray(fileId_s)) {
             for (let i = 0; i < fileId_s.length; i++) {
                 const d = await col.delete(fileId_s[i]);
-                if (d) { FileStorage.memory_collection_removeById(collectionName, fileId_s[i]); }
+                if (d) {
+                    FileStorage.memory_collection_removeById(collectionName, fileId_s[i]);
+                    if (!collectionName.includes('_PARTIAL')) {
+                        appLocalStorage.removeFromCollection('clc_creationDate', fileId_s[i]);
+                        appLocalStorage.removeFromCollection('clc_eTag', fileId_s[i]);
+                    }
+                }
             }
         } else {
             const d = await col.delete(fileId_s);
-            if (d) { FileStorage.memory_collection_removeById(collectionName, fileId_s); }
+            if (d) {
+                FileStorage.memory_collection_removeById(collectionName, fileId_s);
+                if (!collectionName.includes('_PARTIAL')) {
+                    appLocalStorage.removeFromCollection('clc_creationDate', fileId_s);
+                    appLocalStorage.removeFromCollection('clc_eTag', fileId_s);
+                }
+            }
             singleDeleted = d;
         }
 

@@ -86,10 +86,12 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
         // debugger;
         const ding_wasm = is_file_downloading(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
         if (ding_wasm) return;
-        const deleted = await appLocalStorage.removeFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
-        if (deleted) {
+        // const deleted = 
+        await appLocalStorage.removeFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
+        /* if (deleted) {
             appLocalStorage.removeFromCollection('clc_creationDate', READER_FILE_NAME.READER2_BOOK_ID);
-        }
+            appLocalStorage.removeFromCollection('clc_eTag', READER_FILE_NAME.READER2_BOOK_ID);
+        } */
         if (Store2.getState().reader_engine.status !== 'failed') {
             Store2.dispatch(action_update_reader_engine({ ...Store2.getState().reader_engine, status: 'failed' }));
         }
@@ -106,10 +108,12 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
         // debugger;
         const ding_wasm = is_file_downloading(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
         if (ding_wasm) return;
-        const deleted = await appLocalStorage.removeFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
-        if (deleted) {
+        // const deleted = 
+        await appLocalStorage.removeFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
+        /* if (deleted) {
             appLocalStorage.removeFromCollection('clc_creationDate', READER_FILE_NAME.WASM_BOOK_ID);
-        }
+            appLocalStorage.removeFromCollection('clc_eTag', READER_FILE_NAME.WASM_BOOK_ID);
+        } */
         if (Store2.getState().reader_engine.status !== 'failed') {
             Store2.dispatch(action_update_reader_engine({ ...Store2.getState().reader_engine, status: 'failed' }));
         }
