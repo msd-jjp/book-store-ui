@@ -12,9 +12,13 @@ export class DeviceKeyService extends BaseService {
         return this.axiosTokenInstance.post('/device-keys/_search', { filter: { user_id } });
     }
 
-    search_user() {
-        return this.axiosTokenInstance.post('/device-keys/_search');
+    getById(id: IDeviceKey["id"]): Promise<IAPI_Response<IDeviceKey>> {
+        return this.axiosTokenInstance.get(`/device-keys/${id}`);
     }
+
+    /* search_user() {
+        return this.axiosTokenInstance.post('/device-keys/_search');
+    } */
 
     remove(deviceKey_id: IDeviceKey['id']) {
         return this.axiosTokenInstance.delete(`/device-keys/${deviceKey_id}`);

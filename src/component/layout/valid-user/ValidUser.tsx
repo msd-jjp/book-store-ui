@@ -28,6 +28,7 @@ import { BookFileDownload } from '../../book-file-download/BookFileDownload';
 import { FetchIntervalWorker } from '../../../webworker/fetch-interval-worker/FetchIntervalWorker';
 import { SyncWorker } from '../../../webworker/sync-worker/SyncWorker';
 import { Settings } from '../../settings/Settings';
+import { DeviceKey } from './DeviceKey';
 // import { ReaderDownload } from '../../../webworker/reader-engine/reader-download/reader-download';
 
 const appValidUserRoutes = (
@@ -89,6 +90,7 @@ class LayoutValidUserComponent extends React.Component<IProps> {
             this.start_fetchingData();
             this._syncWorker.postMessage('check');
             // ReaderDownload.downloadReaderFiles();
+            DeviceKey.check();
         }
     }
 

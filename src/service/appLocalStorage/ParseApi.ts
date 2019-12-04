@@ -43,8 +43,14 @@ export class ParseApi {
         else if (response.config.url &&
             response.config.url.includes('/api/accounts/user/_search') &&
             response.config.method === "post") {
-            
+
             appLocalStorage.addDataToCollection('clc_userAccount', response.data.result);
+        }
+        else if (response.config.url &&
+            response.config.url.includes('/api/device-keys') &&
+            response.config.method === "post") {
+
+            appLocalStorage.addDataToCollection('clc_deviceKey', response.data);
         }
     }
 }

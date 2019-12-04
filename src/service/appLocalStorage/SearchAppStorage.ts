@@ -3,6 +3,8 @@ import { IBook } from "../../model/model.book";
 import { IComment } from "../../model/model.comment";
 import { IOrder, IOrderItem } from "../../model/model.order";
 import { IAccount } from "../../model/model.account";
+import { IDeviceKey } from "../../model/model.device-key";
+import { IUser } from "../../model/model.user";
 
 export class SearchAppStorage {
     // static findById<TCollectionData>(collectionName: TCollectionName, id: string):TCollectionData |null{
@@ -19,6 +21,10 @@ export class SearchAppStorage {
     // todo: use general find
     static find_creationDateById(id: string): ICreationDate | null {
         return appLocalStorage.clc_creationDate.findOne({ id: id });
+    }
+
+    static find_deviceKeyByUserId(user_id: IUser['id']): IDeviceKey | null {
+        return appLocalStorage.clc_deviceKey.findOne({ user_id });
     }
 
     static search_by_query_book(

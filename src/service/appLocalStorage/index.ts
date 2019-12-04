@@ -11,6 +11,7 @@ import { IOrder, IOrderItem } from '../../model/model.order';
 import { CmpUtility } from '../../component/_base/CmpUtility';
 import { IAccount } from '../../model/model.account';
 import { FileStorage, FILE_STORAGE_KEY } from './FileStorage';
+import { IDeviceKey } from '../../model/model.device-key';
 // const LokiIndexedAdapter = require('lokijs/src/loki-indexed-adapter');
 // const lfsa = require('lokijs/src/loki-fs-structured-adapter');
 
@@ -25,10 +26,11 @@ export type TCollectionName =
     'clc_userInvoicedOrderItem' |
     'clc_userAccount' |
     'clc_eTag' |
-    'clc_creationDate'
+    'clc_creationDate' |
+    'clc_deviceKey'
     ;
 
-export type TCollectionData = IBook | IComment | IOrder | IAccount; // | IEtag;
+export type TCollectionData = IBook | IComment | IOrder | IAccount | IDeviceKey; // | IEtag;
 
 export class appLocalStorage {
 
@@ -61,7 +63,7 @@ export class appLocalStorage {
     static readonly collectionNameList: TCollectionName[] = [
         'clc_book', 'clc_comment', 'clc_userInvoicedOrder',
         'clc_userInvoicedOrderItem', 'clc_userAccount', 'clc_eTag',
-        'clc_creationDate'
+        'clc_creationDate', 'clc_deviceKey'
     ];
 
     static clc_book: Collection<IBook>;
@@ -71,6 +73,7 @@ export class appLocalStorage {
     static clc_userAccount: Collection<IAccount>;
     static clc_eTag: Collection<IEtag>;
     static clc_creationDate: Collection<ICreationDate>;
+    static clc_deviceKey: Collection<IDeviceKey>;
 
     constructor() {
         appLocalStorage.app_db.loadDatabase({}, (err: any) => {
@@ -204,5 +207,7 @@ export class appLocalStorage {
     static checkFileExist_async = FileStorage.checkFileExist_async;
 
     static clearWorkbox = FileStorage.clearWorkbox;
+
+    static find_deviceKeyByUserId = SearchAppStorage.find_deviceKeyByUserId;
 
 }
