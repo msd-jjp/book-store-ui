@@ -199,16 +199,21 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.post('/prepare-book', { book_id, device_id });
     }
 
+    private static bookFile_pre_url = '/serve-book-file';
     get_file_info(file_id: string): Promise<AxiosResponse<any>> {
-        return this.axiosTokenInstance.head(BaseService.file_pre_url + '/' + file_id);
+        this.axiosRequestConfig = {
+            baseURL: '',
+        };
+        return this.axiosTokenInstance.head(BookService.bookFile_pre_url + '/' + file_id);
     }
     get_file_partial(file_id: string, range: { from: number; to: number }, cancelToken: CancelToken): Promise<IAPI_Response<ArrayBuffer>> {
         this.axiosRequestConfig = {
+            baseURL: '',
             headers: { range: `bytes=${range.from}-${range.to}` },
             responseType: 'arraybuffer',
             cancelToken
         };
-        return this.axiosTokenInstance.get(BaseService.file_pre_url + '/' + file_id);
+        return this.axiosTokenInstance.get(BookService.bookFile_pre_url + '/' + file_id);
     }
 
 }

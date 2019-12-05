@@ -202,7 +202,7 @@ export abstract class ReaderDownload {
             }
 
         } else if (Store2.getState().reader_engine.status === 'inited' && ReaderDownload.checkReaderWorkerHandler() === true) {
-            debugger;
+            // debugger;
         } else {
             // debugger;
             setTimeout(ReaderDownload.try_createWorkerAfterDownload, 1000);

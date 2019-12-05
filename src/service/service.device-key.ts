@@ -1,4 +1,4 @@
-import { BaseService, IAPI_Response } from './service.base';
+import { BaseService, IAPI_Response, IAPI_ResponseList } from './service.base';
 import { IDeviceKey } from '../model/model.device-key';
 import { IUser } from '../model/model.user';
 
@@ -16,9 +16,9 @@ export class DeviceKeyService extends BaseService {
         return this.axiosTokenInstance.get(`/device-keys/${id}`);
     }
 
-    /* search_user() {
-        return this.axiosTokenInstance.post('/device-keys/_search');
-    } */
+    getAllByUserId(user_id: IUser["id"]): Promise<IAPI_ResponseList<IDeviceKey>> {
+        return this.axiosTokenInstance.get(`/device-keys/user/${user_id}`);
+    }
 
     remove(deviceKey_id: IDeviceKey['id']) {
         return this.axiosTokenInstance.delete(`/device-keys/${deviceKey_id}`);
