@@ -1,7 +1,10 @@
 import { BaseService, IAPI_ResponseList, IAPI_Response } from './service.base';
 import { ILibrary } from '../model/model.library';
+import { AxiosResponse } from 'axios';
 
 export class LibraryService extends BaseService {
+
+    static generalId = 'user-library-id';
 
     getAll(): Promise<IAPI_ResponseList<ILibrary>> {
         if (BaseService.isAppOffline()) {
@@ -13,7 +16,7 @@ export class LibraryService extends BaseService {
         return this.axiosTokenInstance.post('/library/user', {});
     }
 
-    checkChange(): Promise<IAPI_ResponseList<any>> { // todo return ?
+    getAll_check(): Promise<AxiosResponse<{}>> {
         return this.axiosTokenInstance.head('/library/user');
     }
 

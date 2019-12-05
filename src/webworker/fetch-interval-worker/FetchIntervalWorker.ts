@@ -2,23 +2,16 @@ import /* workerMsg, */ { IReceiveData } from './fetch-interval.worker';
 import { BaseWorker } from '../worker.base';
 import { CollectionService } from '../../service/service.collection';
 import { LibraryService } from '../../service/service.library';
-// import { IToken } from '../../model/model.token';
 import { Store2 } from '../../redux/store';
 import { action_set_library_data } from '../../redux/action/library';
 import { action_set_collections_data } from '../../redux/action/collection';
+// import { appLocalStorage } from '../../service/appLocalStorage';
 
 export class FetchIntervalWorker extends BaseWorker {
 
     protected _worker: Worker | undefined;
     private _libraryService = new LibraryService();
     private _collectionService = new CollectionService();
-
-    // constructor(/* token: IToken */) {
-    //     super();
-    //     // this._libraryService.setToken(token);
-    //     // this._collectionService.setToken(token);
-    //     // this.init();
-    // }
 
     protected init() {
         // if (typeof (Worker) !== "undefined") {
@@ -72,6 +65,24 @@ export class FetchIntervalWorker extends BaseWorker {
 
     private fetchLibrary_timeout: any;
     async fetchLibrary() {
+        /* 
+        const check = await this._libraryService.getAll_check().catch(e => { debugger; });
+        if (check) {
+            debugger;
+            const etag_new = check.headers['etag'];
+            const eTag_current = appLocalStorage.find_eTagById(LibraryService.generalId);
+            if (!eTag_current || eTag_current.eTag !== etag_new) {
+                const res = await this._libraryService.getAll().catch(error => { });
+                if (res) {
+                    appLocalStorage.store_eTag({ id: LibraryService.generalId, eTag: etag_new });
+                    Store2.dispatch(action_set_library_data(res.data.result));
+                }
+            }
+        }
+        clearTimeout(this.fetchLibrary_timeout);
+        this.fetchLibrary_timeout = setTimeout(() => { this.fetchLibrary(); }, this.fetch_timeout_timer);
+ */
+
         await this._libraryService.getAll().then(res => {
             Store2.dispatch(action_set_library_data(res.data.result));
         }).catch(error => { });
