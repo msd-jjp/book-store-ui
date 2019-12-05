@@ -199,6 +199,7 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.post('/prepare-book', { book_id, device_id });
     }
 
+    // private static bookFile_pre_url = 'https://book.mazarei.id.ir/serve-book-file';
     private static bookFile_pre_url = '/serve-book-file';
     get_file_info(file_id: string): Promise<AxiosResponse<any>> {
         this.axiosRequestConfig = {

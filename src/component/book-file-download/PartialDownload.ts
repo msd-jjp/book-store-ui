@@ -188,6 +188,7 @@ export class PartialDownload {
                 // debugger;
                 // req = this._bookService.bookFile_detail(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
                 this.book_file_url = this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN ? prepare.data.Original : prepare.data.Brief;
+                // this.book_file_url = '6cc22511-c580-4fd8-8904-0f012b8618d3';
                 req = this._bookService.get_file_info(this.book_file_url);
             }
 
