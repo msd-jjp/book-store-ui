@@ -9,6 +9,7 @@ import { appLocalStorage } from '../../service/appLocalStorage';
 import { BaseService } from '../../service/service.base';
 import { LoginService } from '../../service/service.login';
 import { action_user_logged_in } from '../../redux/action/user';
+import { Utility } from '../../asset/script/utility';
 
 export class FetchIntervalWorker extends BaseWorker {
 
@@ -69,6 +70,10 @@ export class FetchIntervalWorker extends BaseWorker {
         console.log('--------- fetching library & collection stoped ---------');
     }
 
+    private randomTime(): number {
+        return this.fetch_timeout_timer + (Utility.random_int(1, 5) * 1000);
+    }
+
     private fetchLibrary_timeout: any;
     private async fetchLibrary() {
         let check;
@@ -87,7 +92,7 @@ export class FetchIntervalWorker extends BaseWorker {
             }
         }
         clearTimeout(this.fetchLibrary_timeout);
-        this.fetchLibrary_timeout = setTimeout(() => { this.fetchLibrary(); }, this.fetch_timeout_timer);
+        this.fetchLibrary_timeout = setTimeout(() => { this.fetchLibrary(); }, this.randomTime());
     }
 
     private fetchCollection_timeout: any;
@@ -108,7 +113,7 @@ export class FetchIntervalWorker extends BaseWorker {
             }
         }
         clearTimeout(this.fetchCollection_timeout);
-        this.fetchCollection_timeout = setTimeout(() => { this.fetchCollection(); }, this.fetch_timeout_timer);
+        this.fetchCollection_timeout = setTimeout(() => { this.fetchCollection(); }, this.randomTime());
     }
 
     private fetchProfile_timeout: any;
@@ -129,7 +134,7 @@ export class FetchIntervalWorker extends BaseWorker {
             }
         }
         clearTimeout(this.fetchProfile_timeout);
-        this.fetchProfile_timeout = setTimeout(() => { this.fetchProfile(); }, this.fetch_timeout_timer);
+        this.fetchProfile_timeout = setTimeout(() => { this.fetchProfile(); }, this.randomTime());
     }
 
 }
