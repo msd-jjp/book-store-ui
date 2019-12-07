@@ -406,4 +406,5 @@ export const fa = {
     browser: 'مرورگر',
     device: 'دستگاه',
     active_device_list: 'لیست دستگاه های فعال',
+    submit_this_device: 'ثبت این دستگاه',
 }

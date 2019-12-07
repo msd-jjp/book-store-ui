@@ -163,10 +163,6 @@ class IncreaseCreditComponent extends BaseComponent<IProps, IState> {
             </div>
           </Modal.Body>
           <Modal.Footer className="pt-0 border-top-0 justify-content-between">
-            <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal()}>
-              {Localization.cancel}
-            </button>
-
             <BtnLoader
               btnClassName="btn text-success btn-sm text-uppercase min-w-70px"
               loading={this.state.payment_loader}
@@ -182,6 +178,10 @@ class IncreaseCreditComponent extends BaseComponent<IProps, IState> {
                   ? <i className="fa fa-wifi text-danger"></i> : ''
               }
             </BtnLoader>
+
+            <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal()}>
+              {Localization.cancel}
+            </button>
           </Modal.Footer>
         </Modal>
       </>

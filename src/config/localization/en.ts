@@ -407,4 +407,5 @@ export const en = {
     browser: 'browser',
     device: 'device',
     active_device_list: 'active device list',
+    submit_this_device: 'submit this device',
 }

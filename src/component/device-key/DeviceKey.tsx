@@ -13,10 +13,12 @@ import { BaseService } from '../../service/service.base';
 import { Utility, IBrowserDetail } from '../../asset/script/utility';
 import { IDeviceKey } from '../../model/model.device-key';
 import { IUser } from '../../model/model.user';
+import { BtnLoader } from '../form/btn-loader/BtnLoader';
+import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 
 interface IProps {
     internationalization: TInternationalization;
-    // network_status: NETWORK_STATUS;
+    network_status: NETWORK_STATUS;
 }
 
 interface IState {
@@ -25,6 +27,12 @@ interface IState {
         list: IDeviceKey[];
         loading: boolean;
         errorText: string | undefined;
+        btn: {
+            visible: boolean;
+            enable: boolean;
+            loading: boolean;
+        };
+        msg: string | undefined;
     }
 }
 
@@ -34,7 +42,13 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
             show: false,
             list: [],
             loading: false,
-            errorText: undefined
+            errorText: undefined,
+            btn: {
+                visible: false,
+                enable: false,
+                loading: false,
+            },
+            msg: undefined,
         }
     };
     private _deviceKeyService = new DeviceKeyService();
@@ -82,17 +96,48 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
     }
 
     private async generate() {
-        await this._deviceKeyService.generate(JSON.stringify(Utility.browserDetail())).catch(e => {
+        this.setState({
+            modal_deviceList: {
+                ...this.state.modal_deviceList,
+                btn: { ...this.state.modal_deviceList.btn, loading: true, visible: true }
+            }
+        });
+        const res = await this._deviceKeyService.generate(JSON.stringify(Utility.browserDetail())).catch(e => {
             if (e && e.response && e.response.data && e.response.data.msg === 'maximum_active_device') {
                 debugger;
-                this.toastNotify(
+                /* this.toastNotify(
                     Localization.msg.ui.you_reached_maximum_active_device,
                     { autoClose: false, toastId: 'deviceKeyGenerate_error' },
                     'error'
-                );
+                ); */
+                this.setState({
+                    modal_deviceList: {
+                        ...this.state.modal_deviceList,
+                        msg: Localization.msg.ui.you_reached_maximum_active_device,
+                        btn: { ...this.state.modal_deviceList.btn, loading: false }
+                    }
+                });
                 this.openModal_deviceList();
+            } else {
+                this.setState({
+                    modal_deviceList: {
+                        ...this.state.modal_deviceList,
+                        btn: { ...this.state.modal_deviceList.btn, loading: false }
+                    }
+                });
             }
         });
+        if (res) {
+            const list: IDeviceKey[] = [...this.state.modal_deviceList.list];
+            list.unshift(res.data);
+            this.setState({
+                modal_deviceList: {
+                    ...this.state.modal_deviceList,
+                    btn: { ...this.state.modal_deviceList.btn, loading: false, visible: false },
+                    list
+                }
+            });
+        }
     }
 
     private async fetch_deviceKeyList() {
@@ -109,7 +154,6 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
             });
         });
         if (res) {
-            // this.setState({ deviceKeyList: res.data.result });
             this.setState({
                 ...this.state, modal_deviceList: {
                     ...this.state.modal_deviceList,
@@ -123,6 +167,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
     private removeDeviceKey_inProgressList: string[] = [];
     private async removeDeviceKey(deviceKeyId: IDeviceKey['id']) {
         debugger;
+        if (this.props.network_status === NETWORK_STATUS.OFFLINE) { return; }
         if (this.removeDeviceKey_inProgressList.includes(deviceKeyId)) return;
         this.removeDeviceKey_inProgressList.push(deviceKeyId);
 
@@ -135,7 +180,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
             if (index !== -1) {
                 list.splice(index, 1);
                 this.setState({
-                    ...this.state, modal_deviceList: { ...this.state.modal_deviceList, list }
+                    ...this.state, modal_deviceList: { ...this.state.modal_deviceList, list, msg: undefined }
                 });
             }
         }
@@ -179,6 +224,11 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                     </Modal.Header>
                     <Modal.Body>
                         <div className="row">
+                            <div className="col-12">
+                                <div className={"alert alert-danger " + (this.state.modal_deviceList.msg ? '' : 'd-none')}>
+                                    {this.state.modal_deviceList.msg}
+                                </div>
+                            </div>
                             <div className="col-12">
                                 <div className=" table-responsive">
                                     <table className="table table-striped table-borderless table-hover table-sm mb-0">
@@ -224,6 +274,25 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                         </div>
                     </Modal.Body>
                     <Modal.Footer className="pt-0 border-top-0">
+                        <BtnLoader
+                            btnClassName={
+                                "btn text-success btn-sm text-uppercase min-w-70px "
+                                + (this.state.modal_deviceList.btn.visible ? '' : 'd-none')
+                            }
+                            loading={this.state.modal_deviceList.btn.loading}
+                            onClick={() => this.generate()} // submitDevice
+                            disabled={
+                                this.props.network_status === NETWORK_STATUS.OFFLINE
+                                || this.state.modal_deviceList.msg
+                            }
+                        >
+                            {Localization.submit_this_device}
+                            {
+                                this.props.network_status === NETWORK_STATUS.OFFLINE
+                                    ? <i className="fa fa-wifi text-danger"></i> : ''
+                            }
+                        </BtnLoader>
+
                         <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_deviceList()}>
                             {Localization.close}
                         </button>
@@ -254,7 +323,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         internationalization: state.internationalization,
-        // network_status: state.network_status,
+        network_status: state.network_status,
     }
 }
 
