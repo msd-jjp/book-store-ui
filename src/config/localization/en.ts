@@ -39,6 +39,7 @@ export const en = {
             book_x_file_not_exist: 'book {0} has no file to download',
             book_x_file_problem: "book {0} has corrupted file and it can't download",
             device_key_not_found_reload: 'your device not registered yet, make sure you have stable internet and reload app',
+            you_reached_maximum_active_device: 'you reached maximum active device, please remove at least one of them',
         },
         back: {
             user_already_exists: 'user already exists',
@@ -401,4 +402,9 @@ export const en = {
     javscript_file: 'javscript file',
     webassembly_file: 'webassembly file',
     clear: 'clear',
+    unknown: 'unknown',
+    operating_system: 'operating system',
+    browser: 'browser',
+    device: 'device',
+    active_device_list: 'active device list',
 }

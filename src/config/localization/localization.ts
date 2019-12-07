@@ -51,6 +51,7 @@ interface ILocalization extends LocalizedStringsMethods {
             book_x_file_not_exist: string;
             book_x_file_problem: string;
             device_key_not_found_reload: string;
+            you_reached_maximum_active_device: string;
         },
         back: {
             [key: string]: any; // todo
@@ -388,6 +389,11 @@ interface ILocalization extends LocalizedStringsMethods {
     javscript_file: string;
     webassembly_file: string;
     clear: string;
+    unknown: string;
+    operating_system: string;
+    browser: string;
+    device: string;
+    active_device_list: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

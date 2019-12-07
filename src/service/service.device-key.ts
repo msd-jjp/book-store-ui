@@ -4,6 +4,7 @@ import { IUser } from '../model/model.user';
 
 export class DeviceKeyService extends BaseService {
 
+    /** doesn't need any access */
     generate(name: string): Promise<IAPI_Response<IDeviceKey>> {
         return this.axiosTokenInstance.post('/device-keys', { name });
     }
@@ -16,6 +17,7 @@ export class DeviceKeyService extends BaseService {
         return this.axiosTokenInstance.get(`/device-keys/${id}`);
     }
 
+    /** doesn't need any access */
     getAllByUserId(user_id: IUser["id"]): Promise<IAPI_ResponseList<IDeviceKey>> {
         return this.axiosTokenInstance.get(`/device-keys/user/${user_id}`);
     }

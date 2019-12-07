@@ -4,7 +4,7 @@ import { Store2 } from "../../../redux/store";
 import { BaseService } from "../../../service/service.base";
 import { Utility } from "../../../asset/script/utility";
 
-export class DeviceKey {
+export class DeviceKey_DELETE_ME {
     private static _deviceKeyService = new DeviceKeyService();
 
     static async check() {
@@ -30,7 +30,7 @@ export class DeviceKey {
                 return;
             }
 
-            DeviceKey.generate();
+            DeviceKey_DELETE_ME.generate();
 
         } else {
             if (BaseService.isAppOffline()) return;
@@ -38,7 +38,7 @@ export class DeviceKey {
                 // debugger;
                 if (e.response && e.response.status === 404) {
                     appLocalStorage.removeFromCollection('clc_deviceKey', _deviceKey.id);
-                    DeviceKey.generate();
+                    DeviceKey_DELETE_ME.generate();
                 }
             });
         }

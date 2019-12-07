@@ -1,5 +1,5 @@
 
-type TClient_OS_name = 'Unknown OS' | 'Windows' | 'MacOS' | 'UNIX' | 'Linux';
+type TClient_OS_name = 'Unknown OS' | 'Windows' | 'MacOS' | 'UNIX' | 'Linux' | 'iOS' | 'Android';
 export interface IBrowserDetail {
     browserName: string;
     fullVersion: string;
@@ -149,6 +149,29 @@ export abstract class Utility {
         return result;
     }
 
+    static getClientOSName(): TClient_OS_name {
+        var userAgent = window.navigator.userAgent,
+            platform = window.navigator.platform,
+            macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+            windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+            iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+            os: TClient_OS_name = "Unknown OS";
+
+        if (macosPlatforms.indexOf(platform) !== -1) {
+            os = 'MacOS';
+        } else if (iosPlatforms.indexOf(platform) !== -1) {
+            os = 'iOS';
+        } else if (windowsPlatforms.indexOf(platform) !== -1) {
+            os = 'Windows';
+        } else if (/Android/.test(userAgent)) {
+            os = 'Android';
+        } else if (/Linux/.test(platform)) {
+            os = 'Linux';
+        } else if (navigator.appVersion.indexOf("X11") !== -1) os = "UNIX";
+
+        return os;
+    }
+
     static browserDetail(): IBrowserDetail {
         // let nVer = navigator.appVersion;
         let nAgt = navigator.userAgent;
@@ -172,6 +195,11 @@ export abstract class Utility {
         // In MSIE, the true version is after "MSIE" in userAgent
         else if ((verOffset = nAgt.indexOf("MSIE")) !== -1) {
             browserName = "Microsoft Internet Explorer";
+            fullVersion = nAgt.substring(verOffset + 5);
+        }
+        // Edge
+        else if ((verOffset = nAgt.indexOf("Edge")) !== -1) {
+            browserName = "Edge";
             fullVersion = nAgt.substring(verOffset + 5);
         }
         // In Chrome, the true version is after "Chrome" 
@@ -212,12 +240,12 @@ export abstract class Utility {
             majorVersion = parseInt(navigator.appVersion, 10);
         }
 
-        let OSName: TClient_OS_name = "Unknown OS";
+        /* let OSName: TClient_OS_name = "Unknown OS";
 
         if (navigator.appVersion.indexOf("Win") !== -1) OSName = "Windows";
         if (navigator.appVersion.indexOf("Mac") !== -1) OSName = "MacOS";
         if (navigator.appVersion.indexOf("X11") !== -1) OSName = "UNIX";
-        if (navigator.appVersion.indexOf("Linux") !== -1) OSName = "Linux";
+        if (navigator.appVersion.indexOf("Linux") !== -1) OSName = "Linux"; */
 
         return {
             browserName,
@@ -225,7 +253,7 @@ export abstract class Utility {
             majorVersion,
             appName: navigator.appName,
             userAgent: navigator.userAgent,
-            OSName
+            OSName: Utility.getClientOSName()
         }
     }
 
