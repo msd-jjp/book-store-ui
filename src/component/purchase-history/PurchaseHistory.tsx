@@ -279,7 +279,7 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
                         {/* <td>{Localization.book_type_list[orderItem.book.type as BOOK_TYPES]}</td> */}
                         <td>
                           <img src={CmpUtility.getBookTypeIconUrl(orderItem.book.type as BOOK_TYPES)}
-                            className="max-w-100"
+                            className="max-w-100 max-h-2"
                             loading="lazy"
                             title={Localization.book_type_list[orderItem.book.type as BOOK_TYPES]}
                             alt={Localization.book_type_list[orderItem.book.type as BOOK_TYPES]}

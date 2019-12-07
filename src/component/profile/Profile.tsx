@@ -6,7 +6,6 @@ import { IUser } from "../../model/model.user";
 import { TInternationalization } from "../../config/setup";
 import { BaseComponent } from "../_base/BaseComponent";
 import { History } from "history";
-// import { IToken } from "../../model/model.token";
 import { ToastContainer, toast } from "react-toastify";
 import { Localization } from "../../config/localization/localization";
 import { BtnLoader } from "../form/btn-loader/BtnLoader";
@@ -109,14 +108,6 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
 
   private _personService = new PersonService();
   private _uploadService = new UploadService();
-
-  // constructor(props: IProps) {
-  //   super(props);
-
-  //   this._personService.setToken(this.props.token);
-  //   this._uploadService.setToken(this.props.token);
-
-  // }
 
   componentDidMount() {
     this.fetchPerson();
@@ -238,15 +229,6 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, saveLoader: false });
 
     if (res) {
-      // let logged_in_user = { ...this.props.logged_in_user! };
-      // logged_in_user.person.name = res.data.name;
-      // logged_in_user.person.last_name = res.data.last_name;
-      // logged_in_user.person.address = res.data.address;
-      // logged_in_user.person.phone = res.data.phone;
-      // logged_in_user.person.image = res.data.image;
-      // logged_in_user.person.email = res.data.email;
-
-      // this.props.onUserLoggedIn(logged_in_user);
       this.updateStoreData_profile(res.data);
       this.apiSuccessNotify();
     }
@@ -535,7 +517,6 @@ const state2props = (state: redux_state) => {
   return {
     logged_in_user: state.logged_in_user,
     internationalization: state.internationalization,
-    // token: state.token,
     network_status: state.network_status,
   };
 };
