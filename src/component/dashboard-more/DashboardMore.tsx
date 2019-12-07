@@ -31,6 +31,9 @@ import { ToastContainer } from 'react-toastify';
 import { IncreaseCredit } from '../increase-credit/IncreaseCredit';
 import { PaymentResult } from '../increase-credit/payment-result/PaymentResult';
 import { action_reset_downloading_book_file } from '../../redux/action/downloading-book-file';
+import { LibraryService } from '../../service/service.library';
+import { CollectionService } from '../../service/service.collection';
+import { LoginService } from '../../service/service.login';
 
 interface IProps {
     logged_in_user?: IUser | null;
@@ -180,13 +183,22 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         this.props.remove_token();
         BaseService.removeToken();
         this.props.remove_authentication();
+        appLocalStorage.removeFromCollection('clc_eTag', LoginService.generalId_profile);
+
         this.props.clear_cart();
+
         this.props.clear_library();
+        appLocalStorage.removeFromCollection('clc_eTag', LibraryService.generalId);
         this.props.clear_collections();
+        appLocalStorage.removeFromCollection('clc_eTag', CollectionService.generalId);
+
         this.props.reset_sync();
+
         this.props.reset_reader();
+
         this.props.reset_downloading_book_file();
         appLocalStorage.afterAppLogout();
+
         this.props.history.push('/login');
     }
 
