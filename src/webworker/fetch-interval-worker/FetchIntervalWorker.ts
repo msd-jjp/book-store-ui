@@ -7,12 +7,15 @@ import { action_set_library_data } from '../../redux/action/library';
 import { action_set_collections_data } from '../../redux/action/collection';
 import { appLocalStorage } from '../../service/appLocalStorage';
 import { BaseService } from '../../service/service.base';
+import { LoginService } from '../../service/service.login';
+import { action_user_logged_in } from '../../redux/action/user';
 
 export class FetchIntervalWorker extends BaseWorker {
 
     protected _worker: Worker | undefined;
     private _libraryService = new LibraryService();
     private _collectionService = new CollectionService();
+    private _loginService = new LoginService();
 
     protected init() {
         // if (typeof (Worker) !== "undefined") {
@@ -52,23 +55,25 @@ export class FetchIntervalWorker extends BaseWorker {
     // }
 
     private fetch_timeout_timer: number = 30000; // in ms --> 30second
-    start_fetchingData() {
+    private start_fetchingData() {
         console.log('--------- fetching library & collection started ---------');
         this.fetchLibrary();
         this.fetchCollection();
+        this.fetchProfile();
     }
 
-    stop_fetchingData() {
+    private stop_fetchingData() {
         clearTimeout(this.fetchLibrary_timeout);
         clearTimeout(this.fetchCollection_timeout);
+        clearTimeout(this.fetchProfile_timeout);
         console.log('--------- fetching library & collection stoped ---------');
     }
 
     private fetchLibrary_timeout: any;
-    async fetchLibrary() {
+    private async fetchLibrary() {
         let check;
         if (!BaseService.isAppOffline()) {
-            check = await this._libraryService.getAll_check().catch(e => { debugger; });
+            check = await this._libraryService.getAll_check().catch(e => { });
         }
         if (check) {
             const etag_new = check.headers['etag'];
@@ -86,10 +91,10 @@ export class FetchIntervalWorker extends BaseWorker {
     }
 
     private fetchCollection_timeout: any;
-    async fetchCollection() {
+    private async fetchCollection() {
         let check;
         if (!BaseService.isAppOffline()) {
-            check = await this._collectionService.getAll_check().catch(e => { debugger; });
+            check = await this._collectionService.getAll_check().catch(e => { });
         }
         if (check) {
             const etag_new = check.headers['etag'];
@@ -104,6 +109,27 @@ export class FetchIntervalWorker extends BaseWorker {
         }
         clearTimeout(this.fetchCollection_timeout);
         this.fetchCollection_timeout = setTimeout(() => { this.fetchCollection(); }, this.fetch_timeout_timer);
+    }
+
+    private fetchProfile_timeout: any;
+    private async fetchProfile() {
+        let check;
+        if (!BaseService.isAppOffline()) {
+            check = await this._loginService.profile_check().catch(e => { });
+        }
+        if (check) {
+            const etag_new = check.headers['etag'];
+            const eTag_current = appLocalStorage.find_eTagById(LoginService.generalId_profile);
+            if (!eTag_current || eTag_current.eTag !== etag_new) {
+                const res = await this._loginService.profile().catch(error => { });
+                if (res) {
+                    appLocalStorage.store_eTag({ id: LoginService.generalId_profile, eTag: etag_new });
+                    Store2.dispatch(action_user_logged_in(res.data));
+                }
+            }
+        }
+        clearTimeout(this.fetchProfile_timeout);
+        this.fetchProfile_timeout = setTimeout(() => { this.fetchProfile(); }, this.fetch_timeout_timer);
     }
 
 }
