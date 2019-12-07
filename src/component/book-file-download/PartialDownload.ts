@@ -260,7 +260,7 @@ export class PartialDownload {
                 error = e;
                 debugger;
             });
-            debugger;
+            // debugger;
 
             if (res) {
 

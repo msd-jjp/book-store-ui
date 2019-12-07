@@ -1,8 +1,11 @@
 import { BaseService, IAPI_Response, IAPI_ResponseList } from './service.base';
 import { IBook } from '../model/model.book';
 import { ICollection } from '../model/model.collection';
+import { AxiosResponse } from 'axios';
 
 export class CollectionService extends BaseService {
+    
+    static generalId = 'user-collection-id';
 
     search(data: { limit: number, skip: number, filter: Object }): Promise<IAPI_ResponseList<{
         book: IBook,
@@ -12,15 +15,20 @@ export class CollectionService extends BaseService {
     }>> {
         return this.axiosTokenInstance.post('/collections/_search', data);
     }
+
     getAll(): Promise<IAPI_ResponseList<ICollection>> {
         if (BaseService.isAppOffline()) {
             return new Promise((resolve, reject) => {
                 reject({ error: 'no internet access' });
             });
         }
-        // return this.axiosTokenInstance.get('/collections');
         return this.axiosTokenInstance.post('/collections/user', {});
     }
+
+    getAll_check(): Promise<AxiosResponse<{}>> {
+        return this.axiosTokenInstance.head('/collections/user');
+    }
+
     get_byTitle(title: string): Promise<IAPI_Response<IBook>> {
         return this.axiosTokenInstance.post(`/collections/collection`, { title });
     }

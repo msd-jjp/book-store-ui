@@ -5,7 +5,8 @@ import { LibraryService } from '../../service/service.library';
 import { Store2 } from '../../redux/store';
 import { action_set_library_data } from '../../redux/action/library';
 import { action_set_collections_data } from '../../redux/action/collection';
-// import { appLocalStorage } from '../../service/appLocalStorage';
+import { appLocalStorage } from '../../service/appLocalStorage';
+import { BaseService } from '../../service/service.base';
 
 export class FetchIntervalWorker extends BaseWorker {
 
@@ -65,10 +66,11 @@ export class FetchIntervalWorker extends BaseWorker {
 
     private fetchLibrary_timeout: any;
     async fetchLibrary() {
-        /* 
-        const check = await this._libraryService.getAll_check().catch(e => { debugger; });
+        let check;
+        if (!BaseService.isAppOffline()) {
+            check = await this._libraryService.getAll_check().catch(e => { debugger; });
+        }
         if (check) {
-            debugger;
             const etag_new = check.headers['etag'];
             const eTag_current = appLocalStorage.find_eTagById(LibraryService.generalId);
             if (!eTag_current || eTag_current.eTag !== etag_new) {
@@ -81,28 +83,27 @@ export class FetchIntervalWorker extends BaseWorker {
         }
         clearTimeout(this.fetchLibrary_timeout);
         this.fetchLibrary_timeout = setTimeout(() => { this.fetchLibrary(); }, this.fetch_timeout_timer);
- */
-
-        await this._libraryService.getAll().then(res => {
-            Store2.dispatch(action_set_library_data(res.data.result));
-        }).catch(error => { });
-
-        clearTimeout(this.fetchLibrary_timeout);
-        this.fetchLibrary_timeout = setTimeout(() => {
-            this.fetchLibrary();
-        }, this.fetch_timeout_timer);
     }
 
     private fetchCollection_timeout: any;
     async fetchCollection() {
-        await this._collectionService.getAll().then(res => {
-            Store2.dispatch(action_set_collections_data(res.data.result));
-        }).catch(error => { });
-
+        let check;
+        if (!BaseService.isAppOffline()) {
+            check = await this._collectionService.getAll_check().catch(e => { debugger; });
+        }
+        if (check) {
+            const etag_new = check.headers['etag'];
+            const eTag_current = appLocalStorage.find_eTagById(CollectionService.generalId);
+            if (!eTag_current || eTag_current.eTag !== etag_new) {
+                const res = await this._collectionService.getAll().catch(error => { });
+                if (res) {
+                    appLocalStorage.store_eTag({ id: CollectionService.generalId, eTag: etag_new });
+                    Store2.dispatch(action_set_collections_data(res.data.result));
+                }
+            }
+        }
         clearTimeout(this.fetchCollection_timeout);
-        this.fetchCollection_timeout = setTimeout(() => {
-            this.fetchCollection();
-        }, this.fetch_timeout_timer);
+        this.fetchCollection_timeout = setTimeout(() => { this.fetchCollection(); }, this.fetch_timeout_timer);
     }
 
 }
