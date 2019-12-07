@@ -282,42 +282,12 @@ download performance
 
 ====================================================================================
 
-setting
-list device haye faal ezafe kon
 
 ====================================================================================
 
-create first layer cmp
-level valid User? --> deviceKey need userId.
 
-cmp has:
-    one modal for list of active device(has remove btn)
-    one modal show notify only
+====================================================================================
 
-    show generate btn if device has not registered.
-
-
-    reducer
-        showListModal: boolean;
-        current device key
-        msg:
-            should generate new device_key
-            no msg just show list
-
-            show list first by loki db, then request and load all.
-            add icon to current device item in list.
-
-
-            on modal open
-                get data from loki
-                get data from server if online.
-
-
-    store in loki
-        not only api generate
-        but getAllByUserId
-
-
-    add open link in setting
+in layout acount --> will mount --> check if user --> redirect to dashboard.
 
 ====================================================================================

@@ -160,15 +160,12 @@ export class appLocalStorage {
     }
 
     static afterAppLogout() {
-        // appLocalStorage.resetDB() // todo: ask if need resetDB?
-        // appLocalStorage.clearCollection_bookFile(true);
-        // appLocalStorage.clearCollection_bookFile(true, true);
         appLocalStorage.clearFileCollection(FILE_STORAGE_KEY.FILE_BOOK_MAIN);
         appLocalStorage.clearFileCollection(FILE_STORAGE_KEY.FILE_BOOK_MAIN_PARTIAL);
-        // appLocalStorage.clearCollection('clc_book_sampleFile');
         appLocalStorage.clearCollection('clc_userInvoicedOrder');
         appLocalStorage.clearCollection('clc_userInvoicedOrderItem');
         appLocalStorage.clearCollection('clc_userAccount');
+        appLocalStorage.clearCollection('clc_deviceKey');
     }
 
     static storeUsefullResponse(response: AxiosResponse<any>) {
@@ -208,6 +205,7 @@ export class appLocalStorage {
 
     static clearWorkbox = FileStorage.clearWorkbox;
 
-    static find_deviceKeyByUserId = SearchAppStorage.find_deviceKeyByUserId;
+    // static find_deviceKeyByUserId = SearchAppStorage.find_deviceKeyByUserId;
+    static getAll_deviceKeyByUserId = SearchAppStorage.getAll_deviceKeyByUserId;
 
 }

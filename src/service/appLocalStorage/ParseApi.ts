@@ -52,5 +52,11 @@ export class ParseApi {
 
             appLocalStorage.addDataToCollection('clc_deviceKey', response.data);
         }
+        else if (response.config.url &&
+            response.config.url.includes('/api/device-keys/user/') &&
+            response.config.method === "get") {
+
+            appLocalStorage.addDataToCollection('clc_deviceKey', response.data.result);
+        }
     }
 }

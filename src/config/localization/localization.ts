@@ -395,6 +395,7 @@ interface ILocalization extends LocalizedStringsMethods {
     device: string;
     active_device_list: string;
     submit_this_device: string;
+    this_device: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

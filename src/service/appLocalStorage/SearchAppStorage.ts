@@ -23,8 +23,15 @@ export class SearchAppStorage {
         return appLocalStorage.clc_creationDate.findOne({ id: id });
     }
 
-    static find_deviceKeyByUserId(user_id: IUser['id']): IDeviceKey | null {
+    /* static find_deviceKeyByUserId(user_id: IUser['id']): IDeviceKey | null {
         return appLocalStorage.clc_deviceKey.findOne({ user_id });
+    } */
+
+    static getAll_deviceKeyByUserId(user_id: IUser['id']): IDeviceKey[] | null {
+        return appLocalStorage.clc_deviceKey.chain()
+            .where((dk => dk.user_id === user_id))
+            .sort(SearchAppStorage.asc_sort_creation_date)
+            .data();
     }
 
     static search_by_query_book(

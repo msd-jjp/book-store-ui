@@ -34,6 +34,7 @@ import { action_reset_downloading_book_file } from '../../redux/action/downloadi
 import { LibraryService } from '../../service/service.library';
 import { CollectionService } from '../../service/service.collection';
 import { LoginService } from '../../service/service.login';
+import { action_reset_device_Key } from '../../redux/action/device-key';
 
 interface IProps {
     logged_in_user?: IUser | null;
@@ -53,6 +54,7 @@ interface IProps {
     reset_reader: () => any;
     match: any;
     reset_downloading_book_file: () => any;
+    reset_device_Key: () => any;
 }
 
 interface IState {
@@ -193,10 +195,10 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         appLocalStorage.removeFromCollection('clc_eTag', CollectionService.generalId);
 
         this.props.reset_sync();
-
         this.props.reset_reader();
-
+        this.props.reset_device_Key();
         this.props.reset_downloading_book_file();
+
         appLocalStorage.afterAppLogout();
 
         this.props.history.push('/login');
@@ -503,6 +505,7 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
         reset_sync: () => dispatch(action_reset_sync()),
         reset_reader: () => dispatch(action_reset_reader()),
         reset_downloading_book_file: () => dispatch(action_reset_downloading_book_file()),
+        reset_device_Key: () => dispatch(action_reset_device_Key()),
     }
 }
 

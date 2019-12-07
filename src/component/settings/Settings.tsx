@@ -15,11 +15,14 @@ import { action_update_reader_engine } from '../../redux/action/reader-engine';
 import { READER_FILE_NAME } from '../../webworker/reader-engine/reader-download/reader-download';
 import { FILE_STORAGE_KEY } from '../../service/appLocalStorage/FileStorage';
 import { is_file_downloading } from '../library/libraryViewTemplate';
+import { action_update_device_Key } from '../../redux/action/device-key';
+import { IDeviceKey_schema } from '../../redux/action/device-key/deviceKeyAction';
 
 interface IProps {
     internationalization: TInternationalization;
     network_status: NETWORK_STATUS;
     reset_reader: () => any;
+    update_device_Key: (data: IDeviceKey_schema) => any;
 }
 
 interface IState {
@@ -45,10 +48,6 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
     }
     componentWillUnmount() {
         document.title = Localization.app_title;
-    }
-
-    private funccc() {
-        debugger;
     }
 
     private open_confirmNotify_gc() {
@@ -150,6 +149,12 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
         )
     }
 
+    show_activeDeviceList() {
+        const device_key = { ...Store2.getState().device_key };
+        device_key.show = true;
+        this.props.update_device_Key(device_key);
+    }
+
     render() {
 
         return (
@@ -185,6 +190,11 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
                         <li className="settings-item d-flex align-items-center list-group-item p-align-0 cursor-pointer"
                             onClick={() => this.open_confirmNotify_rr()}>
                             <span className="text text-capitalize">{Localization.reset_reader}</span>
+                        </li>
+
+                        <li className="settings-item d-flex align-items-center list-group-item p-align-0 cursor-pointer"
+                            onClick={() => this.show_activeDeviceList()}>
+                            <span className="text text-capitalize">{Localization.active_device_list}</span>
                         </li>
 
                     </ul>
@@ -234,6 +244,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
         reset_reader: () => dispatch(action_reset_reader()),
+        update_device_Key: (data: IDeviceKey_schema) => dispatch(action_update_device_Key(data)),
     }
 }
 

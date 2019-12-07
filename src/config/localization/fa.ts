@@ -39,7 +39,7 @@ export const fa = {
             book_x_file_not_exist: 'کتاب {0} فایلی برای دانلود ندارد',
             book_x_file_problem: "فایل کتاب {0} خراب است و قابل بارگیری نیست",
             device_key_not_found_reload: 'دستگاه شما هنوز ثبت نشده است، لطفا از اتصال اینترنت خود مطمئن شده و برنامه را مجددا بارگیری نمائید',
-            you_reached_maximum_active_device: 'شما به سقف تعداد دستگاه های فعال رسیدید، لطفا حداقل یکی از آن ها را حذف کنید',
+            you_reached_maximum_active_device: 'شما به سقف مجاز تعداد دستگاه های فعال رسیدید، لطفا حداقل یکی از آن ها را حذف کنید',
         },
         back: {
             user_already_exists: 'کاربر از قبل وجود دارد.',
@@ -407,4 +407,5 @@ export const fa = {
     device: 'دستگاه',
     active_device_list: 'لیست دستگاه های فعال',
     submit_this_device: 'ثبت این دستگاه',
+    this_device: 'این دستگاه',
 }

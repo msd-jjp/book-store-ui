@@ -172,7 +172,8 @@ export class PartialDownload {
                     reject('not_logged_in');
                     return;
                 }
-                const _deviceKey = appLocalStorage.find_deviceKeyByUserId(user_id);
+                // const _deviceKey = appLocalStorage.find_deviceKeyByUserId(user_id);
+                const _deviceKey = Store2.getState().device_key.deviceKey;
                 if (!_deviceKey) {
                     reject('device_key_not_found');
                     return;

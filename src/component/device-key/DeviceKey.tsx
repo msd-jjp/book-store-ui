@@ -9,16 +9,19 @@ import { Modal } from 'react-bootstrap';
 import { DeviceKeyService } from '../../service/service.device-key';
 import { Store2 } from '../../redux/store';
 import { appLocalStorage } from '../../service/appLocalStorage';
-import { BaseService } from '../../service/service.base';
 import { Utility, IBrowserDetail } from '../../asset/script/utility';
 import { IDeviceKey } from '../../model/model.device-key';
 import { IUser } from '../../model/model.user';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
+import { IDeviceKey_schema } from '../../redux/action/device-key/deviceKeyAction';
+import { action_update_device_Key } from '../../redux/action/device-key';
 
 interface IProps {
     internationalization: TInternationalization;
     network_status: NETWORK_STATUS;
+    device_key: IDeviceKey_schema;
+    update_device_Key?: (data: IDeviceKey_schema) => any;
 }
 
 interface IState {
@@ -54,7 +57,24 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
     private _deviceKeyService = new DeviceKeyService();
 
     componentWillMount() {
+        if (this.props.device_key.show) {
+            if (this.props.update_device_Key) {
+                this.props.update_device_Key({ ...this.props.device_key, show: false });
+            }
+        }
         this.check();
+
+    }
+    componentWillReceiveProps(nextProps: IProps) {
+        if (JSON.stringify(this.props.device_key) !== JSON.stringify(nextProps.device_key)) {
+            if (nextProps.device_key.show) {
+                this.openModal_deviceList();
+
+                if (this.props.update_device_Key) {
+                    this.props.update_device_Key({ ...nextProps.device_key, show: false });
+                }
+            }
+        }
     }
     componentDidMount() {
     }
@@ -69,11 +89,13 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
     private async check() {
         const user_id = this.getUserId();
         if (!user_id) return;
-        const _deviceKey = appLocalStorage.find_deviceKeyByUserId(user_id);
+        // const _deviceKey = appLocalStorage.find_deviceKeyByUserId(user_id);
+        const _deviceKey = this.props.device_key.deviceKey;
 
         if (!_deviceKey) {
 
-            if (BaseService.isAppOffline()) {
+            if (this.props.network_status === NETWORK_STATUS.OFFLINE) {
+                // if (BaseService.isAppOffline()) {
                 this.toastNotify(
                     Localization.msg.ui.device_key_not_found_reload,
                     { autoClose: false, toastId: 'check_book_error_error' },
@@ -85,7 +107,8 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
             this.generate();
 
         } else {
-            if (BaseService.isAppOffline()) return;
+            // if (BaseService.isAppOffline()) return;
+            if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
             await this._deviceKeyService.getById(_deviceKey.id).catch(e => {
                 if (e.response && e.response.status === 404) {
                     appLocalStorage.removeFromCollection('clc_deviceKey', _deviceKey.id);
@@ -104,12 +127,6 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
         });
         const res = await this._deviceKeyService.generate(JSON.stringify(Utility.browserDetail())).catch(e => {
             if (e && e.response && e.response.data && e.response.data.msg === 'maximum_active_device') {
-                debugger;
-                /* this.toastNotify(
-                    Localization.msg.ui.you_reached_maximum_active_device,
-                    { autoClose: false, toastId: 'deviceKeyGenerate_error' },
-                    'error'
-                ); */
                 this.setState({
                     modal_deviceList: {
                         ...this.state.modal_deviceList,
@@ -137,16 +154,28 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                     list
                 }
             });
+
+            if (this.props.update_device_Key) {
+                this.props.update_device_Key({ ...this.props.device_key, deviceKey: res.data });
+            }
         }
     }
 
     private async fetch_deviceKeyList() {
         const user_id = this.getUserId(); if (!user_id) return;
+        const _deviceKey_list_local = appLocalStorage.getAll_deviceKeyByUserId(user_id);
+        // const isAppOffline = BaseService.isAppOffline();
+        const isAppOffline = this.props.network_status === NETWORK_STATUS.OFFLINE;
         this.setState({
-            ...this.state, modal_deviceList: { ...this.state.modal_deviceList, loading: true, errorText: undefined }
+            ...this.state, modal_deviceList: {
+                ...this.state.modal_deviceList,
+                loading: !isAppOffline, errorText: undefined,
+                list: _deviceKey_list_local || []
+            }
         });
+        if (isAppOffline) return;
         const res = await this._deviceKeyService.getAllByUserId(user_id).catch(e => {
-            const errObj = this.handleError({ error: e, toastOptions: { toastId: 'fetch_deviceKeyList_error' }, notify: false });
+            const errObj = this.handleError({ error: e.response, toastOptions: { toastId: 'fetch_deviceKeyList_error' }, notify: false });
             this.setState({
                 ...this.state, modal_deviceList: {
                     ...this.state.modal_deviceList, errorText: errObj.body, loading: false
@@ -166,13 +195,12 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
 
     private removeDeviceKey_inProgressList: string[] = [];
     private async removeDeviceKey(deviceKeyId: IDeviceKey['id']) {
-        debugger;
         if (this.props.network_status === NETWORK_STATUS.OFFLINE) { return; }
         if (this.removeDeviceKey_inProgressList.includes(deviceKeyId)) return;
         this.removeDeviceKey_inProgressList.push(deviceKeyId);
 
         const res = await this._deviceKeyService.remove(deviceKeyId).catch(e => {
-            this.handleError({ error: e, toastOptions: { toastId: 'removeDeviceKey_error' } });
+            this.handleError({ error: e.response, toastOptions: { toastId: 'removeDeviceKey_error' } });
         });
         if (res) {
             const list: IDeviceKey[] = [...this.state.modal_deviceList.list];
@@ -197,6 +225,9 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
 
     closeModal_deviceList() {
         this.setState({ ...this.state, modal_deviceList: { ...this.state.modal_deviceList, show: false } });
+        /* if (this.props.update_device_Key) {
+            this.props.update_device_Key({ ...this.props.device_key, show: false });
+        } */
     }
 
     getDeviceKey_parsedName(deviceKeyName: IDeviceKey['name']) {
@@ -212,6 +243,12 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
             rtn = `${os}: ${pn.OSName},  ${browser}: ${pn.browserName},  ${version}: ${pn.majorVersion}`;
         }
         return rtn;
+    }
+
+    checkIfThisDevice(id: IDeviceKey['id']): JSX.Element {
+        if (!this.props.device_key.deviceKey) return <></>;
+        if (this.props.device_key.deviceKey.id === id) return <span className="ml-2 small badge badge-info">{Localization.this_device}</span>;
+        return <></>;
     }
 
     modal_deviceList_render() {
@@ -253,7 +290,10 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                                                 <tr key={itemIndex}>
                                                     <td className="max-w-25px-- align-middle">{itemIndex + 1}</td>
                                                     <td className="text-nowrap-ellipsis">
-                                                        <small className="text-muted">{this.getFromNowDate(item.creation_date)}</small>
+                                                        <small className="text-muted">
+                                                            {this.getFromNowDate(item.creation_date)}
+                                                            {this.checkIfThisDevice(item.id)}
+                                                        </small>
                                                         <div>{this.getDeviceKey_parsedName(item.name)}</div>
                                                     </td>
                                                     {/* <td className="text-nowrap-ellipsis">
@@ -263,7 +303,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                                                         onClick={() => this.removeDeviceKey(item.id)}
                                                         title={Localization.remove}
                                                     >
-                                                        <i className="fa fa-times text-danger"></i>
+                                                        <i className="fa fa-times text-danger p-2 bg-light rounded"></i>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -316,7 +356,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
-
+        update_device_Key: (data: IDeviceKey_schema) => dispatch(action_update_device_Key(data)),
     }
 }
 
@@ -324,6 +364,7 @@ const state2props = (state: redux_state) => {
     return {
         internationalization: state.internationalization,
         network_status: state.network_status,
+        device_key: state.device_key
     }
 }
 
