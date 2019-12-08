@@ -248,7 +248,7 @@ export abstract class ReaderUtility {
     static async renderViewablePages(bi: BookGenerator | PdfBookGenerator, selector?: string) {
         if (ReaderUtility._renderViewablePages_isRun) return;
         ReaderUtility._renderViewablePages_isRun = true;
-        
+
         selector = selector || '.swiper-container .swiper-slide img.page-img';
 
         const img_list: Array<Element> = Array.apply(null, (document.querySelectorAll(selector!) as any)) as Array<Element>;
@@ -264,7 +264,7 @@ export abstract class ReaderUtility {
             ReaderUtility._renderViewablePages_isRun = false;
             return;
         }
-        
+
 
         for (let i = 0; i < img_list.length; i++) {
             if (img_has_src_list[i]) continue;
@@ -519,12 +519,14 @@ export abstract class ReaderUtility {
             chapters_with_page.push(obj);
 
             if (index !== 0) {
-                if (!flat_chapters[index - 1].clickable) {
-                    return;
-                }
-                let prev_ch = chapters_with_page[index - 1];
-                prev_ch.lastPageIndex = prev_ch.firstPageIndex === obj.firstPageIndex ? obj.firstPageIndex :
-                    obj.firstPageIndex ? obj.firstPageIndex - 1 : undefined;
+                // if (!flat_chapters[index - 1].clickable) {
+                if (flat_chapters[index - 1].clickable) { //
+                    // return;
+                    // }
+                    let prev_ch = chapters_with_page[index - 1];
+                    prev_ch.lastPageIndex = prev_ch.firstPageIndex === obj.firstPageIndex ? obj.firstPageIndex :
+                        obj.firstPageIndex ? obj.firstPageIndex - 1 : undefined;
+                } //
             }
             if (index === flat_chapters.length - 1) {
                 chapters_with_page[index].lastPageIndex = pagePosList.length - 1;

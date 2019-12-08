@@ -269,18 +269,16 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private _createBookChapters: IEpubBook_chapters | undefined;
     private async createBookChapters() {
         const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
-        debugger;
         this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
     }
 
     private async initAudio() {
         debugger;
+        await this.createBookChapters();
+        
         if (this.wavesurfer) {
             this.wavesurfer.destroy();
         }
-
-        await this.createBookChapters();
-        debugger;
 
         // const fileTotalDuration = this._bookInstance.getTotalDuration();
         const allAtoms_pos = await this._bookInstance.getAllAtoms_pos();
