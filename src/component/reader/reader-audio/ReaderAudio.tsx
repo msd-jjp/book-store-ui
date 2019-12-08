@@ -20,8 +20,8 @@ import { getLibraryItem/* , getBookFileId */ } from "../../library/libraryViewTe
 import { CmpUtility } from "../../_base/CmpUtility";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { AudioBookGenerator } from "../../../webworker/reader-engine/AudioBookGenerator";
-import { ReaderUtility } from "../ReaderUtility";
-import { IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
+import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
+import { IBookPosIndicator, IBookContent } from "../../../webworker/reader-engine/MsdBook";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
 // import { Utility } from "../../../asset/script/utility";
@@ -266,11 +266,21 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
     }
 
+    private _createBookChapters: IEpubBook_chapters | undefined;
+    private async createBookChapters() {
+        const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
+        debugger;
+        this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
+    }
+
     private async initAudio() {
         debugger;
         if (this.wavesurfer) {
             this.wavesurfer.destroy();
         }
+
+        await this.createBookChapters();
+        debugger;
 
         // const fileTotalDuration = this._bookInstance.getTotalDuration();
         const allAtoms_pos = await this._bookInstance.getAllAtoms_pos();
@@ -867,6 +877,70 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.updateGainNode(vol);
     }
 
+
+    private generateEl(eb_chapters: IEpubBook_chapters['tree']) {
+        return (
+            <>
+                {/* <ul> */}
+                <li
+                    className={
+                        ((eb_chapters.clickable) ? 'clickable ' : 'disabled ')
+                        // + (eb_chapters.content!.text ? '' : 'd-none')
+                    }
+                // onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.chapter!); }}
+                >
+                    <div className={
+                        "chapter-title p-2 "
+                        + (eb_chapters.content!.text ? '' : 'd-none')
+                        + (eb_chapters.clickable ? '' : 'd-none')
+                    }
+                        onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.content!); }}
+                    >
+                        {eb_chapters.content!.text}
+                    </div>
+                    {/* </li> */}
+                    {
+                        eb_chapters.children.length ?
+                            <ul className="pl-1 mb-2">
+                                {
+                                    eb_chapters.children.map((ch, index) => (
+                                        <Fragment key={index}>
+                                            {this.generateEl(ch)}
+                                        </Fragment>
+                                    ))
+                                }
+                            </ul>
+                            : ''
+                    }
+                </li>
+                {/* </ul> */}
+            </>
+        )
+    }
+    private book_chapter_render(): JSX.Element {
+        if (!this._createBookChapters) {
+            return <div></div>;
+        } else {
+            return (
+                <div className="book-chapters">
+                    <ul className="p-0">
+                        {this.generateEl(this._createBookChapters.tree)}
+                    </ul>
+                </div>
+            )
+        }
+    }
+    private async chapterClicked(ibc: IBookContent) {
+        debugger;
+        /* const pageIndex = await this.getPageIndex_withChapter(ibc.pos);
+        if (pageIndex || pageIndex === 0) {
+          this.hideSidebar();
+          await CmpUtility.waitOnMe(100);
+          this.set_RcSlider_value(pageIndex + 1);
+          this.swiper_slideTo(pageIndex);
+          // this.setState({});
+        } */
+    }
     private playlist_render() {
         return (
             <>
@@ -894,6 +968,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                                 </Fragment>
                             )
                         })}
+                    </div>
+                    <br />
+                    <div>
+                        {this.book_chapter_render()}
                     </div>
                     {/* </div> */}
                 </div>

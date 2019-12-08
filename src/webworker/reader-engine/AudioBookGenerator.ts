@@ -1,6 +1,7 @@
 import {
     audioBook, IBookPosIndicator,/* , msdreader */
-    WasmWorkerHandler
+    WasmWorkerHandler,
+    IBookContent
 } from "./MsdBook";
 
 export class AudioBookGenerator extends audioBook {
@@ -112,6 +113,12 @@ export class AudioBookGenerator extends audioBook {
         atom = atomList[index];
         if (!atom) return;
         return { atom, index, fromTo: atomFromTo! };
+    }
+
+    private _allChapters: IBookContent[] | undefined;
+    async getAllChapters(): Promise<Array<IBookContent>> {
+        if (!this._allChapters) this._allChapters = await this.getContentList();
+        return this._allChapters;
     }
 
 }

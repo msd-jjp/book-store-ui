@@ -393,6 +393,30 @@ export class audioBook {
     }
     return finalChannels;
   }
+
+  async contentAt(itemIndex: number): Promise<IBookContent> {
+    let r = await this.wasmWorker.getBookContentAt(this.bookPtr, itemIndex);
+    if (r === 0) throw new Error('bad Index');
+    let size = await this.wasmWorker.getDWORDSize(r);
+    let gindex = await this.wasmWorker.getDWORDSize(r + 4);
+    let aindex = await this.wasmWorker.getDWORDSize(r + 4 + 4);
+    let parentindex = await this.wasmWorker.getWORDSize(r + 4 + 4 + 4);
+    let sbuf = await this.wasmWorker.extractFromHeapBytes(
+      size - 4 - 4 - 4 - 2, r + 4 + 4 + 4 + 2);
+    let s = new TextDecoder('utf-8').decode(sbuf);
+    return {
+      pos: { group: gindex, atom: aindex }, text: s, parentIndex: parentindex
+    }
+  }
+  async contentLength(): Promise<number> {
+    return await this.wasmWorker.getBookContentLength(this.bookPtr);
+  }
+  async getContentList(): Promise<Array<IBookContent>> {
+    let rtn: Array<IBookContent> = [];
+    let cLen = await this.contentLength();
+    for (let i = 0; i < cLen; i++) rtn.push(await this.contentAt(i));
+    return rtn;
+  }
 };
 
 

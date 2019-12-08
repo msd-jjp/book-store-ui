@@ -185,7 +185,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
   private _createBookChapters: IEpubBook_chapters | undefined;
   private async createBookChapters() {
-    await CmpUtility.waitOnMe(0);
+    // await CmpUtility.waitOnMe(0);
     const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
     this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
 
@@ -214,7 +214,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];
   private async initSwiper() {
     const bookPosList: IBookPosIndicator[] = await this._bookInstance.getAllPages_pos();
-    this.createBookChapters();
+    await this.createBookChapters();
 
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;

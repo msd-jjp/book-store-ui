@@ -246,8 +246,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
 
   private _createBookChapters: IEpubBook_chapters | undefined;
-  private async  createBookChapters() {
-    await CmpUtility.waitOnMe(0);
+  private async createBookChapters() {
+    // await CmpUtility.waitOnMe(0);
     const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
     // debugger;
     this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
@@ -257,7 +257,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   private async initSwiper() {
     const bookPosList: IBookPosIndicator[] = await this._bookInstance.getAllPages_pos();
     // const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
-    this.createBookChapters();
+    await this.createBookChapters();
     // debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
@@ -645,10 +645,16 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       <>
         {/* <ul> */}
         <li
-          className={(eb_chapters.clickable) ? 'clickable' : 'disabled'}
+          className={
+            ((eb_chapters.clickable) ? 'clickable ' : 'disabled ')
+            // + (eb_chapters.content!.text ? '' : 'd-none')
+          }
         // onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.chapter!); }}
         >
-          <div className="chapter-title p-2"
+          <div className={
+            "chapter-title p-2 "
+            + (eb_chapters.content!.text ? '' : 'd-none')
+          }
             onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.content!); }}
           >
             {eb_chapters.content!.text}
