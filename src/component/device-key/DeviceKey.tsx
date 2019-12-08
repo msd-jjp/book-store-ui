@@ -67,7 +67,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
     }
     componentWillReceiveProps(nextProps: IProps) {
         if (JSON.stringify(this.props.device_key) !== JSON.stringify(nextProps.device_key)) {
-            if (nextProps.device_key.show) {
+            if (nextProps.device_key.show && !this.props.device_key.show) {
                 this.openModal_deviceList();
 
                 if (this.props.update_device_Key) {
@@ -112,6 +112,9 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
             await this._deviceKeyService.getById(_deviceKey.id).catch(e => {
                 if (e.response && e.response.status === 404) {
                     appLocalStorage.removeFromCollection('clc_deviceKey', _deviceKey.id);
+                    if (this.props.update_device_Key) {
+                        this.props.update_device_Key({ ...this.props.device_key, deviceKey: undefined });
+                    }
                     this.generate();
                 }
             });
@@ -211,6 +214,10 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                     ...this.state, modal_deviceList: { ...this.state.modal_deviceList, list, msg: undefined }
                 });
             }
+
+            if (this.props.update_device_Key && this.props.device_key.deviceKey && this.props.device_key.deviceKey.id === deviceKeyId) {
+                this.props.update_device_Key({ ...this.props.device_key, deviceKey: undefined });
+            }
         }
 
         const inProgress_index = this.removeDeviceKey_inProgressList.indexOf(deviceKeyId);
@@ -255,7 +262,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
         return (
             <>
                 <Modal show={this.state.modal_deviceList.show} onHide={() => this.closeModal_deviceList()} centered>
-                    <Modal.Header closeButton className="border-bottom-0 pb-0">
+                    <Modal.Header /* closeButton */ className="border-bottom-0 pb-0">
                         {/* <Modal.Title className="text-danger_">app info</Modal.Title> */}
                         <div className="modal-title h6">{Localization.active_device_list}</div>
                     </Modal.Header>
@@ -296,9 +303,6 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                                                         </small>
                                                         <div>{this.getDeviceKey_parsedName(item.name)}</div>
                                                     </td>
-                                                    {/* <td className="text-nowrap-ellipsis">
-                                                        {this.getFromNowDate(item.creation_date)}
-                                                    </td> */}
                                                     <td className="cursor-pointer text-center max-w-25px-- align-middle"
                                                         onClick={() => this.removeDeviceKey(item.id)}
                                                         title={Localization.remove}

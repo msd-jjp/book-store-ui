@@ -56,7 +56,15 @@ export class ParseApi {
             response.config.url.includes('/api/device-keys/user/') &&
             response.config.method === "get") {
 
+            appLocalStorage.clearCollection('clc_deviceKey');
             appLocalStorage.addDataToCollection('clc_deviceKey', response.data.result);
+        }
+
+        else if (response.config.url &&
+            response.config.url.includes('/api/device-keys/') &&
+            response.config.method === "delete") {
+            const id = response.config.url.replace('/api/device-keys/', '');
+            appLocalStorage.removeFromCollection("clc_deviceKey", id);
         }
     }
 }
