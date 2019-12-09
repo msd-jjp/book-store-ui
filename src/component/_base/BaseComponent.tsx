@@ -153,6 +153,7 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         const defaults: ToastContainerProps = {
             newestOnTop: true,
             rtl: this.props.internationalization.rtl,
+            closeButton: false,
         };
         return Object.assign(defaults, config);
     }
