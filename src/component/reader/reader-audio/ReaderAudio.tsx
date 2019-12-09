@@ -19,11 +19,12 @@ import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem/* , getBookFileId */ } from "../../library/libraryViewTemplate";
 import { CmpUtility } from "../../_base/CmpUtility";
 import { appLocalStorage } from "../../../service/appLocalStorage";
-import { AudioBookGenerator } from "../../../webworker/reader-engine/AudioBookGenerator";
+import { AudioBookGenerator, IChapterDetail } from "../../../webworker/reader-engine/AudioBookGenerator";
 import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
 import { IBookPosIndicator, IBookContent } from "../../../webworker/reader-engine/MsdBook";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
+import { Utility } from "../../../asset/script/utility";
 // import { Utility } from "../../../asset/script/utility";
 // import { BookService } from "../../../service/service.book";
 //
@@ -275,25 +276,25 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private async initAudio() {
         debugger;
         await this.createBookChapters();
-        
+
         if (this.wavesurfer) {
             this.wavesurfer.destroy();
         }
 
         // const fileTotalDuration = this._bookInstance.getTotalDuration();
-        const allAtoms_pos = await this._bookInstance.getAllAtoms_pos();
-        let trackTotalDuration = 0;
-        try {
-            /* allAtoms_pos.forEach(atom => {
-                trackTotalDuration += this._bookInstance.getAtomDuration(atom);
-            }); */
-            for (let i = 0; i < allAtoms_pos.length; i++) {
-                trackTotalDuration += await this._bookInstance.getAtomDuration(allAtoms_pos[i]);
-            }
-        } catch (e) {
-            // trackTotalDuration = 247560;
-            console.error('trackTotalDuration: ', e);
-        }
+        // const allAtoms_pos = await this._bookInstance.getAllAtoms_pos();
+        // let trackTotalDuration = 0;
+        // try {
+        //     /* allAtoms_pos.forEach(atom => {
+        //         trackTotalDuration += this._bookInstance.getAtomDuration(atom);
+        //     }); */
+        //     for (let i = 0; i < allAtoms_pos.length; i++) {
+        //         trackTotalDuration += await this._bookInstance.getAtomDuration(allAtoms_pos[i]);
+        //     }
+        // } catch (e) {
+        //     // trackTotalDuration = 247560;
+        //     console.error('trackTotalDuration: ', e);
+        // }
 
         const wsParams: any = { // WaveSurfer.WaveSurferParams = {
             // const obj: WaveSurfer.WaveSurferParams = {
@@ -303,15 +304,15 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             // backend: 'MediaElement',
             backend: 'WebAudio',
             // height: 208,
-            height: 320,
+            height: 160, // 320
             // barWidth: 1,
             barGap: 0,
             // normalize: true,
             cursorWidth: 1,
             cursorColor: '#015e5b', // '#4a74a5',
 
-            duration: trackTotalDuration / 1000,
-            // closeAudioContext: false,
+            // duration: trackTotalDuration / 1000,
+            closeAudioContext: true, //?
             // rtl: true,
             plugins: [
                 TimelinePlugin.create({
@@ -342,8 +343,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
         this.wavesurfer = WaveSurfer.create(wsParams);
         // this.wavesurfer!.backend.setPeaks([], trackTotalDuration / 1000);
-        const peaks = Array.from({ length: Math.ceil(trackTotalDuration / 1000) }, (v, k) => 1);
-        this.wavesurfer!.backend.setPeaks(peaks, trackTotalDuration / 1000);
+        /* const peaks = Array.from({ length: Math.ceil(trackTotalDuration / 1000) }, (v, k) => 1);
+        this.wavesurfer!.backend.setPeaks(peaks, trackTotalDuration / 1000); */
         // this.wavesurfer!.drawBuffer();
 
         this.wavesurfer!.on('ready', () => {
@@ -377,23 +378,27 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             // this.destroy_srcObj(false);
             // this._audioCtx_currentTime_next = undefined;
             // this.reset_srcObj();
-            this._b_reset_binding();
-            this.pause();
+
+            /* this._b_reset_binding();
+            this.pause(); */
+            this.stepForward();
         });
         this.wavesurfer!.on('loading', () => { console.log('loadingggg'); });
         this.wavesurfer!.on('destroy', () => { console.log('destroyyyyyy'); });
         this.wavesurfer!.on('audioprocess', () => { this.updateTimer(); });
         this.wavesurfer!.on('seek', () => { this.updateTimer(undefined, true); });
 
-        const audioBuffer_min = this.getaudioBuffer(44100, 1, [new Float32Array(1)]); // srate
-        this.wavesurfer!.loadDecodedBuffer(audioBuffer_min);
+        /* const audioBuffer_min = this.getaudioBuffer(44100, 1, [new Float32Array(1)]); // srate
+        this.wavesurfer!.loadDecodedBuffer(audioBuffer_min); */
 
         // this.getGainNode();
 
         //todo: book progreess position;
-        let bookReadedTime = 201; // 0, 47, 200
-        this.setWavesurferTime(bookReadedTime);
-        this.updateTimer(bookReadedTime);
+        // let bookReadedTime = 0; // 0, 47, 200
+        // this.setWavesurferTime(bookReadedTime);
+        // this.updateTimer(bookReadedTime);
+        this.loadChapter(undefined, 0);
+
     }
 
     private _audioContext: AudioContext | undefined;
@@ -499,6 +504,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
      * @param from number in second
      */
     private async bindGeneratedAudio(from: number, seek: boolean, delay: number) {
+        from = from + this._b_loaded_chapter_from;
 
         const audioCtx_time = this.getAudioContext().currentTime;
         const wasPlaying = this.state.isPlaying;
@@ -513,7 +519,6 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         `);
 
 
-
         if (seek) {
             this._b_reset_binding();
             this._b_seek_from = from;
@@ -526,7 +531,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             // else if (from = this._b_progress_to) { console.log(from); }
             // else
             if (from + this._b_timeToBindNext >= this._b_progress_to) {
-                this.bindGeneratedAudio(this._b_progress_to, false, this._b_timeToBindNext);
+                this.bindGeneratedAudio(this._b_progress_to - this._b_loaded_chapter_from, false, this._b_timeToBindNext);
                 return;
             }
             else if (from < this._b_progress_to) return;
@@ -536,14 +541,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             }
         }
 
-
-
         if ((!this._b_progress_to || from >= this._b_progress_to) && delay === 0 && wasPlaying) {
             console.log(`puase REQ** from : ${from} >= this._b_progress_to: ${this._b_progress_to}`);
             // if (wasPlaying) { this.pause(); }
             this.pause();
         }
-
 
         this._b_inProgress = true;
 
@@ -590,7 +592,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
 
         if (voiceTime <= this._b_timeToBindNext) {
-            this.bindGeneratedAudio(this._b_progress_to!, false, voiceTime);
+            this.bindGeneratedAudio(this._b_progress_to! - this._b_loaded_chapter_from, false, voiceTime);
         }
     }
 
@@ -614,6 +616,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
      * @param from number in second
      */
     private async getAudioDataByTime(from: number): Promise<Float32Array[] | undefined> {
+
+
         const atomDetail = await this._bookInstance.getAtomDetailByTime(from * 1000);
 
         if (!atomDetail) {
@@ -777,7 +781,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     //     this.load_file();
     // }
 
-    private setCurrentSong(url: string, scrollIntoView = false) {
+    /* private setCurrentSong(url: string, scrollIntoView = false) {
         if (555) return;
         // this.toggleLoading();
         this.setState({ loading: true, active_item: url, isPlaying: false }, () => {
@@ -791,6 +795,13 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             }
         });
         this.updateTimer(0);
+    } */
+    private async updatePlaylistView() {
+        await Utility.waitOnMe(100);
+        const active_chapter = document.querySelector('.book-chapters .chapter-title.active');
+        if (active_chapter) {
+            active_chapter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
     private _current_time = '';
     private updateTimer(currentTime?: number, seek = false) {
@@ -802,13 +813,17 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         } else {
             formattedTime = this.secondsToTimeFormatter(this.wavesurfer!.getCurrentTime());
         }
-        if (this._current_time === formattedTime) {
+        /* if (this._current_time === formattedTime) {
             return;
+        } */
+        if (this._current_time !== formattedTime) {
+            this._current_time = formattedTime;
+            document.getElementById('time-current')!.innerText = formattedTime;
+            this.processCurrentTime((currentTime || currentTime === 0) ? currentTime : this.wavesurfer!.getCurrentTime(), seek);
+        } else if (seek) {
+            this.processCurrentTime((currentTime || currentTime === 0) ? currentTime : this.wavesurfer!.getCurrentTime(), seek);
         }
-        this._current_time = formattedTime;
-        document.getElementById('time-current')!.innerText = formattedTime;
-        // console.log(formattedTime);
-        this.processCurrentTime((currentTime || currentTime === 0) ? currentTime : this.wavesurfer!.getCurrentTime(), seek);
+
     }
     private secondsToTimeFormatter(seconds: number) {
         seconds = Math.floor(seconds);
@@ -823,16 +838,26 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
 
     private stepBackward() {
-        const active_item_index = this.state.playlist.indexOf(this.state.active_item);
+        if (!this._b_loaded_chapterDetail) return;
+        if (this._b_loaded_chapterDetail.index === 0) return;
+        this.loadChapter(undefined, this._b_loaded_chapterDetail.index - 1);
+        this.updatePlaylistView();
+        /* const active_item_index = this.state.playlist.indexOf(this.state.active_item);
         let new_index = -1;
         if (active_item_index > -1 && active_item_index - 1 >= 0) {
             new_index = active_item_index - 1;
         }
         if (new_index < 0) return;
-        this.setCurrentSong(this.state.playlist[new_index], true);
+        this.setCurrentSong(this.state.playlist[new_index], true); */
     }
     private stepForward() {
-        const active_item_index = this.state.playlist.indexOf(this.state.active_item);
+        if (!this._b_loaded_chapterDetail) return;
+        if (!this._createBookChapters) return;
+        debugger;
+        if (this._b_loaded_chapterDetail.index + 1 >= this._createBookChapters.flat.length) return;
+        this.loadChapter(undefined, this._b_loaded_chapterDetail.index + 1);
+        this.updatePlaylistView();
+        /* const active_item_index = this.state.playlist.indexOf(this.state.active_item);
         let new_index = 0;
         if (active_item_index > -1 && active_item_index + 1 <= this.state.playlist.length - 1) {
             new_index = active_item_index + 1;
@@ -840,7 +865,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // if (active_item_index === new_index) return;
         // if (new_index === 0 && loop === false) return;
         if (new_index === 0) return;
-        this.setCurrentSong(this.state.playlist[new_index], true);
+        this.setCurrentSong(this.state.playlist[new_index], true); */
     }
     private backward_forward_step = 10;
     private backward() {
@@ -858,10 +883,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         const currentTime = this.wavesurfer!.getCurrentTime();
         // const remainingTime = totalTime - currentTime;
         if (currentTime + this.backward_forward_step >= totalTime && this.wavesurfer!.isPlaying) {
-            this.stop();
+            // this.stop();
+            this.stepForward();
+        } else {
+            this.wavesurfer!.setCurrentTime(currentTime + this.backward_forward_step);
         }
-
-        this.wavesurfer!.setCurrentTime(currentTime + this.backward_forward_step);
     }
     private setWavesurferTime(seconds: number) {
         if (!this.wavesurfer) return;
@@ -877,6 +903,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
 
     private generateEl(eb_chapters: IEpubBook_chapters['tree']) {
+        const isActive = this.isChapterActive(eb_chapters.id);
         return (
             <>
                 {/* <ul> */}
@@ -888,18 +915,26 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                 // onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.chapter!); }}
                 >
                     <div className={
-                        "chapter-title p-2 "
-                        + (eb_chapters.content!.text ? '' : 'd-none')
-                        + (eb_chapters.clickable ? '' : 'd-none')
+                        "chapter-title d-flex-- justify-content-between align-items-center flex-wrap px-2 py-1 small "
+                        // + (eb_chapters.content!.text ? 'd-flex ' : 'd-none ')
+                        // + (eb_chapters.clickable ? 'd-flex ' : 'd-none ')
+                        + ((eb_chapters.content!.text && eb_chapters.clickable) ? 'd-flex ' : 'd-none ')
+                        + (isActive ? 'active ' : 'cursor-pointer ')
                     }
-                        onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.content!); }}
+                        onClick={() => {
+                            if (eb_chapters.clickable && !isActive)
+                                this.loadChapter(eb_chapters.content!);
+                        }}
                     >
-                        {eb_chapters.content!.text}
+                        <span>{eb_chapters.content!.text}</span>
+                        {/* &nbsp; */}
+                        {/* {eb_chapters.id} */}
+                        <i className={"fa fa-music-- fa-play " + (isActive ? '' : 'd-none')}></i>
                     </div>
                     {/* </li> */}
                     {
                         eb_chapters.children.length ?
-                            <ul className="pl-1 mb-2">
+                            <ul className="pl-2 mb-2--">
                                 {
                                     eb_chapters.children.map((ch, index) => (
                                         <Fragment key={index}>
@@ -928,23 +963,77 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             )
         }
     }
-    private async chapterClicked(ibc: IBookContent) {
+    isChapterActive(chapter_id: string | undefined): boolean {
+        if (!chapter_id) return false;
+        if (!this._b_loaded_chapterDetail) return false;
+        return this._b_loaded_chapterDetail.detail.id === chapter_id;
+    }
+
+    private _b_loaded_chapter_from = 0;
+    private _b_loaded_chapterDetail: { index: number; detail: IChapterDetail; } | undefined;
+    // private _b_loaded_chaptersLength: number | undefined;
+    private _loadChapter_progress = false;
+    private async loadChapter(ibc?: IBookContent, atomIndex?: number) {
+        if (this._loadChapter_progress) return;
+        if (!this._createBookChapters) return;
+        this._loadChapter_progress = true;
+        let chapterDetail;
+        if (ibc) chapterDetail = await this._bookInstance.getChapterDetailByAtom(ibc.pos, this._createBookChapters.flat);
+        else if (atomIndex || atomIndex === 0) chapterDetail = await this._bookInstance.getChapterDetailByIndex(atomIndex, this._createBookChapters.flat);
+        if (!chapterDetail) {
+            this._loadChapter_progress = false;
+            return;
+        }
+        if (
+            (chapterDetail.detail.from === undefined || chapterDetail.detail.to === undefined)
+            && (atomIndex || atomIndex === 0)
+        ) {
+            this._loadChapter_progress = false;
+            this.loadChapter(undefined, atomIndex + 1);
+            return;
+        }
         debugger;
-        /* const pageIndex = await this.getPageIndex_withChapter(ibc.pos);
-        if (pageIndex || pageIndex === 0) {
-          this.hideSidebar();
-          await CmpUtility.waitOnMe(100);
-          this.set_RcSlider_value(pageIndex + 1);
-          this.swiper_slideTo(pageIndex);
-          // this.setState({});
+        // this._b_loaded_chaptersLength = await this._bookInstance.get
+
+        /* this._b_reset_binding();
+        const wasPlaying = this.state.isPlaying;
+        if (wasPlaying) {
+            this.pause();
         } */
+        const wasPlaying = this.state.isPlaying;
+        if (wasPlaying) {
+            this.pause();
+        }
+
+        const chapterDuration = (chapterDetail.detail.to! - chapterDetail.detail.from!) / 1000;
+        const peaks = Array.from({ length: Math.ceil(chapterDuration) }, (v, k) => 1);
+        this.wavesurfer!.backend.setPeaks(peaks, chapterDuration);
+        const audioBuffer_min = this.getaudioBuffer(44100, 1, [new Float32Array(1)]);
+        this.wavesurfer!.loadDecodedBuffer(audioBuffer_min);
+
+        this._b_loaded_chapterDetail = chapterDetail
+        this._b_loaded_chapter_from = chapterDetail.detail.from! / 1000;
+
+        this.setWavesurferTime(0);
+        // this.updateTimer(0, true);
+
+        /* if (wasPlaying && this.state.isPlaying === false) {
+            this.play();
+        } */
+        this._loadChapter_progress = false;
+        if (wasPlaying && this.state.isPlaying === false) {
+            this.play();
+        } else {
+            /** rebuild playlist: active item will update */
+            this.setState({});
+        }
     }
     private playlist_render() {
         return (
             <>
                 <div className="row-- playlist mb-2 py-2">
                     {/* <div className="col-12"> */}
-                    <div className="audio-list list-group list-group-flush">
+                    {/* <div className="audio-list list-group list-group-flush">
                         {this.state.playlist.map((url, url_index) => {
                             return (
                                 <Fragment key={url_index}>
@@ -966,11 +1055,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                                 </Fragment>
                             )
                         })}
-                    </div>
-                    <br />
-                    <div>
-                        {this.book_chapter_render()}
-                    </div>
+                    </div> */}
+                    {/* <br /> */}
+                    {/* <div> */}
+                    {this.book_chapter_render()}
+                    {/* </div> */}
                     {/* </div> */}
                 </div>
             </>

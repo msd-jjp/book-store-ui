@@ -76,7 +76,8 @@
     .playlist {
       // height: 2rem;
       // height: calc(100% - (13rem + 2rem + 1rem + 1.5rem));
-      height: calc(100% - 0.5rem - (13rem));
+      // height: calc(100% - 0.5rem - (13rem));
+      height: calc(100% - 0.5rem - (8rem));
       // overflow-y: scroll;
       overflow-x: hidden;
       // background-color: aliceblue;
@@ -99,20 +100,46 @@
           }
         }
       }
+      .book-chapters {
+        ul {
+          list-style: none;
+          margin-bottom: 0;
+          li {
+            .chapter-title {
+              // overflow: hidden;
+              // white-space: nowrap;
+              // text-overflow: ellipsis;
+              &.active {
+                color: app-color(system);
+              }
+            }
+            // &.clickable {
+            //   > .chapter-title {
+            //     cursor: pointer;
+            //   }
+            // }
+            &.disabled {
+              > .chapter-title {
+                opacity: 0.5;
+              }
+            }
+          }
+        }
+      }
     }
     .player {
       // height: 13rem + 2rem + 1rem + 1.5rem;
-      height: 13rem;
+      height: 8rem; // 13rem
       overflow: hidden;
       background-color: #dddddd14;
 
       .waveform-container {
         padding: 0 0.5rem;
-        height: 11rem;
+        height: 6rem; // 11rem
 
         .waveform-wrapper {
           // height: 6.5rem;
-          height: 10rem;
+          height: 5rem; // 10rem
           overflow: hidden;
           position: relative;
           // .waveform{}

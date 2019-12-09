@@ -653,7 +653,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         >
           <div className={
             "chapter-title p-2 "
-            + (eb_chapters.content!.text ? '' : 'd-none')
+            + (eb_chapters.content!.text ? '' : 'd-none ')
+            + (eb_chapters.clickable ? '' : 'd-none ')
           }
             onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.content!); }}
           >

@@ -546,4 +546,56 @@ export abstract class ReaderUtility {
         return await AudioBookGenerator.getInstance(ww, bookFile);
     }
 
+    /**
+     * atom: chapter detail
+     */
+    /* static getAudio_chapterDetail_byAtom(atom: IBookPosIndicator, flat_chapters: IEpubBook_chapters_flat_list)
+        : {
+            firstContent: IBookContent | undefined,
+            lastContent: IBookContent | undefined, duration: number
+        } | undefined {
+
+        if (!atom || !flat_chapters) return;
+
+        let thisChapter;
+        for (let i = 0; i < flat_chapters.length; i++) {
+            const chp = flat_chapters[i];
+            if (chp.content && chp.content.pos.atom === atom.atom && chp.content.pos.group === atom.group) {
+                thisChapter = chp;
+            }
+        }
+
+        const chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
+        // debugger;
+        flat_chapters.forEach((ch, index) => {
+            if (!ch.clickable) {
+                chapters_with_page.push({ firstPageIndex: undefined, lastPageIndex: undefined });
+                return;
+            }
+
+            const obj: { firstPageIndex: number | undefined, lastPageIndex: number | undefined } = {
+                firstPageIndex: ReaderUtility.getPageIndex_byChapter(ch.content!.pos, pagePosList, isPdf),
+                lastPageIndex: undefined
+            };
+
+            chapters_with_page.push(obj);
+
+            if (index !== 0) {
+                // if (!flat_chapters[index - 1].clickable) {
+                if (flat_chapters[index - 1].clickable) { //
+                    // return;
+                    // }
+                    let prev_ch = chapters_with_page[index - 1];
+                    prev_ch.lastPageIndex = prev_ch.firstPageIndex === obj.firstPageIndex ? obj.firstPageIndex :
+                        obj.firstPageIndex ? obj.firstPageIndex - 1 : undefined;
+                } //
+            }
+            if (index === flat_chapters.length - 1) {
+                chapters_with_page[index].lastPageIndex = pagePosList.length - 1;
+            }
+        });
+        // debugger;
+        return chapters_with_page;
+    } */
+
 }
