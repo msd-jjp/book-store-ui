@@ -218,7 +218,9 @@ libItem --> add size (perminently keep size)
 
 reader :
     audio
-        chapter --> nested menu & load file on click
+        chapter --> nested menu
+        1) if user puased --> prevent play (it happed while waitng to load)
+        2) create audio with empty chapter
     pdf:
         chapter --> nested menu
         zoom
@@ -284,6 +286,7 @@ download performance
 
 
 ====================================================================================
+
 
 
 ====================================================================================

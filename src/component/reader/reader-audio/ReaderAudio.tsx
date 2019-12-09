@@ -573,7 +573,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
 
         const voiceTime = await this.connectSource(from, voice, audioCtx_time, delay);
-        console.warn('voiceTime', voiceTime);
+        // console.warn('voiceTime', voiceTime);
 
         this._b_inProgress = false;
 
@@ -625,7 +625,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
         if (this._b_loaded_atom !== atomDetail.atom) {
             this._b_loaded_atom = atomDetail.atom;
-            console.warn('atomDetail', atomDetail);
+            // console.warn('atomDetail', atomDetail);
             await this._bookInstance.loadVoiceAtom(atomDetail.atom);
         }
         let from_atom = Math.ceil(from * 1000 - atomDetail.fromTo.from);
@@ -634,7 +634,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             from_atom = 0;
         }
         const atomActualDuration = await this._bookInstance.getLoadedVoiceAtomDuration();
-        console.warn('atomActualDuration', atomActualDuration);
+        // console.warn('atomActualDuration', atomActualDuration);
 
         let voice: Float32Array[] | undefined;
         if (from_atom < atomActualDuration) {
