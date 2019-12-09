@@ -570,7 +570,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, wishList_loader: true });
 
     let res = await this._bookService.wishList_add_book(book.id).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'wishList_add_book_error' } });
     });
 
     this.setState({ ...this.state, wishList_loader: false });
@@ -588,7 +588,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, wishList_loader: true });
 
     let res = await this._bookService.wishList_remove_book(book.id).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'wishList_remove_book_error' } });
     });
 
     this.setState({ ...this.state, wishList_loader: false });
@@ -751,7 +751,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   async addComment() {
     this.setState({ ...this.state, newComment: { ...this.state.newComment, loader: true } });
     let res = await this._commentService.add(this.state.newComment.value!, this.bookId).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'addComment_error' } });
       this.setState({ ...this.state, newComment: { ...this.state.newComment, loader: false } });
     });
     if (res) {
@@ -1027,7 +1027,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, modal_removeComment: { ...this.state.modal_removeComment, loader: true } });
 
     let res = await this._commentService.remove(comment_id).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'removeCommentById_error' } });
     });
 
     if (res) {
@@ -1114,7 +1114,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       }
     });
     let res = await this._commentService.like(comment_id).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'likeComment_error' } });
     });
 
     if (res) {
@@ -1154,7 +1154,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       }
     });
     let res = await this._commentService.unlike(comment_id).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'unlikeComment_error' } });
     });
 
     if (res) {
@@ -1195,7 +1195,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       }
     });
     let res = await this._commentService.report(comment_id).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'reportComment_error' } });
     });
 
     if (res) {
@@ -1236,7 +1236,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       }
     });
     let res = await this._commentService.unreport(comment_id).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'unreportComment_error' } });
     });
 
     if (res) {
@@ -1291,7 +1291,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   async bookRateChange(newRate: number, book_id: string) {
     // debugger;
     let res = await this._rateService.add(book_id, newRate).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'bookRateChange_error' } });
     });
     if (res) {
       this.apiSuccessNotify(Localization.msg.ui.your_rate_submited);
@@ -1304,7 +1304,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       followWriter_loaderObj: { ...this.state.followWriter_loaderObj, [writer_id]: true }
     });
     let res = await this._followService.follow_person(writer_id).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'follow_writer_error' } });
     });
     this.setState({
       ...this.state,
@@ -1330,7 +1330,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       followWriter_loaderObj: { ...this.state.followWriter_loaderObj, [writer_id]: true }
     });
     let res = await this._followService.unfollow_person(writer_id).catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'unfollow_writer_error' } });
     });
     this.setState({
       ...this.state,
