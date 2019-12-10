@@ -5,6 +5,7 @@ import { IReader_schema, IReaderAction } from "../../action/reader/readerAction"
 const reader_reset: IReader_schema = {
     audio: {
         volume: 1,
+        mute: false
     },
     epub: {
         theme: 'white',

@@ -220,11 +220,10 @@ libItem --> add size (perminently keep size)
 reader :
     audio
         chapter --> nested menu
-        1) if user puased --> prevent play (it happed while waitng to load)
+        1) if user puased --> (force pause) prevent play (it happed while waitng to load)
         2) create audio with empty chapter
     pdf:
         chapter --> nested menu
-        zoom
 
 ====================================================================================
 
@@ -254,7 +253,6 @@ msdBook: WasmWorkerHandler --> onmessage --> create new book if in cmp reader.
 
 ====================================================================================
 
-reader --> pdf: font, color,.. disable & enable zoom.
 
 ====================================================================================
 afzudan list download dar setting
@@ -289,10 +287,5 @@ download performance
 open boook in bookDetail if in lib & downloaded.
 
 ====================================================================================
-
-readerAudio
-    chapter
-        select chapter bug: make it bigger.
-        on select if playing --> pause.
 
 ====================================================================================

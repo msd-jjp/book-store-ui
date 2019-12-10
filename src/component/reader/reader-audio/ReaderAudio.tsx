@@ -99,7 +99,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // active_item: this.playlist[0],
         volume: {
             val: this.props.reader.audio.volume, // 1
-            mute: false
+            mute: this.props.reader.audio.mute, // false
         }
     };
 
@@ -448,6 +448,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         const ax = this.getAudioContext();
         this._gainNode = ax.createGain();
         this._gainNode.connect(ax.destination);
+
+        this.updateGainNode(this.state.volume.mute ? 0 : this.state.volume.val);
+
         return this._gainNode;
     }
     private updateGainNode(vol: number) {
@@ -464,7 +467,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
 
 
-    private runnig = false;
+    /* private runnig = false;
     private async runAtom3() {
         if (this.runnig) return;
         this.runnig = true;
@@ -493,7 +496,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                 i += 10;
             } catch (e) { console.log(e); break; }
         }
-    }
+    } */
 
 
 
@@ -696,11 +699,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this._b_progress_to = undefined;
     }
 
-    private async getVoiceTime(voice: Float32Array[]): Promise<number> {
+    /* private async getVoiceTime(voice: Float32Array[]): Promise<number> {
         const sampleRate = await this.getSampleRate();
         const voiceTime = voice[0].length / sampleRate;
         return voiceTime;
-    }
+    } */
     private async connectSource(from: number, voice: Float32Array[], audioCtx_time: number, delay: number): Promise<number> { // number,void
         const sampleRate = await this.getSampleRate();
         const channels = await this.getChannels();
@@ -919,21 +922,32 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                 // onClick={() => { if (eb_chapters.clickable) this.chapterClicked(eb_chapters.chapter!); }}
                 >
                     <div className={
-                        "chapter-title d-flex-- justify-content-between align-items-center flex-wrap px-2 py-1 small "
+                        "chapter-title d-flex-- justify-content-between align-items-center flex-wrap px-2 py-2 small-- cursor-pointer "
                         // + (eb_chapters.content!.text ? 'd-flex ' : 'd-none ')
                         // + (eb_chapters.clickable ? 'd-flex ' : 'd-none ')
                         + ((eb_chapters.content!.text && eb_chapters.clickable) ? 'd-flex ' : 'd-none ')
-                        + (isActive ? 'active ' : 'cursor-pointer ')
+                        + (isActive ? 'active ' : 'cursor-pointer-- ')
                     }
                         onClick={() => {
-                            if (eb_chapters.clickable && !isActive)
-                                this.loadChapter(eb_chapters.content!);
+                            if (eb_chapters.clickable) { //  && !isActive
+                                if (isActive) {
+                                    if (this.state.isPlaying) {
+                                        this.pause();
+                                    } else {
+                                        this.play();
+                                    }
+                                } else {
+                                    this.loadChapter(eb_chapters.content!);
+                                }
+                            }
                         }}
                     >
                         <span>{eb_chapters.content!.text}</span>
                         {/* &nbsp; */}
                         {/* {eb_chapters.id} */}
-                        <i className={"fa fa-music-- fa-play " + (isActive ? '' : 'd-none')}></i>
+                        <i className={"fa fa-music-- fa-play-- "
+                            + (isActive ? (this.state.isPlaying ? 'fa-pause' : 'fa-play') : 'd-none')
+                        }></i>
                     </div>
                     {/* </li> */}
                     {
@@ -1169,6 +1183,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         const isMute = this.wavesurfer!.getMute();
         this.updateGainNode(isMute ? 0 : this.state.volume.val);
         this.setState({ volume: { ...this.state.volume, mute: isMute } });
+
+        const reader_state = { ...this.props.reader };
+        const reader_audio = reader_state.audio;
+        reader_audio.mute = isMute;
+        this.props.update_reader(reader_state);
     }
     private slider_render() {
         return (

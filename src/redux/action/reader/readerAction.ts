@@ -6,6 +6,7 @@ export type IReader_schema_epub_theme = 'white' | 'dark' | 'green' | 'sepia';
 export interface IReader_schema {
     audio: {
         volume: number;
+        mute: boolean;
     };
     epub: {
         theme: IReader_schema_epub_theme;
