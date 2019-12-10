@@ -217,7 +217,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
         return (
             <>
                 <Modal show={this.state.modal_appInfo_show} onHide={() => this.closeModal_appInfo()} centered>
-                    <Modal.Header closeButton className="border-bottom-0 pb-0">
+                    <Modal.Header /* closeButton */ className="border-bottom-0 pb-0">
                         {/* <Modal.Title className="text-danger_">app info</Modal.Title> */}
                         <div className="modal-title h6">{Localization.app_info}</div>
                     </Modal.Header>
