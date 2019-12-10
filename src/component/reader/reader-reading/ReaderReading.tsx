@@ -63,6 +63,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   private book_page_length = 1;
   private book_active_index = 0;
   private _libraryItem: ILibrary | undefined;
+  private _isDocument: boolean | undefined;
 
   constructor(props: IProps) {
     super(props);
@@ -73,6 +74,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   componentWillMount() {
     if (this.book_id) {
       this._libraryItem = getLibraryItem(this.book_id);
+      if (this._libraryItem) this._isDocument = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
     }
   }
   componentDidMount() {
@@ -107,10 +109,10 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   async updateUserCurrentBook_server() {
     if (!this.book_id) return;
     if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
-    if (this.props.logged_in_user!.person.current_book &&
+    /* if (this.props.logged_in_user!.person.current_book &&
       this.props.logged_in_user!.person.current_book.id === this.book_id) {
       return;
-    }
+    } */
 
     await this._personService.update(
       { current_book_id: this.book_id },
@@ -173,8 +175,8 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
 
     try {
-      const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
-      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, this.get_bookPageSize(), isPdf);
+      // const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
+      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, this.get_bookPageSize(), this._isDocument);
     } catch (e) {
       console.error(e);
       this.setState({ page_loading: false });
@@ -195,7 +197,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   private _pagePosList: number[] = [];
   private _chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
   private async calc_chapters_with_page() {
-    await CmpUtility.waitOnMe(0);
+    // await CmpUtility.waitOnMe(0);
     if (!this._pagePosList.length) {
       const bookPosList: IBookPosIndicator[] = await this._bookInstance.getAllPages_pos();
       bookPosList.forEach(bpi => {
@@ -203,9 +205,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       });
     }
 
-    const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
+    // const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
     this._chapters_with_page =
-      ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat, isPdf) || [];
+      ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat, this._isDocument!) || [];
 
     // debugger;
     this.setState({});
@@ -341,6 +343,29 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
   }
 
+  onDocumentZoom() {
+    if (!this._isDocument) return;
+    debugger;
+  }
+
+  reading_header_render() {
+    return (
+      <>
+        <i className={"header-icon fa fa-arrow-left-app p-2 ml-2 mt-2 cursor-pointer "
+          + (this.state.page_loading ? 'active' : '')
+        }
+          onClick={() => this.goBack()}
+        ></i>
+
+        <i className={"header-icon magnify fa fa-search-plus p-2 mr-2 mt-2 cursor-pointer "
+          + (this._isDocument && !this.state.page_loading ? 'active' : '')
+        }
+          onClick={() => this.onDocumentZoom()}
+        ></i>
+      </>
+    )
+  }
+
   reading_body_render() {
     return (
       <>
@@ -460,6 +485,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
         <div className="row">
           <div className="col-12 px-0">
             <div className={"reader-reading-wrapper theme-" + this.props.reader.epub.theme}>
+              {this.reading_header_render()}
               {this.reading_body_render()}
               <ContentLoader gutterClassName="gutter-0" show={this.state.page_loading}></ContentLoader>
             </div>

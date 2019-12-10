@@ -71,6 +71,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   private book_page_length = 1;
   private book_active_index = 0;
   private _libraryItem: ILibrary | undefined;
+  private _isDocument: boolean | undefined;
 
   constructor(props: IProps) {
     super(props);
@@ -81,6 +82,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   componentWillMount() {
     if (this.book_id) {
       this._libraryItem = getLibraryItem(this.book_id);
+      if (this._libraryItem) this._isDocument = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
     }
   }
   componentDidMount() {
@@ -175,8 +177,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     }
 
     try {
-      const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
-      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, undefined, isPdf);
+      // const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
+      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, undefined, this._isDocument);
     } catch (e) {
       console.error(e);
       this.setState({ page_loading: false });
@@ -206,9 +208,9 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       });
     }
 
-    const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
+    // const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
     this._chapters_with_page =
-      ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat, isPdf) || [];
+      ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat, this._isDocument!) || [];
   }
 
   private getBookSlideList(): IReaderScrollSlide[] {

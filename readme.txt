@@ -285,6 +285,13 @@ download performance
 
 ====================================================================================
 
-in layout acount --> will mount --> check if user --> redirect to dashboard.
+open boook in bookDetail if in lib & downloaded.
+
+====================================================================================
+
+readerAudio
+    chapter
+        select chapter bug: make it bigger.
+        on select if playing --> pause.
 
 ====================================================================================

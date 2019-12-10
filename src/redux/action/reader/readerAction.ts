@@ -8,15 +8,14 @@ export interface IReader_schema {
         volume: number;
     };
     epub: {
-        // fontColor: number;
-        // bgColor: number;
         theme: IReader_schema_epub_theme;
         fontSize: number;
         fontName: IReader_schema_epub_fontName;
         pageSize: { width: number, height: number };
         fontFiles: {
             [key in IReader_schema_epub_fontName]?: Array<number>;
-        }
+        };
+        zoom: number;
     };
 }
 

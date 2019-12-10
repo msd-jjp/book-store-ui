@@ -7,10 +7,6 @@ const reader_reset: IReader_schema = {
         volume: 1,
     },
     epub: {
-        // fontColor: color(0, 0, 0, 255),
-        // bgColor: color(255, 255, 255, 255),
-        // fontColor: color(0, 0, 0, 255),
-        // bgColor: color(255, 255, 255, 0),
         theme: 'white',
         pageSize: {
             width: 200,
@@ -18,7 +14,8 @@ const reader_reset: IReader_schema = {
         },
         fontName: 'iransans',
         fontSize: 16,
-        fontFiles: {}
+        fontFiles: {},
+        zoom: 100,
     }
 };
 

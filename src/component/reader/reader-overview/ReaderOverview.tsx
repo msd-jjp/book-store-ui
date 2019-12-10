@@ -86,6 +86,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   private book_page_length = 1;
   private book_active_index = 0;
   private _libraryItem: ILibrary | undefined;
+  private _isDocument: boolean | undefined;
 
   constructor(props: IProps) {
     super(props);
@@ -96,6 +97,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   componentWillMount() {
     if (this.book_id) {
       this._libraryItem = getLibraryItem(this.book_id);
+      if (this._libraryItem) this._isDocument = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
     }
   }
   componentDidMount() {
@@ -234,8 +236,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
 
     try {
-      const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
-      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, undefined, isPdf);
+      // const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
+      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, undefined, this._isDocument);
     } catch (e) {
       console.error(e);
       this.setState({ page_loading: false });
@@ -297,7 +299,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
           const activeIndex = this.swiper_obj && this.swiper_obj!.activeIndex;
           if (activeIndex || activeIndex === 0) {
             this.set_RcSlider_value(activeIndex + 1);
-            console.log('slideChange slideChangeslideChange slideChange', activeIndex);
+            // console.log('slideChange slideChangeslideChange slideChange', activeIndex);
             // this._bookInstance && ReaderUtility.renderViewablePages(this._bookInstance);
           }
         },
@@ -493,7 +495,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // console.log('activeIndex: ', activeIndex, 'value: ', value);
     // console.log('getActivePage: ', this.getActivePage(), 'value: ', value);
     // if (this.getActivePage() === value) return;
-    console.log('RcSlider change swiper_obj slideTo: ', value - 1);
+    // console.log('RcSlider change swiper_obj slideTo: ', value - 1);
     // this.swiper_obj!.slideTo(value - 1);
     this.swiper_slideTo(value - 1);
   }
@@ -706,7 +708,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   private _pagePosList: number[] = [];
   async getPageIndex_withChapter(chapterPos: IBookPosIndicator): Promise<number | undefined> {
-    if (this._libraryItem!.book.type === BOOK_TYPES.Pdf) { // todo: store value of isPdf
+    // if (this._libraryItem!.book.type === BOOK_TYPES.Pdf) {
+    if (this._isDocument) {
       // return chapterPos.group !== -1 ? chapterPos.group : undefined;
       return ReaderUtility.getPageIndex_byChapter(chapterPos, [], true);
     }
