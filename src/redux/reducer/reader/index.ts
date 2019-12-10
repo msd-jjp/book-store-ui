@@ -3,7 +3,9 @@ import { IReader_schema, IReaderAction } from "../../action/reader/readerAction"
 // import { color } from "../../../webworker/reader-engine/tools";
 
 const reader_reset: IReader_schema = {
-    audio: {},
+    audio: {
+        volume: 1,
+    },
     epub: {
         // fontColor: color(0, 0, 0, 255),
         // bgColor: color(255, 255, 255, 255),

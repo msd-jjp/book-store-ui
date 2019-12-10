@@ -25,6 +25,8 @@ import { IBookPosIndicator, IBookContent } from "../../../webworker/reader-engin
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
 import { Utility } from "../../../asset/script/utility";
+import { IReader_schema } from "../../../redux/action/reader/readerAction";
+import { action_update_reader } from "../../../redux/action/reader";
 // import { Utility } from "../../../asset/script/utility";
 // import { BookService } from "../../../service/service.book";
 //
@@ -62,15 +64,17 @@ interface IProps {
     onUserLoggedIn: (user: IUser) => void;
     match: any;
     reader_engine: IReaderEngine_schema;
+    reader: IReader_schema;
+    update_reader: (reader: IReader_schema) => any;
 }
 
 interface IState {
     book: IBook | undefined;
     loading: boolean;
     error: string | undefined;
-    playlist: string[];
+    // playlist: string[];
     isPlaying: boolean;
-    active_item: string;
+    // active_item: string;
     volume: {
         val: number;
         mute: boolean;
@@ -80,21 +84,21 @@ interface IState {
 class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private book_id: string = '';
 
-    private playlist = [
+    /* private playlist = [
         'chapter1',
         'chapter2',
         'chapter3',
-    ];
+    ]; */
 
     state = {
         book: undefined,
         loading: false,
         error: undefined,
-        playlist: this.playlist,
+        // playlist: this.playlist,
         isPlaying: false,
-        active_item: this.playlist[0],
+        // active_item: this.playlist[0],
         volume: {
-            val: 1,
+            val: this.props.reader.audio.volume, // 1
             mute: false
         }
     };
@@ -164,10 +168,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     async updateUserCurrentBook_server() {
         if (!this.book_id) return;
         if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
-        if (this.props.logged_in_user!.person.current_book &&
+        /* if (this.props.logged_in_user!.person.current_book &&
             this.props.logged_in_user!.person.current_book.id === this.book_id) {
             return;
-        }
+        } */
 
         await this._personService.update(
             { current_book_id: this.book_id },
@@ -274,7 +278,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
 
     private async initAudio() {
-        debugger;
+        // debugger;
         await this.createBookChapters();
 
         if (this.wavesurfer) {
@@ -1124,6 +1128,17 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         });
     }
 
+    private onAfterSliderChange(value: number) {
+        // debugger;
+        // console.log('onAfterSliderChange onAfterSliderChange', value);
+
+        const reader_state = { ...this.props.reader };
+        const reader_audio = reader_state.audio;
+        reader_audio.volume = value;
+        this.props.update_reader(reader_state);
+
+    }
+
     volume_icon_render(): string {
         let vol_class = 'fa-volume-off';
         if (this.state.volume.val >= .5) {
@@ -1169,6 +1184,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
                         value={this.state.volume.val}
                         step={.01}
                         disabled={this.state.loading}
+                        onAfterChange={(v) => this.onAfterSliderChange(v)}
                     />
                 </div>
             </>
@@ -1262,6 +1278,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
         onUserLoggedIn: (user: IUser) => dispatch(action_user_logged_in(user)),
+        update_reader: (reader: IReader_schema) => dispatch(action_update_reader(reader)),
     };
 };
 
@@ -1270,7 +1287,8 @@ const state2props = (state: redux_state) => {
         logged_in_user: state.logged_in_user,
         internationalization: state.internationalization,
         network_status: state.network_status,
-        reader_engine: state.reader_engine
+        reader_engine: state.reader_engine,
+        reader: state.reader,
     };
 };
 
