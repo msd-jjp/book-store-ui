@@ -111,6 +111,10 @@
               // text-overflow: ellipsis;
               &.active {
                 color: app-color(system);
+                background-color: app-color(system, color);
+              }
+              &:hover {
+                background-color: $white;
               }
             }
             // &.clickable {
@@ -244,7 +248,7 @@
         }
 
         &.is-small-media {
-          bottom: 16rem;
+          bottom: 11rem; // 16rem;
           .volume-dd {
             .dropdown-menu {
               padding: 0 1rem;

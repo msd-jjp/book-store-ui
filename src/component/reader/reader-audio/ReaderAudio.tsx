@@ -752,7 +752,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.getAudioContext().resume();
         this.after_play();
     };
-    private pause() {
+    private pause() { // force_pause = false --> if(force_pause):prevent play in bindGeneratedAudio;
         this.wavesurfer!.pause();
         this.getAudioContext().suspend();
         this.after_pause();
@@ -853,7 +853,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private stepForward() {
         if (!this._b_loaded_chapterDetail) return;
         if (!this._createBookChapters) return;
-        debugger;
+        // debugger;
         if (this._b_loaded_chapterDetail.index + 1 >= this._createBookChapters.flat.length) return;
         this.loadChapter(undefined, this._b_loaded_chapterDetail.index + 1);
         this.updatePlaylistView();
@@ -956,7 +956,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         } else {
             return (
                 <div className="book-chapters">
-                    <ul className="p-0">
+                    <ul className="p-0 pr-2">
                         {this.generateEl(this._createBookChapters.tree)}
                     </ul>
                 </div>
@@ -992,7 +992,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             this.loadChapter(undefined, atomIndex + 1);
             return;
         }
-        debugger;
+        // debugger;
         // this._b_loaded_chaptersLength = await this._bookInstance.get
 
         /* this._b_reset_binding();
