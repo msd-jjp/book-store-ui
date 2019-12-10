@@ -118,7 +118,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   private async generateReader() {
-    await CmpUtility.waitOnMe(0);
+    // await CmpUtility.waitOnMe(0);
 
     if (this.props.reader_engine.status !== 'inited') {
       this.goBack();
@@ -539,7 +539,9 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       <>
         <div className="row">
           <div className="col-12 px-0">
-            <div className={"reader-scroll-wrapper theme-" + this.props.reader.epub.theme}>
+            <div className={"reader-scroll-wrapper theme-" + this.props.reader.epub.theme
+              + (this._isDocument ? '--' : '')
+            }>
               {this.reading_body_render()}
               {this.reading_footer_render()}
             </div>

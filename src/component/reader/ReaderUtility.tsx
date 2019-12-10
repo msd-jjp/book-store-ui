@@ -58,6 +58,7 @@ export abstract class ReaderUtility {
         theme: IReader_schema_epub_theme;
         fontSize: number;
         fontName: IReader_schema_epub_fontName;
+        zoom: number;
         book: BookGenerator | PdfBookGenerator;
     } | undefined;
     private static checkEpubBookExist(book_id: string, bookPageSize?: { width: number; height: number; }): boolean {
@@ -74,6 +75,7 @@ export abstract class ReaderUtility {
                 && existBookObj.fontSize === reader_epub.fontSize
                 && existBookObj.fontName === reader_epub.fontName
                 && existBookObj.theme === reader_epub.theme
+                && existBookObj.zoom === reader_epub.zoom
             ) {
                 return true;
             }
@@ -87,7 +89,7 @@ export abstract class ReaderUtility {
         book_id: string,
         bookFile: Uint8Array,
         bookPageSize?: { width: number; height: number; },
-        isPdf?: boolean
+        isDocument?: boolean
     ): Promise<BookGenerator | PdfBookGenerator> {
         // debugger;
         if (ReaderUtility.checkEpubBookExist(book_id, bookPageSize)) {
@@ -125,53 +127,19 @@ export abstract class ReaderUtility {
 
         const reader_epub_theme = ReaderUtility.getEpubBook_theme(reader_epub.theme);
 
-        // await ReaderUtility.wait_loadReaderEngine();
-        // await CmpUtility.waitOnMe(10000); // todo: _DELETE_ME
-
         let valid_fontSize = reader_epub.fontSize;
         if (valid_fontSize > 50) { valid_fontSize = 50; }
         else if (valid_fontSize < 5) { valid_fontSize = 5; }
 
-
-
-        /* const _reader2Worker = new Reader2Worker();
-        _reader2Worker.postMessage({
-            type: 'generate',
-            config: {
-                bookFile,
-                width: _bookPageSize.width,
-                height: _bookPageSize.height,
-                font,
-                fontSize: valid_fontSize,
-                fontColor: reader_epub_theme.fontColor,
-                bgColor: reader_epub_theme.bgColor
-            }
-        });
-        _reader2Worker.onmessage((book: BookGenerator) => {
-            debugger;
-        }); */
-
         let textBookClass: any; // BookGenerator | PdfBookGenerator | undefined;
-        if (isPdf) textBookClass = PdfBookGenerator;
+        if (isDocument) textBookClass = PdfBookGenerator;
         else textBookClass = BookGenerator;
 
-        /* const _book = new textBookClass( // BookGenerator
-            bookFile,
-            _bookPageSize.width,
-            _bookPageSize.height,
-            font,
-            valid_fontSize, // reader_epub.fontSize,
-            reader_epub_theme.fontColor,
-            reader_epub_theme.bgColor
-        ); */
-
-        // let w = new Worker("/reader/reader2.js");
-        // let ww = new WasmWorkerHandler(w);
         const ww = await ReaderDownload.getReaderWorkerHandler();
         if (ww === undefined) throw new Error('WorkerHandler failed possible');
         await ReaderUtility.wait_readerEngine_init(ww);
 
-        const _book = await textBookClass.getInstace(
+        const _book: BookGenerator | PdfBookGenerator = await textBookClass.getInstace(
             ww,
             bookFile,
             _bookPageSize.width,
@@ -188,7 +156,8 @@ export abstract class ReaderUtility {
             fontName: reader_epub.fontName,
             fontSize: reader_epub.fontSize,
             theme: reader_epub.theme,
-            bookPageSize: _bookPageSize
+            bookPageSize: _bookPageSize,
+            zoom: reader_epub.zoom
         };
 
         return _book;

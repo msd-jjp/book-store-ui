@@ -408,4 +408,5 @@ export const fa = {
     active_device_list: 'لیست دستگاه های فعال',
     submit_this_device: 'ثبت این دستگاه',
     this_device: 'این دستگاه',
+    zoom: 'بزرگنمایی',
 }

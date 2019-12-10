@@ -59,6 +59,7 @@ interface IState {
     fontSize: number | undefined;
     theme: IReader_schema_epub_theme | undefined;
     fontName: IReader_schema_epub_fontName | undefined;
+    zoom: number | undefined;
   };
 }
 
@@ -78,7 +79,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       show: false,
       fontSize: undefined,
       theme: undefined,
-      fontName: undefined
+      fontName: undefined,
+      zoom: undefined,
     },
   };
 
@@ -210,7 +212,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   private async generateReader() {
-    await CmpUtility.waitOnMe(0);
+    // await CmpUtility.waitOnMe(0);
 
     if (this.props.reader_engine.status !== 'inited') {
       this.goBack();
@@ -764,7 +766,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       <>
         <Modal
           show={this.state.modal_goto.show}
-          className={"reader-overview-modal-goto theme-" + this.props.reader.epub.theme}
+          className={"reader-overview-modal-goto theme-" + this.props.reader.epub.theme
+            + (this._isDocument ? '--' : '')
+          }
           onHide={() => this.closeModal_goto()}
           centered
         >
@@ -859,6 +863,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
         fontSize: reader_epub.fontSize,
         fontName: reader_epub.fontName,
         theme: reader_epub.theme,
+        zoom: reader_epub.zoom
       }
     });
   }
@@ -867,14 +872,19 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, modal_epub: { ...this.state.modal_epub, show: false } });
   }
 
+  private modal_epub_font_list: IReader_schema_epub_fontName[] = ["zar", "iransans", "nunito"];
+  private modal_epub_theme_list: IReader_schema_epub_theme[] = ["white", "dark", 'green', 'sepia'];
+  private modal_epub_zoom_list: number[] = [100, 150, 200, 250];
   modal_epub_render() {
-    const font_list: IReader_schema_epub_fontName[] = ["zar", "iransans", "nunito"];
-    const theme_list: IReader_schema_epub_theme[] = ["white", "dark", 'green', 'sepia'];
+    // const font_list: IReader_schema_epub_fontName[] = ["zar", "iransans", "nunito"];
+    // const theme_list: IReader_schema_epub_theme[] = ["white", "dark", 'green', 'sepia'];
 
     return (
       <>
         <Modal show={this.state.modal_epub.show}
-          className={"reader-overview-modal-epub theme-" + this.props.reader.epub.theme}
+          className={"reader-overview-modal-epub theme-" + this.props.reader.epub.theme
+            + (this._isDocument ? '--' : '')
+          }
           onHide={() => this.closeModal_epub()}
           centered
         >
@@ -883,7 +893,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
               <div className="col-12">
                 <ul className="list-group list-group-flush">
 
-                  <li className="list-group-item d-flex justify-content-between px-0 pt-0--">
+                  <li className={"list-group-item d-flex justify-content-between px-0 pt-0-- "
+                    + (this._isDocument ? 'disabled opacity-5' : '')
+                  }>
                     <div className="text-capitalize">{Localization.text_size}</div>
                     <div>
                       <span className="mr-3">{this.state.modal_epub.fontSize}</span>
@@ -898,7 +910,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                     </div>
                   </li>
 
-                  <li className="section-theme list-group-item d-flex justify-content-between px-0">
+                  <li className={"section-theme list-group-item d-flex justify-content-between px-0 "
+                    + (this._isDocument ? 'disabled opacity-5' : '')
+                  }>
                     <div className="text-capitalize">{Localization.theme}</div>
                     <ToggleButtonGroup
                       className="btn-group-sm"
@@ -908,7 +922,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                       onChange={(theme: IReader_schema_epub_theme) => this.modal_epub_colorChanged(theme)}
                     >
                       {
-                        theme_list.map(th => (
+                        this.modal_epub_theme_list.map(th => (
                           <ToggleButton
                             key={th}
                             className={"min-w-70px btn-light theme-" + th}
@@ -921,7 +935,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                     </ToggleButtonGroup>
                   </li>
 
-                  <li className="section-font list-group-item d-flex justify-content-between px-0 pb-0--">
+                  <li className={"section-font list-group-item d-flex justify-content-between px-0 pb-0-- "
+                    + (this._isDocument ? 'disabled opacity-5' : '')
+                  }>
                     <div className="text-capitalize">{Localization.font}</div>
                     <ToggleButtonGroup
                       className="btn-group-sm"
@@ -931,13 +947,38 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
                       onChange={(fontName: IReader_schema_epub_fontName) => this.modal_epub_fontChanged(fontName)}
                     >
                       {
-                        font_list.map(f => (
+                        this.modal_epub_font_list.map(f => (
                           <ToggleButton
                             key={f}
                             className="min-w-70px btn-light"
                             value={f}
                           >
                             {Localization.font_obj[f]}
+                          </ToggleButton>
+                        ))
+                      }
+                    </ToggleButtonGroup>
+                  </li>
+
+                  <li className={"section-zoom list-group-item d-flex justify-content-between px-0 "
+                    + (!this._isDocument ? 'disabled opacity-5' : '')
+                  }>
+                    <div className="text-capitalize">{Localization.zoom}</div>
+                    <ToggleButtonGroup
+                      className="btn-group-sm"
+                      type="radio"
+                      name="reader-epub-zoom"
+                      defaultValue={this.state.modal_epub.zoom}
+                      onChange={(zoom: number) => this.modal_epub_zoomChanged(zoom)}
+                    >
+                      {
+                        this.modal_epub_zoom_list.map(z => (
+                          <ToggleButton
+                            key={z}
+                            className="min-w-70px btn-light"
+                            value={z}
+                          >
+                            {z}
                           </ToggleButton>
                         ))
                       }
@@ -983,6 +1024,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   modal_epub_fontChanged(fontName: IReader_schema_epub_fontName) {
     this.setState({ modal_epub: { ...this.state.modal_epub, fontName } });
   }
+  modal_epub_zoomChanged(zoom: number) {
+    this.setState({ modal_epub: { ...this.state.modal_epub, zoom } });
+  }
   modal_epub_confirm() {
     // debugger;
     // const reader_state = { ...Store2.getState().reader };
@@ -992,6 +1036,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     if (this.state.modal_epub.fontName) reader_epub.fontName = this.state.modal_epub.fontName!;
     if (this.state.modal_epub.fontSize) reader_epub.fontSize = this.state.modal_epub.fontSize!;
     if (this.state.modal_epub.theme) reader_epub.theme = this.state.modal_epub.theme!;
+    if (this.state.modal_epub.zoom) reader_epub.zoom = this.state.modal_epub.zoom!;
 
     // Store2.dispatch(action_update_reader(reader_state));
     this.props.update_reader(reader_state);
@@ -1004,7 +1049,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       <>
         <div className="row">
           <div className="col-12 px-0">
-            <div className={"reader-overview-wrapper mt-3-- mb-5-- theme-" + this.props.reader.epub.theme}>
+            <div className={"reader-overview-wrapper mt-3-- mb-5-- theme-" + this.props.reader.epub.theme
+              + (this._isDocument ? '--' : '')
+            }>
               {this.overview_header_render()}
               {this.overview_body_render()}
               {this.overview_footer_render()}

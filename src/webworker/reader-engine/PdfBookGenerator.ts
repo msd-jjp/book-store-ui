@@ -1,5 +1,6 @@
 import { IBookPosIndicator, WasmWorkerHandler } from "./MsdBook";
 import { TextBookGenerator } from "./TextBookGenerator";
+import { Store2 } from "../../redux/store";
 
 export class PdfBookGenerator extends TextBookGenerator {
 
@@ -17,13 +18,21 @@ export class PdfBookGenerator extends TextBookGenerator {
         }
         return this._allPages_pos;
     }
-    async getPage(index: number, zoom = 100): Promise<string | undefined> {
+    private _document_zoom: number | undefined;
+    getZoom(): number {
+        if (!this._document_zoom) {
+            this._document_zoom = Store2.getState().reader.epub.zoom || 100;
+        }
+        return this._document_zoom;
+    }
+    async getPage(index: number/* , zoom = 100 */): Promise<string | undefined> {
+
         let page = this.getFromStorage(index);
         if (!page) {
             try {
-                page = await this.renderDocPage(index, zoom);
+                page = await this.renderDocPage(index, this.getZoom());
             } catch (e) {
-                console.log(`getPage(${index}: number, ${zoom} = 100)`, e);
+                console.log(`getPage(${index}: number, ${this.getZoom()} = 100)`, e);
                 throw e;
             }
             if (!page) return;
@@ -35,13 +44,13 @@ export class PdfBookGenerator extends TextBookGenerator {
     /**
      * if page not exist it will store around.
      */
-    async getPage_with_storeAround(index: number, n: number, zoom = 100): Promise<string | undefined> {
+    async getPage_with_storeAround(index: number, n: number/* , zoom = 100 */): Promise<string | undefined> {
         let page = this.getFromStorage(index);
         if (!page) {
             try {
-                page = await this.renderDocPage(index, zoom);
+                page = await this.renderDocPage(index, this.getZoom());
             } catch (e) {
-                console.log(`getPage_with_storeAround(${index}: number, ${zoom} = 100)`, e);
+                console.log(`getPage_with_storeAround(${index}: number, ${this.getZoom()} = 100)`, e);
                 throw e;
             }
             if (!page) return;

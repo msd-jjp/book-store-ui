@@ -21,7 +21,6 @@ import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem, updateLibraryItem_progress/* , getBookFileId */ } from "../../library/libraryViewTemplate";
 import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
-import { CmpUtility } from "../../_base/CmpUtility";
 import { BOOK_TYPES } from "../../../enum/Book";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
@@ -153,7 +152,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   private async generateReader() {
-    await CmpUtility.waitOnMe(0);
+    // await CmpUtility.waitOnMe(0);
 
     if (this.props.reader_engine.status !== 'inited') {
       this.goBack();
@@ -401,8 +400,8 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
             // ref={(el: any) => this._innerImageZoom_el = el}
             afterZoomIn={() => this.afterZoomIn()}
             afterZoomOut={() => this.afterZoomOut()}
-            // fullscreenOnMobile
-            // mobileBreakpoint={5000}
+          // fullscreenOnMobile
+          // mobileBreakpoint={5000}
           />
         </div>
 
@@ -533,7 +532,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       <>
         <div className="row">
           <div className="col-12 px-0">
-            <div className={"reader-reading-wrapper theme-" + this.props.reader.epub.theme}>
+            <div className={"reader-reading-wrapper theme-" + this.props.reader.epub.theme
+              + (this._isDocument ? '--' : '')
+            }>
               {this.reading_header_render()}
               {this.reading_body_render()}
               <ContentLoader gutterClassName="gutter-0" show={this.state.page_loading}></ContentLoader>
