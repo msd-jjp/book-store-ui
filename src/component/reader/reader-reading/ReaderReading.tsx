@@ -26,6 +26,7 @@ import { BOOK_TYPES } from "../../../enum/Book";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
+import InnerImageZoom from 'react-inner-image-zoom';
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -44,6 +45,7 @@ interface IState {
     slides: any[];
   };
   page_loading: boolean;
+  isDocumentZoomed: boolean;
 }
 
 class ReaderReadingComponent extends BaseComponent<IProps, IState> {
@@ -55,6 +57,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       slides: [],
     },
     page_loading: true,
+    isDocumentZoomed: false,
   };
 
   private _personService = new PersonService();
@@ -343,11 +346,38 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  onDocumentZoom() {
+  onDocumentZoom_open() {
     if (!this._isDocument) return;
-    debugger;
+    // debugger;
+    if (!this.swiper_obj) return;
+    const activeIndex = this.swiper_obj.activeIndex;
+    const activeImg: HTMLImageElement | null =
+      document.querySelector(`.swiper-container .swiper-slide img.page-img[data-src="${activeIndex}"]`);
+    if (!activeImg) return;
+    // debugger;
+    this._innerImageZoom_src = activeImg.src;
+    // this._innerImageZoom_el && this._innerImageZoom_el.img.click();
+    this.setState({ isDocumentZoomed: true });
   }
 
+  onDocumentZoom_close() {
+    if (!this._isDocument) return;
+    // debugger;
+    this._innerImageZoom_src = '';
+    this.setState({ isDocumentZoomed: false });
+  }
+
+  afterZoomIn() {
+    // debugger;
+  }
+
+  afterZoomOut() {
+    // debugger;
+    // this.onDocumentZoom_close();
+  }
+
+  private _innerImageZoom_src = '';
+  // private _innerImageZoom_el: any;
   reading_header_render() {
     return (
       <>
@@ -358,9 +388,28 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
         ></i>
 
         <i className={"header-icon magnify fa fa-search-plus p-2 mr-2 mt-2 cursor-pointer "
-          + (this._isDocument && !this.state.page_loading ? 'active' : '')
+          + (this._isDocument && !this.state.isDocumentZoomed && !this.state.page_loading ? 'active' : '')
         }
-          onClick={() => this.onDocumentZoom()}
+          onClick={() => this.onDocumentZoom_open()}
+        ></i>
+
+        <div className={"document-zoom "
+          + (this._isDocument && this.state.isDocumentZoomed ? 'active' : '')
+        }>
+          <InnerImageZoom className="zoom-img"
+            src={this._innerImageZoom_src} zoomSrc={this._innerImageZoom_src}
+            // ref={(el: any) => this._innerImageZoom_el = el}
+            afterZoomIn={() => this.afterZoomIn()}
+            afterZoomOut={() => this.afterZoomOut()}
+            // fullscreenOnMobile
+            // mobileBreakpoint={5000}
+          />
+        </div>
+
+        <i className={"header-icon magnify fa fa-search-minus p-2 mr-2 mt-2 cursor-pointer "
+          + (this._isDocument && this.state.isDocumentZoomed && !this.state.page_loading ? 'active' : '')
+        }
+          onClick={() => this.onDocumentZoom_close()}
         ></i>
       </>
     )
