@@ -429,7 +429,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                 <div className="carousel-wrapper carousel-wrapper-error" key="carousel-wrapper-error">
                     <div className="carousel-item-wrapper mb-4">
                         <div className="carousel-item">
-                            <div className="img-wrapper">
+                            <div className="img-wrapper bg-transparent">
                                 <img src={this.defaultBookImagePath} alt="" />
                             </div>
                             <span className="writer-name text-capitalize"></span>
