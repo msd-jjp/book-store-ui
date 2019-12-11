@@ -75,7 +75,7 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
         }
 
         let res = await searchRequest.catch(error => {
-            let errorMsg = this.handleError({ error: error.response });
+            let errorMsg = this.handleError({ error: error.response, toastOptions: { toastId: 'fetchCategoryBooks_error' } });
             this.setState({ ...this.state, categoryBookError: errorMsg.body });
         });
 
@@ -213,7 +213,9 @@ class CategoryComponent extends BaseComponent<IProps, IState>{
             return (
                 <>
                     <div>{this.state.categoryBookError}</div>
-                    <div onClick={() => this.fetchCategoryBooks()}>{Localization.retry}</div>
+                    <div className="cursor-pointer" onClick={() => this.fetchCategoryBooks()}>
+                        {Localization.retry} <i className="fa fa-refresh"></i>
+                    </div>
                 </>
             );
         } else {

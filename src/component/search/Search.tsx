@@ -183,7 +183,9 @@ class SearchComponent extends BaseComponent<IProps, IState> {
             return (
                 <>
                     <div>{this.state.bookError}</div>
-                    <div onClick={() => this.fetchBooks()}>{Localization.retry}&nbsp;<i className="fa fa-refresh"></i></div>
+                    <div className="cursor-pointer" onClick={() => this.fetchBooks()}>
+                        {Localization.retry}&nbsp;<i className="fa fa-refresh"></i>
+                    </div>
                 </>
             );
         } else {
