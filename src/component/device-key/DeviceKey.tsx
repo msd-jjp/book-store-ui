@@ -129,9 +129,8 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
             }
         });
         const res = await this._deviceKeyService.generate(JSON.stringify(Utility.browserDetail())).catch(e => {
-            if (notify) {
-                this.handleError({ error: e.response, toastOptions: { toastId: 'generate_error' } });
-            }
+            // e.response.data = { msg: 'maximum_active_device' };
+            // this.handleError({ error: e.response, toastOptions: { toastId: 'generate_error' } });
             if (e && e.response && e.response.data && e.response.data.msg === 'maximum_active_device') {
                 this.setState({
                     modal_deviceList: {
@@ -142,6 +141,9 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                 });
                 this.openModal_deviceList();
             } else {
+                if (notify) {
+                    this.handleError({ error: e.response, toastOptions: { toastId: 'generate_error' } });
+                }
                 this.setState({
                     modal_deviceList: {
                         ...this.state.modal_deviceList,

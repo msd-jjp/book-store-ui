@@ -155,6 +155,10 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
         this.props.update_device_Key(device_key);
     }
 
+    reloadApp() {
+        window.location.reload();
+    }
+
     render() {
 
         return (
@@ -185,6 +189,11 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
                         <li className="settings-item d-flex align-items-center list-group-item p-align-0 pb-1 mt-4">
                             <div className="icon-wrapper d-flex mr-3"><i className="fa fa-history"></i></div>
                             <small className="text-uppercase">{Localization.state}</small>
+                        </li>
+
+                        <li className="settings-item d-flex align-items-center list-group-item p-align-0 cursor-pointer"
+                            onClick={() => this.reloadApp()}>
+                            <span className="text text-capitalize">{Localization.reload_app}</span>
                         </li>
 
                         <li className="settings-item d-flex align-items-center list-group-item p-align-0 cursor-pointer"

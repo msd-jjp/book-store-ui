@@ -116,6 +116,7 @@ interface ILocalization extends LocalizedStringsMethods {
             minimum_payment_error: string;
             maximum_payment_error: string;
             payment_serial_error: string;
+            maximum_active_device: string;
         }
     };
     validation: {
@@ -397,6 +398,7 @@ interface ILocalization extends LocalizedStringsMethods {
     submit_this_device: string;
     this_device: string;
     zoom: string;
+    reload_app: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

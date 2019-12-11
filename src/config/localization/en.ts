@@ -102,7 +102,9 @@ export const en = {
             buyer_cell_no_error: "شماره تماس فروشنده مورد نظر مورد تایید نمیباشد.",
             minimum_payment_error: "حداقل مبلغ پرداخت 1,000 ریال میباشد.",
             maximum_payment_error: "حداکثر مبلغ پرداخت 30,0000,000 ریال میباشد.",
-            payment_serial_error: "شناسه پرداخت ارسالی مورد تایید نمیباشد."
+            payment_serial_error: "شناسه پرداخت ارسالی مورد تایید نمیباشد.",
+
+            maximum_active_device: 'you reached maximum active device, please remove at least one of them',
         }
     },
     validation: {
@@ -410,4 +412,5 @@ export const en = {
     submit_this_device: 'submit this device',
     this_device: 'this device',
     zoom: 'zoom',
+    reload_app: 'reload application',
 }
