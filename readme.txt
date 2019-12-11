@@ -35,10 +35,6 @@ serve -s build
 
 ====================================================================================
 
-====================================================================================
-
-====================================================================================
-
 cancel request in cmpWillUnmount
 https://github.com/axios/axios#cancellation
 https://github.com/axios/axios/issues/1361
@@ -60,10 +56,6 @@ instead of current btn loader
 ====================================================================================
 
 ====================================================================================
-
-====================================================================================
-
-====================================================================================
 ?)
 comments --> parent: show quote from parent
 
@@ -74,26 +66,22 @@ reset input(form element) --> after reset set touch to false.
 
 ====================================================================================
 
-you have to use logout
-if in log in page & this.props.loged_in_user --> redirect to dashboard
-
 ====================================================================================
 
 add price to book in category & store
 
 ====================================================================================
 
-collection & library head request & get request
-
-no book found in library (match your filter)
-no collection found
-no book found in collection (match your filter)
-
-====================================================================================
+after filter added in library & collection
+    no book found in library (match your filter)
+    no collection found
+    no book found in collection (match your filter)
 
 ====================================================================================
 
-share 
+====================================================================================
+
+share
 	whats app , telegram , sms
 	
 ====================================================================================
@@ -105,28 +93,11 @@ notification (r&d)
 
 ====================================================================================
 
-====================================================================================
-
 get data from storage first (in page like store, dashborad)
 
 ====================================================================================
 
 use icon for book type(in cart, dashboard image small icon in corner, store, detail,...)
-
-====================================================================================
-
-set id for toaster --> if it is open, don't open another one or force close before open another. (like cmp cart)
-
-====================================================================================
-
-====================================================================================
-
-if not login layout main(noWrap) push '/login' to history
-    in login after logedIn pop if has length else push dashboard.
-
-====================================================================================
-
-upload progress bar if file size big (use https://github.com/fkhadra/react-toastify#use-a-controlled-progress-bar)
 
 ====================================================================================
 
@@ -147,11 +118,7 @@ wavesurfer library replace require with import
 
 ====================================================================================
 
-====================================================================================
-
 check dd-menu in readerOverview & collection & library --> ltr mode
-
-====================================================================================
 
 ====================================================================================
 
@@ -161,17 +128,11 @@ call CmpUtility.refreshView(); when action need it, remove from general method l
 
 ====================================================================================
 
-fetch user on app open & in layout validUser. update logedInUser state.
-
 ====================================================================================
 
 kindle --> mark as un-read
 
-on book open(epub or audio) --> update back (do not check if book_id same as user OR keeep userProfile update)
-
 ====================================================================================
-
-mabe in profile: get user instead of person.
 
 onSync : check cart too.
 
@@ -204,7 +165,6 @@ bookDetail cmp:
 
 ====================================================================================
 
-
 ====================================================================================
 
 book download:
@@ -219,24 +179,26 @@ libItem --> add size (perminently keep size)
 
 reader :
     audio
-        chapter --> nested menu
+        0)chapter --> nested menu
         1) if user puased --> (force pause) prevent play (it happed while waitng to load)
         2) create audio with empty chapter
     pdf:
-        chapter --> nested menu
+        0)chapter --> nested menu
 
 ====================================================================================
 
 ====================================================================================
 
-====================================================================================
+create state named: global_notify?? --> show detail to user like:
+    
+    show notify modal to user on app version update for test:
+        your current version is 1.0.19 updated from 1.0.17.
 
-====================================================================================
+    new feature user can use.
 
-====================================================================================
+    access removeed from user
 
-show notify modal to user on app version update for test:
-    your current version is 1.0.19 updated from 1.0.17.
+    you have new message from admin, check your inbox.
 
 ====================================================================================
 
@@ -246,13 +208,6 @@ call method createWorkerAfterDownload in cmp Reader (reading overview ...) after
 msdBook: WasmWorkerHandler --> onmessage --> create new book if in cmp reader.
 
 ====================================================================================
-
-
-====================================================================================
-
-
-====================================================================================
-
 
 ====================================================================================
 afzudan list download dar setting
@@ -277,10 +232,9 @@ download performance
 
 ====================================================================================
 
-
 ====================================================================================
 
-chrome in iphone --> device key bug.
+chrome in iphone --> device key bug. (detecting device as safari version 605??)
 
 ====================================================================================
 
