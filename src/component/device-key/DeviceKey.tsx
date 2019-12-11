@@ -121,7 +121,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    private async generate() {
+    private async generate(notify = false) {
         this.setState({
             modal_deviceList: {
                 ...this.state.modal_deviceList,
@@ -129,6 +129,9 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
             }
         });
         const res = await this._deviceKeyService.generate(JSON.stringify(Utility.browserDetail())).catch(e => {
+            if (notify) {
+                this.handleError({ error: e.response, toastOptions: { toastId: 'generate_error' } });
+            }
             if (e && e.response && e.response.data && e.response.data.msg === 'maximum_active_device') {
                 this.setState({
                     modal_deviceList: {
@@ -164,16 +167,18 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    private async fetch_deviceKeyList() {
+    private async fetch_deviceKeyList(show = this.state.modal_deviceList.show) {
         const user_id = this.getUserId(); if (!user_id) return;
         const _deviceKey_list_local = appLocalStorage.getAll_deviceKeyByUserId(user_id);
         // const isAppOffline = BaseService.isAppOffline();
         const isAppOffline = this.props.network_status === NETWORK_STATUS.OFFLINE;
+        // show = this.state.modal_deviceList.show;
         this.setState({
             ...this.state, modal_deviceList: {
                 ...this.state.modal_deviceList,
                 loading: !isAppOffline, errorText: undefined,
-                list: _deviceKey_list_local || []
+                list: _deviceKey_list_local || [],
+                show
             }
         });
         if (isAppOffline) return;
@@ -226,8 +231,18 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
 
     //#region modal_deviceList
     openModal_deviceList() {
-        this.fetch_deviceKeyList();
-        this.setState({ ...this.state, modal_deviceList: { ...this.state.modal_deviceList, show: true } });
+        this.fetch_deviceKeyList(true);
+        /* const btn = { ...this.state.modal_deviceList.btn };
+        if (!this.props.device_key.deviceKey) {
+            btn.visible = true;
+        } */
+
+        /* this.setState({
+            ...this.state, modal_deviceList: {
+                ...this.state.modal_deviceList, show: true,
+                // btn: { ...btn }
+            }
+        }); */
     }
 
     closeModal_deviceList() {
@@ -237,7 +252,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
         } */
     }
 
-    getDeviceKey_parsedName(deviceKeyName: IDeviceKey['name']) {
+    private getDeviceKey_parsedName(deviceKeyName: IDeviceKey['name']) {
         let parsedName;
         try { parsedName = JSON.parse(deviceKeyName) } catch (e) { };
         let rtn = '';
@@ -252,10 +267,27 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
         return rtn;
     }
 
-    checkIfThisDevice(id: IDeviceKey['id']): JSX.Element {
-        if (!this.props.device_key.deviceKey) return <></>;
-        if (this.props.device_key.deviceKey.id === id) return <span className="ml-2 small badge badge-info">{Localization.this_device}</span>;
-        return <></>;
+    private checkIfThisDevice(id: IDeviceKey['id']): boolean {
+        if (!this.props.device_key.deviceKey) return false;
+        if (this.props.device_key.deviceKey.id === id) return true;
+        return false;
+    }
+    checkIfThisDevice_render(id: IDeviceKey['id']): JSX.Element {
+        if (this.checkIfThisDevice(id)) return <span className="ml-2 small badge badge-info">{Localization.this_device}</span>;
+        else return <></>;
+        // if (!this.props.device_key.deviceKey) return <></>;
+        // if (this.props.device_key.deviceKey.id === id) return <span className="ml-2 small badge badge-info">{Localization.this_device}</span>;
+        // return <></>;
+    }
+
+    private isBtnDisable(): boolean {
+        if (this.props.network_status === NETWORK_STATUS.OFFLINE || this.state.modal_deviceList.msg !== undefined) {
+            return true;
+        }
+        return false;
+    }
+    private isBtnVisible(): boolean {
+        return this.state.modal_deviceList.btn.visible || this.props.device_key.deviceKey === undefined;
     }
 
     modal_deviceList_render() {
@@ -299,7 +331,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                                                     <td className="text-nowrap-ellipsis">
                                                         <small className="text-muted">
                                                             {this.getFromNowDate(item.creation_date)}
-                                                            {this.checkIfThisDevice(item.id)}
+                                                            {this.checkIfThisDevice_render(item.id)}
                                                         </small>
                                                         <div>{this.getDeviceKey_parsedName(item.name)}</div>
                                                     </td>
@@ -321,14 +353,11 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                         <BtnLoader
                             btnClassName={
                                 "btn text-success btn-sm text-uppercase min-w-70px "
-                                + (this.state.modal_deviceList.btn.visible ? '' : 'd-none')
+                                + (this.isBtnVisible() ? '' : 'd-none')
                             }
                             loading={this.state.modal_deviceList.btn.loading}
-                            onClick={() => this.generate()} // submitDevice
-                            disabled={
-                                this.props.network_status === NETWORK_STATUS.OFFLINE
-                                || this.state.modal_deviceList.msg
-                            }
+                            onClick={() => this.generate(true)}
+                            disabled={this.isBtnDisable()}
                         >
                             {Localization.submit_this_device}
                             {
