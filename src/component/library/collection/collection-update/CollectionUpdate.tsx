@@ -242,9 +242,11 @@ class CollectionUpdateComponent extends BaseComponent<IProps, IState> {
     }
 
     goBack() {
-        if (this.props.history.length > 1) { this.props.history.goBack(); }
+        /* if (this.props.history.length > 1) { this.props.history.goBack(); }
         // else { this.props.history.push(`/library`); }
-        else { this.props.history.push(`/collection/${this.collectionTitle}`); }
+        else { this.props.history.push(`/collection/${this.collectionTitle}`); } */
+
+        this.props.history.replace(`/collection/${this.collectionTitle}`);
     }
 
     async addBookToCollection() {
