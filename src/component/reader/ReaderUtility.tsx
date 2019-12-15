@@ -8,11 +8,8 @@ import { CmpUtility } from "../_base/CmpUtility";
 import { IBookContent, IBookPosIndicator, WasmWorkerHandler } from "../../webworker/reader-engine/MsdBook";
 import { AudioBookGenerator } from "../../webworker/reader-engine/AudioBookGenerator";
 import { PdfBookGenerator } from "../../webworker/reader-engine/PdfBookGenerator";
-// import { appLocalStorage } from "../../service/appLocalStorage";
 import { ReaderDownload } from "../../webworker/reader-engine/reader-download/reader-download";
-// import { Reader2Worker } from "../../webworker/reader2-worker/Reader2Worker";
-// import wasmWorker from 'wasm-worker';
-
+import { BOOK_TYPES } from "../../enum/Book";
 
 interface IEpubBook_chapters_flat {
     content: IBookContent | undefined;
@@ -188,30 +185,6 @@ export abstract class ReaderUtility {
         if (!lang) return true;
         else return ReaderUtility.rtlLanguage_list.includes(lang);
     }
-
-    /* private static _check_swiperImg_loaded_timer: any;
-    static check_swiperImg_loaded(selector?: string) {
-        selector = selector || '.swiper-container .swiper-slide img.page-img';
-
-        if (ReaderUtility._check_swiperImg_loaded_timer) {
-            clearTimeout(ReaderUtility._check_swiperImg_loaded_timer);
-        }
-
-        ReaderUtility._check_swiperImg_loaded_timer = setTimeout(async () => {
-
-            const img_list = document.querySelectorAll(selector!);
-            for (let i = 0; i < img_list.length; i++) {
-                if (!img_list[i].getAttribute('src')) {
-                    const d_s = img_list[i].getAttribute('data-src');
-                    if (d_s) {
-                        img_list[i].setAttribute('src', d_s);
-                        console.log(await d_s);
-                    }
-                }
-            }
-
-        }, 300);
-    } */
 
     private static _renderViewablePages_isRun = false;
     static async renderViewablePages(bi: BookGenerator | PdfBookGenerator, selector?: string) {
@@ -431,7 +404,6 @@ export abstract class ReaderUtility {
         };
     }
 
-
     static getPageIndex_byChapter(chapterPos: IBookPosIndicator, pagePosList: number[], isPdf: boolean): number | undefined {
         if (!chapterPos /* || !pagePosList.length */) {
             return;
@@ -515,56 +487,9 @@ export abstract class ReaderUtility {
         return await AudioBookGenerator.getInstance(ww, bookFile);
     }
 
-    /**
-     * atom: chapter detail
-     */
-    /* static getAudio_chapterDetail_byAtom(atom: IBookPosIndicator, flat_chapters: IEpubBook_chapters_flat_list)
-        : {
-            firstContent: IBookContent | undefined,
-            lastContent: IBookContent | undefined, duration: number
-        } | undefined {
-
-        if (!atom || !flat_chapters) return;
-
-        let thisChapter;
-        for (let i = 0; i < flat_chapters.length; i++) {
-            const chp = flat_chapters[i];
-            if (chp.content && chp.content.pos.atom === atom.atom && chp.content.pos.group === atom.group) {
-                thisChapter = chp;
-            }
-        }
-
-        const chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
-        // debugger;
-        flat_chapters.forEach((ch, index) => {
-            if (!ch.clickable) {
-                chapters_with_page.push({ firstPageIndex: undefined, lastPageIndex: undefined });
-                return;
-            }
-
-            const obj: { firstPageIndex: number | undefined, lastPageIndex: number | undefined } = {
-                firstPageIndex: ReaderUtility.getPageIndex_byChapter(ch.content!.pos, pagePosList, isPdf),
-                lastPageIndex: undefined
-            };
-
-            chapters_with_page.push(obj);
-
-            if (index !== 0) {
-                // if (!flat_chapters[index - 1].clickable) {
-                if (flat_chapters[index - 1].clickable) { //
-                    // return;
-                    // }
-                    let prev_ch = chapters_with_page[index - 1];
-                    prev_ch.lastPageIndex = prev_ch.firstPageIndex === obj.firstPageIndex ? obj.firstPageIndex :
-                        obj.firstPageIndex ? obj.firstPageIndex - 1 : undefined;
-                } //
-            }
-            if (index === flat_chapters.length - 1) {
-                chapters_with_page[index].lastPageIndex = pagePosList.length - 1;
-            }
-        });
-        // debugger;
-        return chapters_with_page;
-    } */
+    static is_book_document(bookType: BOOK_TYPES): boolean {
+        if (bookType === BOOK_TYPES.Pdf || bookType === BOOK_TYPES.Epub) return true;
+        return false;
+    }
 
 }

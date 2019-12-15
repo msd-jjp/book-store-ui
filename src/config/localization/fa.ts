@@ -299,7 +299,8 @@ export const fa = {
         Audio: 'صوتی',
         Hard_Copy: 'چاپی',
         Pdf: 'پی دی اف',
-        Epub: 'Epub'
+        Epub: 'Epub',
+        Msd: 'کتابخوان'
     },
     role_type_list: {
         Author: 'مولف',

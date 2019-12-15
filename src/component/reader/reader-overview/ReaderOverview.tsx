@@ -99,7 +99,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   componentWillMount() {
     if (this.book_id) {
       this._libraryItem = getLibraryItem(this.book_id);
-      if (this._libraryItem) this._isDocument = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
+      if (this._libraryItem) this._isDocument = ReaderUtility.is_book_document(this._libraryItem!.book.type as BOOK_TYPES);
     }
   }
   componentDidMount() {
@@ -238,7 +238,6 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
 
     try {
-      // const isPdf = this._libraryItem!.book.type === BOOK_TYPES.Pdf;
       this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, undefined, this._isDocument);
     } catch (e) {
       console.error(e);
@@ -710,7 +709,6 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   private _pagePosList: number[] = [];
   async getPageIndex_withChapter(chapterPos: IBookPosIndicator): Promise<number | undefined> {
-    // if (this._libraryItem!.book.type === BOOK_TYPES.Pdf) {
     if (this._isDocument) {
       // return chapterPos.group !== -1 ? chapterPos.group : undefined;
       return ReaderUtility.getPageIndex_byChapter(chapterPos, [], true);

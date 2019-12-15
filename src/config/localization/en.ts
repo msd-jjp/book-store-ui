@@ -299,7 +299,8 @@ export const en = {
         Audio: 'Audio',
         Hard_Copy: 'Hard_Copy',
         Pdf: 'Pdf',
-        Epub: 'Epub'
+        Epub: 'Epub',
+        Msd: 'bookStore'
     },
     role_type_list: {
         Author: 'Author',
