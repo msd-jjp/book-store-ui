@@ -203,7 +203,6 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
             this.downloadFinished(fileId, collectionName);
         }
         else if (error && error === 'device_key_not_found') {
-            // todo if not allowed new device key --> notify remove one
             this.downloadFinished(fileId, collectionName);
             this.toastNotify(
                 Localization.msg.ui.device_key_not_found_reload,

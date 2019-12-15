@@ -172,7 +172,6 @@ export class PartialDownload {
                     reject('not_logged_in');
                     return;
                 }
-                // const _deviceKey = appLocalStorage.find_deviceKeyByUserId(user_id);
                 const _deviceKey = Store2.getState().device_key.deviceKey;
                 if (!_deviceKey) {
                     reject('device_key_not_found');
@@ -187,19 +186,9 @@ export class PartialDownload {
                     return;
                 }
                 // debugger;
-                // req = this._bookService.bookFile_detail(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
                 this.book_file_url = this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN ? prepare.data.Original : prepare.data.Brief;
-                // this.book_file_url = '6cc22511-c580-4fd8-8904-0f012b8618d3';
                 req = this._bookService.get_file_info(this.book_file_url);
             }
-
-            /* if (this.fileId === READER_FILE_NAME.WASM_BOOK_ID) {
-                req = this._readerEngineService.file_detail(READER_FILE_NAME.WASM_BOOK_ID);
-            } else if (this.fileId === READER_FILE_NAME.READER2_BOOK_ID) {
-                req = this._readerEngineService.file_detail(READER_FILE_NAME.READER2_BOOK_ID);
-            } else {
-                req = this._bookService.bookFile_detail(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN);
-            } */
 
             if (!req) {
                 reject('request not valid: none of engine & book');
@@ -235,21 +224,12 @@ export class PartialDownload {
                 this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN ||
                 this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_SAMPLE
             ) {
-                // req = this._bookService.bookFile_partial(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.currentRange!, this.cancelTokenSource.token);
                 if (!this.book_file_url) {
                     reject('this.book_file_url not found');
                     return;
                 }
                 req = this._bookService.get_file_partial(this.book_file_url, this.currentRange!, this.cancelTokenSource.token);
             }
-
-            /* if (this.fileId === READER_FILE_NAME.WASM_BOOK_ID) {
-                req = this._readerEngineService.file_partial(READER_FILE_NAME.WASM_BOOK_ID, this.currentRange!, this.cancelTokenSource.token);
-            } else if (this.fileId === READER_FILE_NAME.READER2_BOOK_ID) {
-                req = this._readerEngineService.file_partial(READER_FILE_NAME.READER2_BOOK_ID, this.currentRange!, this.cancelTokenSource.token);
-            } else {
-                req = this._bookService.bookFile_partial(this.fileId, this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.currentRange!, this.cancelTokenSource.token);
-            } */
 
             if (!req) {
                 reject('request not valid: none of engine & book');
