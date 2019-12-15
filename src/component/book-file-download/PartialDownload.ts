@@ -54,9 +54,7 @@ export class PartialDownload {
             }
 
             const { item: dbf_item } = this.get_dbf_obj();
-            if (dbf_item && dbf_item.size) {
-
-            } else {
+            if (!(dbf_item && dbf_item.size && dbf_item.size === this.fileLength)) {
                 this.updateDownloadSize();
             }
 
