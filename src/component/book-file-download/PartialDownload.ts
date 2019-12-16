@@ -90,10 +90,10 @@ export class PartialDownload {
             }
 
             // const from = this.tempFile ? this.tempFile.byteLength : 0;
-            const from = this.tempFile_length === 0 ? 0 :
-                this.tempFile_length === this.fileLength ?
-                    this.tempFile_length :
-                    this.tempFile_length + 1; // + 1;
+            const from = this.tempFile_length === 0 ? 0 : this.tempFile_length;
+            // this.tempFile_length === this.fileLength ?
+            //     this.tempFile_length :
+            //     this.tempFile_length + 1; // + 1;
             const to = this.fileLength! <= this.downloadSize + from ? this.fileLength! : this.downloadSize + from - 1;
             // if (from >= to) {
             if (from > to) {
