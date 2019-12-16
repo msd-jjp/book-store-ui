@@ -1,5 +1,6 @@
 import { Utility } from "../../asset/script/utility";
 import { appLocalStorage } from ".";
+// import { partial_downloadSize } from "../../component/book-file-download/PartialDownload";
 
 export enum FILE_STORAGE_KEY {
     FILE_BOOK_MAIN = 'FILE_BOOK_MAIN',
@@ -14,12 +15,14 @@ export class FileStorage {
     private static storage: CacheStorage;
     private static collectionList: FILE_STORAGE_KEY[] = [
         FILE_STORAGE_KEY.FILE_BOOK_MAIN,
-        FILE_STORAGE_KEY.FILE_BOOK_MAIN_PARTIAL,
+        // FILE_STORAGE_KEY.FILE_BOOK_MAIN_PARTIAL,
         FILE_STORAGE_KEY.FILE_BOOK_SAMPLE,
-        FILE_STORAGE_KEY.FILE_BOOK_SAMPLE_PARTIAL,
+        // FILE_STORAGE_KEY.FILE_BOOK_SAMPLE_PARTIAL,
         FILE_STORAGE_KEY.READER_ENGINE,
-        FILE_STORAGE_KEY.READER_ENGINE_PARTIAL
-    ]
+        // FILE_STORAGE_KEY.READER_ENGINE_PARTIAL
+    ];
+
+    private static partial_downloadSize = 100000;
 
     static async init() {
         if ('caches' in window) {
@@ -49,16 +52,100 @@ export class FileStorage {
             return new Uint8Array(await file.arrayBuffer());
     }
 
-    static async saveFileById(collectionName: FILE_STORAGE_KEY, fileId: string, data: Uint8Array): Promise<boolean> {
+    private static async saveFileById(collectionName: FILE_STORAGE_KEY, fileId: string, data: Uint8Array): Promise<boolean> {
         if (!FileStorage.isSuport()) return false;
         const col = await FileStorage.getCollection(collectionName);
         let saved = true;
-        col.put(fileId, new Response(data)).catch(e => {
+        await col.put(fileId, new Response(data)).catch(e => {
             saved = false;
             console.error('storeFileById put error: ', e);
         });
-        if (saved) { FileStorage.memory_collection_save(collectionName, fileId); }
+        if (saved && !collectionName.includes('_PARTIAL')) { FileStorage.memory_collection_save(collectionName, fileId); }
         return saved;
+    }
+
+    static async saveFileById_partial(collectionName: FILE_STORAGE_KEY, fileId: string, data: Uint8Array): Promise<boolean> {
+        if (!FileStorage.isSuport()) return false;
+        if (!collectionName.includes('_PARTIAL')) return false;
+        debugger;
+        const col = await FileStorage.getCollection(collectionName);
+        const keys = await col.keys();
+        let count = 0;
+        keys.forEach(key => { if (key.url.includes(fileId)) count++; });
+
+        let saved = true;
+        await col.put(`${fileId}_${count}`, new Response(data)).catch(e => {
+            saved = false;
+            console.error('storeFileById put error: ', e);
+        });
+        return saved;
+    }
+    static async getFileById_partial_length(collectionName: FILE_STORAGE_KEY, fileId: string): Promise<number> {
+        if (!FileStorage.isSuport()) return 0;
+        if (!collectionName.includes('_PARTIAL')) return 0;
+        debugger;
+        const col = await FileStorage.getCollection(collectionName);
+        const keys = await col.keys();
+        let count = 0;
+        keys.forEach(key => { if (key.url.includes(fileId)) count++; });
+        let file_length = 0;
+        if (count > 0) {
+            for (let i = 0; i < count - 1; i++) {
+                let fs = FileStorage.partial_downloadSize;
+                // if (i === 0) fs = fs + 1;
+                file_length = file_length + fs;
+            }
+            const file = await col.match(`${fileId}_${count - 1}`).catch(e => {
+                console.error('file byId not exist', fileId);
+            });
+            if (file) {
+                const arr_b = await file.arrayBuffer();
+                file_length = file_length + arr_b.byteLength;
+            }
+        }
+        return file_length;
+    }
+
+    static async saveFileById_concatPartial(collectionName: FILE_STORAGE_KEY, fileId: string): Promise<boolean> {
+        if (!FileStorage.isSuport()) return false;
+        if (!collectionName.includes('_PARTIAL')) return false;
+        debugger;
+        const col = await FileStorage.getCollection(collectionName);
+        const keys = await col.keys();
+
+        const list: string[] = [];
+        keys.forEach(key => {
+            if (key.url.includes(fileId)) list.push(key.url.replace(window.location.origin + '/', ''));
+        });
+
+        const file_length = await FileStorage.getFileById_partial_length(collectionName, fileId);
+        const arr = new Uint8Array(file_length);
+        let arr_filled_length = 0;
+        let error_occuured = false;
+        for (let i = 0; i < list.length; i++) {
+            const file = await col.match(`${fileId}_${i}`).catch(e => {
+                console.error('file byId not exist', fileId);
+            });
+            if (file) {
+                const arr_u = new Uint8Array(await file.arrayBuffer());
+                const arr_u_length = arr_u.byteLength;
+                for (let j = 0; j < arr_u_length; j++) {
+                    arr[arr_filled_length + j] = arr_u[j];
+                }
+                arr_filled_length = arr_filled_length + arr_u.byteLength;
+            } else {
+                error_occuured = true;
+                break;
+            }
+        }
+        if (error_occuured) return false;
+
+        let saved = await FileStorage.saveFileById(collectionName.replace('_PARTIAL', '') as FILE_STORAGE_KEY, fileId, arr);
+        if (saved) {
+            return await FileStorage.removeFileById_partial(collectionName, fileId);
+        } else {
+            return false;
+        }
     }
 
     static async removeFileById(collectionName: FILE_STORAGE_KEY, fileId_s: string | string[]): Promise<boolean> {
@@ -71,8 +158,10 @@ export class FileStorage {
             for (let i = 0; i < fileId_s.length; i++) {
                 const d = await col.delete(fileId_s[i]);
                 if (d) {
-                    FileStorage.memory_collection_removeById(collectionName, fileId_s[i]);
+                    // FileStorage.memory_collection_removeById(collectionName, fileId_s[i]);
                     if (!collectionName.includes('_PARTIAL')) {
+                        FileStorage.memory_collection_removeById(collectionName, fileId_s[i]);
+
                         appLocalStorage.removeFromCollection('clc_creationDate', fileId_s[i]);
                         appLocalStorage.removeFromCollection('clc_eTag', fileId_s[i]);
                     }
@@ -81,8 +170,10 @@ export class FileStorage {
         } else {
             const d = await col.delete(fileId_s);
             if (d) {
-                FileStorage.memory_collection_removeById(collectionName, fileId_s);
+                // FileStorage.memory_collection_removeById(collectionName, fileId_s);
                 if (!collectionName.includes('_PARTIAL')) {
+                    FileStorage.memory_collection_removeById(collectionName, fileId_s);
+
                     appLocalStorage.removeFromCollection('clc_creationDate', fileId_s);
                     appLocalStorage.removeFromCollection('clc_eTag', fileId_s);
                 }
@@ -93,13 +184,35 @@ export class FileStorage {
         return singleDeleted;
     }
 
+    static async removeFileById_partial(collectionName: FILE_STORAGE_KEY, fileId: string): Promise<boolean> {
+        if (!FileStorage.isSuport()) return false;
+        if (!collectionName.includes('_PARTIAL')) return false;
+        debugger;
+
+        const col = await FileStorage.getCollection(collectionName);
+
+        const keys = await col.keys();
+        const list: string[] = [];
+        keys.forEach(key => {
+            if (key.url.includes(fileId)) list.push(key.url.replace(window.location.origin + '/', ''));
+        });
+
+        let deleted = true;
+        for (let i = 0; i < list.length; i++) {
+            const d = await col.delete(list[i]);
+            deleted = deleted && d;
+        }
+
+        return deleted;
+    }
+
     static async clearFileCollection(collectionName: FILE_STORAGE_KEY): Promise<boolean> {
         if (!FileStorage.isSuport()) return false;
 
         const isDeleted = await FileStorage.storage.delete(collectionName).catch(reason => {
             console.error('clearCollection error: ', collectionName, reason);
         });
-        if (isDeleted) { FileStorage.memory_collection_clear(collectionName) }
+        if (isDeleted && !collectionName.includes('_PARTIAL')) { FileStorage.memory_collection_clear(collectionName) }
         return isDeleted ? isDeleted : false;
     }
 

@@ -9,16 +9,19 @@ import { ReaderEngineService } from "../../service/service.reader-engine";
 import { READER_FILE_NAME } from "../../webworker/reader-engine/reader-download/reader-download";
 import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
 
+// export const partial_downloadSize = 100000;
+
 export class PartialDownload {
     private _bookService = new BookService();
     private _readerEngineService = new ReaderEngineService();
 
     private currentRange: { from: number; to: number } | undefined;
-    private downloadSize = 100000;
+    private readonly downloadSize = 100000; // partial_downloadSize; //
     private refreshViewOnUpdateInterval = 500;
     private cancelTokenSource: CancelTokenSource = Axios.CancelToken.source();
     private fileLength: number | undefined;
-    private tempFile: Uint8Array | undefined;
+    // private tempFile: Uint8Array | undefined;
+    private tempFile_length: number = 0;
     private current_eTag: IEtag | null;
     private new_eTag: IEtag | null = null;
     private book_file_url: string | undefined;
@@ -38,6 +41,7 @@ export class PartialDownload {
 
     async downloadFile() {
         return new Promise(async (resolve, reject) => {
+            debugger;
             let error: AxiosError | undefined = undefined;
             let fl = await this.getFileLength().catch(e => {
                 error = e;
@@ -58,7 +62,8 @@ export class PartialDownload {
                 this.updateDownloadSize();
             }
 
-            this.tempFile = await this.getFromTempStorage();
+            // this.tempFile = await this.getFromTempStorage();
+            this.tempFile_length = await this.getTempFile_length();
 
             if (!this.new_eTag) {
                 const ended = await this.downloadEnded();
@@ -66,7 +71,8 @@ export class PartialDownload {
                 return;
             }
 
-            if (this.tempFile) {
+            // if (this.tempFile) {
+            if (this.tempFile_length) {
                 if (!this.current_eTag || this.current_eTag.eTag !== this.new_eTag.eTag) {
                     debugger;
                     const ended = await this.downloadEnded();
@@ -83,13 +89,19 @@ export class PartialDownload {
                 this.current_eTag = { ...this.new_eTag };
             }
 
-            const from = this.tempFile ? this.tempFile.byteLength : 0;
-            const to = this.fileLength! <= this.downloadSize + from ? this.fileLength! : this.downloadSize + from;
-            if (from >= to) {
+            // const from = this.tempFile ? this.tempFile.byteLength : 0;
+            const from = this.tempFile_length === 0 ? 0 :
+                this.tempFile_length === this.fileLength ?
+                    this.tempFile_length :
+                    this.tempFile_length + 1; // + 1;
+            const to = this.fileLength! <= this.downloadSize + from ? this.fileLength! : this.downloadSize + from - 1;
+            // if (from >= to) {
+            if (from > to) {
                 const ended = await this.downloadEnded();
                 reject({ error: `file from: ${from}, to: ${to} not correct. ended downloadEnded ${ended}` });
                 return;
             }
+            // else if()
             this.currentRange = { from: from, to };
 
             if (this.downloadCanceled) {
@@ -136,7 +148,7 @@ export class PartialDownload {
 
                 const to = this.fileLength! <= this.currentRange!.to + this.downloadSize
                     ? this.fileLength!
-                    : this.currentRange!.to + this.downloadSize;
+                    : this.currentRange!.to + this.downloadSize; // -1;
                 this.currentRange = { from: this.currentRange!.to + 1, to };
 
                 let l_res = await this.loopRange().catch(e => {
@@ -237,7 +249,8 @@ export class PartialDownload {
             let res = await req.catch(e => {
                 downloaded = false;
                 error = e;
-                debugger;
+                // debugger;
+                console.warn('downloadRangeRequest', e);
             });
             // debugger;
 
@@ -269,7 +282,7 @@ export class PartialDownload {
     }
 
     private async saveInTempStorage(newFile: Uint8Array): Promise<boolean> {
-        let cu = this.tempFile ? this.tempFile.byteLength : 0;
+        /* let cu = this.tempFile ? this.tempFile.byteLength : 0;
         let nu = newFile.byteLength;
         const arr = new Uint8Array(cu + nu);
         if (this.tempFile && this.tempFile.length) {
@@ -281,39 +294,48 @@ export class PartialDownload {
             arr[cu + i] = newFile[i];
         }
         this.tempFile = arr;
-        return await appLocalStorage.saveFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId, this.tempFile);
+        return await appLocalStorage.saveFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId, this.tempFile); */
+        return await appLocalStorage.saveFileById_partial((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId, newFile);
     }
 
     private async getFromTempStorage(): Promise<Uint8Array | undefined> {
         return await appLocalStorage.getFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId);
     }
 
+    private async getTempFile_length(): Promise<number> {
+        return await appLocalStorage.getFileById_partial_length((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId);
+    }
+
     private async clearTempStorage(): Promise<boolean> {
         // todo mozila bug
         /** mozila bug: save empty file before remove */
-        let cleared = await appLocalStorage.saveFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId, new Uint8Array(0));
-        cleared = await appLocalStorage.removeFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId);
+        // let cleared = await appLocalStorage.saveFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId, new Uint8Array(0));
+        // cleared = await appLocalStorage.removeFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId);
 
-        // console.log('clearTempStorage', cleared, this.fileId);
-        return cleared;
+        // // console.log('clearTempStorage', cleared, this.fileId);
+        // return cleared;
+
+        return await appLocalStorage.removeFileById_partial((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId);
     }
 
     private async downloadCompleted(): Promise<boolean> {
         let save = false;
-        if (this.tempFile)
-            save = await appLocalStorage.saveFileById(this.collectionName, this.fileId, this.tempFile);
+        // if (this.tempFile)
+        // save = await appLocalStorage.saveFileById(this.collectionName, this.fileId, this.tempFile);
+        save = await appLocalStorage.saveFileById_concatPartial((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId);
 
-        let ended = false;
+        // let ended = false;
         if (save) {
             appLocalStorage.store_creationDate({ id: this.fileId, date: new Date().getTime() });
-            ended = await this.downloadEnded();
+            // ended = await this.downloadEnded();
         }
 
-        return ended;
+        // return ended;
+        return save;
     }
 
     private async downloadEnded(): Promise<boolean> {
-        this.tempFile = undefined;
+        // this.tempFile = undefined;
         const cleared = await this.clearTempStorage();
         return cleared;
     }

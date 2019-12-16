@@ -197,11 +197,17 @@ export class appLocalStorage {
     static find_creationDateById = SearchAppStorage.find_creationDateById;
 
     static getFileById = FileStorage.getFileById;
-    static saveFileById = FileStorage.saveFileById;
+    // static saveFileById = FileStorage.saveFileById;
     static removeFileById = FileStorage.removeFileById;
     static clearFileCollection = FileStorage.clearFileCollection;
     static checkFileExist = FileStorage.checkFileExist;
     static checkFileExist_async = FileStorage.checkFileExist_async;
+
+    static saveFileById_partial = FileStorage.saveFileById_partial;
+    static getFileById_partial_length = FileStorage.getFileById_partial_length;
+    static removeFileById_partial = FileStorage.removeFileById_partial;
+    static saveFileById_concatPartial = FileStorage.saveFileById_concatPartial;
+
 
     static clearWorkbox = FileStorage.clearWorkbox;
 
