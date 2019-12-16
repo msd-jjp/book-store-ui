@@ -193,6 +193,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
             });
         });
         if (res) {
+            // todo: if res not include this deviceId --> remove current & show msg or call genrate
             this.setState({
                 ...this.state, modal_deviceList: {
                     ...this.state.modal_deviceList,

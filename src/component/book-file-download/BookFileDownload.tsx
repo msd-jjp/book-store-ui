@@ -165,7 +165,13 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
             error
             &&
             (
-                (error.response && (error.response.status === 404 || (error.response.data || {}).msg === "not_found"))
+                (
+                    error.response &&
+                    (
+                        (error.response.status === 404 && (error.response.data || {}).msg !== "invalid_device")
+                        || (error.response.data || {}).msg === "not_found"
+                    )
+                )
                 || error === 'file_length_problem'
             )
         ) {
@@ -203,6 +209,15 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
             this.downloadFinished(fileId, collectionName);
         }
         else if (error && error === 'device_key_not_found') {
+            this.downloadFinished(fileId, collectionName);
+            this.toastNotify(
+                Localization.msg.ui.device_key_not_found_reload,
+                { autoClose: false, toastId: 'check_book_error_error' },
+                'error'
+            );
+        }
+        else if (error && error.response && (error.response.data || {}).msg === "invalid_device") {
+            // todo: remove current device_id and open modal deviceList
             this.downloadFinished(fileId, collectionName);
             this.toastNotify(
                 Localization.msg.ui.device_key_not_found_reload,
