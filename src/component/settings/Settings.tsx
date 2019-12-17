@@ -87,6 +87,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
         if (ding_wasm) return;
         // const deleted = 
         await appLocalStorage.removeFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.READER2_BOOK_ID);
+        await appLocalStorage.removeFileById_partial(FILE_STORAGE_KEY.READER_ENGINE_PARTIAL, READER_FILE_NAME.READER2_BOOK_ID);
         /* if (deleted) {
             appLocalStorage.removeFromCollection('clc_creationDate', READER_FILE_NAME.READER2_BOOK_ID);
             appLocalStorage.removeFromCollection('clc_eTag', READER_FILE_NAME.READER2_BOOK_ID);
@@ -109,6 +110,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
         if (ding_wasm) return;
         // const deleted = 
         await appLocalStorage.removeFileById(FILE_STORAGE_KEY.READER_ENGINE, READER_FILE_NAME.WASM_BOOK_ID);
+        await appLocalStorage.removeFileById_partial(FILE_STORAGE_KEY.READER_ENGINE_PARTIAL, READER_FILE_NAME.WASM_BOOK_ID);
         /* if (deleted) {
             appLocalStorage.removeFromCollection('clc_creationDate', READER_FILE_NAME.WASM_BOOK_ID);
             appLocalStorage.removeFromCollection('clc_eTag', READER_FILE_NAME.WASM_BOOK_ID);

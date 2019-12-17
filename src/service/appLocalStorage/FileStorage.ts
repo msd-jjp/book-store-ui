@@ -143,7 +143,10 @@ export class FileStorage {
             }
         }
         console.timeEnd('partial_download_100%_createTotalArr');
-        if (error_occuured) return false;
+        if (error_occuured) {
+            console.warn('error_occuured while concat all partial files');
+            return false;
+        }
 
         let saved = await FileStorage.saveFileById(collectionName.replace('_PARTIAL', '') as FILE_STORAGE_KEY, fileId, total);
         if (saved) {
@@ -152,6 +155,7 @@ export class FileStorage {
             console.timeEnd('partial_download_100%_removeFileById_partial');
             return r_p;
         } else {
+            console.warn('on save total file error occured.');
             return false;
         }
     }

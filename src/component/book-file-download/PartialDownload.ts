@@ -135,8 +135,9 @@ export class PartialDownload {
                 return;
             }
             if (this.currentRange!.from >= this.fileLength!) {
-                await this.downloadCompleted();
-                resolve(true);
+                const completed = await this.downloadCompleted();
+                if (completed) resolve(true);
+                else reject('on downloadCompleted occured an error.');
                 return;
             }
 
