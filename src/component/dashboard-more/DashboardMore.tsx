@@ -231,9 +231,13 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <span className="text-muted">{Localization.version_mode}:</span>&nbsp;
                             {Localization.trial}
                         </div>
-                        <div className="mb-1__">
+                        <div className="mb-1">
                             <span className="text-muted">{Localization.version}:</span>&nbsp;
                             {process.env.REACT_APP_VERSION}
+                        </div>
+                        <div className="mb-1__">
+                            <span className="text-muted">{Localization.compatible_browsers}:</span>&nbsp;
+                            {Localization.app_compatible_browsers_}
                         </div>
                     </Modal.Body>
                     <Modal.Footer className="pt-0 border-top-0">

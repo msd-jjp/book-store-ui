@@ -414,4 +414,6 @@ export const en = {
     this_device: 'this device',
     zoom: 'zoom',
     reload_app: 'reload application',
+    compatible_browsers: 'compatible browsers',
+    app_compatible_browsers_: 'All Desktop devices or Android devices: "Chrome browser"; IOS devices: "Safari browser".',
 }

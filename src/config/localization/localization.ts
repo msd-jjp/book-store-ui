@@ -399,6 +399,8 @@ interface ILocalization extends LocalizedStringsMethods {
     this_device: string;
     zoom: string;
     reload_app: string;
+    compatible_browsers: string;
+    app_compatible_browsers_: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({
