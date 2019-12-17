@@ -66,7 +66,7 @@ export class FileStorage {
     static async saveFileById_partial(collectionName: FILE_STORAGE_KEY, fileId: string, data: Uint8Array): Promise<boolean> {
         if (!FileStorage.isSuport()) return false;
         if (!collectionName.includes('_PARTIAL')) return false;
-        debugger;
+        // debugger;
         const col = await FileStorage.getCollection(collectionName);
         const keys = await col.keys();
         let count = 0;
@@ -82,7 +82,7 @@ export class FileStorage {
     static async getFileById_partial_length(collectionName: FILE_STORAGE_KEY, fileId: string): Promise<number> {
         if (!FileStorage.isSuport()) return 0;
         if (!collectionName.includes('_PARTIAL')) return 0;
-        debugger;
+        // debugger;
         const col = await FileStorage.getCollection(collectionName);
         const keys = await col.keys();
         let count = 0;
@@ -108,7 +108,7 @@ export class FileStorage {
     static async saveFileById_concatPartial(collectionName: FILE_STORAGE_KEY, fileId: string): Promise<boolean> {
         if (!FileStorage.isSuport()) return false;
         if (!collectionName.includes('_PARTIAL')) return false;
-        debugger;
+        // debugger;
         const col = await FileStorage.getCollection(collectionName);
         const keys = await col.keys();
 
@@ -195,7 +195,7 @@ export class FileStorage {
     static async removeFileById_partial(collectionName: FILE_STORAGE_KEY, fileId: string): Promise<boolean> {
         if (!FileStorage.isSuport()) return false;
         if (!collectionName.includes('_PARTIAL')) return false;
-        debugger;
+        // debugger;
 
         const col = await FileStorage.getCollection(collectionName);
 

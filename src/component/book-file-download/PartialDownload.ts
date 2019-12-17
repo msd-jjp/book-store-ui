@@ -41,7 +41,7 @@ export class PartialDownload {
 
     async downloadFile() {
         return new Promise(async (resolve, reject) => {
-            debugger;
+            // debugger;
             let error: AxiosError | undefined = undefined;
             let fl = await this.getFileLength().catch(e => {
                 error = e;
