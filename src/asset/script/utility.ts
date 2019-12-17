@@ -261,4 +261,6 @@ export abstract class Utility {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
+    static readonly partial_downloadSize = 100000;
+
 }

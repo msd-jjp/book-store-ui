@@ -8,15 +8,15 @@ import { IDownloadingBookFile_schema } from "../../redux/action/downloading-book
 import { ReaderEngineService } from "../../service/service.reader-engine";
 import { READER_FILE_NAME } from "../../webworker/reader-engine/reader-download/reader-download";
 import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
+import { Utility } from "../../asset/script/utility";
 
-// export const partial_downloadSize = 100000;
 
 export class PartialDownload {
     private _bookService = new BookService();
     private _readerEngineService = new ReaderEngineService();
 
     private currentRange: { from: number; to: number } | undefined;
-    private readonly downloadSize = 100000; // partial_downloadSize; //
+    private readonly downloadSize = Utility.partial_downloadSize; // 100000; // partial_downloadSize; //
     private refreshViewOnUpdateInterval = 500;
     private cancelTokenSource: CancelTokenSource = Axios.CancelToken.source();
     private fileLength: number | undefined;
@@ -298,16 +298,16 @@ export class PartialDownload {
         return await appLocalStorage.saveFileById_partial((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId, newFile);
     }
 
-    private async getFromTempStorage(): Promise<Uint8Array | undefined> {
+    /* private async getFromTempStorage(): Promise<Uint8Array | undefined> {
         return await appLocalStorage.getFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId);
-    }
+    } */
 
     private async getTempFile_length(): Promise<number> {
         return await appLocalStorage.getFileById_partial_length((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId);
     }
 
     private async clearTempStorage(): Promise<boolean> {
-        // todo mozila bug
+        // tod__o mozila bug
         /** mozila bug: save empty file before remove */
         // let cleared = await appLocalStorage.saveFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId, new Uint8Array(0));
         // cleared = await appLocalStorage.removeFileById((this.collectionName + '_PARTIAL' as FILE_STORAGE_KEY), this.fileId);

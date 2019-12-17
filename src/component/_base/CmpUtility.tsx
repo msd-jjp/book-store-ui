@@ -17,6 +17,7 @@ export abstract class CmpUtility {
     static defaultAvatarImagePath = "/static/media/img/icon/avatar.png";
     static avatarSizeImagePath = "/static/media/img/icon/avatar.png";
     static brokenAvatarImagePath = "/static/media/img/icon/broken-avatar.png";
+    // static readonly partial_downloadSize = 100000;
 
     static getImageUrl(imageId: string): string {
         return CmpUtility.image_pre_url + '/' + imageId;

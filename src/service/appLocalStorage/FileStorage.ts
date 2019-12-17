@@ -1,6 +1,5 @@
 import { Utility } from "../../asset/script/utility";
 import { appLocalStorage } from ".";
-// import { partial_downloadSize } from "../../component/book-file-download/PartialDownload";
 
 export enum FILE_STORAGE_KEY {
     FILE_BOOK_MAIN = 'FILE_BOOK_MAIN',
@@ -22,7 +21,7 @@ export class FileStorage {
         // FILE_STORAGE_KEY.READER_ENGINE_PARTIAL
     ];
 
-    private static partial_downloadSize = 100000;
+    private static readonly partial_downloadSize = Utility.partial_downloadSize; // 100000;
 
     static async init() {
         if ('caches' in window) {
@@ -118,31 +117,40 @@ export class FileStorage {
             if (key.url.includes(fileId)) list.push(key.url.replace(window.location.origin + '/', ''));
         });
 
+
         const file_length = await FileStorage.getFileById_partial_length(collectionName, fileId);
-        const arr = new Uint8Array(file_length);
+        const total = new Uint8Array(file_length);
         let arr_filled_length = 0;
         let error_occuured = false;
+        console.time('partial_download_100%_createTotalArr');
         for (let i = 0; i < list.length; i++) {
             const file = await col.match(`${fileId}_${i}`).catch(e => {
                 console.error('file byId not exist', fileId);
             });
             if (file) {
                 const arr_u = new Uint8Array(await file.arrayBuffer());
-                const arr_u_length = arr_u.byteLength;
-                for (let j = 0; j < arr_u_length; j++) {
-                    arr[arr_filled_length + j] = arr_u[j];
+                // const arr_u_length = arr_u.byteLength;
+                /* for (let j = 0; j < arr_u_length; j++) {
+                    total[arr_filled_length + j] = arr_u[j];
                 }
+                arr_filled_length = arr_filled_length + arr_u.byteLength; */
+
+                total.set(arr_u, arr_filled_length);
                 arr_filled_length = arr_filled_length + arr_u.byteLength;
             } else {
                 error_occuured = true;
                 break;
             }
         }
+        console.timeEnd('partial_download_100%_createTotalArr');
         if (error_occuured) return false;
 
-        let saved = await FileStorage.saveFileById(collectionName.replace('_PARTIAL', '') as FILE_STORAGE_KEY, fileId, arr);
+        let saved = await FileStorage.saveFileById(collectionName.replace('_PARTIAL', '') as FILE_STORAGE_KEY, fileId, total);
         if (saved) {
-            return await FileStorage.removeFileById_partial(collectionName, fileId);
+            console.time('partial_download_100%_removeFileById_partial');
+            let r_p = await FileStorage.removeFileById_partial(collectionName, fileId);
+            console.timeEnd('partial_download_100%_removeFileById_partial');
+            return r_p;
         } else {
             return false;
         }
