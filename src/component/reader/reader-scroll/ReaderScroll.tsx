@@ -9,7 +9,6 @@ import { ToastContainer, ToastOptions, toast } from "react-toastify";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import Swiper from 'swiper';
 // import { Virtual } from 'swiper/dist/js/swiper.esm';
-// import { ReaderWorker } from "../../../webworker/reader-worker/ReaderWorker"; // .reader";
 import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { Store2 } from "../../../redux/store";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
@@ -27,6 +26,7 @@ import { BOOK_TYPES } from "../../../enum/Book";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
+import { IBook } from "../../../model/model.book";
 
 
 interface IReaderScrollSlide {
@@ -47,7 +47,7 @@ interface IProps {
 }
 
 interface IState {
-  // book: IBook | undefined;
+  book: IBook | undefined;
   virtualData: {
     slides: any[];
   },
@@ -57,9 +57,10 @@ interface IState {
 
 class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   private book_id: string = '';
+  private isOriginalFile: 'false' | 'true' = 'false';
 
   state = {
-    // book: undefined,
+    book: undefined,
     virtualData: {
       slides: [],
     },
@@ -77,6 +78,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     super(props);
 
     this.book_id = this.props.match.params.bookId;
+    this.isOriginalFile = this.props.match.params.isOriginalFile;
   }
 
   componentWillMount() {
@@ -86,16 +88,15 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     }
   }
   componentDidMount() {
-    if (!this._libraryItem) {
+    // if (!this._libraryItem) {
+    if ((this.isOriginalFile === 'true' && !this._libraryItem) || !this.book_id) {
       this.props.history.replace(`/dashboard`);
       return;
     }
-    // this.getData_readerWorker();
     this.generateReader();
   }
 
   componentWillUnmount() {
-    // todo: check me
     this.swiper_obj && this.swiper_obj.destroy(true, true);
     this.swiper_obj = undefined;
   }
@@ -118,8 +119,6 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   private async generateReader() {
-    // await CmpUtility.waitOnMe(0);
-
     if (this.props.reader_engine.status !== 'inited') {
       this.goBack();
       setTimeout(() => { this.readerEngineNotify(); }, 300);
@@ -131,45 +130,11 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     this.initSwiper();
   }
 
-  // private _readerWorker: ReaderWorker | undefined;
-  // getData_readerWorker() {
-  //   this._readerWorker = new ReaderWorker();
-  //   if (!this._readerWorker) return;
-
-
-  //   this._readerWorker.postMessage({
-  //     book_active_page: this.book_active_page
-  //   });
-
-  //   // this._readerWorker.onmessage(this.onReceive_data_from_worker.bind(this));
-  //   this._readerWorker.onmessage((data) => { this.onReceive_data_from_worker(data) });
-  // }
-
-  // onReceive_data_from_worker(data: { bookSlideList: any[]; active_slide: number | undefined; }) {
-  //   console.log('main: Message received from worker', data);
-
-  //   this.setState(
-  //     { ...this.state, swiper_slides: data.bookSlideList },
-  //     () => {
-  //       this.initSwiper(data.bookSlideList, data.active_slide);
-  //     }
-  //   );
-
-  //   this._readerWorker!.terminate();
-  // }
-
-  // componentWillUnmount() {
-  //   if (this._readerWorker) { this._readerWorker.terminate(); }
-  // }
-
-
-
   private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
   private _bookInstance!: BookGenerator | PdfBookGenerator;
   private async createBook() {
-    // const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
-    // const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
-    const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.book_id);
+    const collectionName = this.isOriginalFile === 'true' ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE;
+    const bookFile = await appLocalStorage.getFileById(collectionName, this.book_id);
     if (!bookFile) {
       this.setState({ page_loading: false });
       this.bookFileNotFound_notify();
@@ -188,7 +153,6 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
   private _createBookChapters: IEpubBook_chapters | undefined;
   private async createBookChapters() {
-    // await CmpUtility.waitOnMe(0);
     const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
     this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
 
@@ -198,11 +162,9 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   private _pagePosList: number[] = [];
   private _chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
   private async calc_chapters_with_page() {
-    // await CmpUtility.waitOnMe(0);
     if (!this._pagePosList.length) {
       const bookPosList: IBookPosIndicator[] = await this._bookInstance.getAllPages_pos();
       bookPosList.forEach(bpi => {
-        // this._pagePosList.push(bpi.group * 1000000 + bpi.atom);
         this._pagePosList.push(ReaderUtility.calc_bookContentPos_value(bpi));
       });
     }
@@ -281,7 +243,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     await this.createBookChapters();
 
     this.book_page_length = bookPosList.length;
-    const progress_percent = this._libraryItem!.progress || 0;
+    // const progress_percent = this._libraryItem!.progress || 0;
+    const progress_percent = this._libraryItem ? (this._libraryItem!.progress || 0) : 0;
     // debugger;
     this.book_active_index = Math.floor(this.book_page_length * progress_percent - 1); // - 1;
     if (this.book_active_index > this.book_page_length - 1 || this.book_active_index < 0) {
@@ -454,7 +417,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   private _isThisBookRtl: boolean | undefined = undefined;
   isThisBookRtl(): boolean {
     if (this._isThisBookRtl === undefined) {
-      this._isThisBookRtl = ReaderUtility.isBookRtl(this._libraryItem!.book.language);
+      this._isThisBookRtl = this.state.book ? ReaderUtility.isBookRtl((this.state.book! as IBook).language) : false;
     }
     return this._isThisBookRtl;
   }
@@ -512,10 +475,10 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     if (!this.swiperTaped) return;
     // debugger;
     const activePage = pg_index + 1;
-    const bookProgress = activePage / this.book_page_length;
-
-    updateLibraryItem_progress(this.book_id, bookProgress);
-
+    if (this.isOriginalFile) {
+      const bookProgress = activePage / this.book_page_length;
+      updateLibraryItem_progress(this.book_id, bookProgress);
+    }
     this.gotoReader_reading(this.book_id);
   }
 
@@ -525,11 +488,11 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   gotoReader_overview(book_id: string) {
-    this.props.history.replace(`/reader/${book_id}/overview`);
+    this.props.history.replace(`/reader/${book_id}/${this.isOriginalFile}/overview`);
   }
 
   gotoReader_reading(book_id: string) {
-    this.props.history.replace(`/reader/${book_id}/reading`);
+    this.props.history.replace(`/reader/${book_id}/${this.isOriginalFile}/reading`);
   }
 
   render() {

@@ -29,8 +29,6 @@ import { FetchIntervalWorker } from '../../../webworker/fetch-interval-worker/Fe
 import { SyncWorker } from '../../../webworker/sync-worker/SyncWorker';
 import { Settings } from '../../settings/Settings';
 import { DeviceKey } from '../../device-key/DeviceKey';
-// import { DeviceKey } from './DeviceKey';
-// import { ReaderDownload } from '../../../webworker/reader-engine/reader-download/reader-download';
 
 const appValidUserRoutes = (
     <HashRouter>
@@ -50,10 +48,10 @@ const appValidUserRoutes = (
             <RouteLayoutMain path="/profile" component={Profile} />
             <RouteLayoutMain path="/purchase-history" component={PurchaseHistory} />
 
-            <RouteLayoutNoWrap path="/reader/:bookId/overview" component={ReaderOverview} />
-            <RouteLayoutNoWrap path="/reader/:bookId/reading" component={ReaderReading} />
-            <RouteLayoutNoWrap path="/reader/:bookId/scroll" component={ReaderScroll} />
-            <RouteLayoutNoWrap path="/reader/:bookId/audio" component={ReaderAudio} />
+            <RouteLayoutNoWrap path="/reader/:bookId/:isOriginalFile/overview" component={ReaderOverview} />
+            <RouteLayoutNoWrap path="/reader/:bookId/:isOriginalFile/reading" component={ReaderReading} />
+            <RouteLayoutNoWrap path="/reader/:bookId/:isOriginalFile/scroll" component={ReaderScroll} />
+            <RouteLayoutNoWrap path="/reader/:bookId/:isOriginalFile/audio" component={ReaderAudio} />
 
             <RouteLayoutMain path="/settings"  component={Settings} />
 

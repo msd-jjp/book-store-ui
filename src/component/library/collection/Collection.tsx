@@ -509,9 +509,9 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
 
     gotoReader(book_id: string, isAudio = false) {
         if (isAudio) {
-            this.props.history.push(`/reader/${book_id}/audio`);
+            this.props.history.push(`/reader/${book_id}/true/audio`);
         } else {
-            this.props.history.push(`/reader/${book_id}/reading`);
+            this.props.history.push(`/reader/${book_id}/true/reading`);
         }
     }
 

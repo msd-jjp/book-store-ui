@@ -38,10 +38,10 @@ const appRoutes = (
       <RouteLayoutAccount path="/register" component={Register} />
       <RouteLayoutAccount path="/forgot-password" component={ForgotPassword} />
 
-      <RouteLayoutValidUser path="/reader/:bookId/overview" />
-      <RouteLayoutValidUser path="/reader/:bookId/reading" />
-      <RouteLayoutValidUser path="/reader/:bookId/scroll" />
-      <RouteLayoutValidUser path="/reader/:bookId/audio" />
+      <RouteLayoutValidUser path="/reader/:bookId/:isOriginalFile/overview" />
+      <RouteLayoutValidUser path="/reader/:bookId/:isOriginalFile/reading" />
+      <RouteLayoutValidUser path="/reader/:bookId/:isOriginalFile/scroll" />
+      <RouteLayoutValidUser path="/reader/:bookId/:isOriginalFile/audio" />
 
       <RouteLayoutValidUser path="/settings" />
 

@@ -681,7 +681,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
 
   onBookSample_click(book: IBook) {
-    debugger;
     if (Store2.getState().reader_engine.status !== 'inited') {
       this.readerEngineNotify();
       return;
@@ -691,9 +690,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
   gotoReader(book_id: string, isAudio = false) {
     if (isAudio) {
-      this.props.history.push(`/reader/${book_id}/audio`);
+      this.props.history.push(`/reader/${book_id}/false/audio`);
     } else {
-      this.props.history.push(`/reader/${book_id}/reading`);
+      this.props.history.push(`/reader/${book_id}/false/reading`);
     }
   }
   onDownlod_bookSample_click(book: IBook) {

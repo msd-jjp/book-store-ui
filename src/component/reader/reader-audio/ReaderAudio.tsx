@@ -17,7 +17,7 @@ import { Dropdown } from "react-bootstrap";
 import RcSlider from 'rc-slider';
 import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem/* , getBookFileId */ } from "../../library/libraryViewTemplate";
-import { CmpUtility } from "../../_base/CmpUtility";
+// import { CmpUtility } from "../../_base/CmpUtility";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { AudioBookGenerator, IChapterDetail } from "../../../webworker/reader-engine/AudioBookGenerator";
 import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
@@ -27,6 +27,7 @@ import { IReaderEngine_schema } from "../../../redux/action/reader-engine/reader
 import { Utility } from "../../../asset/script/utility";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { action_update_reader } from "../../../redux/action/reader";
+import { BookService } from "../../../service/service.book";
 // import { Utility } from "../../../asset/script/utility";
 // import { BookService } from "../../../service/service.book";
 //
@@ -50,10 +51,10 @@ const WaveSurfer = require('wavesurfer.js/dist/wavesurfer');
 const TimelinePlugin = require('wavesurfer.js/dist/plugin/wavesurfer.timeline');
 const CursorPlugin = require('wavesurfer.js/dist/plugin/wavesurfer.cursor');
 
-interface IAudioSourceObj {
+/* interface IAudioSourceObj {
     timing: { from: number, to: number };
     source: AudioBufferSourceNode | undefined;
-}
+} */
 
 interface IProps {
     logged_in_user: IUser | null;
@@ -80,6 +81,7 @@ interface IState {
 
 class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private book_id: string = '';
+    private isOriginalFile: 'false' | 'true' = 'false';
 
     state = {
         book: undefined,
@@ -102,6 +104,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         super(props);
 
         this.book_id = this.props.match.params.bookId;
+        this.isOriginalFile = this.props.match.params.isOriginalFile;
     }
 
     componentWillMount() {
@@ -113,13 +116,14 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    componentDidMount() {
-        if (!this._libraryItem) {
+    async componentDidMount() {
+        // if (!this._libraryItem) {
+        if ((this.isOriginalFile === 'true' && !this._libraryItem) || !this.book_id) {
             this.props.history.replace(`/dashboard`);
             return;
         }
 
-        this.updateUserCurrentBook_client();
+        await this.updateUserCurrentBook_client();
         this.updateUserCurrentBook_server();
         this.generateReader();
     }
@@ -139,9 +143,18 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    updateUserCurrentBook_client() {
-        const book = this._libraryItem!.book;
+    async updateUserCurrentBook_client() {
+        let book;
+        if (this._libraryItem) {
+            book = this._libraryItem.book;
+        } else {
+            const _bookService = new BookService();
+            const res = await _bookService.get(this.book_id, true).catch(e => { });
+            if (res) book = res.data;
+        }
         this.setState({ ...this.state, book: book });
+
+        if (this.isOriginalFile !== 'true') return;
 
         let logged_in_user = { ...this.props.logged_in_user! };
         if (logged_in_user.person.current_book && logged_in_user.person.current_book.id === this.book_id) {
@@ -157,13 +170,12 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             this.props.logged_in_user!.person.current_book.id === this.book_id) {
             return;
         } */
+        if (this.isOriginalFile !== 'true') return;
 
         await this._personService.update(
             { current_book_id: this.book_id },
             this.props.logged_in_user!.person.id
-        ).catch(e => {
-            // this.handleError({ error: e.response });
-        });
+        ).catch(e => { });
     }
 
     audio_header_render() {
@@ -186,7 +198,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
     getBookTitle(): string {
         const book: IBook | undefined = this.state.book;
-        if (!book) return '';
+        if (book === undefined) return '';
         return book!.title;
     }
 
@@ -208,14 +220,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
 
     private async generateReader() {
-        await CmpUtility.waitOnMe(0);
-
         if (this.props.reader_engine.status !== 'inited') {
             this.goBack();
             setTimeout(() => { this.readerEngineNotify(); }, 300);
             return;
         }
-
         await this.createBook();
         if (!this._bookInstance) return;
         this.initAudio();
@@ -224,7 +233,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private _bookInstance!: AudioBookGenerator;
     private async createBook() {
         this.setState({ loading: true });
-        const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.book_id);
+        // debugger;
+        const collectionName = this.isOriginalFile === 'true' ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE;
+        const bookFile = await appLocalStorage.getFileById(collectionName, this.book_id);
 
         if (!bookFile) {
             this.setState({ loading: false });
@@ -307,7 +318,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
         this.wavesurfer!.on('ready', () => {
             // this.wavesurfer.play();
-            console.log('ready...');
+            // console.log('ready...');
             // hideProgress();
             // this.toggleLoading();
             this.hideLoader();
@@ -324,13 +335,13 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             console.error('error -->>', e);
         });
         this.wavesurfer!.on('play', function () {
-            console.info('play...');
+            // console.info('play...');
         });
         this.wavesurfer!.on('pause', () => {
-            console.info('pause...');
+            // console.info('pause...');
         });
         this.wavesurfer!.on('finish', () => {
-            console.log('finish...');
+            // console.log('finish...');
             /* this._b_reset_binding();
             this.pause(); */
             this.stepForward(true);
@@ -494,7 +505,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
 
         if ((!this._b_progress_to || from >= this._b_progress_to) && delay === 0 && wasPlaying) {
-            console.log(`puase REQ** from : ${from} >= this._b_progress_to: ${this._b_progress_to}`);
+            // console.log(`puase REQ** from : ${from} >= this._b_progress_to: ${this._b_progress_to}`);
             // if (wasPlaying) { this.pause(); }
             this.pause();
         }

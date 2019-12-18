@@ -34,6 +34,7 @@ import { Store2 } from "../../../redux/store";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
+import { BookService } from "../../../service/service.book";
 
 interface IProps {
   internationalization: TInternationalization;
@@ -65,6 +66,7 @@ interface IState {
 
 class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   private book_id: string = '';
+  private isOriginalFile: 'false' | 'true' = 'false';
 
   state = {
     book: undefined,
@@ -94,6 +96,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     super(props);
 
     this.book_id = this.props.match.params.bookId;
+    this.isOriginalFile = this.props.match.params.isOriginalFile;
   }
 
   componentWillMount() {
@@ -102,23 +105,34 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
       if (this._libraryItem) this._isDocument = ReaderUtility.is_book_document(this._libraryItem!.book.type as BOOK_TYPES);
     }
   }
-  componentDidMount() {
-    if (!this._libraryItem) {
+  async componentDidMount() {
+    // if (!this._libraryItem) {
+    if ((this.isOriginalFile === 'true' && !this._libraryItem) || !this.book_id) {
       this.props.history.replace(`/dashboard`);
       return;
     }
-    this.setBook_byId(/* this.book_id */);
+    await this.setBook_byId();
     this.generateReader();
   }
 
   componentWillUnmount() {
-    // todo: check me
     this.swiper_obj && this.swiper_obj.destroy(true, true);
     this.swiper_obj = undefined;
   }
 
-  setBook_byId(/* book_id: string */) {
-    this.setState({ ...this.state, book: this._libraryItem!.book });
+  async setBook_byId() {
+    let book;
+    if (this._libraryItem) {
+      book = this._libraryItem.book;
+    } else {
+      const _bookService = new BookService();
+      const res = await _bookService.get(this.book_id, true).catch(e => { });
+      if (res) {
+        book = res.data;
+        this._isDocument = ReaderUtility.is_book_document(book.type as BOOK_TYPES);
+      }
+    }
+    this.setState({ ...this.state, book: book });
   }
 
   overview_header_render() {
@@ -228,9 +242,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
   private _bookInstance!: BookGenerator | PdfBookGenerator;
   private async createBook() {
-    // const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
-    // const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
-    const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.book_id);
+    const collectionName = this.isOriginalFile === 'true' ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE;
+    const bookFile = await appLocalStorage.getFileById(collectionName, this.book_id);
     if (!bookFile) {
       this.setState({ page_loading: false });
       this.bookFileNotFound_notify();
@@ -264,7 +277,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // debugger;
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
-    const progress_percent = this._libraryItem!.progress || 0;
+    // const progress_percent = this._libraryItem!.progress || 0;
+    const progress_percent = this._libraryItem ? (this._libraryItem!.progress || 0) : 0;
     // debugger;
     this.book_active_index = Math.floor(this._slide_pages.length * progress_percent - 1); // - 1;
     if (this.book_active_index > this._slide_pages.length - 1 || this.book_active_index < 0) {
@@ -449,17 +463,18 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
     // ReaderUtility.updateLibraryItem_progress_client(this.book_id, bookProgress);
     // ReaderUtility.updateLibraryItem_progress_server(this.book_id, bookProgress);
-    updateLibraryItem_progress(this.book_id, bookProgress);
-
+    if (this.isOriginalFile) {
+      updateLibraryItem_progress(this.book_id, bookProgress);
+    }
     this.gotoReader_reading(this.book_id);
   }
 
   gotoReader_reading(book_id: string) {
-    this.props.history.replace(`/reader/${book_id}/reading`);
+    this.props.history.replace(`/reader/${book_id}/${this.isOriginalFile}/reading`);
   }
 
   gotoReader_scroll(book_id: string) {
-    this.props.history.replace(`/reader/${book_id}/scroll`);
+    this.props.history.replace(`/reader/${book_id}/${this.isOriginalFile}/scroll`);
   }
 
   handle(props: any) {

@@ -8,16 +8,19 @@ import { CmpUtility } from '../component/_base/CmpUtility';
 
 export class BookService extends BaseService {
 
-    get(bookId: string): Promise<IAPI_Response<IBook>> {
-        if (BaseService.isAppOffline()) {
+    get(bookId: string, offline?: boolean): Promise<IAPI_Response<IBook>> {
+        if (BaseService.isAppOffline() || offline) {
             let lcl_book: IBook | null = appLocalStorage.findById('clc_book', bookId);
-            if (lcl_book) {
-                return new Promise((resolve, reject) => {
-                    resolve({ data: lcl_book! });
-                });
-            } else {
-                //reject: put if else into Promise
-            }
+            return new Promise((resolve, reject) => {
+                lcl_book ? resolve({ data: lcl_book! }) : reject('not_found');
+            });
+            // if (lcl_book) {
+            //     return new Promise((resolve, reject) => {
+            //         resolve({ data: lcl_book! });
+            //     });
+            // } else {
+            //     //reject: put if else into Promise
+            // }
         }
 
         return this.axiosTokenInstance.get(`/books/${bookId}`);

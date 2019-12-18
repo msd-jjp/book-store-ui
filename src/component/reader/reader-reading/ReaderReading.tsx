@@ -26,6 +26,8 @@ import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenera
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
 import InnerImageZoom from 'react-inner-image-zoom';
+import { IBook } from "../../../model/model.book";
+import { BookService } from "../../../service/service.book";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -39,7 +41,7 @@ interface IProps {
 }
 
 interface IState {
-  // book: IBook | undefined;
+  book: IBook | undefined;
   virtualData: {
     slides: any[];
   };
@@ -49,9 +51,10 @@ interface IState {
 
 class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   private book_id: string = '';
+  private isOriginalFile: 'false' | 'true' = 'false';
 
   state = {
-    // book: undefined,
+    book: undefined,
     virtualData: {
       slides: [],
     },
@@ -71,6 +74,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     super(props);
 
     this.book_id = this.props.match.params.bookId;
+    this.isOriginalFile = this.props.match.params.isOriginalFile;
   }
 
   componentWillMount() {
@@ -79,26 +83,40 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       if (this._libraryItem) this._isDocument = ReaderUtility.is_book_document(this._libraryItem!.book.type as BOOK_TYPES);
     }
   }
-  componentDidMount() {
-    if (!this._libraryItem) {
+  async componentDidMount() {
+    // if (!this._libraryItem) {
+    if ((this.isOriginalFile === 'true' && !this._libraryItem) || !this.book_id) {
       this.props.history.replace(`/dashboard`);
       return;
     }
 
-    this.updateUserCurrentBook_client();
+    await this.updateUserCurrentBook_client();
     this.updateUserCurrentBook_server();
     this.generateReader();
   }
 
   componentWillUnmount() {
-    // todo: check me
     this.swiper_obj && this.swiper_obj.destroy(true, true);
     this.swiper_obj = undefined;
   }
 
-  updateUserCurrentBook_client() {
-    const book = this._libraryItem!.book;
+  async updateUserCurrentBook_client() {
+    // const book = this._libraryItem!.book;
     // this.setState({ ...this.state, book: book });
+    let book;
+    if (this._libraryItem) {
+      book = this._libraryItem.book;
+    } else {
+      const _bookService = new BookService();
+      const res = await _bookService.get(this.book_id, true).catch(e => { });
+      if (res) {
+        book = res.data;
+        this._isDocument = ReaderUtility.is_book_document(book.type as BOOK_TYPES);
+      }
+    }
+    this.setState({ ...this.state, book: book });
+
+    if (this.isOriginalFile !== 'true') return;
 
     let logged_in_user = { ...this.props.logged_in_user! };
     if (logged_in_user.person.current_book && logged_in_user.person.current_book.id === this.book_id) {
@@ -115,13 +133,12 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
       this.props.logged_in_user!.person.current_book.id === this.book_id) {
       return;
     } */
+    if (this.isOriginalFile !== 'true') return;
 
     await this._personService.update(
       { current_book_id: this.book_id },
       this.props.logged_in_user!.person.id
-    ).catch(e => {
-      // this.handleError({ error: e.response });
-    });
+    ).catch(e => { });
   }
 
   private _bookPageSize!: { width: number, height: number }; // = Store2.getState().reader.epub.pageSize;
@@ -152,8 +169,6 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   private async generateReader() {
-    // await CmpUtility.waitOnMe(0);
-
     if (this.props.reader_engine.status !== 'inited') {
       this.goBack();
       setTimeout(() => { this.readerEngineNotify(); }, 300);
@@ -167,9 +182,8 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
   private _bookInstance!: BookGenerator | PdfBookGenerator;
   private async createBook() {
-    // const bookFile = await appLocalStorage.findBookMainFileById(this.book_id);
-    // const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, getBookFileId(this.book_id, true));
-    const bookFile = await appLocalStorage.getFileById(FILE_STORAGE_KEY.FILE_BOOK_MAIN, this.book_id);
+    const collectionName = this.isOriginalFile === 'true' ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE;
+    const bookFile = await appLocalStorage.getFileById(collectionName, this.book_id);
     if (!bookFile) {
       this.setState({ page_loading: false });
       this.bookFileNotFound_notify();
@@ -188,7 +202,6 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
   private _createBookChapters: IEpubBook_chapters | undefined;
   private async createBookChapters() {
-    // await CmpUtility.waitOnMe(0);
     const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
     this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
 
@@ -198,7 +211,6 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   private _pagePosList: number[] = [];
   private _chapters_with_page: { firstPageIndex: number | undefined, lastPageIndex: number | undefined }[] = [];
   private async calc_chapters_with_page() {
-    // await CmpUtility.waitOnMe(0);
     if (!this._pagePosList.length) {
       const bookPosList: IBookPosIndicator[] = await this._bookInstance.getAllPages_pos();
       bookPosList.forEach(bpi => {
@@ -209,7 +221,6 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     this._chapters_with_page =
       ReaderUtility.calc_chapters_pagesIndex(this._pagePosList, this._createBookChapters!.flat, this._isDocument!) || [];
 
-    // debugger;
     this.setState({});
   }
 
@@ -220,7 +231,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
     this._slide_pages = bookPosList.map((bpi, i) => { return { id: i, page: bpi } });
     this.book_page_length = this._slide_pages.length;
-    const progress_percent = this._libraryItem!.progress || 0;
+    const progress_percent = this._libraryItem ? (this._libraryItem!.progress || 0) : 0;
     // debugger;
     this.book_active_index = Math.floor(this._slide_pages.length * progress_percent - 1); // - 1;
     if (this.book_active_index > this._slide_pages.length - 1 || this.book_active_index < 0) {
@@ -258,11 +269,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   updateLibraryItem() {
-    // debugger;
+    if (this.isOriginalFile !== 'true') return;
     const activePage = (this.getSwiperActiveIndex() + 1);
     const bookProgress = activePage / this.book_page_length;
-    // ReaderUtility.updateLibraryItem_progress_client(this.book_id, bookProgress);
-    // ReaderUtility.updateLibraryItem_progress_server(this.book_id, bookProgress);
     updateLibraryItem_progress(this.book_id, bookProgress);
   }
   getSwiperActiveIndex(): number {
@@ -281,21 +290,6 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  // private getChapterLength_byPageIndex(pageIndex: number): number | undefined {
-  //   // debugger;
-  //   if (!this._chapters_with_page.length) return;
-
-  //   let ch_length = undefined;
-  //   for (let i = 0; i < this._chapters_with_page.length; i++) {
-  //     let fp = this._chapters_with_page[i].firstPageIndex;
-  //     let lp = this._chapters_with_page[i].lastPageIndex;
-  //     if (fp && fp <= pageIndex && lp && lp >= pageIndex) {
-  //       ch_length = lp - fp;
-  //       break;
-  //     }
-  //   }
-  //   return ch_length;
-  // }
   private getChapterLastPage_byPageIndex(pageIndex: number)
     : { chapter_lastPageIndex: number | undefined; is_last_chapter: boolean; } {
     // debugger;
@@ -317,7 +311,6 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
         break;
       }
     }
-    // return ch_lastPage?ch_lastPage+1:ch_lastPage;
     return {
       chapter_lastPageIndex: ch_lastPage,
       is_last_chapter
@@ -327,10 +320,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     timeLeft: number;
     is_last_chapter: boolean;
   } {
-    // let read = page_index + 1;
-    let read = page_index; // + 1;
-    // let total = this.book_page_length || 0; // todo: get "active chapter" not all book.
-    // let total = this.getChapterLength_byPageIndex(page_index);
+    let read = page_index;
     let obj = this.getChapterLastPage_byPageIndex(page_index);
     let total = obj.chapter_lastPageIndex;
     let is_last_chapter = obj.is_last_chapter;
@@ -438,7 +428,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   private _isThisBookRtl: boolean | undefined = undefined;
   isThisBookRtl(): boolean {
     if (this._isThisBookRtl === undefined) {
-      this._isThisBookRtl = this._libraryItem ? ReaderUtility.isBookRtl(this._libraryItem.book.language) : false;
+      this._isThisBookRtl = this.state.book ? ReaderUtility.isBookRtl((this.state.book! as IBook).language) : false;
     }
     return this._isThisBookRtl;
   }
@@ -517,7 +507,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   gotoReader_overview(book_id: string) {
-    this.props.history.replace(`/reader/${book_id}/overview`);
+    this.props.history.replace(`/reader/${book_id}/${this.isOriginalFile}/overview`);
   }
 
   goBack() {
