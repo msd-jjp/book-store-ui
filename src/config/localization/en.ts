@@ -416,4 +416,7 @@ export const en = {
     reload_app: 'reload application',
     compatible_browsers: 'compatible browsers',
     app_compatible_browsers_: 'All Desktop devices or Android devices: "Chrome browser"; IOS devices: "Safari browser".',
+    show_book_sample: 'show book sample',
+    play_book_sample: 'play book sample',
+    download_book_sample: 'download book sample',
 }

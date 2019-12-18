@@ -401,6 +401,9 @@ interface ILocalization extends LocalizedStringsMethods {
     reload_app: string;
     compatible_browsers: string;
     app_compatible_browsers_: string;
+    show_book_sample: string;
+    play_book_sample: string;
+    download_book_sample: string;
 }
 
 export let Localization: ILocalization = new LocalizedStrings({

@@ -27,7 +27,8 @@ import { CmpUtility } from "../_base/CmpUtility";
 import { Utility } from "../../asset/script/utility";
 import { category_routeParam_categoryType } from "../category/Category";
 import { History } from "history";
-
+import { is_book_downloaded, is_book_downloading, toggle_book_download, book_downloading_progress, book_download_size } from "../library/libraryViewTemplate";
+import { Store2 } from "../../redux/store";
 
 interface IProps {
   internationalization: TInternationalization;
@@ -118,10 +119,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
 
   componentDidMount() {
     this.gotoTop();
-    // this._bookService.setToken(this.props.token);
-    // this._followService.setToken(this.props.token);
-    // this._rateService.setToken(this.props.token);
-    // this._commentService.setToken(this.props.token);
 
     this.bookId = this.props.match.params.bookId;
     this.fetchBook(this.bookId);
@@ -163,7 +160,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       limit: this.state.comment_actions.loadComments.pager_limit,
       skip: this.state.comment_actions.loadComments.pager_offset
     }).catch(error => {
-      // let res = await this._commentService.book_comments(bookId).catch(error => {
       const { body: commentErrorText } = this.handleError({
         error: error.response,
         toastOptions: { toastId: 'fetchBook_comments_error' }
@@ -189,7 +185,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         this.setState({
           ...this.state,
           book_newLoadedcomments: res.data.result,
-          // book_comments: res.data.result,
           book_comments: [...this.state.book_comments || [], ...res.data.result],
           commentLoader: false,
           commentErrorText: undefined,
@@ -280,6 +275,9 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 {/* <div className="clearfix"></div> */}
                 {/* <span className="from-store">{Localization.in} {Localization.brand_name}</span> */}
               </div>
+              <div className="book-sample-section mt-2">
+                {this.book_sample_render(book)}
+              </div>
             </div>
             <div className="col-12">
               {this.wishList_actionBtn_render(book)}
@@ -357,7 +355,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                   <span>
                     {pressList.map((press_item, press_index) => (
                       <Fragment key={press_index}>
-                        {/* {press_item.person.name + ' ' + press_item.person.last_name} */}
                         {this.getPersonFullName(press_item.person)}
                         {press_index + 1 < pressList.length && ', '}
                       </Fragment>
@@ -386,7 +383,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
               {
                 writerList.map((ab_writer, ab_writerIndex) => {
 
-                  // let ab_writer_fullName = ab_writer.person.name + ' ' + ab_writer.person.last_name;
                   let ab_writer_fullName = this.getPersonFullName(ab_writer.person);
                   let ab_writer_image = ab_writer.person.image ? this.getImageUrl(ab_writer.person.image) :
                     "/static/media/img/icon/avatar.png";
@@ -415,7 +411,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                                 onError={e => CmpUtility.personImageOnError(e)}
                               />
                             </div>
-                            {/* <img src={ab_writer_image} alt="avatar" /> */}
                           </div>
                         </div>
                         <div className="col-8 p-align-0">
@@ -481,11 +476,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   * @param book_duration `book_duration` is in second.
   */
   book_duration_render(book_duration: string) {
-    // if (isNaN(+book_duration)) {
-    //   return book_duration;
-    // } else {
-    //   return Utility.second_to_timer(+book_duration);
-    // }
     if (isNaN(+book_duration)) {
       return book_duration;
     }
@@ -495,31 +485,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
       time = Utility.second_to_timer(+book_duration);
     } catch (e) { console.log(e); }
     return time;
-
-
-    // let second = parseInt(book_duration);
-    // let minute = Math.round((second / 60) * 100) / 100;
-    // let hour = Math.round((minute / 60) * 100) / 100;
-
-    // if (second < 60) {
-    //   return (
-    //     <>
-    //       {second} {Localization.second}
-    //     </>
-    //   )
-    // } else if (minute < 60) {
-    //   return (
-    //     <>
-    //       {minute} {Localization.minute}
-    //     </>
-    //   )
-    // } else {
-    //   return (
-    //     <>
-    //       {hour} {Localization.hour}
-    //     </>
-    //   )
-    // }
   }
 
   wishList_actionBtn_render(book: IBook) {
@@ -655,6 +620,90 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     this.props.remove_from_cart({ book, count: 1 });
   }
 
+  book_sample_render(book: IBook) {
+    const is_downloaded = is_book_downloaded(book.id, false);
+    const is_downloading = is_downloaded ? false : is_book_downloading(book.id, false);
+    const downloading_progress = is_downloading ? book_downloading_progress(book.id, false) : '';
+    const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress : '';
+    const download_size = is_downloading ? book_download_size(book.id, false) : '';
+    const download_size_str = (download_size || download_size === 0) ? Utility.byteFileSize(download_size) : '';
+    const isAudio = this.isBookTypeAudio(book.type as BOOK_TYPES);
+    const book_sample_txt = isAudio ? Localization.play_book_sample : Localization.show_book_sample;
+
+    if (is_downloaded) {
+      return (<>
+        <div>
+          <span className="cursor-pointer text-info" onClick={() => this.onBookSample_click(book)}>{book_sample_txt}</span>
+
+          <span className="cursor-pointer ml-2"
+            onClick={() => this.onRemoveBookSample_click(book)}
+            title={Localization.remove}
+          >
+            <i className="fa fa-times text-danger"></i>
+          </span>
+        </div>
+      </>)
+
+    } else if (is_downloading) {
+      return (<>
+        <div>
+          <span>{Localization.downloading}</span>
+          <small className="cursor-pointer ml-2 text-warning"
+            onClick={() => this.onDownlod_bookSample_click(book)}
+          >{Localization.cancel}</small>
+        </div>
+        <div className="d-flex">
+          <small className="direction-ltr mr-2">{download_size_str}</small>
+          <small className="direction-ltr">{downloading_progress_str} <small>%</small></small>
+        </div>
+      </>)
+
+    } else {
+      return (<>
+        <div className={
+          "cursor-pointer " +
+          (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'text-muted' : 'text-system')
+        }
+          onClick={() => this.onDownlod_bookSample_click(book)}
+        >
+          {Localization.download_book_sample}
+          {
+            this.props.network_status === NETWORK_STATUS.OFFLINE
+              ? <i className="fa fa-wifi text-danger"></i> : ''
+          }
+        </div>
+      </>)
+    }
+  }
+
+  isBookTypeAudio(book_type: BOOK_TYPES): boolean {
+    return book_type === BOOK_TYPES.Audio;
+  }
+
+  onBookSample_click(book: IBook) {
+    debugger;
+    if (Store2.getState().reader_engine.status !== 'inited') {
+      this.readerEngineNotify();
+      return;
+    }
+    const isAudio = this.isBookTypeAudio(book.type as BOOK_TYPES);
+    this.gotoReader(book.id, isAudio);
+  }
+  gotoReader(book_id: string, isAudio = false) {
+    if (isAudio) {
+      this.props.history.push(`/reader/${book_id}/audio`);
+    } else {
+      this.props.history.push(`/reader/${book_id}/reading`);
+    }
+  }
+  onDownlod_bookSample_click(book: IBook) {
+    if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
+    toggle_book_download(book.id, false);
+  }
+  onRemoveBookSample_click(book: IBook) {
+    CmpUtility.removeBookFileFromDevice(book.id, false);
+  }
+
   comment_sections_render(book: IBook) {
     return (
       <>
@@ -699,17 +748,13 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <div className="write-review my-3__ py-2__ mx-1" onClick={() => this.toggleWriteComment()}>
             <div className="p-3---p-align-inverse-0 px-3 py-2">
               <div className="row-- d-flex justify-content-between align-items-center">
-                {/* <div className="col-10"> */}
                 <h6 className="text-uppercase mb-0">{Localization.write_a_review}</h6>
-                {/* </div> */}
-                {/* <div className="col-2"> */}
                 <i className={
                   "fa fa-angle-down__ fa-2x book-detail-bordered-box-icon--- " +
                   (this.state.is_writeCommentBox_open ? 'fa-angle-up' : 'fa-angle-down') +
                   ' ' +
                   (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'fa-wifi text-danger' : '')
                 }></i>
-                {/* </div> */}
               </div>
             </div>
           </div>
@@ -776,10 +821,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           {(this.state.book_comments! || []).map((bk_cmt: IComment, index) => {
 
             let cmt_person_fullName = CmpUtility.getPersonFullName(bk_cmt.person);
-            // (bk_cmt.person.name || '') + ' ' + (bk_cmt.person.last_name || '');
             let cmt_person_image = CmpUtility.getPerson_avatar(bk_cmt.person);
-            // bk_cmt.person.image ? this.getImageUrl(bk_cmt.person.image) :
-            //   "/static/media/img/icon/avatar.png";
             let like_loader_obj: any = { ...this.state.comment_actions.like_loader_obj };
             let unlike_loader_obj: any = { ...this.state.comment_actions.unlike_loader_obj };
 
@@ -819,7 +861,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                     (!comment_compress_obj[bk_cmt.id] ? 'comment-compress' : '')
                   }>
                     {bk_cmt.body}
-                    {/* <button className="btn btn-link p-0">{Localization.see_more}</button> */}
                   </p>
                   <button className="btn btn-link p-0 btn-sm" onClick={() => this.toggleCommentCompress(bk_cmt.id)}>
                     {
@@ -1001,9 +1042,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     return (
       <>
         <Modal show={this.state.modal_removeComment.show} onHide={() => this.closeModal_removeComment()} centered>
-          {/* <Modal.Header closeButton>
-            <Modal.Title className="text-danger">{Localization.remove_comment}</Modal.Title>
-          </Modal.Header> */}
           <Modal.Body>{Localization.msg.ui.your_comment_will_be_removed_continue}</Modal.Body>
           <Modal.Footer className="border-top-0 pt-0">
             <button className="btn btn-light-- btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_removeComment()}>
@@ -1016,7 +1054,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
             >
               {Localization.remove_comment}
             </BtnLoader>
-
           </Modal.Footer>
         </Modal>
       </>
@@ -1055,13 +1092,10 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           <div className="section-separator my-2"></div>
           <div className="all-review mx-3_ my-3__ py-2-- py-1 px-1 " onClick={() => this.loadMoreComments()}>
             <div className="row-- d-flex justify-content-between align-items-center">
-              {/* <div className="col-10"> */}
               <h6 className="font-weight-bold text-capitalize mb-0">
                 {/* {Localization.formatString(Localization.see_all_n_reviews, 127)} */}
                 {Localization.more_reviews}
               </h6>
-              {/* </div> */}
-              {/* <div className="col-2"> */}
               <i className={
                 "fa fa-angle-down__ fa-2x book-detail-bordered-box-icon-- " +
                 (
@@ -1073,7 +1107,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
                 )
               }
               ></i>
-              {/* </div> */}
             </div>
           </div>
         </>
@@ -1380,8 +1413,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-
-
   render() {
     return (
       <>
@@ -1405,7 +1436,6 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
   return {
     internationalization: state.internationalization,
-    // token: state.token,
     logged_in_user: state.logged_in_user,
     network_status: state.network_status,
     cart: state.cart,
@@ -1413,7 +1443,4 @@ const state2props = (state: redux_state) => {
   };
 };
 
-export const BookDetail = connect(
-  state2props,
-  dispatch2props
-)(BookDetailComponent);
+export const BookDetail = connect(state2props, dispatch2props)(BookDetailComponent);

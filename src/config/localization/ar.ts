@@ -415,4 +415,7 @@ export const ar = {
     reload_app: 'بارگیری مجدد برنامه',
     compatible_browsers: 'مرورگرهای سازگار',
     app_compatible_browsers_: 'دستگاه های دسکتاپ و یا حاوی سیستم عامل اندروید: "مرورگر کروم"؛ دستگاه حاوی سیستم عامل IOS: "مرورگر سافاری"',
+    show_book_sample: 'نمایش نمونه کتاب',
+    play_book_sample: 'پخش نمونه کتاب',
+    download_book_sample: 'دانلود نمونه کتاب',
 }

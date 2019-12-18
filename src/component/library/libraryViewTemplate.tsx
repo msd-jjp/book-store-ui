@@ -15,28 +15,6 @@ import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
 
 export function calc_read_percent(item: ILibrary): string {
     return Math.floor((item.progress || 0) * 100) + '%';
-
-    // let read = 0;
-    // let total = 0;
-
-    // // return '100%';
-
-    // if (!item) return '0%';
-
-    // if (item.book.type === BOOK_TYPES.Audio) {
-    //     read = item.status.read_duration;
-    //     total = +item.book.duration;
-
-    // } else if (item.book.type === BOOK_TYPES.Epub || item.book.type === BOOK_TYPES.Pdf) {
-    //     read = item.status.read_pages;
-    //     total = +item.book.pages;
-    // }
-
-    // if (total) {
-    //     return Math.floor(((read || 0) * 100) / +total) + '%';
-    // } else {
-    //     return '0%';
-    // }
 }
 
 export function is_file_downloaded(collectionName: FILE_STORAGE_KEY, fileId: string): boolean {
@@ -208,7 +186,7 @@ export function libraryItem_viewList_render(
 
                         <img src={book_img}
                             alt="book"
-                            className="lib-img-- main-img center-el-in-box"
+                            className="main-img center-el-in-box"
                             onError={e => CmpUtility.bookImageOnError(e)}
                             loading="lazy"
                         />
@@ -220,21 +198,13 @@ export function libraryItem_viewList_render(
                     <span className={"book-progress mr-2 small " + (read_percent === '100%' ? 'badge badge-dark' : '')}>
                         {read_percent === '100%' ? Localization.readed_ : read_percent}
                     </span>
-                    {/* todo: size */}
-                    {/* <span className="book-volume small">789.3 kb</span> */}
                     <span className={"book-volume small " + (!download_size_str ? 'd-none' : '')}>{download_size_str}</span>
-                    {/* <i className={"fa fa-check-circle downloaded-icon " + (is_downloaded ? '' : 'd-none')}></i> */}
                     {
                         is_downloaded ?
                             <i className="fa fa-check-circle downloaded-icon"></i>
                             : is_downloading ?
                                 <i className="fa downloaded-icon downloading">{downloading_progress_str}<small>%</small></i> : ''
                     }
-                    {/* <i className={
-                        "fa fa-check-circle-- downloaded-icon "
-                        + (is_downloaded ? 'fa-check-circle' : ' ')
-                        + (is_downloading ? 'fa-refresh__fa-spin downloading' : ' ')
-                    } >{downloading_progress_str}</i> */}
                 </div>
 
                 <div className={
@@ -283,7 +253,6 @@ export function libraryItem_viewGrid_render(
                     <div className="bp-state-arrow" />
                     <div className="progress-complete-label">{Localization.readed_}</div>
                 </div>
-                {/* <div className={"book-download " + (is_downloaded || is_downloading ? '' : 'd-none')}> */}
                 <div className="book-download">
                     {
                         is_downloaded ?
@@ -291,11 +260,6 @@ export function libraryItem_viewGrid_render(
                             : is_downloading ?
                                 <i className="fa downloading">{downloading_progress_str}<small>%</small></i> : ''
                     }
-                    {/* <i className={
-                        "fa fa-check-circle-- "
-                        + (is_downloaded ? 'fa-check-circle' : ' ')
-                        + (is_downloading ? 'fa-refresh__fa-spin downloading' : ' ')
-                    } >{downloading_progress_str}</i> */}
                 </div>
 
                 <div className={
