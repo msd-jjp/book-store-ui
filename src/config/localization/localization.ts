@@ -49,6 +49,7 @@ interface ILocalization extends LocalizedStringsMethods {
             reader_security_content_failed: string;
             clear_general_content: string;
             book_x_file_not_exist: string;
+            book_x_sampleFile_not_exist: string;
             book_x_file_problem: string;
             device_key_not_found_reload: string;
             you_reached_maximum_active_device: string;

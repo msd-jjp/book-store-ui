@@ -197,7 +197,12 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
             if (error === 'file_length_problem') {
                 msg = Localization.formatString(Localization.msg.ui.book_x_file_problem, bookTitle) as string;
             } else {
-                msg = Localization.formatString(Localization.msg.ui.book_x_file_not_exist, bookTitle) as string;
+                // msg = Localization.formatString(Localization.msg.ui.book_x_file_not_exist, bookTitle) as string;
+                if (collectionName === FILE_STORAGE_KEY.FILE_BOOK_SAMPLE) {
+                    msg = Localization.formatString(Localization.msg.ui.book_x_sampleFile_not_exist, bookTitle) as string;
+                } else {
+                    msg = Localization.formatString(Localization.msg.ui.book_x_file_not_exist, bookTitle) as string;
+                }
             }
 
             this.toastNotify(
