@@ -9,10 +9,10 @@ import { IUser } from "../../../../model/model.user";
 import { BaseComponent } from "../../../_base/BaseComponent";
 import { CmpUtility } from "../../../_base/CmpUtility";
 import { History } from "history";
-import { IBook } from "../../../../model/model.book";
-import { BOOK_TYPES } from "../../../../enum/Book";
+// import { IBook } from "../../../../model/model.book";
+// import { BOOK_TYPES } from "../../../../enum/Book";
 import { is_book_downloaded } from "../../../library/libraryViewTemplate";
-import { Store2 } from "../../../../redux/store";
+// import { Store2 } from "../../../../redux/store";
 
 export interface IProps {
     internationalization: TInternationalization;
@@ -42,7 +42,8 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
                             className="nav-link-- cursor-pointer"
                             // activeClassName="active pointer-events-none"
                             // onClick={() => this.gotoReader(current_book.id)}
-                            onClick={() => this.before_gotoReader(current_book)}
+                            // onClick={() => this.before_gotoReader(current_book)}
+                            onClick={() => this.openBookByReader(current_book, this.props.history, true)}
                         >
                             <div className="img-scaffolding-container">
                                 <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
@@ -62,7 +63,7 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
 
     }
 
-    before_gotoReader(book: IBook) {
+    /* before_gotoReader(book: IBook) {
         if (Store2.getState().reader_engine.status !== 'inited') {
             this.readerEngineNotify();
             return;
@@ -80,7 +81,7 @@ class LayoutMainFooterComponent extends BaseComponent<IProps, any>{
         } else {
             this.props.history.push(`/reader/${book_id}/true/reading`);
         }
-    }
+    } */
 
     render() {
         return (

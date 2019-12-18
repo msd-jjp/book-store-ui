@@ -11,6 +11,9 @@ import { Utility } from '../../asset/script/utility';
 import { IPerson } from '../../model/model.person';
 import { CmpUtility } from './CmpUtility';
 import { Store2 } from '../../redux/store';
+import { IBook } from '../../model/model.book';
+import { BOOK_TYPES } from '../../enum/Book';
+import { History } from "history";
 
 interface IHandleError {
     error?: any;
@@ -252,6 +255,19 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         } else if (downloading) { msg = Localization.msg.ui.downloading_reader_security_content; }
 
         this.toastNotify(msg, { autoClose: Setup.notify.timeout[color], toastId: 'readerEngineNotify_info' }, color);
+    }
+
+    openBookByReader(book: IBook, history: History, isOriginalFile: boolean): void {
+        if (Store2.getState().reader_engine.status !== 'inited') {
+            this.readerEngineNotify();
+            return;
+        }
+        const isAudio = book.type === BOOK_TYPES.Audio;
+        if (isAudio) {
+            history.push(`/reader/${book.id}/${isOriginalFile}/audio`);
+        } else {
+            history.push(`/reader/${book.id}/${isOriginalFile}/reading`);
+        }
     }
 
 }

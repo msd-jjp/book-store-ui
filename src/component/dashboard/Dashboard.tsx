@@ -25,7 +25,7 @@ import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import Swiper from "swiper";
 import { Utility } from "../../asset/script/utility";
-import { Store2 } from "../../redux/store";
+// import { Store2 } from "../../redux/store";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -464,7 +464,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       return;
     }
 
-    if (Store2.getState().reader_engine.status !== 'inited') {
+    this.openBookByReader(book, this.props.history, true);
+    /* if (Store2.getState().reader_engine.status !== 'inited') {
       this.readerEngineNotify();
       return;
     }
@@ -473,15 +474,15 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     if (book.type === BOOK_TYPES.Audio) {
       isAudio = true;
     }
-    this.gotoReader(book.id, isAudio);
+    this.gotoReader(book.id, isAudio); */
   }
-  gotoReader(book_id: string, isAudio = false) {
+  /* gotoReader(book_id: string, isAudio = false) {
     if (isAudio) {
       this.props.history.push(`/reader/${book_id}/true/audio`);
     } else {
       this.props.history.push(`/reader/${book_id}/true/reading`);
     }
-  }
+  } */
 
   calc_read_percent_by_bookItem_in_lib(book_id: string): string {
     // const item = this.getItemFromLibrary(book_id);

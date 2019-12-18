@@ -22,9 +22,9 @@ import { AddToCollection } from './add-to-collection/AddToCollection';
 import { IBook } from '../../../model/model.book';
 import { NETWORK_STATUS } from '../../../enum/NetworkStatus';
 import { libraryItem_viewList_render, libraryItem_viewGrid_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem } from '../libraryViewTemplate';
-import { BOOK_TYPES } from '../../../enum/Book';
+// import { BOOK_TYPES } from '../../../enum/Book';
 import { CmpUtility } from '../../_base/CmpUtility';
-import { Store2 } from '../../../redux/store';
+// import { Store2 } from '../../../redux/store';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -436,7 +436,8 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
                 return;
             }
 
-            if (Store2.getState().reader_engine.status !== 'inited') {
+            this.openBookByReader(item.book, this.props.history, true);
+            /* if (Store2.getState().reader_engine.status !== 'inited') {
                 this.readerEngineNotify();
                 return;
             }
@@ -445,7 +446,7 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
             if (item.book.type === BOOK_TYPES.Audio) {
                 isAudio = true;
             }
-            this.gotoReader(item.book.id, isAudio);
+            this.gotoReader(item.book.id, isAudio); */
         }
     }
 
@@ -507,13 +508,13 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         else { this.props.history.push(`/library`); }
     }
 
-    gotoReader(book_id: string, isAudio = false) {
+    /* gotoReader(book_id: string, isAudio = false) {
         if (isAudio) {
             this.props.history.push(`/reader/${book_id}/true/audio`);
         } else {
             this.props.history.push(`/reader/${book_id}/true/reading`);
         }
-    }
+    } */
 
     //#endregion
 

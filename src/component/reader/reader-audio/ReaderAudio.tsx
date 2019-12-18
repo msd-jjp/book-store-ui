@@ -130,7 +130,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     componentWillUnmount() {
         // this._componentWillUnmount = true;
         // this.wavesurfer!.xhr
-        console.log('wavesurfer!.destroy');
+        // console.log('wavesurfer!.destroy');
         try {
             this.destroyAudioContext();
             if (this.wavesurfer) {

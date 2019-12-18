@@ -28,7 +28,7 @@ import { Utility } from "../../asset/script/utility";
 import { category_routeParam_categoryType } from "../category/Category";
 import { History } from "history";
 import { is_book_downloaded, is_book_downloading, toggle_book_download, book_downloading_progress, book_download_size } from "../library/libraryViewTemplate";
-import { Store2 } from "../../redux/store";
+// import { Store2 } from "../../redux/store";
 
 interface IProps {
   internationalization: TInternationalization;
@@ -633,7 +633,12 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     if (is_downloaded) {
       return (<>
         <div>
-          <span className="cursor-pointer text-info" onClick={() => this.onBookSample_click(book)}>{book_sample_txt}</span>
+          <span className="cursor-pointer text-info"
+            // onClick={() => this.onBookSample_click(book)}
+            onClick={() => this.openBookByReader(book, this.props.history, true)}
+          >
+            {book_sample_txt}
+          </span>
 
           <span className="cursor-pointer ml-2"
             onClick={() => this.onRemoveBookSample_click(book)}
@@ -680,7 +685,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     return book_type === BOOK_TYPES.Audio;
   }
 
-  onBookSample_click(book: IBook) {
+  /* onBookSample_click(book: IBook) {
     if (Store2.getState().reader_engine.status !== 'inited') {
       this.readerEngineNotify();
       return;
@@ -694,7 +699,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     } else {
       this.props.history.push(`/reader/${book_id}/false/reading`);
     }
-  }
+  } */
   onDownlod_bookSample_click(book: IBook) {
     if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
     toggle_book_download(book.id, false);
