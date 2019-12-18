@@ -122,14 +122,10 @@ on cmp cart opened: keep cart data upToDate (if book price changed).
 
 ====================================================================================
 
-audio:
-in safari --> start immediately after open !! --> done.
-on change pause play bug. ****
-memory leak.
+
 
 ====================================================================================
 
-test 100 meg file in storage safari.
 
 ====================================================================================
 
