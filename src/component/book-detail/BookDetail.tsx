@@ -635,7 +635,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         <div>
           <span className="cursor-pointer text-info"
             // onClick={() => this.onBookSample_click(book)}
-            onClick={() => this.openBookByReader(book, this.props.history, true)}
+            onClick={() => this.openBookByReader(book, this.props.history, false)}
           >
             {book_sample_txt}
           </span>
