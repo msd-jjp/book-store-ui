@@ -87,8 +87,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         error: undefined,
         isPlaying: false,
         volume: {
-            val: this.props.reader.audio.volume, // 1
-            mute: this.props.reader.audio.mute, // false
+            val: this.props.reader.audio.volume || 1, // 1
+            mute: this.props.reader.audio.mute || false, // false
         }
     };
 
@@ -461,14 +461,14 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         const audioCtx_time = this.getAudioContext().currentTime;
         const wasPlaying = this.state.isPlaying;
 
-        console.log(`
+        /* console.log(`
         start bindGeneratedAudio: from ${from}
         , seek: ${seek}'
         , delay: ${delay}
         , _b_inProgress: ${this._b_inProgress}
         , _b_progress_to: ${this._b_progress_to}
         , wasPlaying: ${wasPlaying}
-        `);
+        `); */
 
 
         if (seek) {
@@ -529,7 +529,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
         this._b_inProgress = false;
 
-        console.log(`
+        /* console.log(`
         end bindGeneratedAudio: from ${from}
         , seek: ${seek}'
         , delay: ${delay}
@@ -537,7 +537,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         , _b_progress_to: ${this._b_progress_to}
         , wasPlaying: ${wasPlaying}
         , state.isPlaying: ${this.state.isPlaying}
-        `);
+        `); */
 
         if (wasPlaying && this.state.isPlaying === false) {
             this.play();

@@ -109,6 +109,7 @@ export class FileStorage {
         if (!FileStorage.isSuport()) return false;
         if (!collectionName.includes('_PARTIAL')) return false;
         // debugger;
+        console.log('saveFileById_concatPartial concating...');
         const col = await FileStorage.getCollection(collectionName);
         const keys = await col.keys();
 
@@ -138,6 +139,7 @@ export class FileStorage {
                 total.set(arr_u, arr_filled_length);
                 arr_filled_length = arr_filled_length + arr_u.byteLength;
             } else {
+                console.warn('error_occuured while concat all partial files', fileId, i);
                 error_occuured = true;
                 break;
             }
