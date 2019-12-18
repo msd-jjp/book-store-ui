@@ -196,8 +196,12 @@ export class PartialDownload {
                     reject(prepareError);
                     return;
                 }
-                // debugger;
+
                 this.book_file_url = this.collectionName === FILE_STORAGE_KEY.FILE_BOOK_MAIN ? prepare.data.Original : prepare.data.Brief;
+                if (!this.book_file_url) {
+                    reject('book_file_url_not_found');
+                    return;
+                }
                 req = this._bookService.get_file_info(this.book_file_url);
             }
 

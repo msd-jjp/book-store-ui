@@ -173,6 +173,7 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
                     )
                 )
                 || error === 'file_length_problem'
+                || error === 'book_file_url_not_found'
             )
         ) {
             this.downloadFinished(fileId, collectionName);
