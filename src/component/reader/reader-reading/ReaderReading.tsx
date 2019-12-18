@@ -191,7 +191,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     }
 
     try {
-      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, this.get_bookPageSize(), this._isDocument);
+      this._bookInstance = await ReaderUtility.createEpubBook(this.book_id, bookFile, this.isOriginalFile === 'true', this.get_bookPageSize(), this._isDocument);
     } catch (e) {
       console.error(e);
       this.setState({ page_loading: false });

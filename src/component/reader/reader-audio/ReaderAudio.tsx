@@ -244,7 +244,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         }
 
         try {
-            this._bookInstance = await ReaderUtility.createAudioBook(this.book_id, bookFile);
+            this._bookInstance = await ReaderUtility.createAudioBook(this.book_id, bookFile, this.isOriginalFile === 'true');
         } catch (e) {
             console.error(e);
             this.setState({ loading: false });

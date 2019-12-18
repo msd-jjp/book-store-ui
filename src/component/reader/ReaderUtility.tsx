@@ -51,6 +51,7 @@ export abstract class ReaderUtility {
 
     private static _createEpubBook_instance: {
         book_id: string;
+        isOriginalFile: boolean;
         bookPageSize: { width: number; height: number; };
         theme: IReader_schema_epub_theme;
         fontSize: number;
@@ -58,7 +59,7 @@ export abstract class ReaderUtility {
         zoom: number;
         book: BookGenerator | PdfBookGenerator;
     } | undefined;
-    private static checkEpubBookExist(book_id: string, bookPageSize?: { width: number; height: number; }): boolean {
+    private static checkEpubBookExist(book_id: string, isOriginalFile: boolean, bookPageSize?: { width: number; height: number; }): boolean {
         const reader_state = { ...Store2.getState().reader };
         const reader_epub = reader_state.epub;
 
@@ -67,6 +68,7 @@ export abstract class ReaderUtility {
             const b_p_size = bookPageSize || reader_epub.pageSize;
             if (
                 existBookObj.book_id === book_id
+                && existBookObj.isOriginalFile === isOriginalFile
                 && existBookObj.bookPageSize.width === b_p_size.width
                 && existBookObj.bookPageSize.height === b_p_size.height
                 && existBookObj.fontSize === reader_epub.fontSize
@@ -85,11 +87,12 @@ export abstract class ReaderUtility {
     static async createEpubBook(
         book_id: string,
         bookFile: Uint8Array,
+        isOriginalFile: boolean,
         bookPageSize?: { width: number; height: number; },
         isDocument?: boolean
     ): Promise<BookGenerator | PdfBookGenerator> {
         // debugger;
-        if (ReaderUtility.checkEpubBookExist(book_id, bookPageSize)) {
+        if (ReaderUtility.checkEpubBookExist(book_id, isOriginalFile, bookPageSize)) {
             return ReaderUtility._createEpubBook_instance!.book;
         }
         // debugger;
@@ -149,6 +152,7 @@ export abstract class ReaderUtility {
 
         ReaderUtility._createEpubBook_instance = {
             book_id: book_id,
+            isOriginalFile: isOriginalFile,
             book: _book,
             fontName: reader_epub.fontName,
             fontSize: reader_epub.fontSize,
@@ -477,7 +481,7 @@ export abstract class ReaderUtility {
         return chapters_with_page;
     }
 
-    static async createAudioBook(book_id: string, bookFile: Uint8Array): Promise<AudioBookGenerator> {
+    static async createAudioBook(book_id: string, bookFile: Uint8Array, isOriginalFile: boolean): Promise<AudioBookGenerator> {
         // debugger;
         //todo: check book exist
 
