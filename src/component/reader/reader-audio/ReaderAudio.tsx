@@ -1067,14 +1067,11 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
 
     private onAfterSliderChange(value: number) {
-        // debugger;
-        // console.log('onAfterSliderChange onAfterSliderChange', value);
-
         const reader_state = { ...this.props.reader };
         const reader_audio = reader_state.audio;
         reader_audio.volume = value;
+        reader_audio.mute = false;
         this.props.update_reader(reader_state);
-
     }
 
     volume_icon_render(): string {
