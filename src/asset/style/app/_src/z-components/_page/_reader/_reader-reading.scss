@@ -28,8 +28,10 @@
     left: 0;
     display: none;
     // background-color: #fff;
+    background-color: #e5e5e5;
     overflow: hidden;
     .zoom-img {
+      // _DELETE_ME
       .iiz__img {
         height: 100vh;
         max-height: 100vh;
@@ -38,6 +40,24 @@
       .iiz__btn {
         @extend .shadow2;
       }
+    }
+    .tools {
+      z-index: 1;
+    }
+    .react-transform-component {
+      // &[class^="TransformComponent-module_container"] {
+      width: auto;
+      // }
+    }
+    .react-transform-element {
+      // &[class^="TransformComponent-module_content"] {
+      width: auto;
+      img {
+        max-width: 100%;
+        max-height: 100vh;
+        margin: 0 auto;
+      }
+      // }
     }
     &.active {
       display: block;

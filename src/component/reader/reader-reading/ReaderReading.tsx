@@ -25,9 +25,10 @@ import { BOOK_TYPES } from "../../../enum/Book";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
-import InnerImageZoom from 'react-inner-image-zoom';
+// import InnerImageZoom from 'react-inner-image-zoom';
 import { IBook } from "../../../model/model.book";
 import { BookService } from "../../../service/service.book";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -351,6 +352,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     if (!this._isDocument) return;
     // debugger;
     this._innerImageZoom_src = '';
+    // this._resetTransform && this._resetTransform();
+    // this._zoomScale = 1;
+    // this._resetTransform_ref && this._resetTransform_ref.click();
     this.setState({ isDocumentZoomed: false });
   }
 
@@ -364,7 +368,10 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   private _innerImageZoom_src = '';
+  // private _resetTransform: any;
+  // private _zoomScale = 1;
   // private _innerImageZoom_el: any;
+  // private _resetTransform_ref: any;
   reading_header_render() {
     return (
       <>
@@ -374,7 +381,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
           onClick={() => this.goBack()}
         ></i>
 
-        <i className={"header-icon magnify fa fa-search-plus p-2 mr-2 mt-2 cursor-pointer "
+        <i className={"header-icon magnify fa fa-search-plus-- fa-expand p-2 mr-2 mt-2 cursor-pointer "
           + (this._isDocument && !this.state.isDocumentZoomed && !this.state.page_loading ? 'active' : '')
         }
           onClick={() => this.onDocumentZoom_open()}
@@ -383,17 +390,59 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
         <div className={"document-zoom "
           + (this._isDocument && this.state.isDocumentZoomed ? 'active' : '')
         }>
-          <InnerImageZoom className="zoom-img"
+          {/* <InnerImageZoom className="zoom-img"
             src={this._innerImageZoom_src} zoomSrc={this._innerImageZoom_src}
             // ref={(el: any) => this._innerImageZoom_el = el}
             afterZoomIn={() => this.afterZoomIn()}
             afterZoomOut={() => this.afterZoomOut()}
           // fullscreenOnMobile
           // mobileBreakpoint={5000}
-          />
+          /> */}
+
+          {/* <TransformWrapper>
+            <TransformComponent>
+              <img src={this._innerImageZoom_src} alt="" />
+            </TransformComponent>
+          </TransformWrapper> */}
+
+          {/* <div className="sample"> */}
+            <TransformWrapper
+              defaultScale={1}
+              defaultPositionX={0}
+              defaultPositionY={0}
+            // resetTransform={this._resetTransform}
+            // scale={this._zoomScale}
+            >
+              {({ zoomIn, zoomOut, resetTransform, ...rest }: any) => {
+                // this._resetTransform = resetTransform;
+                return (
+                  <>
+                    <div className="tools position-absolute ml-2 mt-2">
+                      <button className="btn btn-sm btn-light" onClick={zoomIn}>
+                        <i className="fa fa-search-plus"></i>
+                      </button>
+                      <button className="btn btn-sm btn-light mx-1" onClick={zoomOut}>
+                        <i className="fa fa-search-minus"></i>
+                      </button>
+                      <button className="btn btn-sm btn-light"
+                        // ref={(ref) => this._resetTransform_ref = ref}
+                        onClick={resetTransform}
+                      >
+                        <i className="fa fa-times"></i>
+                      </button>
+                    </div>
+                    <TransformComponent>
+                      <img src={this._innerImageZoom_src} alt="" />
+                    </TransformComponent>
+                  </>
+                )
+              }}
+            </TransformWrapper>
+          {/* </div> */}
+
         </div>
 
-        <i className={"header-icon magnify fa fa-search-minus p-2 mr-2 mt-2 cursor-pointer "
+        <i className={"header-icon magnify fa fa-search-minus-- fa-compress p-2 mr-2 mt-2 cursor-pointer "
           + (this._isDocument && this.state.isDocumentZoomed && !this.state.page_loading ? 'active' : '')
         }
           onClick={() => this.onDocumentZoom_close()}

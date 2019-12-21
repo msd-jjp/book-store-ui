@@ -347,7 +347,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             this.stepForward(true);
         });
         this.wavesurfer!.on('loading', () => { console.log('loadingggg'); });
-        this.wavesurfer!.on('destroy', () => { console.log('destroyyyyyy'); });
+        this.wavesurfer!.on('destroy', () => { /* console.log('destroyyyyyy'); */ });
         this.wavesurfer!.on('audioprocess', () => { this.updateTimer(); });
         this.wavesurfer!.on('seek', () => { this.updateTimer(undefined, true); });
 
