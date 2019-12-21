@@ -106,6 +106,7 @@ export const fa = {
             payment_serial_error: "شناسه پرداخت ارسالی مورد تایید نمیباشد.",
 
             maximum_active_device: 'شما به سقف مجاز تعداد دستگاه های فعال رسیدید، لطفا حداقل یکی از آن ها را حذف کنید',
+            book_has_no_content: 'برای کتاب محتوایی موجود نیست',
         }
     },
     validation: {

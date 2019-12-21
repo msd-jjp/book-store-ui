@@ -136,7 +136,16 @@ export class FileStorage {
                 }
                 arr_filled_length = arr_filled_length + arr_u.byteLength; */
 
-                total.set(arr_u, arr_filled_length);
+                try {
+                    total.set(arr_u, arr_filled_length);
+                } catch (e) {
+                    console.error('error_occuured while concat all partial files, set value', e);
+                    if (e && e.message === "Source is too large") {
+                        error_occuured = true;
+                        await FileStorage.removeFileById_partial(collectionName, fileId);
+                        break;
+                    }
+                }
                 arr_filled_length = arr_filled_length + arr_u.byteLength;
             } else {
                 console.warn('error_occuured while concat all partial files', fileId, i);

@@ -118,6 +118,7 @@ interface ILocalization extends LocalizedStringsMethods {
             maximum_payment_error: string;
             payment_serial_error: string;
             maximum_active_device: string;
+            book_has_no_content: string;
         }
     };
     validation: {

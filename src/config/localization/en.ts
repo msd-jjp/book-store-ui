@@ -106,6 +106,7 @@ export const en = {
             payment_serial_error: "شناسه پرداخت ارسالی مورد تایید نمیباشد.",
 
             maximum_active_device: 'you reached maximum active device, please remove at least one of them',
+            book_has_no_content: 'book has no content',
         }
     },
     validation: {
