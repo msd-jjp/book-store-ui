@@ -14,6 +14,22 @@ import { Store2 } from '../../redux/store';
 import { IBook } from '../../model/model.book';
 import { BOOK_TYPES } from '../../enum/Book';
 import { History } from "history";
+import { action_user_logged_out } from '../../redux/action/user';
+import { action_remove_token } from '../../redux/action/token';
+import { BaseService } from '../../service/service.base';
+import { action_remove_authentication } from '../../redux/action/authentication';
+import { appLocalStorage } from '../../service/appLocalStorage';
+import { LoginService } from '../../service/service.login';
+import { action_clear_cart } from '../../redux/action/cart';
+import { action_clear_library } from '../../redux/action/library';
+import { LibraryService } from '../../service/service.library';
+import { CollectionService } from '../../service/service.collection';
+import { action_clear_collections } from '../../redux/action/collection';
+import { action_reset_sync } from '../../redux/action/sync';
+import { action_reset_reader } from '../../redux/action/reader';
+import { action_reset_device_Key } from '../../redux/action/device-key';
+import { action_reset_downloading_book_file } from '../../redux/action/downloading-book-file';
+import { DeviceKeyService } from '../../service/service.device-key';
 
 interface IHandleError {
     error?: any;
@@ -268,6 +284,40 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
         } else {
             history.push(`/reader/${book.id}/${isOriginalFile}/reading`);
         }
+    }
+
+    async onApplogout(history: History, remove_deviceKey_fromServer: boolean) {
+        debugger;
+        const _deviceKey = Store2.getState().device_key.deviceKey;
+        const deviceKey_id = _deviceKey ? _deviceKey.id : undefined;
+        deviceKey_id && appLocalStorage.removeFromCollection('clc_deviceKey', deviceKey_id);
+        Store2.dispatch(action_reset_device_Key());
+        if (remove_deviceKey_fromServer && deviceKey_id) {
+            (new DeviceKeyService()).remove(deviceKey_id).catch(e => { });
+        }
+
+        Store2.dispatch(action_user_logged_out());
+        Store2.dispatch(action_remove_token());
+        BaseService.removeToken();
+        Store2.dispatch(action_remove_authentication());
+        appLocalStorage.removeFromCollection('clc_eTag', LoginService.generalId_profile);
+
+        Store2.dispatch(action_clear_cart());
+
+        Store2.dispatch(action_clear_library());
+        appLocalStorage.removeFromCollection('clc_eTag', LibraryService.generalId);
+        Store2.dispatch(action_clear_collections());
+        appLocalStorage.removeFromCollection('clc_eTag', CollectionService.generalId);
+
+        Store2.dispatch(action_reset_sync());
+        Store2.dispatch(action_reset_reader());
+        // Store2.dispatch(action_reset_device_Key());
+        Store2.dispatch(action_reset_downloading_book_file());
+
+        appLocalStorage.afterAppLogout();
+
+        history.push('/login');
+
     }
 
 }

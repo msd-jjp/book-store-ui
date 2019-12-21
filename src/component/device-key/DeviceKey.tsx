@@ -16,12 +16,14 @@ import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { IDeviceKey_schema } from '../../redux/action/device-key/deviceKeyAction';
 import { action_update_device_Key } from '../../redux/action/device-key';
+import { History } from 'history';
 
 interface IProps {
     internationalization: TInternationalization;
     network_status: NETWORK_STATUS;
     device_key: IDeviceKey_schema;
     update_device_Key?: (data: IDeviceKey_schema) => any;
+    history: History;
 }
 
 interface IState {
@@ -36,6 +38,7 @@ interface IState {
             loading: boolean;
         };
         msg: string | undefined;
+        removeLoaders: { [key: string]: boolean };
     }
 }
 
@@ -52,6 +55,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                 loading: false,
             },
             msg: undefined,
+            removeLoaders: {}
         }
     };
     private _deviceKeyService = new DeviceKeyService();
@@ -111,13 +115,21 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
             if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
             await this._deviceKeyService.getById(_deviceKey.id).catch(e => {
                 if (e.response && e.response.status === 404) {
-                    appLocalStorage.removeFromCollection('clc_deviceKey', _deviceKey.id);
-                    if (this.props.update_device_Key) {
-                        this.props.update_device_Key({ ...this.props.device_key, deviceKey: undefined });
-                    }
-                    this.generate();
+                    debugger;
+                    this.onApplogout(this.props.history, false);
+                    // this.remove_thisDevice_deviceKey();
+                    // this.generate();
                 }
             });
+        }
+    }
+
+    private remove_thisDevice_deviceKey() {
+        const _deviceKey = this.props.device_key.deviceKey;
+        if (!_deviceKey) return;
+        appLocalStorage.removeFromCollection('clc_deviceKey', _deviceKey.id);
+        if (this.props.update_device_Key) {
+            this.props.update_device_Key({ ...this.props.device_key, deviceKey: undefined });
         }
     }
 
@@ -193,7 +205,24 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
             });
         });
         if (res) {
-            // todo: if res not include this deviceId --> remove current & show msg or call genrate
+            const _deviceKey = this.props.device_key.deviceKey;
+            if (_deviceKey) {
+                let notExist = true;
+                for (let i = 0; i < res.data.result.length; i++) {
+                    const dk = res.data.result[i];
+                    if (dk.id === _deviceKey.id) {
+                        notExist = false;
+                        break;
+                    }
+                }
+                if (notExist) {
+                    debugger;
+                    // this.remove_thisDevice_deviceKey();
+                    // this.generate();
+                    this.onApplogout(this.props.history, false);
+                }
+            }
+
             this.setState({
                 ...this.state, modal_deviceList: {
                     ...this.state.modal_deviceList,
@@ -204,32 +233,46 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    private removeDeviceKey_inProgressList: string[] = [];
+    // private removeDeviceKey_inProgressList: string[] = [];
     private async removeDeviceKey(deviceKeyId: IDeviceKey['id']) {
         if (this.props.network_status === NETWORK_STATUS.OFFLINE) { return; }
-        if (this.removeDeviceKey_inProgressList.includes(deviceKeyId)) return;
-        this.removeDeviceKey_inProgressList.push(deviceKeyId);
+        // if (this.removeDeviceKey_inProgressList.includes(deviceKeyId)) return;
+        // this.removeDeviceKey_inProgressList.push(deviceKeyId);
+        debugger;
+        const removeLoaders: any = { ...this.state.modal_deviceList.removeLoaders };
+        removeLoaders[deviceKeyId] = true;
+        this.setState({ modal_deviceList: { ...this.state.modal_deviceList, removeLoaders } });
 
         const res = await this._deviceKeyService.remove(deviceKeyId).catch(e => {
+            const removeLoaders: any = { ...this.state.modal_deviceList.removeLoaders };
+            removeLoaders[deviceKeyId] = false;
+            this.setState({ modal_deviceList: { ...this.state.modal_deviceList, removeLoaders } });
             this.handleError({ error: e.response, toastOptions: { toastId: 'removeDeviceKey_error' } });
         });
         if (res) {
+            const removeLoaders: any = { ...this.state.modal_deviceList.removeLoaders };
+            removeLoaders[deviceKeyId] = false;
+
             const list: IDeviceKey[] = [...this.state.modal_deviceList.list];
             const index = list.findIndex(dk => dk.id === deviceKeyId);
             if (index !== -1) {
                 list.splice(index, 1);
                 this.setState({
-                    ...this.state, modal_deviceList: { ...this.state.modal_deviceList, list, msg: undefined }
+                    ...this.state, modal_deviceList: { ...this.state.modal_deviceList, list, msg: undefined, removeLoaders }
                 });
+            } else {
+                this.setState({ modal_deviceList: { ...this.state.modal_deviceList, removeLoaders } });
             }
 
             if (this.props.update_device_Key && this.props.device_key.deviceKey && this.props.device_key.deviceKey.id === deviceKeyId) {
-                this.props.update_device_Key({ ...this.props.device_key, deviceKey: undefined });
+                // this.props.update_device_Key({ ...this.props.device_key, deviceKey: undefined });
+                // this.remove_thisDevice_deviceKey();
+                this.onApplogout(this.props.history, false);
             }
         }
 
-        const inProgress_index = this.removeDeviceKey_inProgressList.indexOf(deviceKeyId);
-        inProgress_index !== -1 && this.removeDeviceKey_inProgressList.splice(inProgress_index);
+        // const inProgress_index = this.removeDeviceKey_inProgressList.indexOf(deviceKeyId);
+        // inProgress_index !== -1 && this.removeDeviceKey_inProgressList.splice(inProgress_index);
     }
 
     //#region modal_deviceList
@@ -328,24 +371,40 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                                             }</caption>
 
                                         <tbody>
-                                            {(this.state.modal_deviceList.list! as Array<IDeviceKey> || []).map((item, itemIndex) => (
-                                                <tr key={itemIndex}>
-                                                    <td className="max-w-25px-- align-middle">{itemIndex + 1}</td>
-                                                    <td className="text-nowrap-ellipsis">
-                                                        <small className="text-muted">
-                                                            {this.getFromNowDate(item.creation_date)}
-                                                            {this.checkIfThisDevice_render(item.id)}
-                                                        </small>
-                                                        <div>{this.getDeviceKey_parsedName(item.name)}</div>
-                                                    </td>
-                                                    <td className="cursor-pointer text-center max-w-25px-- align-middle"
-                                                        onClick={() => this.removeDeviceKey(item.id)}
-                                                        title={Localization.remove}
-                                                    >
-                                                        <i className="fa fa-times text-danger p-2 bg-light rounded"></i>
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                            {(this.state.modal_deviceList.list! as Array<IDeviceKey> || []).map((item, itemIndex) => {
+                                                const loading = (this.state.modal_deviceList.removeLoaders as any)[item.id];
+                                                return (
+                                                    <tr key={itemIndex}>
+                                                        <td className="max-w-25px-- align-middle">{itemIndex + 1}</td>
+                                                        <td className="text-nowrap-ellipsis">
+                                                            <small className="text-muted">
+                                                                {this.getFromNowDate(item.creation_date)}
+                                                                {this.checkIfThisDevice_render(item.id)}
+                                                            </small>
+                                                            <div>{this.getDeviceKey_parsedName(item.name)}</div>
+                                                        </td>
+                                                        <td className="cursor-pointer-- text-center max-w-25px-- align-middle"
+                                                        // onClick={() => this.removeDeviceKey(item.id)}
+                                                        // title={Localization.remove}
+                                                        >
+                                                            {/* <i className={
+                                                                "fa fa-times-- text-danger p-2 bg-light rounded "
+                                                                + (loading === true ? 'fa-spinner fa-spin' : 'fa-times')
+                                                            }
+                                                            ></i> */}
+
+                                                            <BtnLoader
+                                                                btnClassName="btn btn-light btn-sm"
+                                                                loading={loading}
+                                                                onClick={() => this.removeDeviceKey(item.id)}
+                                                                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                                                            >
+                                                                <i className="fa fa-times text-danger"></i>
+                                                            </BtnLoader>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>

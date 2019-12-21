@@ -156,6 +156,7 @@ reader :
         2) create audio with empty chapter
     pdf:
         0)chapter --> nested menu
+        1)zoom new library
 
 ====================================================================================
 
@@ -203,8 +204,5 @@ cmp bookDetail
 save readerAudio progress
 
 ====================================================================================
-
-device key:
-    reomve device key --> logout from other device.
 
 ====================================================================================

@@ -53,7 +53,7 @@ const appValidUserRoutes = (
             <RouteLayoutNoWrap path="/reader/:bookId/:isOriginalFile/scroll" component={ReaderScroll} />
             <RouteLayoutNoWrap path="/reader/:bookId/:isOriginalFile/audio" component={ReaderAudio} />
 
-            <RouteLayoutMain path="/settings"  component={Settings} />
+            <RouteLayoutMain path="/settings" component={Settings} />
 
             <RouteLayoutMain component={LayoutMainNotFound} />
 
@@ -126,8 +126,8 @@ class LayoutValidUserComponent extends React.Component<IProps> {
             <>
                 <Router>{appValidUserRoutes}</Router>
 
-                <BookFileDownload />
-                <DeviceKey />
+                <BookFileDownload history={this.props.history} />
+                <DeviceKey history={this.props.history} />
             </>
         )
     }

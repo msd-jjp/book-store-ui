@@ -20,8 +20,6 @@ import { CmpUtility } from '../_base/CmpUtility';
 import { action_reset_sync } from '../../redux/action/sync';
 import { ISync_schema } from '../../redux/action/sync/syncAction';
 import { SyncWorker } from '../../webworker/sync-worker/SyncWorker';
-import { BaseService } from '../../service/service.base';
-import { appLocalStorage } from '../../service/appLocalStorage';
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { action_reset_reader } from '../../redux/action/reader';
 import { AccountService } from '../../service/service.account';
@@ -31,9 +29,6 @@ import { ToastContainer } from 'react-toastify';
 import { IncreaseCredit } from '../increase-credit/IncreaseCredit';
 import { PaymentResult } from '../increase-credit/payment-result/PaymentResult';
 import { action_reset_downloading_book_file } from '../../redux/action/downloading-book-file';
-import { LibraryService } from '../../service/service.library';
-import { CollectionService } from '../../service/service.collection';
-import { LoginService } from '../../service/service.login';
 import { action_reset_device_Key } from '../../redux/action/device-key';
 
 interface IProps {
@@ -180,8 +175,9 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
 
     }
     private logout() {
-        // debugger;
-        this.props.do_logout();
+        debugger;
+        this.onApplogout(this.props.history, true);
+        /* this.props.do_logout();
         this.props.remove_token();
         BaseService.removeToken();
         this.props.remove_authentication();
@@ -201,7 +197,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
 
         appLocalStorage.afterAppLogout();
 
-        this.props.history.push('/login');
+        this.props.history.push('/login'); */
     }
 
     //#region modal_appInfo

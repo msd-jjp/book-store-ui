@@ -1,13 +1,10 @@
 import { IPerson } from "../../model/model.person";
 import { IBook } from "../../model/model.book";
 import { BOOK_ROLES, BOOK_TYPES } from "../../enum/Book";
-// import { appLocalStorage } from "../../service/appLocalStorage";
 import { Store2 } from "../../redux/store";
 import { action_change_app_flag } from "../../redux/action/internationalization";
 import { appLocalStorage } from "../../service/appLocalStorage";
 import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
-
-// import React from 'react';
 
 export abstract class CmpUtility {
     static image_pre_url = '/api/serve-files';
@@ -17,7 +14,6 @@ export abstract class CmpUtility {
     static defaultAvatarImagePath = "/static/media/img/icon/avatar.png";
     static avatarSizeImagePath = "/static/media/img/icon/avatar.png";
     static brokenAvatarImagePath = "/static/media/img/icon/broken-avatar.png";
-    // static readonly partial_downloadSize = 100000;
 
     static getImageUrl(imageId: string): string {
         return CmpUtility.image_pre_url + '/' + imageId;
@@ -120,12 +116,13 @@ export abstract class CmpUtility {
     }
 
     static async removeBookFileFromDevice(book_id_s: string | string[], mainFile: boolean) {
-        // await appLocalStorage.removeBookFileById(book_id_s, mainFile);
         await appLocalStorage.removeFileById(
             mainFile ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE,
             book_id_s
         );
         CmpUtility.refreshView();
     }
+
+    
 
 }

@@ -19,6 +19,7 @@ import { Localization } from "../../config/localization/localization";
 import { appLocalStorage } from "../../service/appLocalStorage";
 import { Store2 } from "../../redux/store";
 import { IBook } from "../../model/model.book";
+import { History } from 'history';
 
 interface IProps {
     internationalization: TInternationalization;
@@ -26,6 +27,7 @@ interface IProps {
     downloading_book_file: IDownloadingBookFile_schema[];
     update_downloading_book_file?: (data: IDownloadingBookFile_schema[]) => any;
     // reset_downloading_book_file?: () => any;
+    history: History;
 }
 interface IState {
 }
@@ -223,13 +225,14 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
             );
         }
         else if (error && error.response && (error.response.data || {}).msg === "invalid_device") {
-            // todo: remove current device_id and open modal deviceList
+            debugger;
             this.downloadFinished(fileId, collectionName);
-            this.toastNotify(
+            /* this.toastNotify(
                 Localization.msg.ui.device_key_not_found_reload,
                 { autoClose: false, toastId: 'check_book_error_error' },
                 'error'
-            );
+            ); */
+            this.onApplogout(this.props.history, false);
         }
     }
 
