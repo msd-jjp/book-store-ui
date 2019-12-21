@@ -175,7 +175,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
 
     }
     private logout() {
-        debugger;
+        // debugger;
         this.onApplogout(this.props.history, true);
         /* this.props.do_logout();
         this.props.remove_token();

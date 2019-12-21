@@ -287,7 +287,7 @@ export abstract class BaseComponent<p extends IBaseProps, S = {}, SS = any> exte
     }
 
     async onApplogout(history: History, remove_deviceKey_fromServer: boolean) {
-        debugger;
+        // debugger;
         const _deviceKey = Store2.getState().device_key.deviceKey;
         const deviceKey_id = _deviceKey ? _deviceKey.id : undefined;
         deviceKey_id && appLocalStorage.removeFromCollection('clc_deviceKey', deviceKey_id);

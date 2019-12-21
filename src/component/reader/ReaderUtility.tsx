@@ -306,13 +306,15 @@ export abstract class ReaderUtility {
 
     private static _checkEpubBook_chapters_exist: {
         chapters: IEpubBook_chapters;
-        book_id: string
+        book_id: string;
+        isOriginalFile: boolean;
     } | undefined;
-    private static checkEpubBook_chapters_exist(book_id: string) {
+    private static checkEpubBook_chapters_exist(book_id: string, isOriginalFile: boolean) {
         if (ReaderUtility._checkEpubBook_chapters_exist) {
             if (
-                ReaderUtility._checkEpubBook_chapters_exist.chapters &&
-                ReaderUtility._checkEpubBook_chapters_exist.book_id === book_id
+                ReaderUtility._checkEpubBook_chapters_exist.chapters
+                && ReaderUtility._checkEpubBook_chapters_exist.book_id === book_id
+                && ReaderUtility._checkEpubBook_chapters_exist.isOriginalFile === isOriginalFile
             ) {
                 return true;
             }
@@ -320,8 +322,8 @@ export abstract class ReaderUtility {
         }
         return false;
     }
-    static createEpubBook_chapters(book_id: string, chapterList: IBookContent[]): IEpubBook_chapters {
-        if (ReaderUtility.checkEpubBook_chapters_exist(book_id)) {
+    static createEpubBook_chapters(book_id: string, isOriginalFile: boolean, chapterList: IBookContent[]): IEpubBook_chapters {
+        if (ReaderUtility.checkEpubBook_chapters_exist(book_id, isOriginalFile)) {
             return ReaderUtility._checkEpubBook_chapters_exist!.chapters;
         }
 
@@ -340,7 +342,7 @@ export abstract class ReaderUtility {
             }
         });
 
-        // todo --> this sort not work 100% (group * 1000000 + atom not always correct)
+        // note --> this sort not work 100% (group * 1000000 + atom not always correct)
         chapterList_flat.sort((a, b) => {
             // const a_num = a.content!.pos.group * 1000000 + a.content!.pos.atom;
             // const b_num = b.content!.pos.group * 1000000 + b.content!.pos.atom;
@@ -396,11 +398,12 @@ export abstract class ReaderUtility {
 
         ReaderUtility._checkEpubBook_chapters_exist = {
             book_id,
+            isOriginalFile,
             chapters: {
                 tree: _epubBook_chapters,
                 flat: chapterList_flat
             }
-        }
+        };
 
         return {
             tree: _epubBook_chapters,

@@ -255,7 +255,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private _createBookChapters: IEpubBook_chapters | undefined;
     private async createBookChapters() {
         const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
-        this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
+        this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, this.isOriginalFile === 'true', bookContent);
     }
 
     private async initAudio() {

@@ -266,7 +266,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     // await CmpUtility.waitOnMe(0);
     const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
     // debugger;
-    this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, bookContent);
+    this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, this.isOriginalFile === 'true', bookContent);
   }
 
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];
