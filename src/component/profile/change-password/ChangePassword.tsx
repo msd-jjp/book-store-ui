@@ -11,6 +11,8 @@ import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { Input } from "../../form/input/Input";
 import { UserService } from "../../../service/service.user";
 import { Store2 } from "../../../redux/store";
+import { action_set_authentication } from "../../../redux/action/authentication";
+import { Utility } from "../../../asset/script/utility";
 
 type TFormInput = 'old_password' | 'new_password' | 'r_new_password';
 
@@ -19,6 +21,7 @@ interface IProps {
     show: boolean;
     onHide: () => any;
     network_status: NETWORK_STATUS;
+    onSetAuthentication?: (auth: string) => void;
 }
 
 interface IState {
@@ -60,6 +63,11 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
         if (!user) return;
         this.setState({ ...this.state, loader: true });
 
+        const authObj = {
+            username: user.username,
+            password: this.state.formData.new_password.value!
+        };
+
         const res = await this._userService.changePassword(
             this.state.formData.old_password.value!,
             this.state.formData.new_password.value!,
@@ -70,6 +78,7 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
         });
 
         if (res) {
+            this.props.onSetAuthentication && this.props.onSetAuthentication(Utility.get_encode_auth(authObj));
             this.setState({
                 ...this.state,
                 loader: false,
@@ -216,6 +225,7 @@ class ChangePasswordComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
+        onSetAuthentication: (auth: string) => dispatch(action_set_authentication(auth))
     };
 };
 
