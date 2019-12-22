@@ -53,6 +53,7 @@ interface ILocalization extends LocalizedStringsMethods {
             book_x_file_problem: string;
             device_key_not_found_reload: string;
             you_reached_maximum_active_device: string;
+            delete_device_will_logout: string;
         },
         back: {
             [key: string]: any; // todo

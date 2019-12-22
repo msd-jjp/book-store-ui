@@ -355,6 +355,11 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                     <Modal.Body>
                         <div className="row">
                             <div className="col-12">
+                                <p className="small">
+                                    {Localization.msg.ui.delete_device_will_logout}
+                                </p>
+                            </div>
+                            <div className="col-12">
                                 <div className={"alert alert-danger " + (this.state.modal_deviceList.msg ? '' : 'd-none')}>
                                     {this.state.modal_deviceList.msg}
                                 </div>
@@ -383,24 +388,8 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                                                 const loading = (this.state.modal_deviceList.removeLoaders as any)[item.id];
                                                 return (
                                                     <tr key={itemIndex}>
-                                                        <td className="max-w-25px-- align-middle">{itemIndex + 1}</td>
-                                                        <td className="text-nowrap-ellipsis">
-                                                            <small className="text-muted">
-                                                                {this.getFromNowDate(item.creation_date)}
-                                                                {this.checkIfThisDevice_render(item.id)}
-                                                            </small>
-                                                            <div>{this.getDeviceKey_parsedName(item.name)}</div>
-                                                        </td>
-                                                        <td className="cursor-pointer-- text-center max-w-25px-- align-middle"
-                                                        // onClick={() => this.removeDeviceKey(item.id)}
-                                                        // title={Localization.remove}
-                                                        >
-                                                            {/* <i className={
-                                                                "fa fa-times-- text-danger p-2 bg-light rounded "
-                                                                + (loading === true ? 'fa-spinner fa-spin' : 'fa-times')
-                                                            }
-                                                            ></i> */}
-
+                                                        <td className="max-w-25px-- align-middle text-center">{itemIndex + 1}</td>
+                                                        <td className="align-middle">
                                                             <BtnLoader
                                                                 btnClassName="btn btn-light btn-sm"
                                                                 loading={loading}
@@ -409,6 +398,13 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                                                             >
                                                                 <i className="fa fa-times text-danger"></i>
                                                             </BtnLoader>
+                                                        </td>
+                                                        <td className="text-nowrap-ellipsis">
+                                                            <small className="text-muted">
+                                                                {this.getFromNowDate(item.creation_date)}
+                                                                {this.checkIfThisDevice_render(item.id)}
+                                                            </small>
+                                                            <div>{this.getDeviceKey_parsedName(item.name)}</div>
                                                         </td>
                                                     </tr>
                                                 )

@@ -41,6 +41,7 @@ export const en = {
             book_x_file_problem: "book {0} has corrupted file and it can't download",
             device_key_not_found_reload: 'your device not registered yet, make sure you have stable internet and reload app',
             you_reached_maximum_active_device: 'you reached maximum active device, please remove at least one of them',
+            delete_device_will_logout: 'delete device will logout that device',
         },
         back: {
             user_already_exists: 'user already exists',
