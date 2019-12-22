@@ -29,6 +29,7 @@ import { IReaderEngine_schema } from "../../../redux/action/reader-engine/reader
 import { IBook } from "../../../model/model.book";
 import { BookService } from "../../../service/service.book";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { Utility } from "../../../asset/script/utility";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -348,27 +349,30 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     this.setState({ isDocumentZoomed: true });
   }
 
-  onDocumentZoom_close() {
+  async onDocumentZoom_close() {
     if (!this._isDocument) return;
     // debugger;
+    this._resetTransform && this._resetTransform();
+    // return;
+    await Utility.waitOnMe(400);
     this._innerImageZoom_src = '';
-    // this._resetTransform && this._resetTransform();
+
     // this._zoomScale = 1;
     // this._resetTransform_ref && this._resetTransform_ref.click();
     this.setState({ isDocumentZoomed: false });
   }
 
-  afterZoomIn() {
-    // debugger;
-  }
+  // afterZoomIn() {
+  //   // debugger;
+  // }
 
-  afterZoomOut() {
-    // debugger;
-    // this.onDocumentZoom_close();
-  }
+  // afterZoomOut() {
+  //   // debugger;
+  //   // this.onDocumentZoom_close();
+  // }
 
   private _innerImageZoom_src = '';
-  // private _resetTransform: any;
+  private _resetTransform: any;
   // private _zoomScale = 1;
   // private _innerImageZoom_el: any;
   // private _resetTransform_ref: any;
@@ -406,38 +410,38 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
           </TransformWrapper> */}
 
           {/* <div className="sample"> */}
-            <TransformWrapper
-              defaultScale={1}
-              defaultPositionX={0}
-              defaultPositionY={0}
-            // resetTransform={this._resetTransform}
-            // scale={this._zoomScale}
-            >
-              {({ zoomIn, zoomOut, resetTransform, ...rest }: any) => {
-                // this._resetTransform = resetTransform;
-                return (
-                  <>
-                    <div className="tools position-absolute ml-2 mt-2">
-                      <button className="btn btn-sm btn-light" onClick={zoomIn}>
-                        <i className="fa fa-search-plus"></i>
-                      </button>
-                      <button className="btn btn-sm btn-light mx-1" onClick={zoomOut}>
-                        <i className="fa fa-search-minus"></i>
-                      </button>
-                      <button className="btn btn-sm btn-light"
-                        // ref={(ref) => this._resetTransform_ref = ref}
-                        onClick={resetTransform}
-                      >
-                        <i className="fa fa-times"></i>
-                      </button>
-                    </div>
-                    <TransformComponent>
-                      <img src={this._innerImageZoom_src} alt="" />
-                    </TransformComponent>
-                  </>
-                )
-              }}
-            </TransformWrapper>
+          <TransformWrapper
+            defaultScale={1}
+            defaultPositionX={0}
+            defaultPositionY={0}
+          // resetTransform={this._resetTransform}
+          // scale={this._zoomScale}
+          >
+            {({ zoomIn, zoomOut, resetTransform, ...rest }: any) => {
+              this._resetTransform = resetTransform;
+              return (
+                <>
+                  <div className="tools position-absolute ml-2 mt-2">
+                    <button className="btn btn-sm btn-light" onClick={zoomIn}>
+                      <i className="fa fa-search-plus"></i>
+                    </button>
+                    <button className="btn btn-sm btn-light mx-1" onClick={zoomOut}>
+                      <i className="fa fa-search-minus"></i>
+                    </button>
+                    <button className="btn btn-sm btn-light"
+                      // ref={(ref) => this._resetTransform_ref = ref}
+                      onClick={resetTransform}
+                    >
+                      <i className="fa fa-undo"></i>
+                    </button>
+                  </div>
+                  <TransformComponent>
+                    <img src={this._innerImageZoom_src} alt="" />
+                  </TransformComponent>
+                </>
+              )
+            }}
+          </TransformWrapper>
           {/* </div> */}
 
         </div>
