@@ -6,7 +6,7 @@ const buildSW = () => {
     swSrc: 'src/sw-template.js', // this is your sw template file
     swDest: 'build/sw.js', // this will be created in the build step
     globDirectory: 'build',
-    globIgnores: ['**/service-worker.js', '**/precache-manifest.*.js', '**/_reader2.*.js'],
+    globIgnores: ['**/service-worker.js', '**/precache-manifest.*.js', '**/_reader2.js'],
     globPatterns: [
       '**\/*.{js,css,html,png}',
     ]
