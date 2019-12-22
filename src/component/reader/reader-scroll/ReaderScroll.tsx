@@ -414,10 +414,18 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  private _isThisBookRtl: boolean | undefined = undefined;
+  /* private _isThisBookRtl: boolean | undefined = undefined;
   isThisBookRtl(): boolean {
     if (this._isThisBookRtl === undefined) {
       this._isThisBookRtl = this.state.book ? ReaderUtility.isBookRtl((this.state.book! as IBook).language) : false;
+    }
+    return this._isThisBookRtl;
+  } */
+  private _isThisBookRtl: boolean | undefined = undefined;
+  isThisBookRtl(): boolean {
+    if (!this.state.book) return false;
+    if (this._isThisBookRtl === undefined) {
+      this._isThisBookRtl = ReaderUtility.isBookRtl((this.state.book! as IBook).language);
     }
     return this._isThisBookRtl;
   }

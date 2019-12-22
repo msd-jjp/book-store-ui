@@ -383,10 +383,18 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     return this._bookInstance.getPage(pageIndex);
   } */
 
-  private _isThisBookRtl: boolean | undefined = undefined;
+  /* private _isThisBookRtl: boolean | undefined = undefined;
   isThisBookRtl(): boolean {
     if (this._isThisBookRtl === undefined) {
       this._isThisBookRtl = this._libraryItem ? ReaderUtility.isBookRtl(this._libraryItem.book.language) : false;
+    }
+    return this._isThisBookRtl;
+  } */
+  private _isThisBookRtl: boolean | undefined = undefined;
+  isThisBookRtl(): boolean {
+    if (!this.state.book) return false;
+    if (this._isThisBookRtl === undefined) {
+      this._isThisBookRtl = ReaderUtility.isBookRtl((this.state.book! as IBook).language);
     }
     return this._isThisBookRtl;
   }
