@@ -6,8 +6,8 @@ export function reducer(state: IDeviceKey_schema, action: IDeviceKeyAction): IDe
         case EACTIONS.UPDATE_DEVICE_KEY:
             return action.payload as IDeviceKey_schema;
         case EACTIONS.RESET_DEVICE_KEY:
-            return { deviceKey: undefined, show: false };
+            return { deviceKey: undefined, show: false, notExistInServer: false };
     }
     if (state) { return state; }
-    return { deviceKey: undefined, show: false };
+    return { deviceKey: undefined, show: false, notExistInServer: false };
 }

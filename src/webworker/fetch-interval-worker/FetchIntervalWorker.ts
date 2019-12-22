@@ -10,6 +10,8 @@ import { BaseService } from '../../service/service.base';
 import { LoginService } from '../../service/service.login';
 import { action_user_logged_in } from '../../redux/action/user';
 import { Utility } from '../../asset/script/utility';
+import { DeviceKeyService } from '../../service/service.device-key';
+import { action_update_device_Key } from '../../redux/action/device-key';
 
 export class FetchIntervalWorker extends BaseWorker {
 
@@ -17,6 +19,7 @@ export class FetchIntervalWorker extends BaseWorker {
     private _libraryService = new LibraryService();
     private _collectionService = new CollectionService();
     private _loginService = new LoginService();
+    private _deviceKeyService = new DeviceKeyService();
 
     protected init() {
         // if (typeof (Worker) !== "undefined") {
@@ -55,27 +58,36 @@ export class FetchIntervalWorker extends BaseWorker {
     //     };
     // }
 
-    private fetch_timeout_timer: number = 30000; // in ms --> 30second
-    private start_fetchingData() {
+    private general_timeout_timer: number = 30000; // in ms --> 30second
+    private interval_inProgress = false;
+    private async start_fetchingData() {
         console.log('--------- fetching library & collection started ---------');
+        this.interval_inProgress = true;
         this.fetchLibrary();
+        await Utility.waitOnMe(1000);
         this.fetchCollection();
+        await Utility.waitOnMe(1000);
         this.fetchProfile();
+        await Utility.waitOnMe(1000);
+        this.checkDeviceKey();
     }
 
     private stop_fetchingData() {
+        this.interval_inProgress = false;
         clearTimeout(this.fetchLibrary_timeout);
         clearTimeout(this.fetchCollection_timeout);
         clearTimeout(this.fetchProfile_timeout);
+        clearTimeout(this.checkDeviceKey_timeout);
         console.log('--------- fetching library & collection stoped ---------');
     }
 
-    private randomTime(): number {
-        return this.fetch_timeout_timer + (Utility.random_int(1, 5) * 1000);
+    private randomTime(timer: number = this.general_timeout_timer): number {
+        return timer + (Utility.random_int(1, 10) * 1000);
     }
 
     private fetchLibrary_timeout: any;
     private async fetchLibrary() {
+        if (!this.interval_inProgress) return;
         let check;
         if (!BaseService.isAppOffline()) {
             check = await this._libraryService.getAll_check().catch(e => { });
@@ -97,6 +109,7 @@ export class FetchIntervalWorker extends BaseWorker {
 
     private fetchCollection_timeout: any;
     private async fetchCollection() {
+        if (!this.interval_inProgress) return;
         let check;
         if (!BaseService.isAppOffline()) {
             check = await this._collectionService.getAll_check().catch(e => { });
@@ -118,6 +131,7 @@ export class FetchIntervalWorker extends BaseWorker {
 
     private fetchProfile_timeout: any;
     private async fetchProfile() {
+        if (!this.interval_inProgress) return;
         let check;
         if (!BaseService.isAppOffline()) {
             check = await this._loginService.profile_check().catch(e => { });
@@ -135,6 +149,29 @@ export class FetchIntervalWorker extends BaseWorker {
         }
         clearTimeout(this.fetchProfile_timeout);
         this.fetchProfile_timeout = setTimeout(() => { this.fetchProfile(); }, this.randomTime());
+    }
+
+    private checkDeviceKey_timeout: any;
+    private async checkDeviceKey() {
+        if (!this.interval_inProgress) return;
+        if (!BaseService.isAppOffline()) {
+            let _deviceKey_id;
+            const _deviceKey = Store2.getState().device_key.deviceKey;
+            if (_deviceKey !== undefined) {
+                _deviceKey_id = _deviceKey.id;
+                await this._deviceKeyService.getById(_deviceKey_id).catch(e => {
+                    if (e.response && e.response.status === 404) {
+                        debugger;
+                        // this.onApplogout(this.props.history, false);
+                        const _device_key = { ...Store2.getState().device_key };
+                        _device_key.notExistInServer = true;
+                        Store2.dispatch(action_update_device_Key(_device_key));
+                    }
+                });
+            }
+        }
+        clearTimeout(this.checkDeviceKey_timeout);
+        this.checkDeviceKey_timeout = setTimeout(() => { this.checkDeviceKey(); }, this.randomTime(60000));
     }
 
 }

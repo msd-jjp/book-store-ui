@@ -78,6 +78,14 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                     this.props.update_device_Key({ ...nextProps.device_key, show: false });
                 }
             }
+
+            if (nextProps.device_key.notExistInServer) {
+                debugger;
+                /** it will reset in logout(no need to update here) */
+                // if (this.props.update_device_Key)
+                //     this.props.update_device_Key({ ...nextProps.device_key, notExistInServer: false });
+                this.onApplogout(this.props.history, false);
+            }
         }
     }
     componentDidMount() {
@@ -124,14 +132,14 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    private remove_thisDevice_deviceKey() {
+    /* private remove_thisDevice_deviceKey() {
         const _deviceKey = this.props.device_key.deviceKey;
         if (!_deviceKey) return;
         appLocalStorage.removeFromCollection('clc_deviceKey', _deviceKey.id);
         if (this.props.update_device_Key) {
             this.props.update_device_Key({ ...this.props.device_key, deviceKey: undefined });
         }
-    }
+    } */
 
     private async generate(notify = false) {
         this.setState({
