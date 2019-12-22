@@ -16,7 +16,7 @@ import { ContentLoader } from "../../form/content-loader/ContentLoader";
 import { Dropdown } from "react-bootstrap";
 import RcSlider from 'rc-slider';
 import { ILibrary } from "../../../model/model.library";
-import { getLibraryItem/* , getBookFileId */ } from "../../library/libraryViewTemplate";
+import { getLibraryItem, updateLibraryItem_progress/* , getBookFileId */ } from "../../library/libraryViewTemplate";
 // import { CmpUtility } from "../../_base/CmpUtility";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { AudioBookGenerator, IChapterDetail } from "../../../webworker/reader-engine/AudioBookGenerator";
@@ -311,10 +311,6 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         };
 
         this.wavesurfer = WaveSurfer.create(wsParams);
-        // this.wavesurfer!.backend.setPeaks([], trackTotalDuration / 1000);
-        /* const peaks = Array.from({ length: Math.ceil(trackTotalDuration / 1000) }, (v, k) => 1);
-        this.wavesurfer!.backend.setPeaks(peaks, trackTotalDuration / 1000); */
-        // this.wavesurfer!.drawBuffer();
 
         this.wavesurfer!.on('ready', () => {
             // this.wavesurfer.play();
@@ -351,16 +347,61 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.wavesurfer!.on('audioprocess', () => { this.updateTimer(); });
         this.wavesurfer!.on('seek', () => { this.updateTimer(undefined, true); });
 
-        /* const audioBuffer_min = this.getaudioBuffer(44100, 1, [new Float32Array(1)]); // srate
-        this.wavesurfer!.loadDecodedBuffer(audioBuffer_min); */
+        this.first_load_from_progress();
+    }
 
+    /** time in milisecond */
+    private _book_totalDuration: number | undefined;
+    private async first_load_from_progress() {
+        if (this.isOriginalFile === 'true') {
+            try {
+                const progress_percent = this._libraryItem ? (this._libraryItem!.progress || 0) : 0;
+                const totalDuration_ms = await this._bookInstance.getTotalDuration();
+                this._book_totalDuration = (totalDuration_ms || 0); // / 1000;
+                const progress_time = this._book_totalDuration * progress_percent;
+                if (progress_time === 0) {
+                    this.loadChapter(undefined, 0);
+                } else {
+                    const chapterDetail = await this._bookInstance.getChapterDetailByTime(progress_time, this._createBookChapters!.flat);
+                    if (chapterDetail === undefined) {
+                        this.loadChapter(undefined, 0);
+                    } else {
+                        let timeInChapter = 0;
+                        if (chapterDetail.detail.from !== undefined) {
+                            timeInChapter = progress_time - chapterDetail.detail.from;
+                            if (typeof timeInChapter !== 'number' || timeInChapter < 0) {
+                                console.error('typeof timeInChapter !== number || timeInChapter < 0', timeInChapter);
+                                timeInChapter = 0;
+                            }
+                        }
+                        this.loadChapter(undefined, chapterDetail.index, timeInChapter / 1000);
+                    }
+                }
+            } catch (e) {
+                this.loadChapter(undefined, 0);
+            }
+        } else {
+            this.loadChapter(undefined, 0);
+        }
 
-        //todo: book progreess position;
-        // let bookReadedTime = 0; // 0, 47, 200
-        // this.setWavesurferTime(bookReadedTime);
-        // this.updateTimer(bookReadedTime);
-        this.loadChapter(undefined, 0);
+        this.updatePlaylistView();
+    }
 
+    private _updateBookProgress_timer: any;
+    /** 
+     * @param timeInChapter in second
+     */
+    private async updateBookProgress(timeInChapter: number) {
+        if (this._updateBookProgress_timer) {
+            clearTimeout(this._updateBookProgress_timer);
+        }
+        this._updateBookProgress_timer = setTimeout(() => {
+            if (this._book_totalDuration === undefined) return;
+            const currentTime = this._b_loaded_chapter_from + timeInChapter;
+            const bookProgress = (currentTime * 1000) / this._book_totalDuration;
+            // console.warn('updateLibraryItem_progress', this.book_id, bookProgress);
+            updateLibraryItem_progress(this.book_id, bookProgress);
+        }, 3000);
     }
 
     private _audioContext: AudioContext | undefined;
@@ -421,6 +462,8 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         // this.runAtom3();
         // return;
         try { this.bindGeneratedAudio(currentTime, seek, 0); } catch (e) { console.error('bindGeneratedAudio(curren...', e); }
+
+        this.updateBookProgress(currentTime);
     }
 
 
@@ -915,7 +958,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private _b_loaded_chapterDetail: { index: number; detail: IChapterDetail; } | undefined;
     // private _b_loaded_chaptersLength: number | undefined;
     private _loadChapter_progress = false;
-    private async loadChapter(ibc?: IBookContent, atomIndex?: number) {
+    private async loadChapter(ibc?: IBookContent, atomIndex?: number, timeInChapter = 0) {
         if (this._loadChapter_progress) return;
         if (!this._createBookChapters) return;
         this._loadChapter_progress = true;
@@ -956,7 +999,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this._b_loaded_chapterDetail = chapterDetail
         this._b_loaded_chapter_from = chapterDetail.detail.from! / 1000;
 
-        this.setWavesurferTime(0);
+        this.setWavesurferTime(timeInChapter);
         // this.updateTimer(0, true);
 
         /* if (wasPlaying && this.state.isPlaying === false) {

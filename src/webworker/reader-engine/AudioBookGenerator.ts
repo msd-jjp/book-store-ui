@@ -183,6 +183,9 @@ export class AudioBookGenerator extends audioBook {
         return this._chapters_duration;
     }
 
+    /** 
+     * @param index chapter index
+     */
     async getChapterDetailByIndex(index: number, flat_chapters: IEpubBook_chapters['flat'])
         : Promise<{ index: number, detail: IChapterDetail } | undefined> {
         // debugger;
@@ -193,6 +196,9 @@ export class AudioBookGenerator extends audioBook {
         return { index, detail };
     }
 
+    /** 
+     * @param index chapter atom
+     */
     async getChapterDetailByAtom(atom: IBookPosIndicator, flat_chapters: IEpubBook_chapters['flat'])
         : Promise<{ index: number, detail: IChapterDetail } | undefined> {
         // debugger;
@@ -200,6 +206,25 @@ export class AudioBookGenerator extends audioBook {
         for (let i = 0; i < flat_chapters.length; i++) {
             const chp = flat_chapters[i];
             if (atom.atom === chp.content!.pos.atom && atom.group === chp.content!.pos.group) {
+                chapterIndex = i;
+                break;
+            }
+        }
+        if (chapterIndex === undefined) return;
+        return this.getChapterDetailByIndex(chapterIndex, flat_chapters);
+    }
+
+    /** 
+     * @param time in milisecond
+     */
+    async getChapterDetailByTime(time: number, flat_chapters: IEpubBook_chapters['flat'])
+        : Promise<{ index: number, detail: IChapterDetail } | undefined> {
+        const chps = await this.getChaptersDuration(flat_chapters);
+        if (!chps) return;
+        let chapterIndex: number | undefined = undefined;
+        for (let i = 0; i < chps.length; i++) {
+            const ch = chps[i];
+            if (ch.from !== undefined && ch.from <= time && ch.to !== undefined && ch.to >= time) {
                 chapterIndex = i;
                 break;
             }

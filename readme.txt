@@ -25,7 +25,7 @@ npm i react-inner-image-zoom
 ????????????????????????????????????????????????????????????????????????????????????
 npm i react-zoom-pan-pinch
 
-remove InnerImageZoom  from pckage  & type from typesss.
+remove InnerImageZoom  from pckage  & type from typesss. (& style)
 
 ====================================================================================
 
@@ -158,7 +158,7 @@ reader :
         2) create audio with empty chapter
     pdf:
         0)chapter --> nested menu
-        1)zoom new library
+        
 
 ====================================================================================
 
@@ -203,10 +203,10 @@ cmp bookDetail
 
 ====================================================================================
 
-save readerAudio progress
+
 
 ====================================================================================
 
-service worker cache _reader2.js
+
 
 ====================================================================================
