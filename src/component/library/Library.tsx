@@ -22,10 +22,8 @@ import { ICollection_schema } from '../../redux/action/collection/collectionActi
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { AddToCollection } from './collection/add-to-collection/AddToCollection';
 import { IBook } from '../../model/model.book';
-import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem, markAsUnRead_libraryItem } from './libraryViewTemplate';
+import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, collection_download, markAsRead_libraryItem, markAsUnRead_libraryItem, is_libBook_downloading, start_download_book } from './libraryViewTemplate';
 import { CmpUtility } from '../_base/CmpUtility';
-// import { BOOK_TYPES } from '../../enum/Book';
-// import { Store2 } from '../../redux/store';
 
 export interface IProps {
     logged_in_user?: IUser | null;
@@ -396,7 +394,9 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         } else {
             const isDownloaded = is_libBook_downloaded(item);
             if (!isDownloaded) {
-                toggle_libBook_download(item);
+                const is_downloading = is_libBook_downloading(item);
+                // toggle_libBook_download(item);
+                if (!is_downloading) start_download_book(item.book.id, true);
                 return;
             }
 

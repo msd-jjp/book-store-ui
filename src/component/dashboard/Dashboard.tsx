@@ -20,12 +20,11 @@ import { AddToCollection } from "../library/collection/add-to-collection/AddToCo
 import { CmpUtility } from "../_base/CmpUtility";
 import { action_user_logged_in } from "../../redux/action/user";
 import { PersonService } from "../../service/service.person";
-import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem, book_downloading_progress, book_download_size, markAsUnRead_libraryItem } from "../library/libraryViewTemplate";
+import { calc_read_percent, is_book_downloaded, is_book_downloading, markAsRead_libraryItem, getLibraryItem, book_downloading_progress, book_download_size, markAsUnRead_libraryItem, start_download_book, stop_download_book } from "../library/libraryViewTemplate";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import Swiper from "swiper";
 import { Utility } from "../../asset/script/utility";
-// import { Store2 } from "../../redux/store";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -287,9 +286,13 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
         <div className="latestBook-wrapper row mt-3">
           <div className="col-4">
             <div className="book-img-wrapper">
-              <div className="img-scaffolding-container cursor-pointer" onClick={() => this.before_gotoReader(current_book!)}>
+              <div className="img-scaffolding-container cursor-pointer"
+                onClick={() => {
+                  if (is_downloading) return;
+                  this.before_gotoReader(current_book!)
+                }}
+              >
                 <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
-
                 <img src={current_book_img}
                   alt="book"
                   className="main-img center-el-in-box"
@@ -310,7 +313,13 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                   is_downloaded ?
                     <i className="fa fa-check-circle"></i>
                     : is_downloading ?
-                      <i className="fa downloading">{downloading_progress}<small>%</small></i> : ''
+                      <i className="fa downloading"
+                        onClick={() => {
+                          if (!is_downloading) return;
+                          stop_download_book(current_book!.id, true)
+                        }}
+                      >{downloading_progress}<small>%</small></i>
+                      : ''
                 }
               </div>
             </div>
@@ -327,7 +336,10 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 variant="dark"
                 className="btn-read-now"
                 disabled={this.props.network_status === NETWORK_STATUS.OFFLINE && !is_downloaded}
-                onClick={() => this.before_gotoReader(current_book!)}
+                onClick={() => {
+                  if (is_downloading) return;
+                  this.before_gotoReader(current_book!)
+                }}
               >
                 {
                   is_downloaded ? Localization.read_now
@@ -456,10 +468,12 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   before_gotoReader(book: IBook) {
-    const isDownloaded = is_book_downloaded(book.id, true);
-    if (!isDownloaded) {
+    const is_downloaded = is_book_downloaded(book.id, true);
+    if (!is_downloaded) {
       if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
-      toggle_book_download(book.id, true);
+      const is_downloading = is_downloaded ? false : is_book_downloading(book.id, true);
+      if (is_downloading) return;
+      start_download_book(book.id, true);
       return;
     }
 

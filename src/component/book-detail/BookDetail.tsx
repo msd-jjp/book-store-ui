@@ -27,7 +27,7 @@ import { CmpUtility } from "../_base/CmpUtility";
 import { Utility } from "../../asset/script/utility";
 import { category_routeParam_categoryType } from "../category/Category";
 import { History } from "history";
-import { is_book_downloaded, is_book_downloading, toggle_book_download, book_downloading_progress, book_download_size } from "../library/libraryViewTemplate";
+import { is_book_downloaded, is_book_downloading, book_downloading_progress, book_download_size, stop_download_book, start_download_book } from "../library/libraryViewTemplate";
 // import { Store2 } from "../../redux/store";
 
 interface IProps {
@@ -654,7 +654,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         <div>
           <span>{Localization.downloading}</span>
           <small className="cursor-pointer ml-2 text-warning"
-            onClick={() => this.onDownlod_bookSample_click(book)}
+            // onClick={() => this.onDownlod_bookSample_click(book)}
+            onClick={() => stop_download_book(book.id, false)}
           >{Localization.cancel}</small>
         </div>
         <div className="d-flex">
@@ -669,7 +670,11 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
           "cursor-pointer " +
           (this.props.network_status === NETWORK_STATUS.OFFLINE ? 'text-muted' : 'text-system')
         }
-          onClick={() => this.onDownlod_bookSample_click(book)}
+          onClick={() => {
+            if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
+            // this.onDownlod_bookSample_click(book);
+            start_download_book(book.id, false);
+          }}
         >
           {Localization.download_book_sample}
           {
@@ -685,25 +690,6 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     return book_type === BOOK_TYPES.Audio;
   }
 
-  /* onBookSample_click(book: IBook) {
-    if (Store2.getState().reader_engine.status !== 'inited') {
-      this.readerEngineNotify();
-      return;
-    }
-    const isAudio = this.isBookTypeAudio(book.type as BOOK_TYPES);
-    this.gotoReader(book.id, isAudio);
-  }
-  gotoReader(book_id: string, isAudio = false) {
-    if (isAudio) {
-      this.props.history.push(`/reader/${book_id}/false/audio`);
-    } else {
-      this.props.history.push(`/reader/${book_id}/false/reading`);
-    }
-  } */
-  onDownlod_bookSample_click(book: IBook) {
-    if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
-    toggle_book_download(book.id, false);
-  }
   onRemoveBookSample_click(book: IBook) {
     CmpUtility.removeBookFileFromDevice(book.id, false);
   }

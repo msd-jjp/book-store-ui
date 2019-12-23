@@ -103,7 +103,39 @@ export async function isReaderEngineDownloaded_async(): Promise<boolean> {
     return ded_wasm && ded_reader;
 }
 
-export function toggle_book_download(book_id: string, mainFile: boolean): void {
+export function start_download_book(book_id: string, mainFile: boolean): void {
+    // debugger;
+    const isDownloading = is_book_downloading(book_id, mainFile);
+    if (isDownloading) return;
+    const dbf = [...Store2.getState().downloading_book_file];
+    dbf.push({
+        fileId: book_id,
+        collectionName: getBookFileCollectionName(mainFile),
+        status: 'start',
+        progress: 0
+    });
+    Store2.dispatch(action_update_downloading_book_file(dbf));
+    CmpUtility.refreshView();
+}
+export function stop_download_book(book_id: string, mainFile: boolean): void {
+    // debugger;
+    const isDownloading = is_book_downloading(book_id, mainFile);
+    if (!isDownloading) return;
+    let dbf = [...Store2.getState().downloading_book_file];
+    const new_dbf = dbf.filter(d => !(d.fileId === book_id && d.collectionName === getBookFileCollectionName(mainFile)));
+    new_dbf.push({
+        fileId: book_id,
+        collectionName: getBookFileCollectionName(mainFile),
+        status: 'stop',
+        progress: 0
+    });
+    dbf = new_dbf;
+    Store2.dispatch(action_update_downloading_book_file(dbf));
+    CmpUtility.refreshView();
+}
+
+/* export function toggle_book_download(book_id: string, mainFile: boolean): void {
+    debugger;
     const isDownloading = is_book_downloading(book_id, mainFile);
     let dbf = [...Store2.getState().downloading_book_file];
 
@@ -130,11 +162,11 @@ export function toggle_book_download(book_id: string, mainFile: boolean): void {
 
     Store2.dispatch(action_update_downloading_book_file(dbf));
     CmpUtility.refreshView();
-}
+} */
 
-export function toggle_libBook_download(item: ILibrary): void {
+/* export function toggle_libBook_download(item: ILibrary): void {
     toggle_book_download(item.book.id, true);
-}
+} */
 
 export function collection_download(title: string) {
     const col_list = Store2.getState().collection.data;
@@ -180,7 +212,10 @@ export function libraryItem_viewList_render(
 
     return (
         <div className="view-list-item pb-2 mb-2" >
-            <div className="item-wrapper row" onClick={() => onItemSelect(item)}>
+            <div className="item-wrapper row" onClick={() => {
+                if (is_downloading) return;
+                onItemSelect(item);
+            }}>
                 <div className="col-4">
                     <div className="img-scaffolding-container">
                         <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
@@ -207,7 +242,12 @@ export function libraryItem_viewList_render(
                         is_downloaded ?
                             <i className="fa fa-check-circle downloaded-icon"></i>
                             : is_downloading ?
-                                <i className="fa downloaded-icon downloading">{downloading_progress}<small>%</small></i> : ''
+                                <i className="fa downloaded-icon downloading"
+                                    onClick={() => {
+                                        if (!is_downloading) return;
+                                        stop_download_book(item.book.id, true);
+                                    }}
+                                >{downloading_progress}<small>%</small></i> : ''
                     }
                 </div>
 
@@ -239,7 +279,10 @@ export function libraryItem_viewGrid_render(
 
     return (
         <div className="col-4 p-align-inverse-0 mb-3">
-            <div className="item-wrapper" onClick={() => onItemSelect(item)}>
+            <div className="item-wrapper" onClick={() => {
+                if (is_downloading) return;
+                onItemSelect(item);
+            }}>
                 <div className="img-scaffolding-container">
                     <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
 
@@ -264,7 +307,12 @@ export function libraryItem_viewGrid_render(
                         is_downloaded ?
                             <i className="fa fa-check-circle"></i>
                             : is_downloading ?
-                                <i className="fa downloading">{downloading_progress}<small>%</small></i> : ''
+                                <i className="fa downloading"
+                                    onClick={() => {
+                                        if (!is_downloading) return;
+                                        stop_download_book(item.book.id, true);
+                                    }}
+                                >{downloading_progress}<small>%</small></i> : ''
                     }
                 </div>
 

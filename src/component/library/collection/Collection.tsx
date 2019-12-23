@@ -21,7 +21,7 @@ import { CollectionService } from '../../../service/service.collection';
 import { AddToCollection } from './add-to-collection/AddToCollection';
 import { IBook } from '../../../model/model.book';
 import { NETWORK_STATUS } from '../../../enum/NetworkStatus';
-import { libraryItem_viewList_render, libraryItem_viewGrid_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem, markAsUnRead_libraryItem } from '../libraryViewTemplate';
+import { libraryItem_viewList_render, libraryItem_viewGrid_render, is_libBook_downloaded, collection_download, markAsRead_libraryItem, markAsUnRead_libraryItem, is_libBook_downloading, start_download_book } from '../libraryViewTemplate';
 import { CmpUtility } from '../../_base/CmpUtility';
 
 export interface IProps {
@@ -445,7 +445,9 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         } else {
             const isDownloaded = is_libBook_downloaded(item);
             if (!isDownloaded) {
-                toggle_libBook_download(item);
+                const is_downloading = is_libBook_downloading(item);
+                // toggle_libBook_download(item);
+                if (!is_downloading) start_download_book(item.book.id, true);
                 return;
             }
 
