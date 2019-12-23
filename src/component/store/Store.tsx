@@ -285,9 +285,9 @@ class StoreComponent extends BaseComponent<IProps, IState> {
     carousel_header_render(headerTitle: string, categoryType: category_routeParam_categoryType, categoryTitle: string) {
         return (
             <>
-                <div className="category-title-wrapper d-flex justify-content-between mb-2"
+                <div className="category-title-wrapper d-flex justify-content-between mb-2 cursor-pointer"
                     onClick={() => this.gotoCategory(categoryType, categoryTitle)}>
-                    <h6 className="category-title text-capitalize">{headerTitle}</h6>
+                    <h6 className="category-title text-capitalize cursor-pointer--">{headerTitle}</h6>
                     <i className="category-icon fa fa-angle-right-app text-muted"></i>
                 </div>
             </>
