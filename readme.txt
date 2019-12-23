@@ -114,10 +114,6 @@ call CmpUtility.refreshView(); when action need it, remove from general method l
 
 ====================================================================================
 
-kindle --> mark as un-read
-
-====================================================================================
-
 onSync : check cart too.
 
 on cmp cart opened: keep cart data upToDate (if book price changed).

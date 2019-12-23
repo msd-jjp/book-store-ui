@@ -624,7 +624,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     const is_downloaded = is_book_downloaded(book.id, false);
     const is_downloading = is_downloaded ? false : is_book_downloading(book.id, false);
     const downloading_progress = is_downloading ? book_downloading_progress(book.id, false) : '';
-    const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress : '';
+    // const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress : '';
     const download_size = is_downloading ? book_download_size(book.id, false) : '';
     const download_size_str = (download_size || download_size === 0) ? Utility.byteFileSize(download_size) : '';
     const isAudio = this.isBookTypeAudio(book.type as BOOK_TYPES);
@@ -659,7 +659,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
         </div>
         <div className="d-flex">
           <small className="direction-ltr mr-2">{download_size_str}</small>
-          <small className="direction-ltr">{downloading_progress_str} <small>%</small></small>
+          <small className="direction-ltr">{downloading_progress} <small>%</small></small>
         </div>
       </>)
 
