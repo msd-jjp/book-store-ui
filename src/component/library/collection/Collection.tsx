@@ -22,14 +22,11 @@ import { AddToCollection } from './add-to-collection/AddToCollection';
 import { IBook } from '../../../model/model.book';
 import { NETWORK_STATUS } from '../../../enum/NetworkStatus';
 import { libraryItem_viewList_render, libraryItem_viewGrid_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem, markAsUnRead_libraryItem } from '../libraryViewTemplate';
-// import { BOOK_TYPES } from '../../../enum/Book';
 import { CmpUtility } from '../../_base/CmpUtility';
-// import { Store2 } from '../../../redux/store';
 
 export interface IProps {
     logged_in_user?: IUser | null;
     internationalization: TInternationalization;
-    // token: IToken;
     history: History;
     match: any;
 
@@ -349,8 +346,6 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
     removeFromDevice() {
         const id_s = this.state.collection_library_data_selected.map((item: ILibrary) => item.book.id);
         CmpUtility.removeBookFileFromDevice(id_s, true);
-        /* appLocalStorage.removeFromCollection('clc_book_mainFile', id_s);
-        CmpUtility.refreshView(); */
     }
 
     private async markAsRead() {
@@ -448,12 +443,6 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         if (this.state.isCollection_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
-            /* const is_re_d_ing = isReaderEngineDownloading();
-            if (is_re_d_ing) {
-                this.readerEngineNotify();
-                // return;
-            } */
-
             const isDownloaded = is_libBook_downloaded(item);
             if (!isDownloaded) {
                 toggle_libBook_download(item);
@@ -461,16 +450,6 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
             }
 
             this.openBookByReader(item.book, this.props.history, true);
-            /* if (Store2.getState().reader_engine.status !== 'inited') {
-                this.readerEngineNotify();
-                return;
-            }
-
-            let isAudio = false;
-            if (item.book.type === BOOK_TYPES.Audio) {
-                isAudio = true;
-            }
-            this.gotoReader(item.book.id, isAudio); */
         }
     }
 
@@ -526,19 +505,10 @@ class CollectionComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    // gotoLibrary() {
     goBack() {
         if (this.props.history.length > 1) { this.props.history.goBack(); }
         else { this.props.history.push(`/library`); }
     }
-
-    /* gotoReader(book_id: string, isAudio = false) {
-        if (isAudio) {
-            this.props.history.push(`/reader/${book_id}/true/audio`);
-        } else {
-            this.props.history.push(`/reader/${book_id}/true/reading`);
-        }
-    } */
 
     //#endregion
 
@@ -701,7 +671,6 @@ const state2props = (state: redux_state) => {
     return {
         logged_in_user: state.logged_in_user,
         internationalization: state.internationalization,
-        // token: state.token,
         library: state.library,
         collection: state.collection,
         network_status: state.network_status,

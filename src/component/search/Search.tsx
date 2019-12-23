@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import { BaseComponent } from '../_base/BaseComponent';
 import { History } from "history";
 import { TInternationalization } from '../../config/setup';
-// import { IToken } from '../../model/model.token';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../redux/app_state';
@@ -20,7 +19,6 @@ import { calc_read_percent, is_libBook_downloaded } from '../library/libraryView
 interface IProps {
     internationalization: TInternationalization;
     history: History;
-    // token: IToken;
     match: any;
     library: ILibrary_schema;
 }
@@ -48,10 +46,8 @@ class SearchComponent extends BaseComponent<IProps, IState> {
 
     componentDidMount() {
         this.gotoTop();
-        // this._bookService.setToken(this.props.token);
         this.searchQuery = this.props.match.params.searchQuery;
         this.fetchBooks();
-
     }
     componentWillReceiveProps(nextProps: IProps) {
         if (this.props.match.params.searchQuery !== nextProps.match.params.searchQuery) {
@@ -71,9 +67,6 @@ class SearchComponent extends BaseComponent<IProps, IState> {
             );
         }
     }
-    /* componentDidUpdate(a: any, b: any, c: any) {
-        debugger;
-    } */
 
     async fetchBooks() {
         this.setState({ ...this.state, bookError: undefined, loadMoreBtnLoader: true });
@@ -130,7 +123,7 @@ class SearchComponent extends BaseComponent<IProps, IState> {
             <>
                 <div className="book-list-item pb-2 mb-2">
                     <div className="row">
-                        <div className="img-wrapper-- col-4" onClick={() => this.gotoBookDetail(book.id)}>
+                        <div className="col-4" onClick={() => this.gotoBookDetail(book.id)}>
                             <div className="img-scaffolding-container">
                                 <img src={CmpUtility.bookSizeImagePath}
                                     className="img-scaffolding" alt="" />
@@ -139,7 +132,6 @@ class SearchComponent extends BaseComponent<IProps, IState> {
                                     alt="book"
                                     className="main-img center-el-in-box"
                                     onError={e => CmpUtility.bookImageOnError(e)}
-                                    // data-loading="lazy"
                                     loading="lazy"
                                 />
                             </div>
@@ -209,7 +201,6 @@ class SearchComponent extends BaseComponent<IProps, IState> {
                         btnClassName="btn btn-light btn-block text-capitalize mt-4"
                         loading={this.state.loadMoreBtnLoader}
                         onClick={() => this.loadMoreBook()}
-                    // disabled={!this.state.isFormValid}
                     >
                         {Localization.load_more}
                     </BtnLoader>
@@ -229,7 +220,6 @@ class SearchComponent extends BaseComponent<IProps, IState> {
             <>
                 <div className="search-wrapper mt-3">
                     {this.newReleaseBook_render()}
-
                     {this.loadMoreBook_render()}
                 </div>
 
@@ -239,7 +229,6 @@ class SearchComponent extends BaseComponent<IProps, IState> {
     }
 }
 
-
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
     }
@@ -248,7 +237,6 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         internationalization: state.internationalization,
-        // token: state.token,
         library: state.library,
     }
 }

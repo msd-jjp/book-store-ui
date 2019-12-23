@@ -394,12 +394,6 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         if (this.state.isLibrary_editMode) {
             this.toggleSelect_libraryData(item);
         } else {
-            /* const is_re_d_ing = isReaderEngineDownloading();
-            if (is_re_d_ing) {
-                this.readerEngineNotify();
-                // return;
-            } */
-
             const isDownloaded = is_libBook_downloaded(item);
             if (!isDownloaded) {
                 toggle_libBook_download(item);
@@ -407,16 +401,6 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
             }
 
             this.openBookByReader(item.book, this.props.history, true);
-            /* if (Store2.getState().reader_engine.status !== 'inited') {
-                this.readerEngineNotify();
-                return;
-            }
-
-            let isAudio = false;
-            if (item.book.type === BOOK_TYPES.Audio) {
-                isAudio = true;
-            }
-            this.gotoReader(item.book.id, isAudio); */
         }
     }
 

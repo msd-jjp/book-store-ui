@@ -319,7 +319,6 @@ export function updateLibraryItem_isRead_server(book_id: string, isRead: boolean
 }
 //#endregion
 
-
 //#region updateLibraryItem_progress
 export function updateLibraryItem_progress(book_id: string, progress: number) {
     updateLibraryItem_progress_client(book_id, progress);

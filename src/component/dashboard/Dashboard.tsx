@@ -224,8 +224,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, newReleaseBookError: undefined }, () => { this.reinit_swiper() });
 
     let res = await this._bookService.newest().catch(error => {
-      // this.handleError({ error: error.response });
-
       let errorMsg = this.handleError({ error: error.response, notify: false });
       this.setState({ ...this.state, newReleaseBookError: errorMsg.body }, () => { this.reinit_swiper() });
     });
@@ -307,15 +305,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                 <div className="bp-state-arrow" />
                 <div className="progress-complete-label">{Localization.readed_}</div>
               </div>
-              {/* <div className="book-download">
-                <i className="fa fa-check-circle" />
-              </div> */}
-              {/* <div className={
-                "book-download " +
-                (this.is_libCurrentBook_downloaded(this.getItemFromLibrary(current_book.id)) ? '' : 'd-none')
-              }>
-                <i className="fa fa-check-circle" />
-              </div> */}
               <div className="book-download">
                 {
                   is_downloaded ?
@@ -323,11 +312,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                     : is_downloading ?
                       <i className="fa downloading">{downloading_progress}<small>%</small></i> : ''
                 }
-                {/* <i className={
-                  "fa "
-                  + (is_downloaded ? 'fa-check-circle' : ' ')
-                  + (is_downloading ? 'fa-refresh__fa-spin downloading' : ' ')
-                } >{downloading_progress_str}</i> */}
               </div>
             </div>
           </div>
@@ -480,49 +464,17 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
 
     this.openBookByReader(book, this.props.history, true);
-    /* if (Store2.getState().reader_engine.status !== 'inited') {
-      this.readerEngineNotify();
-      return;
-    }
-
-    let isAudio = false;
-    if (book.type === BOOK_TYPES.Audio) {
-      isAudio = true;
-    }
-    this.gotoReader(book.id, isAudio); */
   }
-  /* gotoReader(book_id: string, isAudio = false) {
-    if (isAudio) {
-      this.props.history.push(`/reader/${book_id}/true/audio`);
-    } else {
-      this.props.history.push(`/reader/${book_id}/true/reading`);
-    }
-  } */
 
   calc_read_percent_by_bookItem_in_lib(book_id: string): string {
-    // const item = this.getItemFromLibrary(book_id);
     const item = getLibraryItem(book_id);
     if (item) return calc_read_percent(item);
     else return '0%';
   }
 
-  // private library_current_book_item: ILibrary | undefined;
-  // private getItemFromLibrary(book_id: string): ILibrary | undefined {
-  //   if (!this.library_current_book_item) {
-  //     this.library_current_book_item = getLibraryItem(book_id);
-  //   }
-  //   return this.library_current_book_item;
-  // }
-
   removeFromDevice(book_id: string) {
     CmpUtility.removeBookFileFromDevice(book_id, true);
-    /* appLocalStorage.removeFromCollection('clc_book_mainFile', book_id);
-    CmpUtility.refreshView(); */
   }
-
-  /* private async markAsRead(book_id: string) {
-    markAsRead_libraryItem(book_id);
-  } */
 
   //#region updateUserCurrentBook
   async removeBookFrom_home() {
