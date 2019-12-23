@@ -58,7 +58,7 @@ export class FetchIntervalWorker extends BaseWorker {
     //     };
     // }
 
-    private general_timeout_timer: number = 30000; // in ms --> 30second
+    private readonly general_timeout_timer: number = 30; // in second
     private interval_inProgress = false;
     private async start_fetchingData() {
         console.log('--------- fetching library & collection started ---------');
@@ -82,7 +82,7 @@ export class FetchIntervalWorker extends BaseWorker {
     }
 
     private randomTime(timer: number = this.general_timeout_timer): number {
-        return timer + (Utility.random_int(1, 10) * 1000);
+        return (timer * 1000) + (Utility.random_int(1, 10) * 1000);
     }
 
     private fetchLibrary_timeout: any;
@@ -171,7 +171,7 @@ export class FetchIntervalWorker extends BaseWorker {
             }
         }
         clearTimeout(this.checkDeviceKey_timeout);
-        this.checkDeviceKey_timeout = setTimeout(() => { this.checkDeviceKey(); }, this.randomTime(60000));
+        this.checkDeviceKey_timeout = setTimeout(() => { this.checkDeviceKey(); }, this.randomTime(60));
     }
 
 }
