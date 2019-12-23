@@ -388,7 +388,7 @@ class DeviceKeyComponent extends BaseComponent<IProps, IState> {
                                                 const loading = (this.state.modal_deviceList.removeLoaders as any)[item.id];
                                                 return (
                                                     <tr key={itemIndex}>
-                                                        <td className="max-w-25px-- align-middle text-center">{itemIndex + 1}</td>
+                                                        {/* <td className="max-w-25px-- align-middle text-center">{itemIndex + 1}</td> */}
                                                         <td className="align-middle">
                                                             <BtnLoader
                                                                 btnClassName="btn btn-light btn-sm"
