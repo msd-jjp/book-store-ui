@@ -24,7 +24,6 @@ interface IProps {
   logged_in_user: IUser | null;
   internationalization: TInternationalization;
   history: History;
-  // token: IToken;
   network_status: NETWORK_STATUS;
   onUserLoggedIn: (user: IUser) => void;
 }
@@ -404,25 +403,30 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
                             <Dropzone
                               multiple={false}
                               onDrop={(files) => this.onDrop(files)}
-                              maxSize={5000000}
+                              maxSize={1000000}
                               accept="image/*"
                               onDropRejected={(files, event) => this.onDropRejected(files, event)}
                             >
                               {
                                 (({ getRootProps, getInputProps }) => (
                                   <section className="px-3">
-                                    <div {...getRootProps({ className: 'dropzone' })}>
+                                    <div {...getRootProps({ className: 'dropzone' })}
+                                      className={
+                                        (this.state.person.image.value && this.state.person.image.value.length
+                                          ? 'd-none' : '')
+                                      }
+                                    >
                                       <input {...getInputProps()} />
                                       <p
                                         className="drag-drop-section text-center text-muted p-3 mt-3-- mb-0 cursor-pointer rounded"
                                       >{Localization.choose_image}</p>
                                     </div>
                                     <aside className={
-                                      "mt-3 " +
+                                      "mt-3-- " +
                                       (this.state.person.image.value && this.state.person.image.value.length
                                         ? '' : 'd-none')
                                     }>
-                                      <h5 className="m-2">{Localization.preview}:</h5>
+                                      {/* <h5 className="m-2">{Localization.preview}:</h5> */}
                                       <div className="file-wrapper px-2 pt-2 pb-0 rounded">{
                                         (this.state.person.image.value || []).map((file: any, index) => {
                                           let tmUrl = '';
