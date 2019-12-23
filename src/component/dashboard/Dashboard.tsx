@@ -20,7 +20,7 @@ import { AddToCollection } from "../library/collection/add-to-collection/AddToCo
 import { CmpUtility } from "../_base/CmpUtility";
 import { action_user_logged_in } from "../../redux/action/user";
 import { PersonService } from "../../service/service.person";
-import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem, book_downloading_progress, book_download_size } from "../library/libraryViewTemplate";
+import { calc_read_percent, is_book_downloaded, is_book_downloading, toggle_book_download, markAsRead_libraryItem, getLibraryItem, book_downloading_progress, book_download_size, markAsUnRead_libraryItem } from "../library/libraryViewTemplate";
 import { ILibrary_schema } from "../../redux/action/library/libraryAction";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import Swiper from "swiper";
@@ -280,6 +280,10 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     const firstWriterFullName = CmpUtility.getBook_role_fisrt_fullName(current_book, BOOK_ROLES.Writer);
     const read_percent = this.calc_read_percent_by_bookItem_in_lib(current_book.id);
 
+    const libItem = getLibraryItem(current_book.id);
+    let is_read = false;
+    if (libItem) is_read = libItem.status.is_read;
+
     return (
       <>
         <div className="latestBook-wrapper row mt-3">
@@ -295,8 +299,8 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                   loading="lazy"
                 />
               </div>
-              {/* <img className="" src={current_book_img} alt="book" onError={e => this.bookImageOnError(e)} /> */}
-              <div className={"book-progress-state " + (read_percent === '100%' ? 'progress-complete' : '')}>
+              {/* <div className={"book-progress-state " + (read_percent === '100%' ? 'progress-complete' : '')}> */}
+              <div className={"book-progress-state " + ((is_read || read_percent === '100%') ? 'progress-complete' : '')}>
                 <div className="bp-state-number">
                   <div className="text">{read_percent}</div>
                 </div>
@@ -379,11 +383,22 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
                   }
                 </Dropdown.Item>
                 <Dropdown.Item
-                  className={(read_percent === '100%' ? 'd-none' : '')}
-                  onClick={() => this.markAsRead(current_book!.id)}
+                  className={(is_read ? 'd-none' : '')}
+                  onClick={() => markAsRead_libraryItem(current_book!.id)}
                   disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
                 >
                   {Localization.mark_as_read}
+                  {
+                    this.props.network_status === NETWORK_STATUS.OFFLINE
+                      ? <i className="fa fa-wifi text-danger"></i> : ''
+                  }
+                </Dropdown.Item>
+                <Dropdown.Item
+                  className={(!is_read ? 'd-none' : '')}
+                  onClick={() => markAsUnRead_libraryItem(current_book!.id)}
+                  disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                >
+                  {Localization.mark_as_unRead}
                   {
                     this.props.network_status === NETWORK_STATUS.OFFLINE
                       ? <i className="fa fa-wifi text-danger"></i> : ''
@@ -505,9 +520,9 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     CmpUtility.refreshView(); */
   }
 
-  private async markAsRead(book_id: string) {
+  /* private async markAsRead(book_id: string) {
     markAsRead_libraryItem(book_id);
-  }
+  } */
 
   //#region updateUserCurrentBook
   async removeBookFrom_home() {

@@ -176,6 +176,7 @@ export function libraryItem_viewList_render(
     const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress : '';
     const download_size = is_downloading ? libBook_download_size(item) : '';
     const download_size_str = (download_size || download_size === 0) ? Utility.byteFileSize(download_size) : '';
+    const is_read = item.status.is_read;
 
     return (
         <div className="view-list-item pb-2 mb-2" >
@@ -195,8 +196,11 @@ export function libraryItem_viewList_render(
                 <div className="detail-wrapper col-8 p-align-0">
                     <div className="book-title">{item.book.title}</div>
                     <span className="book-writer text-muted py-2 small">{writerName}</span>
-                    <span className={"book-progress mr-2 small " + (read_percent === '100%' ? 'badge badge-dark' : '')}>
+                    {/* <span className={"book-progress mr-2 small " + (read_percent === '100%' ? 'badge badge-dark' : '')}>
                         {read_percent === '100%' ? Localization.readed_ : read_percent}
+                    </span> */}
+                    <span className={"book-progress mr-2 small " + ((is_read || read_percent === '100%') ? 'badge badge-dark' : '')}>
+                        {(is_read || read_percent === '100%') ? Localization.readed_ : read_percent}
                     </span>
                     <span className={"book-volume small " + (!download_size_str ? 'd-none' : '')}>{download_size_str}</span>
                     {
@@ -231,6 +235,7 @@ export function libraryItem_viewGrid_render(
     const is_downloading = is_downloaded ? false : is_libBook_downloading(item);
     const downloading_progress = is_downloading ? libBook_downloading_progress(item) : '';
     const downloading_progress_str = (downloading_progress || downloading_progress === 0) ? downloading_progress : '';
+    const is_read = item.status.is_read;
 
     return (
         <div className="col-4 p-align-inverse-0 mb-3">
@@ -246,7 +251,8 @@ export function libraryItem_viewGrid_render(
                     />
                 </div>
 
-                <div className={"book-progress-state " + (read_percent === '100%' ? 'progress-complete' : '')}>
+                {/* <div className={"book-progress-state " + (read_percent === '100%' ? 'progress-complete' : '')}> */}
+                <div className={"book-progress-state " + ((is_read || read_percent === '100%') ? 'progress-complete' : '')}>
                     <div className="bp-state-number">
                         <div className="text">{read_percent}</div>
                     </div>
@@ -281,9 +287,40 @@ export function getLibraryItem(book_id: string): ILibrary | undefined {
 }
 
 export function markAsRead_libraryItem(book_id: string): void {
-    updateLibraryItem_progress(book_id, 1);
+    updateLibraryItem_isRead(book_id, true);
 }
 
+export function markAsUnRead_libraryItem(book_id: string): void {
+    updateLibraryItem_isRead(book_id, false);
+}
+
+//#region updateLibraryItem_isRead
+export function updateLibraryItem_isRead(book_id: string, isRead: boolean) {
+    updateLibraryItem_isRead_client(book_id, isRead);
+    updateLibraryItem_isRead_server(book_id, isRead);
+}
+
+export function updateLibraryItem_isRead_client(book_id: string, isRead: boolean) {
+    const libData = [...Store2.getState().library.data];
+    const _lib = libData.find(lib => lib.book.id === book_id);
+    if (!_lib) return;
+
+    _lib.status.is_read = isRead;
+    Store2.dispatch(action_set_library_data(libData));
+}
+
+export function updateLibraryItem_isRead_server(book_id: string, isRead: boolean) {
+    if (Store2.getState().network_status === NETWORK_STATUS.OFFLINE) return;
+    const libItem = getLibraryItem(book_id);
+    if (!libItem) return;
+
+    const _libraryService = new LibraryService();
+    _libraryService.update_isRead(libItem.id, isRead).catch(e => { });
+}
+//#endregion
+
+
+//#region updateLibraryItem_progress
 export function updateLibraryItem_progress(book_id: string, progress: number) {
     updateLibraryItem_progress_client(book_id, progress);
     updateLibraryItem_progress_server(book_id, progress);
@@ -306,3 +343,4 @@ export function updateLibraryItem_progress_server(book_id: string, progress: num
     const _libraryService = new LibraryService();
     _libraryService.update_progress(libItem.id, progress).catch(e => { });
 }
+//#endregion

@@ -165,6 +165,7 @@ export const ar = {
     view_in_store: 'نمایش در فروشگاه',
     add_to_collection: 'اضافه کردن به کلکسیون',
     mark_as_read: 'به عنوان خوانده شده علامت بزن',
+    mark_as_unRead:'به عنوان خوانده نشده علامت بزن',
     share_progress: 'اشتراک گذاری پیشرفت',
     recommend_this_book: 'پیشنهاد دادن کتاب',
     remove_from_device: 'حذف از دستگاه',

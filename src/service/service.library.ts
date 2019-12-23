@@ -12,7 +12,6 @@ export class LibraryService extends BaseService {
                 reject({ error: 'no internet access' });
             });
         }
-        // return this.axiosTokenInstance.get('/library');
         return this.axiosTokenInstance.post('/library/user', {});
     }
 
@@ -20,14 +19,12 @@ export class LibraryService extends BaseService {
         return this.axiosTokenInstance.head('/library/user');
     }
 
-    // update_status(
-    update_progress(
-        library_id: ILibrary['id'],
-        // status: { status?: string; reading_started?: boolean; read_pages?: number; read_duration?: number; }, // ILibrary['status']
-        progress: ILibrary['progress']
-    ): Promise<IAPI_Response<ILibrary>> {
-        // return this.axiosTokenInstance.put(`/library/${library_id}`, { status, progress });
+    update_progress(library_id: ILibrary['id'], progress: ILibrary['progress']): Promise<IAPI_Response<ILibrary>> {
         return this.axiosTokenInstance.put(`/library/${library_id}`, { progress });
+    }
+
+    update_isRead(library_id: ILibrary['id'], is_read: boolean): Promise<IAPI_Response<ILibrary>> {
+        return this.axiosTokenInstance.put(`/library/${library_id}`, { status: { is_read } });
     }
 
 }

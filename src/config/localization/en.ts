@@ -165,6 +165,7 @@ export const en = {
     view_in_store: 'view in store',
     add_to_collection: 'add to collection',
     mark_as_read: 'mark as read',
+    mark_as_unRead:'mark as unread',
     share_progress: 'share progress',
     recommend_this_book: 'recommend this book',
     remove_from_device: 'remove from device',

@@ -22,7 +22,7 @@ import { ICollection_schema } from '../../redux/action/collection/collectionActi
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
 import { AddToCollection } from './collection/add-to-collection/AddToCollection';
 import { IBook } from '../../model/model.book';
-import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem } from './libraryViewTemplate';
+import { libraryItem_viewGrid_render, libraryItem_viewList_render, is_libBook_downloaded, toggle_libBook_download, collection_download, markAsRead_libraryItem, markAsUnRead_libraryItem } from './libraryViewTemplate';
 import { CmpUtility } from '../_base/CmpUtility';
 // import { BOOK_TYPES } from '../../enum/Book';
 // import { Store2 } from '../../redux/store';
@@ -211,6 +211,20 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                 }
                                             </Dropdown.Item>
                                             <Dropdown.Item
+                                                onClick={() => this.markAsUnRead()}
+                                                className={
+                                                    "text-capitalize "
+                                                    + (!this.state.library_data_selected.length ? 'd-none' : '')
+                                                }
+                                                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                                            >
+                                                {Localization.mark_as_unRead}
+                                                {
+                                                    this.props.network_status === NETWORK_STATUS.OFFLINE
+                                                        ? <i className="fa fa-wifi text-danger"></i> : ''
+                                                }
+                                            </Dropdown.Item>
+                                            <Dropdown.Item
                                                 onClick={() => this.viewInStore()}
                                                 className={
                                                     "text-capitalize "
@@ -293,6 +307,14 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         for (let i = 0; i < id_s.length; i++) {
             await CmpUtility.waitOnMe(0);
             markAsRead_libraryItem(id_s[i]);
+        }
+    }
+
+    private async markAsUnRead() {
+        const id_s = this.state.library_data_selected.map((item: ILibrary) => item.book.id);
+        for (let i = 0; i < id_s.length; i++) {
+            await CmpUtility.waitOnMe(0);
+            markAsUnRead_libraryItem(id_s[i]);
         }
     }
 

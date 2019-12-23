@@ -176,6 +176,7 @@ interface ILocalization extends LocalizedStringsMethods {
     view_in_store: string;
     add_to_collection: string;
     mark_as_read: string;
+    mark_as_unRead: string;
     share_progress: string;
     recommend_this_book: string;
     remove_from_device: string;
