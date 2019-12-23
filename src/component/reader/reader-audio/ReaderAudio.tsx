@@ -141,6 +141,9 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             // note Firefox bug
             console.error('componentWillUnmount wavesurfer!.destroy', e);
         }
+
+        if (this._latest_timeInChapter !== undefined)
+            this.updateBookProgress(this._latest_timeInChapter, 0);
     }
 
     async updateUserCurrentBook_client() {
@@ -388,10 +391,13 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     }
 
     private _updateBookProgress_timer: any;
+    private _latest_timeInChapter: number | undefined;
     /** 
      * @param timeInChapter in second
+     * @param timer in milisecond
      */
-    private async updateBookProgress(timeInChapter: number) {
+    private updateBookProgress(timeInChapter: number, timer = 3000) {
+        this._latest_timeInChapter = timeInChapter;
         if (this._updateBookProgress_timer) {
             clearTimeout(this._updateBookProgress_timer);
         }
@@ -401,7 +407,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
             const bookProgress = (currentTime * 1000) / this._book_totalDuration;
             // console.warn('updateLibraryItem_progress', this.book_id, bookProgress);
             updateLibraryItem_progress(this.book_id, bookProgress);
-        }, 3000);
+        }, timer);
     }
 
     private _audioContext: AudioContext | undefined;

@@ -128,8 +128,6 @@ feedback in cmp more
 
 ====================================================================================
 
-readerAudio btn foucus change to active.
-
 ====================================================================================
 
 bookDetail cmp:
@@ -137,11 +135,6 @@ bookDetail cmp:
     if other --> dont show duration
 
 ====================================================================================
-
-book download:
-    item click --> download;
-    progress click --> cancel;
-
 
 libItem --> add size (perminently keep size)
 
