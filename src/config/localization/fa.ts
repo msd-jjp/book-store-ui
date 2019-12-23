@@ -232,7 +232,7 @@ export const fa = {
     downloaded: 'دانلود شده',
     more_reviews: 'نظرات بیشتر',
     thank_you_for_your_feedback: 'با تشکر از بازخورد شما',
-    inspired_by_your_wishlist: 'با توجه به لیست علاقه مندی ها شما',
+    inspired_by_your_wishlist: 'با توجه به لیست علاقه مندی های شما',
     uncollected: 'بدون دسته',
     of: 'از',
     from: 'از',
@@ -245,7 +245,7 @@ export const fa = {
     no_item_found: 'موردی یافت نشد',
     category: {
         category: 'گروه',
-        new: 'نسخه ها جدید',
+        new: 'نسخه های جدید',
         best_seller: 'پرفروش ها',
         recommended: 'پیشنهادی برای شما',
         wishlist: 'لیست علاقه مندی ها',
