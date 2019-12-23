@@ -184,10 +184,6 @@ afzudan list download dar setting
 
 ====================================================================================
 
-2)
-دانلود کتاب
-download --> 404 --> prepare -->204 --> prepare -->200 --> download
-
 3)
 indexedDb
 store page (pdf, msdFormat)
@@ -195,6 +191,7 @@ download performance
 
 ====================================================================================
 
+detect chrome in iphone bug.
 chrome in iphone --> device key bug. (detecting device as safari version 605??)
 
 ====================================================================================
