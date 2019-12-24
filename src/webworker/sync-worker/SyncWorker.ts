@@ -1,14 +1,14 @@
 import /* workerMsg, */ { IReceiveData } from './sync.worker';
 import { BaseWorker } from '../worker.base';
-import { CollectionService } from '../../service/service.collection';
-import { LibraryService } from '../../service/service.library';
+// import { CollectionService } from '../../service/service.collection';
+// import { LibraryService } from '../../service/service.library';
 // import { IToken } from '../../model/model.token';
 import { Store2 } from '../../redux/store';
 import { action_set_sync } from '../../redux/action/sync';
 
 import { CmpUtility } from '../../component/_base/CmpUtility';
 import { AxiosError } from 'axios';
-import { OrderService } from '../../service/service.order';
+// import { OrderService } from '../../service/service.order';
 import { PersonService } from '../../service/service.person';
 interface ISyncStatusItem {
     inProgress: boolean;
@@ -27,9 +27,9 @@ export class SyncWorker extends BaseWorker {
 
     protected _worker: Worker | undefined;
     private _syncStatus!: ISyncStatus;
-    private _libraryService = new LibraryService();
-    private _collectionService = new CollectionService();
-    private _orderService = new OrderService();
+    // private _libraryService = new LibraryService();
+    // private _collectionService = new CollectionService();
+    // private _orderService = new OrderService();
     private _personService = new PersonService();
 
     constructor(/* token: IToken */) {
@@ -151,13 +151,13 @@ export class SyncWorker extends BaseWorker {
     private async isAccessChanged() {
         this._syncStatus.isAccessChanged.inProgress = true;
         this._syncStatus.isAccessChanged.error = undefined;
-        // await CmpUtility.waitOnMe(1000);
-        await this._collectionService.getAll().catch((e: AxiosError) => { // _libraryService
+        await CmpUtility.waitOnMe(1000);
+        /* await this._collectionService.getAll().catch((e: AxiosError) => { // _libraryService
             this._syncStatus.isAccessChanged.error = e;
-        });
+        }); */
         this._syncStatus.isAccessChanged.inProgress = false;
         // this._syncStatus.isAccessChanged.error = undefined;
-        // console.log('isAccessChanged compeleted.');
+        console.log('isAccessChanged compeleted.');
         this.afterActionFinished();
     }
 
@@ -167,12 +167,12 @@ export class SyncWorker extends BaseWorker {
     private async whichBook_isRemoved() {
         this._syncStatus.whichBook_isRemoved.inProgress = true;
         this._syncStatus.whichBook_isRemoved.error = undefined;
-        // await CmpUtility.waitOnMe(1500);
-        await this._orderService.search_userOrder(10, 0).catch((e: AxiosError) => {
+        await CmpUtility.waitOnMe(1500);
+        /* await this._orderService.search_userOrder(10, 0).catch((e: AxiosError) => {
             this._syncStatus.whichBook_isRemoved.error = e;
-        });
+        }); */
         this._syncStatus.whichBook_isRemoved.inProgress = false;
-        // console.log('whichBook_isRemoved compeleted.');
+        console.log('whichBook_isRemoved compeleted.');
         this.afterActionFinished();
     }
 

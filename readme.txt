@@ -192,8 +192,9 @@ cmp bookDetail
 img tag --> attr alt --> need translation.
 
 ====================================================================================
-
-on Enter in collection rename
+input on enter: add in:
+    collection rename
+    add to collection
 
 ====================================================================================
 
