@@ -397,6 +397,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
      * @param timer in milisecond
      */
     private updateBookProgress(timeInChapter: number, timer = 3000) {
+        if (this.isOriginalFile !== 'true') return;
         this._latest_timeInChapter = timeInChapter;
         if (this._updateBookProgress_timer) {
             clearTimeout(this._updateBookProgress_timer);
@@ -404,8 +405,12 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this._updateBookProgress_timer = setTimeout(() => {
             if (this._book_totalDuration === undefined) return;
             const currentTime = this._b_loaded_chapter_from + timeInChapter;
-            const bookProgress = (currentTime * 1000) / this._book_totalDuration;
+            let bookProgress = (currentTime * 1000) / this._book_totalDuration;
             // console.warn('updateLibraryItem_progress', this.book_id, bookProgress);
+            if (Math.round(bookProgress * 100) === 100) {
+                // console.warn('oooo bookProgress = 1', bookProgress);
+                bookProgress = 1;
+            }
             updateLibraryItem_progress(this.book_id, bookProgress);
         }, timer);
     }
