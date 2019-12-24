@@ -201,7 +201,7 @@ export abstract class ReaderUtility {
         const img_pageIndex_list = img_list.map(img => parseInt(img.getAttribute('data-src') as string));
 
         const img_has_src_list = img_list.map(img => img.getAttribute('src') !== null);
-        // console.log(img_has_src_list, img_pageIndex_list);
+        // console.log('****', img_has_src_list, img_pageIndex_list);
         const isRenderFinished = img_has_src_list.reduce((oldVal, CurrnetVal) => {
             return oldVal && CurrnetVal;
         }, true);

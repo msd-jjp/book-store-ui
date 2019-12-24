@@ -274,7 +274,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     // debugger;
 
     // this.getSinglePagePath(this.book_active_index);
-    this.getPagePath(this.book_active_index);
+    // this.getPagePath(this.book_active_index);
 
     this.swiper_obj = new Swiper('.swiper-container', {
       keyboard: true,
@@ -344,15 +344,15 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  getPagePath_ifExist(pageIndex: number) {
+  /* getPagePath_ifExist(pageIndex: number) {
     const page = this._bookInstance.getPage_ifExist(pageIndex);
     // if (!page) { ReaderUtility.check_swiperImg_with_delay(this._bookInstance) } // check_swiperImg_loaded
     return page;
-  }
-  getPagePath(pageIndex: number) {
+  } */
+  /* getPagePath(pageIndex: number) {
     // this._bookInstance.getPage_with_storeAround(pageIndex, 5);
     return pageIndex; // page;
-  }
+  } */
 
   swiper_item_render(slide: IReaderScrollSlide, offset: any) {
     if (slide.isTitle) {
@@ -409,8 +409,10 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
                       <div className="page-img-wrapper">
                         <img
                           className="page-img"
-                          src={(() => { if (pg !== -1) return this.getPagePath_ifExist(pg); else return invisibleImgSrc; })()}
-                          data-src={(() => { if (pg !== -1) return this.getPagePath(pg); else return invisibleImgSrc; })()}
+                          // src={(() => { if (pg !== -1) return this.getPagePath_ifExist(pg); else return invisibleImgSrc; })()}
+                          // data-src={(() => { if (pg !== -1) return this.getPagePath(pg); else return invisibleImgSrc; })()}
+                          src={(() => { if (pg !== -1) return; else return invisibleImgSrc; })()}
+                          data-src={(() => { if (pg !== -1) return pg; else return; })()}
                           alt=""
                           loading="lazy"
                           width={this._bookPageSize.width}
@@ -449,43 +451,43 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
 
   private _renderViewablePages_timeout: any;
   swiper_render() {
-    if (true) {
+    // if (true) {
 
-      if (this._renderViewablePages_timeout) {
-        clearTimeout(this._renderViewablePages_timeout);
-        this._renderViewablePages_timeout = undefined;
-      };
-      this._renderViewablePages_timeout = setTimeout(() => {
-        this._bookInstance && ReaderUtility.renderViewablePages(this._bookInstance);
-      }, 10);
+    if (this._renderViewablePages_timeout) {
+      clearTimeout(this._renderViewablePages_timeout);
+      this._renderViewablePages_timeout = undefined;
+    };
+    this._renderViewablePages_timeout = setTimeout(() => {
+      this._bookInstance && ReaderUtility.renderViewablePages(this._bookInstance);
+    }, 10);
 
-      const vrtData: any = this.state.virtualData;
-      // const swiper_slides: any = this.state.swiper_slides;
+    const vrtData: any = this.state.virtualData;
+    // const swiper_slides: any = this.state.swiper_slides;
 
-      // let offset_dir = 'top';
-      let swiper_dir = 'ltr';
-      // if (this.props.internationalization.rtl) {
-      if (this.isThisBookRtl()) {
-        // offset_dir = 'right';
-        swiper_dir = 'rtl';
-      }
+    // let offset_dir = 'top';
+    let swiper_dir = 'ltr';
+    // if (this.props.internationalization.rtl) {
+    if (this.isThisBookRtl()) {
+      // offset_dir = 'right';
+      swiper_dir = 'rtl';
+    }
 
-      return (
-        <>
-          <div className="app-swiper">
-            <div className="swiper-container" dir={swiper_dir}>
-              <div className="swiper-wrapper">
-                {vrtData.slides.map((slide: IReaderScrollSlide, index: any) => (
-                  <Fragment key={slide.id}>
-                    {this.swiper_item_render(slide, vrtData.offset)}
-                  </Fragment>
-                ))}
-              </div>
+    return (
+      <>
+        <div className="app-swiper">
+          <div className="swiper-container" dir={swiper_dir}>
+            <div className="swiper-wrapper">
+              {vrtData.slides.map((slide: IReaderScrollSlide, index: any) => (
+                <Fragment key={slide.id}>
+                  {this.swiper_item_render(slide, vrtData.offset)}
+                </Fragment>
+              ))}
             </div>
           </div>
-        </>
-      );
-    }
+        </div>
+      </>
+    );
+    // }
   }
 
   private swiperTaped = false;

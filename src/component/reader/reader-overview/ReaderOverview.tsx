@@ -368,17 +368,17 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     )
   }
 
-  getPagePath_ifExist(pageIndex: number) {
+  /* getPagePath_ifExist(pageIndex: number) {
     const page = this._bookInstance.getPage_ifExist(pageIndex);
     // if (!page) { ReaderUtility.check_swiperImg_with_delay(this._bookInstance) } // check_swiperImg_loaded
     // if (!page) { ReaderUtility.renderViewablePages(this._bookInstance) }
 
     return page;
-  }
-  getPagePath(pageIndex: number) {
+  } */
+  /* getPagePath(pageIndex: number) {
     // this._bookInstance.getPage_with_storeAround(pageIndex, 5);
     return pageIndex; // page;
-  }
+  } */
   /* getSinglePagePath(pageIndex: number) {
     return this._bookInstance.getPage(pageIndex);
   } */
@@ -401,57 +401,58 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   private _renderViewablePages_timeout: any;
   swiper_render() {
-    if (true) {
+    // if (true) {
 
-      if (this._renderViewablePages_timeout) {
-        clearTimeout(this._renderViewablePages_timeout);
-        this._renderViewablePages_timeout = undefined;
-      };
-      this._renderViewablePages_timeout = setTimeout(() => {
-        this._bookInstance && ReaderUtility.renderViewablePages(this._bookInstance);
-      }, 10);
+    if (this._renderViewablePages_timeout) {
+      clearTimeout(this._renderViewablePages_timeout);
+      this._renderViewablePages_timeout = undefined;
+    };
+    this._renderViewablePages_timeout = setTimeout(() => {
+      this._bookInstance && ReaderUtility.renderViewablePages(this._bookInstance);
+    }, 10);
 
-      const vrtData: any = this.state.virtualData;
+    const vrtData: any = this.state.virtualData;
 
-      let offset_dir = 'left';
-      let swiper_dir = 'ltr';
-      if (this.isThisBookRtl()) {
-        offset_dir = 'right';
-        swiper_dir = 'rtl';
-      }
+    let offset_dir = 'left';
+    let swiper_dir = 'ltr';
+    if (this.isThisBookRtl()) {
+      offset_dir = 'right';
+      swiper_dir = 'rtl';
+    }
 
-      return (
-        <>
-          <div className="app-swiper">
-            <div className="swiper-container" dir={swiper_dir}>
-              <div className="swiper-wrapper">
-                {vrtData.slides.map((slide: { id: number, page: IBookPosIndicator }, index: any) => (
-                  <Fragment key={slide.id}>
-                    <div className="swiper-slide" style={{ [offset_dir]: `${vrtData.offset}px` }}>
-                      <div className="item cursor-pointer " onClick={() => this.onPageClicked(slide.id)}>
-                        <div className="page-img-wrapper">
-                          <img
-                            className="page-img"
-                            src={this.getPagePath_ifExist(slide.id)}
-                            data-src={this.getPagePath(slide.id)}
-                            alt=""
-                            loading="lazy"
-                            // onLoad={(e) => { this.getPagePath_onLoad() }}
-                            width={this._bookPageSize.width}
-                            height={this._bookPageSize.height}
-                          />
-                        </div>
-                        <div className="page-number text-muted">{slide.id + 1}</div>
+    return (
+      <>
+        <div className="app-swiper">
+          <div className="swiper-container" dir={swiper_dir}>
+            <div className="swiper-wrapper">
+              {vrtData.slides.map((slide: { id: number, page: IBookPosIndicator }, index: any) => (
+                <Fragment key={slide.id}>
+                  <div className="swiper-slide" style={{ [offset_dir]: `${vrtData.offset}px` }}>
+                    <div className="item cursor-pointer " onClick={() => this.onPageClicked(slide.id)}>
+                      <div className="page-img-wrapper">
+                        <img
+                          className="page-img"
+                          // src={this.getPagePath_ifExist(slide.id)}
+                          // data-src={this.getPagePath(slide.id)}
+                          data-src={slide.id}
+                          alt=""
+                          loading="lazy"
+                          // onLoad={(e) => { this.getPagePath_onLoad() }}
+                          width={this._bookPageSize.width}
+                          height={this._bookPageSize.height}
+                        />
                       </div>
+                      <div className="page-number text-muted">{slide.id + 1}</div>
                     </div>
-                  </Fragment>
-                ))}
-              </div>
+                  </div>
+                </Fragment>
+              ))}
             </div>
           </div>
-        </>
-      );
-    }
+        </div>
+      </>
+    );
+    // }
   }
 
   private swiperTaped = false;
