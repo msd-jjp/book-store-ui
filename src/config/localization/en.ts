@@ -68,7 +68,7 @@ export const en = {
             addition_error: 'adding model to database failed',
             username_cellno_required: 'for retrieving password username or cell number must send',
             invalid_user: "the user by this data doesn't exist",
-            invalid_password: 'password is invalid',
+
             invalid_code: 'the code is invalid',
 
             filter_required: 'filter object is not in data',
@@ -106,8 +106,21 @@ export const en = {
             maximum_payment_error: "حداکثر مبلغ پرداخت 30,0000,000 ریال میباشد.",
             payment_serial_error: "شناسه پرداخت ارسالی مورد تایید نمیباشد.",
 
+            invalid_shopping_key: 'shopping key is invalid',
+            payment_already_considered: 'payment already considered',
+            payment_inquiry_invalid: 'payment inquiry invalid',
+            payment_bank_response_invalid: 'payment bank response invalid',
+            app_config_required: 'app config required',
+            in_process: 'in process',
             maximum_active_device: 'you reached maximum active device, please remove at least one of them',
+            invalid_password: 'password is invalid',
+            content_format_invalid: 'content format invalid',
+            book_not_generated: 'book not generated',
+            used_somewhere: 'used somewhere',
             book_has_no_content: 'book has no content',
+            invalid_device: 'invalid device',
+            RID_opration_failed: 'RID opration failed',
+            schema_not_valid: 'schema not valid',
         }
     },
     validation: {
@@ -165,7 +178,7 @@ export const en = {
     view_in_store: 'view in store',
     add_to_collection: 'add to collection',
     mark_as_read: 'mark as read',
-    mark_as_unRead:'mark as unread',
+    mark_as_unRead: 'mark as unread',
     share_progress: 'share progress',
     recommend_this_book: 'recommend this book',
     remove_from_device: 'remove from device',

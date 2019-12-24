@@ -68,9 +68,7 @@ export const fa = {
             addition_error: 'adding model to database failed',
             username_cellno_required: 'برای دریافت رمز عبور نام کاربری یا شماره موبایل را وارد کنید',
             invalid_user: "با اطلاعات وارد شده کاربری وجود ندارد",
-            invalid_password: 'رمز عبور اشتباه است',
             invalid_code: 'کد تایید اشتباه است.',
-
             filter_required: 'filter object is not in data',
             upload_failed: 'بارگذاری فایل با مشکل مواجه شد.',
             invalid_entity: 'خطا از سرویس دهنده رخ داد.',
@@ -95,7 +93,6 @@ export const fa = {
             person_has_books: 'این شخص در حال حاظر نقش در کتاب(ها) دارد.',
             book_not_in_lib: 'کتاب در کتابخانه شما وجود ندارد و نمی توان آن را به کلکسیونی افزود.',
             online_book_count_limitation: 'فقط کتاب چاپی و DVD تعداد بیشتر از 1 می پذیرد.',
-
             recheck_information: ".خطایی در دادههای ارسالی وجود دارد، لطفا اطلاعات را بررسی کنید و دوباره ارسال نمایید. (درخواست پرداخت)",
             analyzing_error: "خطایی در تحلیل دادههای در سرور کیپو بوجود آمده است، دقایقی دیگر امتحان فرمایید.",
             server_connection_error: "امکان برقراری ارتباط با سرور کیپو میسر نمیباشد.",
@@ -106,8 +103,21 @@ export const fa = {
             maximum_payment_error: "حداکثر مبلغ پرداخت 30,0000,000 ریال میباشد.",
             payment_serial_error: "شناسه پرداخت ارسالی مورد تایید نمیباشد.",
 
+            invalid_shopping_key: 'shopping key is invalid',
+            payment_already_considered: 'payment already considered',
+            payment_inquiry_invalid: 'payment inquiry invalid',
+            payment_bank_response_invalid: 'payment bank response invalid',
+            app_config_required: 'app config required',
+            in_process: 'in process',
             maximum_active_device: 'شما به سقف مجاز تعداد دستگاه های فعال رسیدید، لطفا حداقل یکی از آن ها را حذف کنید',
+            invalid_password: 'رمز عبور اشتباه است',
+            content_format_invalid: 'content format invalid',
+            book_not_generated: 'book not generated',
+            used_somewhere: 'used somewhere',
             book_has_no_content: 'برای کتاب محتوایی موجود نیست',
+            invalid_device: 'invalid device',
+            RID_opration_failed: 'RID opration failed',
+            schema_not_valid: 'schema not valid',
         }
     },
     validation: {

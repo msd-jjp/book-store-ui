@@ -81,9 +81,7 @@ interface ILocalization extends LocalizedStringsMethods {
             addition_error: string;
             username_cellno_required: string;
             invalid_user: string;
-            invalid_password: string;
             invalid_code: string;
-
             filter_required: string;
             upload_failed: string;
             invalid_entity: string;
@@ -108,7 +106,6 @@ interface ILocalization extends LocalizedStringsMethods {
             person_has_books: string;
             book_not_in_lib: string;
             online_book_count_limitation: string;
-
             recheck_information: string;
             analyzing_error: string;
             server_connection_error: string;
@@ -118,8 +115,23 @@ interface ILocalization extends LocalizedStringsMethods {
             minimum_payment_error: string;
             maximum_payment_error: string;
             payment_serial_error: string;
+
+            invalid_shopping_key: string;
+            payment_already_considered: string;
+            payment_inquiry_invalid: string;
+            payment_bank_response_invalid: string;
+            app_config_required: string;
+            in_process: string;
             maximum_active_device: string;
+            invalid_password: string;
+            content_format_invalid: string;
+            book_not_generated: string;
+            used_somewhere: string;
             book_has_no_content: string;
+            invalid_device: string;
+            RID_opration_failed: string;
+            schema_not_valid: string;
+
         }
     };
     validation: {

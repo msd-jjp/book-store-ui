@@ -143,7 +143,7 @@ libItem --> add size (perminently keep size)
 reader :
     audio
         0)chapter --> nested menu
-        1) if user puased --> (force pause) prevent play (it happed while waitng to load)
+        1) if user paused --> (force pause) prevent play (it happed while waitng to load)
         2) create audio with empty chapter
     pdf:
         0)chapter --> nested menu
