@@ -36,6 +36,8 @@ interface ILocalization extends LocalizedStringsMethods {
             your_collection_will_be_removed_continue: string;
             your_collection_will_be_downloaded_continue: string;
             file_could_not_be_uploaded: string;
+            file_could_not_be_uploaded_max_size_n: string;
+            profile_img_not_uploaded_max_size_n: string;
             one_img_upload_allowed_remove_existing_one: string;
             login_again: string;
             sync_error: string;

@@ -24,6 +24,8 @@ export const en = {
             your_collection_will_be_removed_continue: 'deleting a collection will not remove the books contained within the collection.',
             your_collection_will_be_downloaded_continue: 'all the book in the collection will be downloaded.',
             file_could_not_be_uploaded: 'the file could not be uploaded.',
+            file_could_not_be_uploaded_max_size_n: 'the file could not be uploaded max size {0}.',
+            profile_img_not_uploaded_max_size_n: 'the file could not be uploaded, use only "image" with size less than "{0}"',
             one_img_upload_allowed_remove_existing_one: "one img upload allowed, remove existing one",
             login_again: 'login again',
             sync_error: 'error occured while syncing',

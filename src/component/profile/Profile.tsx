@@ -3,10 +3,10 @@ import { MapDispatchToProps, connect } from "react-redux";
 import { Dispatch } from "redux";
 import { redux_state } from "../../redux/app_state";
 import { IUser } from "../../model/model.user";
-import { TInternationalization } from "../../config/setup";
+import { TInternationalization, Setup } from "../../config/setup";
 import { BaseComponent } from "../_base/BaseComponent";
 import { History } from "history";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { Localization } from "../../config/localization/localization";
 import { BtnLoader } from "../form/btn-loader/BtnLoader";
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
@@ -254,11 +254,16 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
   }
 
   onDropRejectedNotify(files: any[]) {
-    toast.warn(Localization.msg.ui.file_could_not_be_uploaded, this.getNotifyConfig({ toastId: 'file_could_not_be_uploaded' }));
+    const msg = Localization.formatString(Localization.msg.ui.profile_img_not_uploaded_max_size_n, '500KB');
+    // toast.warn(Localization.msg.ui.file_could_not_be_uploaded, this.getNotifyConfig({ toastId: 'file_could_not_be_uploaded' }));
+    // toast.warn(msg, this.getNotifyConfig({ toastId: 'file_could_not_be_uploaded' }));
+    this.toastNotify(msg as string, { autoClose: Setup.notify.timeout.warning, toastId: 'file_could_not_be_uploaded' }, 'warn');
   }
 
   removePreviousImgNotify() {
-    toast.warn(Localization.msg.ui.one_img_upload_allowed_remove_existing_one, this.getNotifyConfig({ toastId: 'one_img_upload_allowed_remove_existing_one' }));
+    const msg = Localization.msg.ui.one_img_upload_allowed_remove_existing_one;
+    // toast.warn(msg, this.getNotifyConfig({ toastId: 'one_img_upload_allowed_remove_existing_one' }));
+    this.toastNotify(msg, { autoClose: Setup.notify.timeout.warning, toastId: 'one_img_upload_allowed_remove_existing_one' }, 'warn');
   }
 
   onDrop(files: any[]) {
@@ -403,7 +408,8 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
                             <Dropzone
                               multiple={false}
                               onDrop={(files) => this.onDrop(files)}
-                              maxSize={1000000}
+                              // maxSize={1000000}
+                              maxSize={524288}
                               accept="image/*"
                               onDropRejected={(files, event) => this.onDropRejected(files, event)}
                             >
