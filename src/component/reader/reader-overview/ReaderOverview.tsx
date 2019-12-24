@@ -466,12 +466,9 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     if (!this.swiperTaped) return;
 
     // debugger;
-    const activePage = pg_index + 1;
-    const bookProgress = activePage / this.book_page_length;
-
-    // ReaderUtility.updateLibraryItem_progress_client(this.book_id, bookProgress);
-    // ReaderUtility.updateLibraryItem_progress_server(this.book_id, bookProgress);
-    if (this.isOriginalFile) {
+    if (this.isOriginalFile === 'true') {
+      const activePage = pg_index + 1;
+      const bookProgress = activePage / this.book_page_length;
       updateLibraryItem_progress(this.book_id, bookProgress);
     }
     this.gotoReader_reading(this.book_id);

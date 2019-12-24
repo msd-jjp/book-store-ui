@@ -244,7 +244,7 @@ export abstract class ReaderUtility {
         ReaderUtility._renderViewablePages_isRun = false;
     }
 
-    private static check_swiperImg_with_delay_timer: any;
+    /* private static check_swiperImg_with_delay_timer: any;
     static async check_swiperImg_with_delay_DELETE_ME(bi: BookGenerator | PdfBookGenerator, selector?: string) {
         selector = selector || '.swiper-container .swiper-slide img.page-img';
 
@@ -298,7 +298,7 @@ export abstract class ReaderUtility {
             }
 
         }, 300);
-    }
+    } */
 
     static calc_bookContentPos_value(bookPosIndicator: IBookPosIndicator): number {
         return bookPosIndicator.group * 1000000 + bookPosIndicator.atom;

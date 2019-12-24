@@ -27,6 +27,7 @@ import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenera
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
 import { IReaderEngine_schema } from "../../../redux/action/reader-engine/readerEngineAction";
 import { IBook } from "../../../model/model.book";
+import { BookService } from "../../../service/service.book";
 
 
 interface IReaderScrollSlide {
@@ -87,18 +88,34 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
       if (this._libraryItem) this._isDocument = ReaderUtility.is_book_document(this._libraryItem!.book.type as BOOK_TYPES);
     }
   }
-  componentDidMount() {
+  async componentDidMount() {
     // if (!this._libraryItem) {
     if ((this.isOriginalFile === 'true' && !this._libraryItem) || !this.book_id) {
       this.props.history.replace(`/dashboard`);
       return;
     }
+    await this.setBook_byId();
     this.generateReader();
   }
 
   componentWillUnmount() {
     this.swiper_obj && this.swiper_obj.destroy(true, true);
     this.swiper_obj = undefined;
+  }
+
+  async setBook_byId() {
+    let book;
+    if (this._libraryItem) {
+      book = this._libraryItem.book;
+    } else {
+      const _bookService = new BookService();
+      const res = await _bookService.get(this.book_id, true).catch(e => { });
+      if (res) {
+        book = res.data;
+        this._isDocument = ReaderUtility.is_book_document(book.type as BOOK_TYPES);
+      }
+    }
+    this.setState({ ...this.state, book: book });
   }
 
   bookFileNotFound_notify() {
@@ -482,8 +499,8 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
     await CmpUtility.waitOnMe(10);
     if (!this.swiperTaped) return;
     // debugger;
-    const activePage = pg_index + 1;
-    if (this.isOriginalFile) {
+    if (this.isOriginalFile === 'true') {
+      const activePage = pg_index + 1;
       const bookProgress = activePage / this.book_page_length;
       updateLibraryItem_progress(this.book_id, bookProgress);
     }
