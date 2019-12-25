@@ -140,6 +140,8 @@ export abstract class ReaderUtility {
         await ReaderUtility.wait_readerEngine_init(ww);
 
         const _book: MsdBookGenerator | PdfBookGenerator = await textBookClass.getInstace(
+            book_id,
+            isOriginalFile,
             ww,
             bookFile,
             _bookPageSize.width,
@@ -220,12 +222,12 @@ export abstract class ReaderUtility {
             }
 
             try {
-                let page = await bi.db_getPage_ifExist(img_pageIndex_list[i]);
+                /* let page = await bi.db_getPage_ifExist(img_pageIndex_list[i]);
                 if (page === undefined) {
                     page = await bi.getPage(img_pageIndex_list[i]);
                     // page = await bi.getPage(10000000000);
-
-                }
+                } */
+                const page = await bi.getPage(img_pageIndex_list[i]);
 
                 page && img_list[i].setAttribute('src', page);
             } catch (e) {

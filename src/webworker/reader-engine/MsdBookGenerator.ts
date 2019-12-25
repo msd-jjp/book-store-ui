@@ -9,8 +9,9 @@ export class MsdBookGenerator extends TextBookGenerator {
         return this._allPages_pos;
     }
     async getPage(index: number): Promise<string> {
-        let page = this.getFromStorage(index);
+        let page = await this.getFromStorage(index);
         if (!page) {
+            console.log(`page by index: ${index} not found`);
             const allPages_pos = await this.getAllPages_pos();
             page = await this.RenderSpecPage(allPages_pos[index]);
             this.setToStorage(index, page);
@@ -22,7 +23,7 @@ export class MsdBookGenerator extends TextBookGenerator {
      * if page not exist it will store around.
      */
     async getPage_with_storeAround(index: number, n: number): Promise<string> {
-        let page = this.getFromStorage(index);
+        let page = await this.getFromStorage(index);
         if (!page) {
             const allPages_pos = await this.getAllPages_pos();
             page = await this.RenderSpecPage(allPages_pos[index]);
@@ -33,6 +34,8 @@ export class MsdBookGenerator extends TextBookGenerator {
     }
 
     static async getInstace(
+        book_id: string,
+        isOriginalFile: boolean,
         wasmWorker: WasmWorkerHandler, bookbuf: Uint8Array, screenWidth: number,
         screenHeight: number, font: Uint8Array, fontSize: number,
         textFColor: number, textBColor: number): Promise<MsdBookGenerator> {
@@ -52,6 +55,7 @@ export class MsdBookGenerator extends TextBookGenerator {
             await wasmWorker.BookNextPart(bookPtr, bookIndicatorPtr);
         await wasmWorker.deleteBookPosIndicator(bookIndicatorPtr);
         let rtn = new MsdBookGenerator(
+            book_id, isOriginalFile,
             wasmWorker, screenWidth, screenHeight, font, fontSize, textFColor,
             textBColor);
         rtn.bookPtr = bookPtr;

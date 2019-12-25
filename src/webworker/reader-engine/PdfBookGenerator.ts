@@ -27,8 +27,9 @@ export class PdfBookGenerator extends TextBookGenerator {
     }
     async getPage(index: number/* , zoom = 100 */): Promise<string | undefined> {
 
-        let page = this.getFromStorage(index);
+        let page = await this.getFromStorage(index, this.getZoom());
         if (!page) {
+            console.log(`page by index: ${index} not found`);
             try {
                 page = await this.renderDocPage(index, this.getZoom());
             } catch (e) {
@@ -36,7 +37,7 @@ export class PdfBookGenerator extends TextBookGenerator {
                 throw e;
             }
             if (!page) return;
-            this.setToStorage(index, page);
+            this.setToStorage(index, page, this.getZoom());
         }
         return page;
     }
@@ -45,7 +46,7 @@ export class PdfBookGenerator extends TextBookGenerator {
      * if page not exist it will store around.
      */
     async getPage_with_storeAround(index: number, n: number/* , zoom = 100 */): Promise<string | undefined> {
-        let page = this.getFromStorage(index);
+        let page = await this.getFromStorage(index, this.getZoom());
         if (!page) {
             try {
                 page = await this.renderDocPage(index, this.getZoom());
@@ -54,13 +55,15 @@ export class PdfBookGenerator extends TextBookGenerator {
                 throw e;
             }
             if (!page) return;
-            this.setToStorage(index, page);
+            this.setToStorage(index, page, this.getZoom());
             this.storeAround(index, n);
         }
         return page;
     }
 
     static async getInstace(
+        book_id: string,
+        isOriginalFile: boolean,
         wasmWorker: WasmWorkerHandler, bookbuf: Uint8Array, screenWidth: number,
         screenHeight: number, font: Uint8Array, fontSize: number,
         textFColor: number, textBColor: number): Promise<PdfBookGenerator> {
@@ -80,6 +83,7 @@ export class PdfBookGenerator extends TextBookGenerator {
             await wasmWorker.BookNextPart(bookPtr, bookIndicatorPtr);
         await wasmWorker.deleteBookPosIndicator(bookIndicatorPtr);
         let rtn = new PdfBookGenerator(
+            book_id, isOriginalFile,
             wasmWorker, screenWidth, screenHeight, font, fontSize, textFColor,
             textBColor);
         rtn.bookPtr = bookPtr;

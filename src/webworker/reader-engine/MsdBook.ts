@@ -452,6 +452,7 @@ export class book {
     this.fontSize = fontSize;
   }
   static async getInstace(
+    book_id: string, isOriginalFile: boolean,
     wasmWorker: WasmWorkerHandler, bookbuf: Uint8Array, screenWidth: number,
     screenHeight: number, font: Uint8Array, fontSize: number,
     textFColor: number, textBColor: number): Promise<book> {

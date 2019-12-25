@@ -1,14 +1,43 @@
-import { book, IBookPosIndicator, IBookContent } from "./MsdBook";
-import { CmpUtility } from "../../component/_base/CmpUtility";
+import { book, IBookPosIndicator, IBookContent, WasmWorkerHandler } from "./MsdBook";
+import { TextBookStorage } from "./storage/TextBookStorage";
+// import { CmpUtility } from "../../component/_base/CmpUtility";
 // import { Utility } from "../../asset/script/utility";
 
 export abstract class TextBookGenerator extends book {
-    private _pageStorage: any = {};
-    protected setToStorage(index: number, page: string): void {
-        // this._pageStorage[index] = page;
+    protected bookSize: { width: number; height: number; };
+
+    constructor(
+        protected book_id: string, protected isOriginalFile: boolean,
+        wasmWorker: WasmWorkerHandler, screenWidth: number, screenHeight: number,
+        font: Uint8Array, fontSize: number, textFColor: number, textBColor: number
+    ) {
+        super(wasmWorker, screenWidth, screenHeight,
+            font, fontSize, textFColor, textBColor);
+
+        this.bookSize = { width: screenWidth, height: screenHeight };
     }
-    protected getFromStorage(index: number): string | undefined {
-        return undefined;
+
+    // private _pageStorage: any = {};
+    protected async setToStorage(index: number, page: string, zoom?: number): Promise<void> {
+        // this._pageStorage[index] = page;
+        await TextBookStorage.setPage({
+            book_id: this.book_id,
+            isOriginalFile: this.isOriginalFile,
+            page_index: index,
+            zoom,
+            page,
+            bookSize: this.bookSize
+        });
+    }
+    protected async getFromStorage(index: number, zoom?: number): Promise<string | undefined> {
+        return await TextBookStorage.getPage({
+            book_id: this.book_id,
+            isOriginalFile: this.isOriginalFile,
+            page_index: index,
+            zoom,
+            bookSize: this.bookSize
+        });
+        // return undefined;
         // return this._pageStorage[index];
     }
 
@@ -17,20 +46,20 @@ export abstract class TextBookGenerator extends book {
     abstract async getPage(...args: any): Promise<string | undefined>;
 
     // async 
-    getPage_ifExist(index: number): string | undefined {
+    /* getPage_ifExist(index: number): string | undefined {
         let page = this.getFromStorage(index);
         return page;
-    }
-    async db_getPage_ifExist(index: number): Promise<string | undefined> {
+    } */
+    /* async db_getPage_ifExist(index: number): Promise<string | undefined> {
         // Utility.waitOnMe(10);
         let page = this.getFromStorage(index);
         return page;
-    }
+    } */
 
     abstract async getPage_with_storeAround(...args: any): Promise<string | undefined>;
 
     protected async storeAround(pageIndex: number, n: number) {
-        await CmpUtility.waitOnMe(0);
+        // await CmpUtility.waitOnMe(0);
         this.store_n_pages_before_x(pageIndex, n);
         this.store_n_pages_after_x(pageIndex, n);
     }
