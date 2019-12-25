@@ -24,6 +24,7 @@ npm i react-inner-image-zoom
 ====================================================================================
 ????????????????????????????????????????????????????????????????????????????????????
 npm i react-zoom-pan-pinch
+npm i dexie
 
 remove InnerImageZoom  from pckage  & type from typesss. (& style)
 
@@ -178,6 +179,9 @@ indexedDb
 store page (pdf, msdFormat)
 download performance
 
+do not wait for image_get_cycle (do one separate cycle for indexedDB only)
+do not call indexedDB for only one img --> load at least 5 img in memory.
+
 ====================================================================================
 
 detect chrome in iphone bug.
@@ -198,3 +202,6 @@ input on enter: add in:
 
 ====================================================================================
 
+
+
+====================================================================================
