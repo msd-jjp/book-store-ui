@@ -1,5 +1,5 @@
 importScripts('/reader/reader.js');
-import { MsdBookGenerator } from "../reader-engine/BookGenerator";
+import { MsdBookGenerator } from "../reader-engine/MsdBookGenerator";
 
 export interface IReader2_msg extends MessageEvent {
     data: {

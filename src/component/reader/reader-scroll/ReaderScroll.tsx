@@ -17,7 +17,7 @@ import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
 import { getLibraryItem, updateLibraryItem_progress/* , getBookFileId */ } from "../../library/libraryViewTemplate";
 import { ILibrary } from "../../../model/model.library";
 import { Localization } from "../../../config/localization/localization";
-import { MsdBookGenerator } from "../../../webworker/reader-engine/BookGenerator";
+import { MsdBookGenerator } from "../../../webworker/reader-engine/MsdBookGenerator";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { IBookContent, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
 import { Virtual } from "swiper/dist/js/swiper.esm";

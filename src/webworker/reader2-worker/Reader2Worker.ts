@@ -1,6 +1,6 @@
 import reader2Worker, { IReader2_msg } from './reader2.worker';
 import { BaseWorker } from '../worker.base';
-import { MsdBookGenerator } from '../reader-engine/BookGenerator';
+import { MsdBookGenerator } from '../reader-engine/MsdBookGenerator';
 
 export class Reader2Worker extends BaseWorker {
 

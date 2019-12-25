@@ -2,7 +2,7 @@ import { Store2 } from "../../redux/store";
 import { getFont, color } from "../../webworker/reader-engine/tools";
 import { action_update_reader } from "../../redux/action/reader";
 import { IReader_schema_epub_theme, IReader_schema_epub_fontName } from "../../redux/action/reader/readerAction";
-import { MsdBookGenerator } from "../../webworker/reader-engine/BookGenerator";
+import { MsdBookGenerator } from "../../webworker/reader-engine/MsdBookGenerator";
 import { LANGUAGES } from "../../enum/language";
 import { CmpUtility } from "../_base/CmpUtility";
 import { IBookContent, IBookPosIndicator, WasmWorkerHandler } from "../../webworker/reader-engine/MsdBook";

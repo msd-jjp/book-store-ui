@@ -29,7 +29,7 @@ import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { BaseService } from "../../../service/service.base";
 import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem, updateLibraryItem_progress/* , getBookFileId */ } from "../../library/libraryViewTemplate";
-import { MsdBookGenerator } from "../../../webworker/reader-engine/BookGenerator";
+import { MsdBookGenerator } from "../../../webworker/reader-engine/MsdBookGenerator";
 import { Store2 } from "../../../redux/store";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
