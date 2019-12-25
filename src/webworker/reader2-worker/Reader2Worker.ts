@@ -1,6 +1,6 @@
 import reader2Worker, { IReader2_msg } from './reader2.worker';
 import { BaseWorker } from '../worker.base';
-import { BookGenerator } from '../reader-engine/BookGenerator';
+import { MsdBookGenerator } from '../reader-engine/BookGenerator';
 
 export class Reader2Worker extends BaseWorker {
 
@@ -23,7 +23,7 @@ export class Reader2Worker extends BaseWorker {
         this._worker.postMessage({ data });
     }
 
-    onmessage(fn: (book: BookGenerator) => void) {
+    onmessage(fn: (book: MsdBookGenerator) => void) {
         if (!this._worker) return;
         debugger;
         this._worker.onmessage = (e: MessageEvent) => {

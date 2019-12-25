@@ -1,5 +1,5 @@
 importScripts('/reader/reader.js');
-import { BookGenerator } from "../reader-engine/BookGenerator";
+import { MsdBookGenerator } from "../reader-engine/BookGenerator";
 
 export interface IReader2_msg extends MessageEvent {
     data: {
@@ -16,7 +16,7 @@ export interface IReader2_msg extends MessageEvent {
     };
 }
 export interface IReader2_post extends MessageEvent {
-    data: BookGenerator;
+    data: MsdBookGenerator;
 }
 
 export default onmessage = async function (e: IReader2_msg) {
@@ -24,7 +24,7 @@ export default onmessage = async function (e: IReader2_msg) {
     if (!e.data) return;
     if (e.data.type === 'generate' && e.data.config) {
         const _book = {};
-        // new BookGenerator(
+        // new MsdBookGenerator(
         //     e.data.config.bookFile,
         //     e.data.config.width,
         //     e.data.config.height,

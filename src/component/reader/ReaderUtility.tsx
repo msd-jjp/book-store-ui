@@ -2,7 +2,7 @@ import { Store2 } from "../../redux/store";
 import { getFont, color } from "../../webworker/reader-engine/tools";
 import { action_update_reader } from "../../redux/action/reader";
 import { IReader_schema_epub_theme, IReader_schema_epub_fontName } from "../../redux/action/reader/readerAction";
-import { BookGenerator } from "../../webworker/reader-engine/BookGenerator";
+import { MsdBookGenerator } from "../../webworker/reader-engine/BookGenerator";
 import { LANGUAGES } from "../../enum/language";
 import { CmpUtility } from "../_base/CmpUtility";
 import { IBookContent, IBookPosIndicator, WasmWorkerHandler } from "../../webworker/reader-engine/MsdBook";
@@ -57,7 +57,7 @@ export abstract class ReaderUtility {
         fontSize: number;
         fontName: IReader_schema_epub_fontName;
         zoom: number;
-        book: BookGenerator | PdfBookGenerator;
+        book: MsdBookGenerator | PdfBookGenerator;
     } | undefined;
     private static checkEpubBookExist(book_id: string, isOriginalFile: boolean, bookPageSize?: { width: number; height: number; }): boolean {
         const reader_state = { ...Store2.getState().reader };
@@ -90,7 +90,7 @@ export abstract class ReaderUtility {
         isOriginalFile: boolean,
         bookPageSize?: { width: number; height: number; },
         isDocument?: boolean
-    ): Promise<BookGenerator | PdfBookGenerator> {
+    ): Promise<MsdBookGenerator | PdfBookGenerator> {
         // debugger;
         if (ReaderUtility.checkEpubBookExist(book_id, isOriginalFile, bookPageSize)) {
             return ReaderUtility._createEpubBook_instance!.book;
@@ -131,15 +131,15 @@ export abstract class ReaderUtility {
         if (valid_fontSize > 50) { valid_fontSize = 50; }
         else if (valid_fontSize < 5) { valid_fontSize = 5; }
 
-        let textBookClass: any; // BookGenerator | PdfBookGenerator | undefined;
+        let textBookClass: any; // MsdBookGenerator | PdfBookGenerator | undefined;
         if (isDocument) textBookClass = PdfBookGenerator;
-        else textBookClass = BookGenerator;
+        else textBookClass = MsdBookGenerator;
 
         const ww = await ReaderDownload.getReaderWorkerHandler();
         if (ww === undefined) throw new Error('WorkerHandler failed possible');
         await ReaderUtility.wait_readerEngine_init(ww);
 
-        const _book: BookGenerator | PdfBookGenerator = await textBookClass.getInstace(
+        const _book: MsdBookGenerator | PdfBookGenerator = await textBookClass.getInstace(
             ww,
             bookFile,
             _bookPageSize.width,
@@ -191,7 +191,7 @@ export abstract class ReaderUtility {
     }
 
     private static _renderViewablePages_isRun = false;
-    static async renderViewablePages(bi: BookGenerator | PdfBookGenerator, selector?: string) {
+    static async renderViewablePages(bi: MsdBookGenerator | PdfBookGenerator, selector?: string) {
         if (ReaderUtility._renderViewablePages_isRun) return;
         ReaderUtility._renderViewablePages_isRun = true;
 
@@ -245,7 +245,7 @@ export abstract class ReaderUtility {
     }
 
     /* private static check_swiperImg_with_delay_timer: any;
-    static async check_swiperImg_with_delay_DELETE_ME(bi: BookGenerator | PdfBookGenerator, selector?: string) {
+    static async check_swiperImg_with_delay_DELETE_ME(bi: MsdBookGenerator | PdfBookGenerator, selector?: string) {
         selector = selector || '.swiper-container .swiper-slide img.page-img';
 
         if (ReaderUtility.check_swiperImg_with_delay_timer) {

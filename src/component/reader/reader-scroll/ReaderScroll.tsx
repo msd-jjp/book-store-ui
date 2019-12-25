@@ -17,7 +17,7 @@ import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
 import { getLibraryItem, updateLibraryItem_progress/* , getBookFileId */ } from "../../library/libraryViewTemplate";
 import { ILibrary } from "../../../model/model.library";
 import { Localization } from "../../../config/localization/localization";
-import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
+import { MsdBookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 import { appLocalStorage } from "../../../service/appLocalStorage";
 import { IBookContent, IBookPosIndicator } from "../../../webworker/reader-engine/MsdBook";
 import { Virtual } from "swiper/dist/js/swiper.esm";
@@ -148,7 +148,7 @@ class ReaderScrollComponent extends BaseComponent<IProps, IState> {
   }
 
   private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
-  private _bookInstance!: BookGenerator | PdfBookGenerator;
+  private _bookInstance!: MsdBookGenerator | PdfBookGenerator;
   private async createBook() {
     const collectionName = this.isOriginalFile === 'true' ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE;
     const bookFile = await appLocalStorage.getFileById(collectionName, this.book_id);

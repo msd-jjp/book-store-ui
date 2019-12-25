@@ -20,7 +20,7 @@ import { ReaderUtility, IEpubBook_chapters } from "../ReaderUtility";
 import { IReader_schema } from "../../../redux/action/reader/readerAction";
 import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem, updateLibraryItem_progress/* , getBookFileId */ } from "../../library/libraryViewTemplate";
-import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
+import { MsdBookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 import { BOOK_TYPES } from "../../../enum/Book";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
@@ -182,7 +182,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     this.initSwiper();
   }
 
-  private _bookInstance!: BookGenerator | PdfBookGenerator;
+  private _bookInstance!: MsdBookGenerator | PdfBookGenerator;
   private async createBook() {
     const collectionName = this.isOriginalFile === 'true' ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE;
     const bookFile = await appLocalStorage.getFileById(collectionName, this.book_id);

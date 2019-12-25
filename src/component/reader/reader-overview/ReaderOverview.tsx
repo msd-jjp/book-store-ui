@@ -29,7 +29,7 @@ import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { BaseService } from "../../../service/service.base";
 import { ILibrary } from "../../../model/model.library";
 import { getLibraryItem, updateLibraryItem_progress/* , getBookFileId */ } from "../../library/libraryViewTemplate";
-import { BookGenerator } from "../../../webworker/reader-engine/BookGenerator";
+import { MsdBookGenerator } from "../../../webworker/reader-engine/BookGenerator";
 import { Store2 } from "../../../redux/store";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
 import { FILE_STORAGE_KEY } from "../../../service/appLocalStorage/FileStorage";
@@ -240,7 +240,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
-  private _bookInstance!: BookGenerator | PdfBookGenerator;
+  private _bookInstance!: MsdBookGenerator | PdfBookGenerator;
   private async createBook() {
     const collectionName = this.isOriginalFile === 'true' ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE;
     const bookFile = await appLocalStorage.getFileById(collectionName, this.book_id);

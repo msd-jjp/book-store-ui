@@ -1,7 +1,7 @@
 import { IBookPosIndicator, WasmWorkerHandler } from "./MsdBook";
 import { TextBookGenerator } from "./TextBookGenerator";
 
-export class BookGenerator extends TextBookGenerator {
+export class MsdBookGenerator extends TextBookGenerator {
 
     private _allPages_pos: IBookPosIndicator[] | undefined;
     async getAllPages_pos(): Promise<Array<IBookPosIndicator>> {
@@ -35,7 +35,7 @@ export class BookGenerator extends TextBookGenerator {
     static async getInstace(
         wasmWorker: WasmWorkerHandler, bookbuf: Uint8Array, screenWidth: number,
         screenHeight: number, font: Uint8Array, fontSize: number,
-        textFColor: number, textBColor: number): Promise<BookGenerator> {
+        textFColor: number, textBColor: number): Promise<MsdBookGenerator> {
         let fontHeapPtr = await wasmWorker.copyBufferToHeap(font);
         let rendererFormatPtr = await wasmWorker.getRendererFormat(
             textFColor, textBColor, textFColor, textBColor, fontSize, fontHeapPtr,
@@ -51,7 +51,7 @@ export class BookGenerator extends TextBookGenerator {
         let currentBookPosIndicator =
             await wasmWorker.BookNextPart(bookPtr, bookIndicatorPtr);
         await wasmWorker.deleteBookPosIndicator(bookIndicatorPtr);
-        let rtn = new BookGenerator(
+        let rtn = new MsdBookGenerator(
             wasmWorker, screenWidth, screenHeight, font, fontSize, textFColor,
             textBColor);
         rtn.bookPtr = bookPtr;
