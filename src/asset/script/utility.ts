@@ -1,5 +1,5 @@
 
-type TClient_OS_name = 'Unknown OS' | 'Windows' | 'MacOS' | 'UNIX' | 'Linux' | 'iOS' | 'Android';
+type TClient_OS_name = 'Unknown OS' | 'Windows' | 'MacOS' | 'UNIX' | 'Linux' | 'iOS' | 'Android' | 'Tizen';
 export interface IBrowserDetail {
     browserName: string;
     fullVersion: string;
@@ -165,6 +165,8 @@ export abstract class Utility {
             os = 'Windows';
         } else if (/Android/.test(userAgent)) {
             os = 'Android';
+        } else if (/Tizen/.test(userAgent)) {
+            os = 'Tizen';
         } else if (/Linux/.test(platform)) {
             os = 'Linux';
         } else if (navigator.appVersion.indexOf("X11") !== -1) os = "UNIX";
@@ -201,6 +203,11 @@ export abstract class Utility {
         else if ((verOffset = nAgt.indexOf("Edge")) !== -1) {
             browserName = "Edge";
             fullVersion = nAgt.substring(verOffset + 5);
+        }
+        // In SamsungBrowser, the true version is after "SamsungBrowser" 
+        else if ((verOffset = nAgt.indexOf("SamsungBrowser")) !== -1) {
+            browserName = "SamsungBrowser";
+            fullVersion = nAgt.substring(verOffset + 15);
         }
         // In Chrome, the true version is after "Chrome" 
         else if ((verOffset = nAgt.indexOf("Chrome")) !== -1) {
