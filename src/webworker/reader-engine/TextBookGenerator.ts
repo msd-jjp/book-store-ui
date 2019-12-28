@@ -56,13 +56,13 @@ export abstract class TextBookGenerator extends book {
         return page;
     } */
 
-    abstract async getPage_with_storeAround(...args: any): Promise<string | undefined>;
+    // abstract async getPage_with_storeAround(...args: any): Promise<string | undefined>;
 
-    protected async storeAround(pageIndex: number, n: number) {
+    /* protected async storeAround(pageIndex: number, n: number) {
         // await CmpUtility.waitOnMe(0);
         this.store_n_pages_before_x(pageIndex, n);
         this.store_n_pages_after_x(pageIndex, n);
-    }
+    } */
 
     private _allChapters: IBookContent[] | undefined;
     async getAllChapters(): Promise<Array<IBookContent>> {
@@ -70,7 +70,7 @@ export abstract class TextBookGenerator extends book {
         return this._allChapters;
     }
 
-    private _store_n_pages_progress: number[] = [];
+    /* private _store_n_pages_progress: number[] = [];
     private store_n_pages_before_x(x: number, n: number): void {
         for (let i = x - 1; i >= x - n && i >= 0; i--) {
             if (this._store_n_pages_progress.includes(i)) return;
@@ -85,6 +85,6 @@ export abstract class TextBookGenerator extends book {
             this._store_n_pages_progress[i] = i;
             this.getPage(i);
         }
-    }
+    } */
 
 }

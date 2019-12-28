@@ -25,7 +25,7 @@ export class PdfBookGenerator extends TextBookGenerator {
         }
         return this._document_zoom;
     }
-    async getPage(index: number/* , zoom = 100 */): Promise<string | undefined> {
+    async getPage(index: number): Promise<string | undefined> {
 
         let page = await this.getFromStorage(index, this.getZoom());
         if (!page) {
@@ -45,21 +45,21 @@ export class PdfBookGenerator extends TextBookGenerator {
     /**
      * if page not exist it will store around.
      */
-    async getPage_with_storeAround(index: number, n: number/* , zoom = 100 */): Promise<string | undefined> {
-        let page = await this.getFromStorage(index, this.getZoom());
-        if (!page) {
-            try {
-                page = await this.renderDocPage(index, this.getZoom());
-            } catch (e) {
-                console.log(`getPage_with_storeAround(${index}: number, ${this.getZoom()} = 100)`, e);
-                throw e;
-            }
-            if (!page) return;
-            this.setToStorage(index, page, this.getZoom());
-            this.storeAround(index, n);
-        }
-        return page;
-    }
+    // async getPage_with_storeAround(index: number, n: number/* , zoom = 100 */): Promise<string | undefined> {
+    //     let page = await this.getFromStorage(index, this.getZoom());
+    //     if (!page) {
+    //         try {
+    //             page = await this.renderDocPage(index, this.getZoom());
+    //         } catch (e) {
+    //             console.log(`getPage_with_storeAround(${index}: number, ${this.getZoom()} = 100)`, e);
+    //             throw e;
+    //         }
+    //         if (!page) return;
+    //         this.setToStorage(index, page, this.getZoom());
+    //         this.storeAround(index, n);
+    //     }
+    //     return page;
+    // }
 
     static async getInstace(
         book_id: string,

@@ -174,15 +174,6 @@ afzudan list download dar setting
 
 ====================================================================================
 
-3)
-indexedDb
-store page (pdf, msdFormat)
-download performance
-
-do not wait for image_get_cycle (do one separate cycle for indexedDB only)
-do not call indexedDB for only one img --> load at least 5 img in memory.
-
-====================================================================================
 
 detect chrome in iphone bug.
 chrome in iphone --> device key bug. (detecting device as safari version 605??)
@@ -203,5 +194,14 @@ input on enter: add in:
 ====================================================================================
 
 
+
+====================================================================================
+
+3)
+indexedDb
+store page (pdf, msdFormat)
+
+do not wait for image_get_cycle (do one separate cycle for indexedDB only)
+do not call indexedDB for only one img --> load at least 5 img in memory.
 
 ====================================================================================

@@ -22,7 +22,7 @@ export class MsdBookGenerator extends TextBookGenerator {
     /**
      * if page not exist it will store around.
      */
-    async getPage_with_storeAround(index: number, n: number): Promise<string> {
+    /* async getPage_with_storeAround(index: number, n: number): Promise<string> {
         let page = await this.getFromStorage(index);
         if (!page) {
             const allPages_pos = await this.getAllPages_pos();
@@ -31,7 +31,7 @@ export class MsdBookGenerator extends TextBookGenerator {
             this.storeAround(index, n);
         }
         return page;
-    }
+    } */
 
     static async getInstace(
         book_id: string,

@@ -8,12 +8,14 @@ import { TTextBook_data, TTextBook } from '../../webworker/reader-engine/storage
 // }
 
 class IDB extends Dexie {
-    bookPages: Dexie.Table<TTextBook_data & { page_id: string }, number>;
+    bookPages: Dexie.Table<TTextBook_data & { page_id: string }, string>;
 
     constructor() {
         super("I_Database");
 
         // console.log(this.verno, Math.round(this.verno + 1));
+        // (window as any).gholi = this;
+        // console.log(this, this.verno, (window as any).gholi.verno);
 
         // this.version(1).stores({
         //     bookPages: 'book_id',
@@ -63,29 +65,48 @@ export class IndexedStorage {
 
     static async get_bookPage(opt: TTextBook): Promise<TTextBook_data | undefined> {
         return await IndexedStorage.idb.bookPages.get({ page_id: IndexedStorage.bookPageId(opt) });
-        // IndexedStorage.idb.bookPages.where('book_id',);
-        // IndexedStorage.idb.bookPages.where(['book_id', 'bookSize']).equals(fileId).delete();
+    }
 
-        /* const list = await IndexedStorage.idb.bookPages.filter((d: TTextBook_data) => {
-            // return data.book_id === opt.book_id;
-            return d.book_id === opt.book_id
-                && d.isOriginalFile === opt.isOriginalFile
-                && d.page_index === opt.page_index
-                && d.bookSize.height === opt.bookSize.height
-                && d.bookSize.width === opt.bookSize.width
-        }).toArray();
+    static async delete_bookPage(opt: TTextBook): Promise<void> {
+        // debugger;
+        await IndexedStorage.idb.bookPages.where({ page_id: IndexedStorage.bookPageId(opt) }).delete();
+        /* const csdv = await IndexedStorage.idb.bookPages.where({ page_id: IndexedStorage.bookPageId(opt) }).toArray();
+        console.log('delete_bookPage', csdv);
 
-        if (list && list.length) {
-            return list[0];
-        } */
+        const csdv_2 = await IndexedStorage.idb.bookPages.where('page_id').equals(IndexedStorage.bookPageId(opt)).toArray();
+        console.log('csdv_2', csdv_2); */
+    }
 
-        //         const vdsf = await IndexedStorage.idb.bookPages.get(opt, (d:TTextBook_data)=>{
-        // return d.book_id===opt.book_id
-        // && d.isOriginalFile === opt.isOriginalFile
-        // && d.page_index === opt.page_index
-        // && d.bookSize.height === opt.bookSize.height
-        // && d.bookSize.width === opt.bookSize.width
-        //         })
+    static async delete_bookAllPage(opt: TTextBook): Promise<void> {
+        // debugger;
+        // await IndexedStorage.idb.bookPages.where({ page_id: IndexedStorage.bookPageId(opt) }).delete();
+        const primaryKeys = await IndexedStorage.idb.bookPages
+            // .filter()
+            // .where({ book_id: opt.book_id })
+            .filter((r) => r.book_id === opt.book_id && r.isOriginalFile === opt.isOriginalFile)
+            .primaryKeys();
+        // .toArray();
+
+        await IndexedStorage.idb.bookPages.bulkDelete(primaryKeys);
+        /* const csdv = await IndexedStorage.idb.bookPages.where({ page_id: IndexedStorage.bookPageId(opt) }).toArray();
+        console.log('delete_bookPage', csdv);
+
+        const csdv_2 = await IndexedStorage.idb.bookPages.where('page_id').equals(IndexedStorage.bookPageId(opt)).toArray();
+        console.log('csdv_2', csdv_2); */
+    }
+
+    static async get_bookAllPage_primaryKeys(opt: TTextBook): Promise<string[]> {
+        const primaryKeys = await IndexedStorage.idb.bookPages.filter((r) => {
+            let z = true;
+            if (opt.hasOwnProperty('zoom')) z = (opt as any).zoom === (r as any).zoom;
+            return r.book_id === opt.book_id
+                && r.isOriginalFile === opt.isOriginalFile
+                && r.bookSize.width === opt.bookSize.width
+                && r.bookSize.height === opt.bookSize.height
+                && z
+        }).primaryKeys();
+
+        return primaryKeys;
     }
 
 
