@@ -246,60 +246,16 @@ export abstract class ReaderUtility {
         ReaderUtility._renderViewablePages_isRun = false;
     }
 
-    /* private static check_swiperImg_with_delay_timer: any;
-    static async check_swiperImg_with_delay_DELETE_ME(bi: MsdBookGenerator | PdfBookGenerator, selector?: string) {
-        selector = selector || '.swiper-container .swiper-slide img.page-img';
+    /** not complete, not doing anything */
+    /* static async storeBookAllPage(bi: MsdBookGenerator | PdfBookGenerator): Promise<void> {
+        if (ReaderUtility._renderViewablePages_isRun) return;
+        const all = await bi.getAllPages_pos();
+        const lastPageIndex = all.length ? all.length - 1 : -1;
+        if (lastPageIndex === -1) return;
 
-        if (ReaderUtility.check_swiperImg_with_delay_timer) {
-            clearTimeout(ReaderUtility.check_swiperImg_with_delay_timer);
+        for (let i = 0; i < lastPageIndex; i++) {
+            await bi.getPage(i);
         }
-
-        ReaderUtility.check_swiperImg_with_delay_timer = setTimeout(async () => {
-
-            for (let t = 0; t < 10; t++) {
-                let _continue = false;
-
-                const img_list = document.querySelectorAll(selector!);
-                for (let i = 0; i < img_list.length; i++) {
-
-                    const has_src = img_list[i].getAttribute('src') !== null;
-                    _continue = _continue || has_src === false;
-
-                    if (!has_src) {
-                        // console.log('---------------t', t, Date.now() / 1000);
-                        // await CmpUtility.waitOnMe(3000);
-                        const d_s = img_list[i].getAttribute('data-src');
-                        if (d_s) {
-
-                            // for (let t = 0; t < 10; t++) {
-                            let d_s_page = bi.getPage_ifExist(parseInt(d_s));
-                            if (!d_s_page) {
-                                try {
-                                    d_s_page = await bi.getPage(parseInt(d_s));
-                                } catch (e) {
-                                    console.log('d_s_page = await bi.getPage(parseInt(d_s));', d_s);
-                                }
-                            }
-                            if (!d_s_page) {
-                                console.log('check_swiperImg_with_delay', d_s, false);
-                                await CmpUtility.waitOnMe(100);
-                            } else {
-                                console.log('check_swiperImg_with_delay', d_s, true);
-                                img_list[i].setAttribute('src', d_s_page);
-                                break;
-                            }
-
-                        }
-                    }
-                }
-
-                if (!_continue) {
-                    console.log('_continue --> breaked on: ', t, _continue);
-                    break;
-                }
-            }
-
-        }, 300);
     } */
 
     static calc_bookContentPos_value(bookPosIndicator: IBookPosIndicator): number {
@@ -486,14 +442,42 @@ export abstract class ReaderUtility {
         return chapters_with_page;
     }
 
+    private static _createAudioBook_instance: {
+        book_id: string;
+        isOriginalFile: boolean;
+        book: AudioBookGenerator;
+    } | undefined;
+    private static checkAudioBookExist(book_id: string, isOriginalFile: boolean): boolean {
+        const existBookObj = ReaderUtility._createAudioBook_instance;
+        if (existBookObj) {
+            if (
+                existBookObj.book_id === book_id
+                && existBookObj.isOriginalFile === isOriginalFile
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    static clearAudioBookInstance() {
+        ReaderUtility._createAudioBook_instance = undefined;
+    }
     static async createAudioBook(book_id: string, bookFile: Uint8Array, isOriginalFile: boolean): Promise<AudioBookGenerator> {
         // debugger;
-        //todo: check book exist
+        if (ReaderUtility.checkAudioBookExist(book_id, isOriginalFile)) {
+            return ReaderUtility._createAudioBook_instance!.book;
+        }
 
         const ww = await ReaderDownload.getReaderWorkerHandler();
         if (ww === undefined) throw new Error('WorkerHandler failed possible');
         await ReaderUtility.wait_readerEngine_init(ww);
-        return await AudioBookGenerator.getInstance(ww, bookFile);
+        const _book = await AudioBookGenerator.getInstance(ww, bookFile);
+
+        ReaderUtility._createAudioBook_instance = {
+            book_id, isOriginalFile, book: _book
+        };
+
+        return _book;
     }
 
     static is_book_document(bookType: BOOK_TYPES): boolean {

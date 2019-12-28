@@ -251,6 +251,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         } catch (e) {
             console.error(e);
             this.setState({ loading: false });
+            ReaderUtility.clearAudioBookInstance();
             this.readerError_notify();
         }
     }
