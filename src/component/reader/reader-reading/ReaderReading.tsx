@@ -30,6 +30,9 @@ import { IBook } from "../../../model/model.book";
 import { BookService } from "../../../service/service.book";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Utility } from "../../../asset/script/utility";
+// import { Store2 } from "../../../redux/store";
+// import { action_update_reader_engine } from "../../../redux/action/reader-engine";
+// import { ReaderDownload } from "../../../webworker/reader-engine/reader-download/reader-download";
 
 interface IProps {
   logged_in_user: IUser | null;
@@ -96,6 +99,30 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
     this.updateUserCurrentBook_server();
     this.generateReader();
   }
+
+  componentWillReceiveProps(nextProps: IProps) {
+    if (
+      nextProps.reader_engine.status !== this.props.reader_engine.status
+      && nextProps.reader_engine.status === 'failed'
+    ) {
+      // debugger;
+      this.reinit_readerEngine();
+    }
+  }
+
+  private async reinit_readerEngine() {
+    // debugger;
+    this.setState({ page_loading: true });
+    ReaderUtility.clearEpubBookInstance();
+    await this.createBook();
+    this.setState({ page_loading: false });
+  }
+
+  /* private force_fail() {
+    debugger;
+    ReaderDownload.resetReaderWorkerHandler();
+    Store2.dispatch(action_update_reader_engine({ ...Store2.getState().reader_engine, status: 'failed' }));
+  } */
 
   componentWillUnmount() {
     this.swiper_obj && this.swiper_obj.destroy(true, true);
@@ -384,6 +411,10 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
         }
           onClick={() => this.goBack()}
         ></i>
+
+        {/* <i className={"header-icon fa fa-home p-2 ml-2 mt-2 cursor-pointer active"}
+          onClick={() => this.force_fail()}
+        ></i> */}
 
         <i className={"header-icon magnify fa fa-search-plus-- fa-expand p-2 mr-2 mt-2 cursor-pointer "
           + (this._isDocument && !this.state.isDocumentZoomed && !this.state.page_loading ? 'active' : '')

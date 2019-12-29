@@ -204,4 +204,16 @@ store page (pdf, msdFormat)
 do not wait for image_get_cycle (do one separate cycle for indexedDB only)
 do not call indexedDB for only one img --> load at least 5 img in memory.
 
+
+indexedDB bookPage:
+    readDate
+    max all page 1000
+    render 5 more if ...
+
+    update readDate on every read
+
+
+on worker failed: try createWorker or goBack from reader.
+
+
 ====================================================================================

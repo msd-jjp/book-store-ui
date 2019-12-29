@@ -127,6 +127,25 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.updateUserCurrentBook_server();
         this.generateReader();
     }
+
+    componentWillReceiveProps(nextProps: IProps) {
+        if (
+            nextProps.reader_engine.status !== this.props.reader_engine.status
+            && nextProps.reader_engine.status === 'failed'
+        ) {
+            // debugger;
+            this.reinit_readerEngine();
+        }
+    }
+
+    private async reinit_readerEngine() {
+        // debugger;
+        this.setState({ loading: true });
+        ReaderUtility.clearAudioBookInstance();
+        await this.createBook();
+        this.setState({ loading: false });
+    }
+
     componentWillUnmount() {
         // this._componentWillUnmount = true;
         // this.wavesurfer!.xhr

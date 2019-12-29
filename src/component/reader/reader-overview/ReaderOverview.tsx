@@ -115,6 +115,24 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     this.generateReader();
   }
 
+  componentWillReceiveProps(nextProps: IProps) {
+    if (
+      nextProps.reader_engine.status !== this.props.reader_engine.status
+      && nextProps.reader_engine.status === 'failed'
+    ) {
+      // debugger;
+      this.reinit_readerEngine();
+    }
+  }
+
+  private async reinit_readerEngine() {
+    // debugger;
+    this.setState({ page_loading: true });
+    ReaderUtility.clearEpubBookInstance();
+    await this.createBook();
+    this.setState({ page_loading: false });
+  }
+
   componentWillUnmount() {
     this.swiper_obj && this.swiper_obj.destroy(true, true);
     this.swiper_obj = undefined;

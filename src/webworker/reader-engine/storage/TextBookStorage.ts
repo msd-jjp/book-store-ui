@@ -23,7 +23,7 @@ export class TextBookStorage {
 
     static async getPage(opt: TTextBook): Promise<string | undefined> {
         const found = await IndexedStorage.get_bookPage(opt);
-        
+
         // IndexedStorage.get_allPageExist(opt);
 
         if (found) return found.page;

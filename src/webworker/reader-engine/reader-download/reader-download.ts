@@ -147,7 +147,7 @@ export abstract class ReaderDownload {
         try {
             const w = await ReaderDownload.initWorker();
 
-            let ww = new WasmWorkerHandler(w);
+            ww = new WasmWorkerHandler(w);
             ReaderDownload._readerWasmWorkerHandler = ww;
 
             Store2.dispatch(action_update_reader_engine({ ...Store2.getState().reader_engine, status: 'inited' }));

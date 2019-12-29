@@ -186,6 +186,7 @@ export abstract class ReaderUtility {
         });
     }
 
+    
     private static rtlLanguage_list: LANGUAGES[] = [LANGUAGES.PERSIAN, LANGUAGES.ARABIC];
     static isBookRtl(lang: LANGUAGES | undefined): boolean {
         if (!lang) return true;

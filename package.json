@@ -1,6 +1,6 @@
 {
   "name": "book-store",
-  "version": "0.1.31",
+  "version": "0.1.32",
   "private": true,
   "dependencies": {
     "@types/jest": "24.0.14",
