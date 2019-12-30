@@ -22,16 +22,28 @@ export type TTextBook_data = (ITextStore_page_msd | ITextStore_page_doc) & { pag
 export class TextBookStorage {
 
     static async getPage(opt: TTextBook): Promise<string | undefined> {
+        // const d = await IndexedStorage.get_bookPage_and_update_modification_date(opt);
+        // return d ? d.page : undefined;
+
         const found = await IndexedStorage.get_bookPage(opt);
 
         // IndexedStorage.get_allPageExist(opt);
 
-        if (found) return found.page;
+        if (found) {
+            IndexedStorage.update_bookPage_modification_date(opt);
+            return found.page;
+        }
         return;
     }
 
     static async setPage(data: TTextBook_data): Promise<void> {
-        await IndexedStorage.add_bookPage(data);
+        const count = await IndexedStorage.get_bookPages_count();
+        if (count > 50) {
+            // debugger;
+            IndexedStorage.remove_old_bookPages(25);
+        }
+        // await IndexedStorage.add_bookPage(data);
+        await IndexedStorage.put_bookPage(data);
     }
 
 }

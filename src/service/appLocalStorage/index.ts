@@ -12,6 +12,7 @@ import { CmpUtility } from '../../component/_base/CmpUtility';
 import { IAccount } from '../../model/model.account';
 import { FileStorage, FILE_STORAGE_KEY } from './FileStorage';
 import { IDeviceKey } from '../../model/model.device-key';
+import { IndexedStorage } from './IndexedStorage';
 // const LokiIndexedAdapter = require('lokijs/src/loki-indexed-adapter');
 // const lfsa = require('lokijs/src/loki-fs-structured-adapter');
 
@@ -166,6 +167,7 @@ export class appLocalStorage {
         appLocalStorage.clearCollection('clc_userInvoicedOrderItem');
         appLocalStorage.clearCollection('clc_userAccount');
         appLocalStorage.clearCollection('clc_deviceKey');
+        IndexedStorage.clear_bookPages();
     }
 
     static storeUsefullResponse(response: AxiosResponse<any>) {

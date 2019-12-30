@@ -8,7 +8,9 @@ import { TTextBook_data, TTextBook } from '../../webworker/reader-engine/storage
 // }
 
 class IDB extends Dexie {
-    bookPages: Dexie.Table<TTextBook_data & { page_id: string }, string>;
+    bookPages: Dexie.Table<TTextBook_data & { page_id: string, modification_date: number }, string>;
+    // bookPages_original: Dexie.Table<TTextBook_data & { page_id: string, modification_date: number }, string>;
+    // bookPages_sample
 
     constructor() {
         super("I_Database");
@@ -42,6 +44,16 @@ class IDB extends Dexie {
         this.version(1).stores({
             bookPages: 'page_id',
         });
+        this.version(2).stores({
+            bookPages: 'page_id, modification_date',
+        });
+        this.version(3).stores({
+            bookPages: 'page_id, modification_date',
+        }).upgrade(async () => {
+            debugger;
+            await this.delete();
+            await this.open();
+        });
 
         this.bookPages = this.table("bookPages");
     }
@@ -51,7 +63,7 @@ export class IndexedStorage {
     private static idb = new IDB();
     // constructor() { }
 
-    static bookPageId(data: TTextBook): string {
+    private static bookPageId(data: TTextBook): string {
         const orig = data.isOriginalFile ? 'true' : 'false';
         const zoom = (data as any).zoom === undefined ? 'undefined' : (data as any).zoom;
         const page_id =
@@ -60,11 +72,45 @@ export class IndexedStorage {
     }
     static async add_bookPage(data: TTextBook_data): Promise<void> {
         const page_id = IndexedStorage.bookPageId(data);
-        await IndexedStorage.idb.bookPages.add({ ...data, page_id });
+        const modification_date = new Date().getTime();
+        await IndexedStorage.idb.bookPages.add({ ...data, page_id, modification_date });
+    }
+    static async put_bookPage(data: TTextBook_data): Promise<void> {
+        const page_id = IndexedStorage.bookPageId(data);
+        const modification_date = new Date().getTime();
+        await IndexedStorage.idb.bookPages.put({ ...data, page_id, modification_date });
     }
 
     static async get_bookPage(opt: TTextBook): Promise<TTextBook_data | undefined> {
         return await IndexedStorage.idb.bookPages.get({ page_id: IndexedStorage.bookPageId(opt) });
+    }
+
+    static async update_bookPage_modification_date(opt: TTextBook): Promise<void> {
+        await IndexedStorage.idb.bookPages.update(
+            IndexedStorage.bookPageId(opt),
+            { modification_date: new Date().getTime() }
+        );
+    }
+
+    static async get_bookPage_and_update_modification_date(opt: TTextBook): Promise<TTextBook_data | undefined> {
+        // return await IndexedStorage.idb.bookPages.get({ page_id: IndexedStorage.bookPageId(opt) });
+        let data;
+        console.log('1', opt.page_index);
+        await IndexedStorage.idb.transaction('rw', IndexedStorage.idb.bookPages, async () => {
+            data = await IndexedStorage.idb.bookPages.get({ page_id: IndexedStorage.bookPageId(opt) });
+            console.log('2', opt.page_index);
+            if (data) {
+                await IndexedStorage.idb.bookPages.update(
+                    IndexedStorage.bookPageId(opt),
+                    { modification_date: new Date().getTime() }
+                );
+                // await IndexedStorage.idb.bookPages.put()
+            }
+        }).catch(err => {
+            console.error('Transaction Failed', err, err.stack);
+        });
+        console.log('3', opt.page_index);
+        return data;
     }
 
     static async delete_bookPage(opt: TTextBook): Promise<void> {
@@ -109,35 +155,28 @@ export class IndexedStorage {
         return primaryKeys;
     }
 
+    static async get_bookPages_count(): Promise<number> {
+        return await IndexedStorage.idb.bookPages.count();
+    }
+
+    private static remove_old_bookPages_progress = false;
+    static async remove_old_bookPages(offset: number): Promise<void> {
+        if (IndexedStorage.remove_old_bookPages_progress) return;
+        IndexedStorage.remove_old_bookPages_progress = true;
+        // const aa =
+        await IndexedStorage.idb.bookPages
+            .orderBy('modification_date').reverse().offset(offset)
+            .delete();
+        // .toArray();
+        // debugger;
+        IndexedStorage.remove_old_bookPages_progress = false;
+    }
+
+    static async clear_bookPages(): Promise<void> {
+        await IndexedStorage.idb.bookPages.clear();
+    }
 
 
-    // static add(): void {
-    //     IndexedStorage.db.open();
-    //     IndexedStorage.db.emails.add({ contactId: 111, type: 'typppp1', email: 'hrk@gmail.ocm' });
-    //     IndexedStorage.db.phones.add({ contactId: 222, type: 'typppp2', phone: '02154663325' });
-    // }
 
-    // static getAllEmails(): Dexie.Promise<IEmailAddress[]> {
-    //     return IndexedStorage.db.emails.toArray();
-    // }
 
-    // static getAllEmailsKeys(): Dexie.Promise<any[]> {
-    //     return IndexedStorage.db.emails.orderBy('email').keys();
-    // }
-
-    // static async getFile(id: string): Dexie.Promise<IFile[]> {
-    //     // await IndexedStorage.db.open();
-    //     return IndexedStorage.db.file.filter((file: IFile) => {
-    //         return id === file.id;
-    //     }).toArray();
-    // }
-
-    // static addFile(fileObj: IFile): Dexie.Promise<number> {
-    //     // IndexedStorage.db.open();
-    //     return IndexedStorage.db.file.add(fileObj);
-    // }
-    // static deleteFile(fileId: string): Dexie.Promise<number> {
-    //     // IndexedStorage.db.open();
-    //     return IndexedStorage.db.file.where('id').equals(fileId).delete();
-    // }
 }
