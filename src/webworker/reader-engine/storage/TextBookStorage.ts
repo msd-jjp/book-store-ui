@@ -37,10 +37,10 @@ export class TextBookStorage {
     }
 
     static async setPage(data: TTextBook_data): Promise<void> {
-        const count = await IndexedStorage.get_bookPages_count();
+        const count = await IndexedStorage.get_bookPages_count(data.isOriginalFile);
         if (count > 50) {
             // debugger;
-            IndexedStorage.remove_old_bookPages(25);
+            IndexedStorage.remove_old_bookPages(25, data.isOriginalFile);
         }
         // await IndexedStorage.add_bookPage(data);
         await IndexedStorage.put_bookPage(data);

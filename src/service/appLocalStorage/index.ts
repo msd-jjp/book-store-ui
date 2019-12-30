@@ -167,7 +167,7 @@ export class appLocalStorage {
         appLocalStorage.clearCollection('clc_userInvoicedOrderItem');
         appLocalStorage.clearCollection('clc_userAccount');
         appLocalStorage.clearCollection('clc_deviceKey');
-        IndexedStorage.clear_bookPages();
+        IndexedStorage.clear_bookPages(true);
     }
 
     static storeUsefullResponse(response: AxiosResponse<any>) {
