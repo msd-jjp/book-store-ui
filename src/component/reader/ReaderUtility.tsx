@@ -186,13 +186,20 @@ export abstract class ReaderUtility {
         });
     }
 
-    
+    static clearAllBookInstance() {
+        ReaderUtility.clearEpubBookInstance();
+        ReaderUtility.clearAudioBookInstance();
+    }
+
     private static rtlLanguage_list: LANGUAGES[] = [LANGUAGES.PERSIAN, LANGUAGES.ARABIC];
     static isBookRtl(lang: LANGUAGES | undefined): boolean {
         if (!lang) return true;
         else return ReaderUtility.rtlLanguage_list.includes(lang);
     }
 
+    static renderViewablePages_change_run(isRun: boolean) {
+        ReaderUtility._renderViewablePages_isRun = isRun;
+    }
     private static _renderViewablePages_isRun = false;
     static async renderViewablePages(bi: MsdBookGenerator | PdfBookGenerator, selector?: string) {
         if (ReaderUtility._renderViewablePages_isRun) return;

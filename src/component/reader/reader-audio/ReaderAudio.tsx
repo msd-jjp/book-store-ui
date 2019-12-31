@@ -141,7 +141,10 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private async reinit_readerEngine() {
         // debugger;
         this.setState({ loading: true });
-        ReaderUtility.clearAudioBookInstance();
+        this._bookInstance = undefined;
+        ReaderUtility.renderViewablePages_change_run(false);
+        // ReaderUtility.clearAudioBookInstance();
+        ReaderUtility.clearAllBookInstance();
         await this.createBook();
         this.setState({ loading: false });
     }
@@ -252,7 +255,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         this.initAudio();
     }
 
-    private _bookInstance!: AudioBookGenerator;
+    private _bookInstance: AudioBookGenerator | undefined;
     private async createBook() {
         this.setState({ loading: true });
         // debugger;
@@ -270,13 +273,15 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
         } catch (e) {
             console.error(e);
             this.setState({ loading: false });
-            ReaderUtility.clearAudioBookInstance();
+            // ReaderUtility.clearAudioBookInstance();
+            ReaderUtility.clearAllBookInstance();
             this.readerError_notify();
         }
     }
 
     private _createBookChapters: IEpubBook_chapters | undefined;
     private async createBookChapters() {
+        if (!this._bookInstance) return;
         const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
         this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, this.isOriginalFile === 'true', bookContent);
     }
@@ -376,6 +381,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     /** time in milisecond */
     private _book_totalDuration: number | undefined;
     private async first_load_from_progress() {
+        if (!this._bookInstance) return;
         if (this.isOriginalFile === 'true') {
             try {
                 const progress_percent = this._libraryItem ? (this._libraryItem!.progress || 0) : 0;
@@ -635,6 +641,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
 
     private _sampleRate: number | undefined;
     private async getSampleRate(): Promise<number> {
+        if (!this._bookInstance) return 0; // return undefined instead.
         if (this._sampleRate === undefined)
             this._sampleRate = await this._bookInstance.getLoadedVoiceAtomSampleRate();
         return this._sampleRate;
@@ -642,6 +649,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     private clearSampleRate(): void { this._sampleRate = undefined; }
     private _channels: number | undefined;
     private async getChannels(): Promise<number> {
+        if (!this._bookInstance) return 0; // return undefined instead.
         if (this._channels === undefined)
             this._channels = await this._bookInstance.getLoadedVoiceAtomChannels();
         return this._channels;
@@ -653,7 +661,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
      * @param from number in second
      */
     private async getAudioDataByTime(from: number): Promise<Float32Array[] | undefined> {
-
+        if (!this._bookInstance) return;
 
         const atomDetail = await this._bookInstance.getAtomDetailByTime(from * 1000);
 
@@ -990,6 +998,7 @@ class ReaderAudioComponent extends BaseComponent<IProps, IState> {
     // private _b_loaded_chaptersLength: number | undefined;
     private _loadChapter_progress = false;
     private async loadChapter(ibc?: IBookContent, atomIndex?: number, timeInChapter = 0) {
+        if (!this._bookInstance) return;
         if (this._loadChapter_progress) return;
         if (!this._createBookChapters) return;
         this._loadChapter_progress = true;

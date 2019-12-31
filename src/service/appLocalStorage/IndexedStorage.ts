@@ -185,10 +185,18 @@ export class IndexedStorage {
         let bookTable: Dexie.Table<any, string>;
         if (isOriginalFile) { bookTable = IndexedStorage.idb.bookPages_original; }
         else { bookTable = IndexedStorage.idb.bookPages_sample; }
+
+        // const aa = await bookTable.orderBy('modification_date').reverse().offset(3).toArray();
+        // console.log(aa);
+
         return await bookTable.count();
     }
 
     private static remove_old_bookPages_progress = false;
+    /**
+     * @param offset: record count to keep
+     * @param isOriginalFile: book original file or sample file
+     */
     static async remove_old_bookPages(offset: number, isOriginalFile: boolean): Promise<void> {
         if (IndexedStorage.remove_old_bookPages_progress) return;
         IndexedStorage.remove_old_bookPages_progress = true;

@@ -128,7 +128,10 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   private async reinit_readerEngine() {
     // debugger;
     this.setState({ page_loading: true });
-    ReaderUtility.clearEpubBookInstance();
+    this._bookInstance = undefined;
+    ReaderUtility.renderViewablePages_change_run(false);
+    // ReaderUtility.clearEpubBookInstance();
+    ReaderUtility.clearAllBookInstance();
     await this.createBook();
     this.setState({ page_loading: false });
   }
@@ -258,7 +261,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   private _bookPageSize: { width: number, height: number } = Store2.getState().reader.epub.pageSize;
-  private _bookInstance!: MsdBookGenerator | PdfBookGenerator;
+  private _bookInstance: MsdBookGenerator | PdfBookGenerator | undefined;
   private async createBook() {
     const collectionName = this.isOriginalFile === 'true' ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE;
     const bookFile = await appLocalStorage.getFileById(collectionName, this.book_id);
@@ -273,7 +276,8 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     } catch (e) {
       console.error(e);
       this.setState({ page_loading: false });
-      ReaderUtility.clearEpubBookInstance();
+      // ReaderUtility.clearEpubBookInstance();
+      ReaderUtility.clearAllBookInstance();
       this.readerError_notify();
     }
   }
@@ -281,7 +285,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   private _createBookChapters: IEpubBook_chapters | undefined;
   private async createBookChapters() {
-    // await CmpUtility.waitOnMe(0);
+    if (!this._bookInstance) return;
     const bookContent: IBookContent[] = await this._bookInstance.getAllChapters();
     // debugger;
     this._createBookChapters = ReaderUtility.createEpubBook_chapters(this.book_id, this.isOriginalFile === 'true', bookContent);
@@ -289,6 +293,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
 
   private _slide_pages!: { id: number, page: IBookPosIndicator }[];
   private async initSwiper() {
+    if (!this._bookInstance) return;
     const bookPosList: IBookPosIndicator[] = await this._bookInstance.getAllPages_pos();
     // const bookContent: IBookContent[] = this._bookInstance.getAllChapters();
     await this.createBookChapters();
@@ -754,6 +759,7 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
     }
 
     if (!this._pagePosList.length) {
+      if (!this._bookInstance) return;
       const bookPosList: IBookPosIndicator[] = await this._bookInstance.getAllPages_pos();
       bookPosList.forEach(bpi => {
         // this._pagePosList.push(bpi.group * 1000000 + bpi.atom);

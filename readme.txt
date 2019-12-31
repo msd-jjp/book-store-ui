@@ -193,13 +193,13 @@ input on enter: add in:
 
 ====================================================================================
 
-
+collection & library
+    bug scenario: while downloading(disable select) & want to select and goto bookDetail.
 
 ====================================================================================
 
 3)
 indexedDb
-store page (pdf, msdFormat)
 
 do not wait for image_get_cycle (do one separate cycle for indexedDB only)
 do not call indexedDB for only one img --> load at least 5 img in memory.
@@ -215,5 +215,10 @@ indexedDB bookPage:
 
 on worker failed: try createWorker or goBack from reader.
 
+
+====================================================================================
+
+on readerWorker engine error (destroyed)
+    call bookInstance.delete: msd, pdf, audio, ...
 
 ====================================================================================
