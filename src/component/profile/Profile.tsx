@@ -207,7 +207,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, saveLoader: true });
 
     let imgUrls = await this.uploadFileReq().catch(error => {
-      this.handleError({ error: error.response });
+      this.handleError({ error: error.response, toastOptions: { toastId: 'update_upload_error' } });
     });
     if (!imgUrls) {
       return
@@ -222,7 +222,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
       // cell_no: this.state.person.cell_no.value,
     }
     let res = await this._personService.update(newPerson, this.props.logged_in_user!.person.id).catch(e => {
-      this.handleError({ error: e.response });
+      this.handleError({ error: e.response , toastOptions: { toastId: 'update_update_error' }});
     });
 
     this.setState({ ...this.state, saveLoader: false });
