@@ -215,14 +215,14 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
     const newPerson = {
       name: this.state.person.name.value,
       last_name: this.state.person.last_name.value,
-      address: this.state.person.address.value,
-      phone: this.state.person.phone.value,
+      address: this.state.person.address.value || '',
+      phone: this.state.person.phone.value || '',
       image: imgUrls[0] || null, // '',
       email: this.state.person.email.value,
       // cell_no: this.state.person.cell_no.value,
     }
     let res = await this._personService.update(newPerson, this.props.logged_in_user!.person.id).catch(e => {
-      this.handleError({ error: e.response , toastOptions: { toastId: 'update_update_error' }});
+      this.handleError({ error: e.response, toastOptions: { toastId: 'update_update_error' } });
     });
 
     this.setState({ ...this.state, saveLoader: false });
