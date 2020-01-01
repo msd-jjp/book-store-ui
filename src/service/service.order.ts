@@ -24,7 +24,7 @@ export class OrderService extends BaseService {
     }
 
     userCheckout(order_id: string): Promise<any> {
-        return this.axiosTokenInstance.post(`/orders/checkout/${order_id}`);
+        return this.axiosTokenInstance.post(`/orders/checkout/${order_id}`, {});
     }
 
     search(limit: number, skip: number, filter?: Object): Promise<IAPI_ResponseList<IOrder>> {
