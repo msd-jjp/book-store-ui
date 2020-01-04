@@ -170,8 +170,6 @@ afzudan list download dar setting
 
 ====================================================================================
 
-detect chrome in iphone bug.
-chrome in iphone --> device key bug. (detecting device as safari version 605??)
 
 ====================================================================================
 
