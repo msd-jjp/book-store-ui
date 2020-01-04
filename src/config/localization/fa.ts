@@ -119,7 +119,7 @@ export const fa = {
             book_has_no_content: 'برای کتاب محتوایی موجود نیست',
             invalid_device: 'invalid device',
             RID_opration_failed: 'RID opration failed',
-            schema_not_valid: 'schema not valid',
+            schema_not_valid: 'الگو ارسالی معتبر نیست',
         }
     },
     validation: {

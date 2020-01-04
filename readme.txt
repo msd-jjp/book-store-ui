@@ -165,20 +165,16 @@ create state named: global_notify?? --> show detail to user like:
 
 ====================================================================================
 
-call method createWorkerAfterDownload in cmp Reader (reading overview ...) after will_receve_props readerEngine failed
-msdBook: WasmWorkerHandler --> onmessage --> create new book if in cmp reader.
-
-====================================================================================
 afzudan list download dar setting
     har kodum ro khast cancel kone. (hata reader2js & wasm)
 
 ====================================================================================
 
-
 detect chrome in iphone bug.
 chrome in iphone --> device key bug. (detecting device as safari version 605??)
 
 ====================================================================================
+
 cmp bookDetail
     open book by reader if in lib & downloaded.
 
@@ -187,6 +183,7 @@ cmp bookDetail
 img tag --> attr alt --> need translation.
 
 ====================================================================================
+
 input on enter: add in:
     collection rename
     add to collection
@@ -198,23 +195,14 @@ collection & library
 
 ====================================================================================
 
-3)
 indexedDb
 
 do not wait for image_get_cycle (do one separate cycle for indexedDB only)
 do not call indexedDB for only one img --> load at least 5 img in memory.
 
-
 indexedDB bookPage:
-    readDate
     max all page 1000
     render 5 more if ...
-
-    update readDate on every read
-
-
-on worker failed: try createWorker or goBack from reader.
-
 
 ====================================================================================
 
