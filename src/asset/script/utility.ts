@@ -214,6 +214,11 @@ export abstract class Utility {
             browserName = "Chrome";
             fullVersion = nAgt.substring(verOffset + 7);
         }
+        // In Chrome in IOS, the true version is after "CriOS" 
+        else if ((verOffset = nAgt.indexOf("CriOS")) !== -1) {
+            browserName = "Chrome";
+            fullVersion = nAgt.substring(verOffset + 6);
+        }
         // In Safari, the true version is after "Safari" or after "Version" 
         else if ((verOffset = nAgt.indexOf("Safari")) !== -1) {
             browserName = "Safari";
