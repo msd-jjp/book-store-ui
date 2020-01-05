@@ -5,6 +5,7 @@ import { Store2 } from "../../redux/store";
 import { action_change_app_flag } from "../../redux/action/internationalization";
 import { appLocalStorage } from "../../service/appLocalStorage";
 import { FILE_STORAGE_KEY } from "../../service/appLocalStorage/FileStorage";
+import { IndexedStorage } from "../../service/appLocalStorage/IndexedStorage";
 
 export abstract class CmpUtility {
     static image_pre_url = '/api/serve-files';
@@ -120,9 +121,10 @@ export abstract class CmpUtility {
             mainFile ? FILE_STORAGE_KEY.FILE_BOOK_MAIN : FILE_STORAGE_KEY.FILE_BOOK_SAMPLE,
             book_id_s
         );
+        await IndexedStorage.delete_bookAllPage(book_id_s, mainFile);
         CmpUtility.refreshView();
     }
 
-    
+
 
 }

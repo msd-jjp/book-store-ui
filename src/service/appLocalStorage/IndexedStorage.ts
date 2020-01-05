@@ -151,7 +151,7 @@ export class IndexedStorage {
         console.log('csdv_2', csdv_2); */
     }
 
-    static async delete_bookAllPage(opt: TTextBook): Promise<void> {
+    static async delete_bookAllPage_DELETE_ME(opt: TTextBook): Promise<void> {
         let bookTable: Dexie.Table<any, string>;
         if (opt.isOriginalFile) { bookTable = IndexedStorage.idb.bookPages_original; }
         else { bookTable = IndexedStorage.idb.bookPages_sample; }
@@ -160,6 +160,39 @@ export class IndexedStorage {
             .filter((r) => r.book_id === opt.book_id && r.isOriginalFile === opt.isOriginalFile)
             .primaryKeys();
 
+        await bookTable.bulkDelete(primaryKeys);
+    }
+
+    static async delete_bookAllPage(book_id_s: string | string[], isOriginalFile: boolean): Promise<void> {
+        let bookTable: Dexie.Table<any, string>;
+        if (isOriginalFile) { bookTable = IndexedStorage.idb.bookPages_original; }
+        else { bookTable = IndexedStorage.idb.bookPages_sample; }
+
+        /* const filter = (record: TTextBook) => {
+            if (Array.isArray(book_id_s)) {
+
+            } else {
+                return record.book_id === book_id_s && record.isOriginalFile === isOriginalFile;
+            }
+        }; */
+
+        /* let primaryKeys = await bookTable
+            .filter((r) => r.book_id === book_id_s && r.isOriginalFile === isOriginalFile)
+            .primaryKeys(); */
+
+        let primaryKeys;
+
+        if (Array.isArray(book_id_s)) {
+            primaryKeys = await bookTable
+                .filter((r) => book_id_s.includes(r.book_id) && r.isOriginalFile === isOriginalFile)
+                .primaryKeys();
+        } else {
+            primaryKeys = await bookTable
+                .filter((r) => r.book_id === book_id_s && r.isOriginalFile === isOriginalFile)
+                .primaryKeys();
+        }
+
+        debugger;
         await bookTable.bulkDelete(primaryKeys);
     }
 
