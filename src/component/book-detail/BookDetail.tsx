@@ -18,7 +18,7 @@ import { action_user_logged_in } from "../../redux/action/user";
 import { CommentService } from "../../service/service.comment";
 import { IComment } from "../../model/model.comment";
 import { Input } from "../form/input/Input";
-import Modal from 'react-bootstrap/Modal'
+import Modal from 'react-bootstrap/Modal';
 import { NETWORK_STATUS } from "../../enum/NetworkStatus";
 import { ICartItems, ICartItem } from "../../redux/action/cart/cartAction";
 import { action_add_to_cart, action_remove_from_cart } from "../../redux/action/cart";

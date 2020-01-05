@@ -5,8 +5,6 @@ import { redux_state } from '../../../../redux/app_state';
 import { TInternationalization } from '../../../../config/setup';
 import { BaseComponent } from '../../../_base/BaseComponent';
 import { Localization } from '../../../../config/localization/localization';
-// import { IToken } from '../../../../model/model.token';
-// import { ToastContainer } from 'react-toastify';
 import { Modal } from 'react-bootstrap';
 import { ICollection } from '../../../../model/model.collection';
 import { action_set_collections_data } from '../../../../redux/action/collection';
@@ -19,7 +17,6 @@ import { NETWORK_STATUS } from '../../../../enum/NetworkStatus';
 
 export interface IProps {
     internationalization: TInternationalization;
-    // token: IToken;
 
     collection: ICollection_schema;
     set_collections_data?: (data: ICollection[]) => any;
@@ -58,12 +55,6 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
 
     private _collectionService = new CollectionService();
 
-    // constructor(props: IProps) {
-    //     super(props);
-
-    //     this._collectionService.setToken(this.props.token);
-    // }
-
     componentDidMount() {
     }
 
@@ -99,6 +90,7 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
                                             required
                                             hideError
                                             className="input-bordered-bottom input-border-success"
+                                            onKeyUp={(e) => this.handle_newCollection_keyUp(e)}
                                         />
                                     </div>
 
@@ -175,6 +167,17 @@ class AddToCollectionComponent extends BaseComponent<IProps, IState> {
             ...this.state,
             newCollectionTitle: { value, isValid }
         });
+    }
+
+    handle_newCollection_keyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === 'Enter') {
+            if (
+                !this.state.newCollectionTitle.isValid
+                || (this.props.network_status === NETWORK_STATUS.OFFLINE)
+                || this.state.createCollection_loader
+            ) return;
+            this.create_Collection();
+        }
     }
 
     isBook_existInCollection(collection: ICollection): boolean {
@@ -335,7 +338,6 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         internationalization: state.internationalization,
-        // token: state.token,
         collection: state.collection,
         network_status: state.network_status,
     }

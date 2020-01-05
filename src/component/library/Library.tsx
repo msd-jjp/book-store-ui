@@ -789,6 +789,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                     ? 'input-border-success' :
                                                     'input-border-primary')
                                             }
+                                            onKeyUp={(e) => this.handle_newCollection_keyUp(e)}
                                         />
                                     </div>
                                 </div>
@@ -802,7 +803,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                         {
                             this.modal_saveCollection_mode === 'create' ?
                                 <BtnLoader
-                                    btnClassName="btn btn-success-- text-success btn-sm text-uppercase min-w-70px"
+                                    btnClassName="btn text-success btn-sm text-uppercase min-w-70px"
                                     loading={this.state.modal_createCollections.loader}
                                     disabled={
                                         !this.state.modal_createCollections.newCollectionTitle.isValid
@@ -819,7 +820,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                 </BtnLoader>
                                 :
                                 <BtnLoader
-                                    btnClassName="btn btn-primary-- text-primary btn-sm text-uppercase min-w-70px"
+                                    btnClassName="btn text-primary btn-sm text-uppercase min-w-70px"
                                     loading={this.state.modal_createCollections.loader}
                                     disabled={
                                         !this.state.modal_createCollections.newCollectionTitle.isValid
@@ -854,6 +855,24 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         });
     }
 
+    handle_newCollection_keyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+        if (event.key === 'Enter') {
+            if (
+                !this.state.modal_createCollections.newCollectionTitle.isValid
+                || (this.props.network_status === NETWORK_STATUS.OFFLINE)
+                || this.state.modal_createCollections.loader
+            ) return;
+            if (this.modal_saveCollection_mode === 'create') {
+                this.create_Collection();
+            } else {
+                this.renameCollection(
+                    this.collection_title_to_rename!,
+                    this.state.modal_createCollections.newCollectionTitle.value!
+                );
+            }
+        }
+    }
+
     async create_Collection() {
         if (!this.state.modal_createCollections.newCollectionTitle.isValid) return;
 
@@ -868,7 +887,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         let res = await this._collectionService.create(
             this.state.modal_createCollections.newCollectionTitle.value!
         ).catch(error => {
-            this.handleError({ error: error.response });
+            this.handleError({ error: error.response, toastOptions: { toastId: 'create_Collection_error' } });
             this.setState({
                 ...this.state,
                 modal_createCollections: {
@@ -911,7 +930,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
         });
 
         let res = await this._collectionService.rename(currentTitle, newTitle).catch(error => {
-            this.handleError({ error: error.response });
+            this.handleError({ error: error.response, toastOptions: { toastId: 'renameCollection_error' } });
             this.setState({
                 ...this.state,
                 modal_createCollections: {
