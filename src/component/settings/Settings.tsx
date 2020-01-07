@@ -71,6 +71,9 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
         this.setState({ confirmNotify_rr_show: false });
     }
     private confirmNotify_onConfirm_rr() {
+        // debugger;
+        // console.log('pageSize', Store2.getState().reader.epub.pageSize);
+
         this.props.reset_reader();
         this.setState({ confirmNotify_rr_show: false });
     }
@@ -224,7 +227,7 @@ class SettingsComponent extends BaseComponent<IProps, IState> {
                     show={this.state.confirmNotify_rr_show}
                     onHide={() => this.close_confirmNotify_rr()}
                     onConfirm={() => this.confirmNotify_onConfirm_rr()}
-                    msg={Localization.reset_reader}
+                    msg={Localization.msg.ui.reset_reader}
                     confirmBtn_className='text-warning'
                 />
 

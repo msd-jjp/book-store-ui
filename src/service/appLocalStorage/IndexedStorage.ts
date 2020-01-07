@@ -168,18 +168,6 @@ export class IndexedStorage {
         if (isOriginalFile) { bookTable = IndexedStorage.idb.bookPages_original; }
         else { bookTable = IndexedStorage.idb.bookPages_sample; }
 
-        /* const filter = (record: TTextBook) => {
-            if (Array.isArray(book_id_s)) {
-
-            } else {
-                return record.book_id === book_id_s && record.isOriginalFile === isOriginalFile;
-            }
-        }; */
-
-        /* let primaryKeys = await bookTable
-            .filter((r) => r.book_id === book_id_s && r.isOriginalFile === isOriginalFile)
-            .primaryKeys(); */
-
         let primaryKeys;
 
         if (Array.isArray(book_id_s)) {
@@ -192,7 +180,6 @@ export class IndexedStorage {
                 .primaryKeys();
         }
 
-        debugger;
         await bookTable.bulkDelete(primaryKeys);
     }
 

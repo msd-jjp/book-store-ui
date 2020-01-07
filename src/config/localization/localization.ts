@@ -50,6 +50,7 @@ interface ILocalization extends LocalizedStringsMethods {
             initing_reader_security_content: string;
             reader_security_content_failed: string;
             clear_general_content: string;
+            reset_reader: string;
             book_x_file_not_exist: string;
             book_x_sampleFile_not_exist: string;
             book_x_file_problem: string;

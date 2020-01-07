@@ -38,6 +38,7 @@ export const fa = {
             initing_reader_security_content: 'در حال آماده سازی سامانه امنیت محتوا، لطفا لحظاتی بعد مجددا تلاش کنید.',
             reader_security_content_failed: 'سامانه امنیت محتوا با خطا مواجه شد. لطفا برنامه را مجددا بارگیری نمائید',
             clear_general_content: 'فایل های ذخیره شده مانند: html، عکس های پیشفرض و js پاک خواهد شد.',
+            reset_reader: 'تازه سازی کتابخوان: اندازه قلم، رنگ، شدت صدا و...',
             book_x_file_not_exist: 'کتاب {0} فایلی برای دانلود ندارد',
             book_x_sampleFile_not_exist: 'کتاب {0} فایل نمونه ای برای دانلود ندارد',
             book_x_file_problem: "فایل کتاب {0} خراب است و قابل بارگیری نیست",
@@ -375,7 +376,7 @@ export const fa = {
     count: 'تعداد',
     unit_price: 'قیمت واحد',
     type: 'نوع',
-    text_size: 'اندازه متن',
+    text_size: 'اندازه قلم',
     theme: 'تم',
     font: 'فونت',
     reader_theme_obj: {

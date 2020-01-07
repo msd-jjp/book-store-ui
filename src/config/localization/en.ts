@@ -38,6 +38,7 @@ export const en = {
             initing_reader_security_content: 'initing security content, please try later',
             reader_security_content_failed: 'security content failed, please reload app',
             clear_general_content: 'cached files like: html, default images, js will be removed.',
+            reset_reader: 'reset reader font size, color, volume, ...',
             book_x_file_not_exist: 'book {0} has no file to download',
             book_x_sampleFile_not_exist: 'book {0} has no sample file to download',
             book_x_file_problem: "book {0} has corrupted file and it can't download",

@@ -1,6 +1,5 @@
 import { EACTIONS } from "../../ActionEnum";
 import { IReader_schema, IReaderAction } from "../../action/reader/readerAction";
-// import { color } from "../../../webworker/reader-engine/tools";
 
 const reader_reset: IReader_schema = {
     audio: {
@@ -21,10 +20,13 @@ const reader_reset: IReader_schema = {
 };
 
 export function reducer(state: IReader_schema, action: IReaderAction): IReader_schema {
+    // console.log('reader reducer', state, action);
+
     switch (action.type) {
         case EACTIONS.UPDATE_READER:
             return action.payload as IReader_schema;
         case EACTIONS.RESET_READER:
+            // console.log(reader_reset);
             return reader_reset;
     }
     if (state) { return state; }

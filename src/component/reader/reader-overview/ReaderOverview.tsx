@@ -28,7 +28,7 @@ import { action_update_reader } from "../../../redux/action/reader";
 import { NETWORK_STATUS } from "../../../enum/NetworkStatus";
 import { BaseService } from "../../../service/service.base";
 import { ILibrary } from "../../../model/model.library";
-import { getLibraryItem, updateLibraryItem_progress/* , getBookFileId */ } from "../../library/libraryViewTemplate";
+import { getLibraryItem, updateLibraryItem_progress } from "../../library/libraryViewTemplate";
 import { MsdBookGenerator } from "../../../webworker/reader-engine/MsdBookGenerator";
 import { Store2 } from "../../../redux/store";
 import { PdfBookGenerator } from "../../../webworker/reader-engine/PdfBookGenerator";
@@ -247,8 +247,6 @@ class ReaderOverviewComponent extends BaseComponent<IProps, IState> {
   }
 
   private async generateReader() {
-    // await CmpUtility.waitOnMe(0);
-
     if (this.props.reader_engine.status !== 'inited') {
       this.goBack();
       setTimeout(() => { this.readerEngineNotify(); }, 300);
