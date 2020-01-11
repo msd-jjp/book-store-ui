@@ -213,7 +213,7 @@ export function libraryItem_viewList_render(
     return (
         <div className="view-list-item pb-2 mb-2" >
             <div className="item-wrapper row" onClick={() => {
-                if (is_downloading) return;
+                // if (is_downloading) return;
                 onItemSelect(item);
             }}>
                 <div className="col-4">
@@ -280,7 +280,7 @@ export function libraryItem_viewGrid_render(
     return (
         <div className="col-4 p-align-inverse-0 mb-3">
             <div className="item-wrapper" onClick={() => {
-                if (is_downloading) return;
+                // if (is_downloading) return;
                 onItemSelect(item);
             }}>
                 <div className="img-scaffolding-container">

@@ -182,12 +182,6 @@ img tag --> attr alt --> need translation.
 
 ====================================================================================
 
-input on enter: add in:
-    collection rename
-    add to collection
-
-====================================================================================
-
 collection & library
     bug scenario: while downloading(disable select) & want to select and goto bookDetail.
 
