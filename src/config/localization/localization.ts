@@ -429,7 +429,7 @@ interface ILocalization extends LocalizedStringsMethods {
     download_book_sample: string;
 }
 
-export let Localization: ILocalization = new LocalizedStrings({
+export const Localization: ILocalization = new LocalizedStrings({
     fa: fa,
     en: en,
     ar: ar
