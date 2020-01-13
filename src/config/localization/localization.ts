@@ -8,6 +8,10 @@ import { BOOK_GENRE, BOOK_TYPES, BOOK_ROLES } from '../../enum/Book';
 import { IReader_schema_epub_theme } from '../../redux/action/reader/readerAction';
 import { LANGUAGES } from '../../enum/language';
 
+// interface ILocalization_tr {
+//     [key: string]: string | ILocalization_tr;
+// }
+
 interface ILocalization extends LocalizedStringsMethods {
     [key: string]: any; // todo
     login: string;

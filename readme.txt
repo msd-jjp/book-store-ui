@@ -129,8 +129,6 @@ feedback in cmp more
 
 ====================================================================================
 
-====================================================================================
-
 bookDetail cmp:
     if audio --> dont show page
     if other --> dont show duration
@@ -182,9 +180,6 @@ img tag --> attr alt --> need translation.
 
 ====================================================================================
 
-collection & library
-    bug scenario: while downloading(disable select) & want to select and goto bookDetail.
-
 ====================================================================================
 
 indexedDb
@@ -200,5 +195,13 @@ indexedDB bookPage:
 
 on readerWorker engine error (destroyed)
     call bookInstance.delete: msd, pdf, audio, ...
+
+====================================================================================
+
+on logout:
+    reset donwload list (except reader&wasm file if possible OR remove all).
+
+onLogin:
+    check deviceKey
 
 ====================================================================================
