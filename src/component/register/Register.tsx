@@ -52,7 +52,7 @@ interface IState {
     btnLoader: boolean;
     sendAgain_counter: number;
     btnSendAgain_loader: boolean;
-    sendAgain_interval: any;
+    // sendAgain_interval: any;
 }
 type TInputType = 'username' | 'password' | 'name' | 'code' | 'mobile' | 'confirmPassword';
 type TInputElType = 'inputElUsername' | 'inputElPassword' |
@@ -96,7 +96,7 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
         btnLoader: false,
         sendAgain_counter: 0,
         btnSendAgain_loader: false,
-        sendAgain_interval: undefined
+        // sendAgain_interval: undefined
     };
     inputElUsername!: HTMLInputElement | HTMLTextAreaElement;
     inputElPassword!: HTMLInputElement | HTMLTextAreaElement;
@@ -106,15 +106,16 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
     inputElConfirmPassword!: HTMLInputElement | HTMLTextAreaElement;
     // inputElConfirmPassword_wrapper!: Input | null;
     private _registerService = new RegisterService();
-    signup_token!: string;
+    private signup_token!: string;
+    private sendAgain_interval: any;
 
     componentDidMount() {
-        document.title = 'register';
+        document.title = Localization.register;
         this.focusOnInput('inputElMobile');
     }
 
     componentWillUnmount() {
-        document.title = Setup.documentTitle;
+        document.title = Localization[Setup.documentTitle];
     }
 
     gotoLogin() {
@@ -273,9 +274,9 @@ class RegisterComponent extends BaseComponent<IProps, IState> {
     }
 
     start_sendAgain_counter() {
-        this.state.sendAgain_interval = setInterval(() => {
+        this.sendAgain_interval = setInterval(() => {
             if (this.state.sendAgain_counter === 0) {
-                clearInterval(this.state.sendAgain_interval);
+                clearInterval(this.sendAgain_interval);
                 return;
             }
             this.setState({ ...this.state, sendAgain_counter: this.state.sendAgain_counter - 1 });
