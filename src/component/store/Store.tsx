@@ -405,7 +405,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                                 <div className="carousel-item" key={bookIndex}>
                                     <div className="img-wrapper">
                                         <img src={this.defaultBookImagePath} alt="" />
-                                        <span className="item-loader-wrapper">
+                                        <span className="item-loader-wrapper center-el-in-box">
                                             <div className="spinner-grow item-loader">
                                                 <span className="sr-only">{Localization.loading_with_dots}</span>
                                             </div>

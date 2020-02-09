@@ -196,7 +196,7 @@
               visibility: hidden;
             }
             .item-loader-wrapper {
-              @extend .center-el-in-box;
+              // @extend .center-el-in-box;
               .item-loader {
                 width: 8rem; // 3rem;
                 height: 8rem; // 3rem;
