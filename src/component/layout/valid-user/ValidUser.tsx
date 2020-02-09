@@ -80,7 +80,7 @@ class LayoutValidUserComponent extends React.Component<IProps> {
     private _fetchIntervalWorker = new FetchIntervalWorker();
     private _syncWorker = new SyncWorker();
 
-    componentWillMount() {
+    componentDidMount() { // componentWillMount
         // debugger;
         if (!this.props.logged_in_user) {
             this.props.history.push("/login");
