@@ -65,6 +65,9 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     componentWillUnmount() {
         // todo: in Unmount, no auth --> stop downloading.
         // this.props.reset_downloading_book_file!();
+
+        // todo: clear list (like puase)
+        // this.downloadProgress_queue = [];
     }
 
     componentWillReceiveProps(nextProps: IProps) {
@@ -247,15 +250,15 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     }
 
     //#region modal_downloadList
-    openModal_downloadList() {
+    private openModal_downloadList() {
         this.setState({ ...this.state, modal_downloadList: { ...this.state.modal_downloadList, show: true } });
     }
 
-    closeModal_downloadList() {
+    private closeModal_downloadList() {
         this.setState({ ...this.state, modal_downloadList: { ...this.state.modal_downloadList, show: false } });
     }
 
-    modal_downloadList_render() {
+    private modal_downloadList_render() {
         return (
             <>
                 <Modal show={this.state.modal_downloadList.show} onHide={() => this.closeModal_downloadList()} centered>

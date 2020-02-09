@@ -437,7 +437,7 @@ class StoreComponent extends BaseComponent<IProps, IState> {
                             <div className="rate-count">a</div>
                         </div>
                     </div>
-                    <div className="item-error-wrapper">
+                    <div className="item-error-wrapper center-el-in-box text-center">
                         <div className="item-error">
                             <div className="mb-2">{errorMsg}</div>
                             <div onClick={() => onClick()} className="cursor-pointer">
