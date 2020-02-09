@@ -569,7 +569,7 @@ class LibraryComponent extends BaseComponent<IProps, IState> {
                                                         className="item-size" alt="" onError={e => this.bookImageOnError(e)} />
 
                                                     <div className="collection-detail p-2">
-                                                        <div className="collection-detail-inner">
+                                                        <div className="collection-detail-inner center-el-in-box">
                                                             <div className="collection-book-count">{uncollected_book_list_length}</div>
                                                             <div className="collection-name small text-muted text-capitalize">
                                                                 {Localization.uncollected}
