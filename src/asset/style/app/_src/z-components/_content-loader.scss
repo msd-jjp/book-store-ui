@@ -29,7 +29,7 @@
   //top: 50%;
   //right: 50%;
   //@include transform(translate(50%, -50%));
-  @extend .center-el-in-box;
+  // @extend .center-el-in-box;
 
   div {
     animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;

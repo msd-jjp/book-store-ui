@@ -19,7 +19,7 @@ export class ContentLoader extends React.PureComponent<IProps> {
                     `lds-roller-wrapper ${this.props.gutterClassName} lds-roller-${this.props.colorClassName} `
                     + (this.checkVisibility() ? '' : 'd-none')
                 }>
-                    <div className="lds-roller">
+                    <div className="lds-roller center-el-in-box">
                         {this.loader_dots.map(dot => <div key={dot}></div>)}
                     </div>
                 </div>
