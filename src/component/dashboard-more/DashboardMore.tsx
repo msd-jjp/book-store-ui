@@ -1,55 +1,55 @@
 import React from 'react';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { action_user_logged_out } from '../../redux/action/user';
+// import { action_user_logged_out } from '../../redux/action/user';
 import { redux_state } from '../../redux/app_state';
 import { IUser } from '../../model/model.user';
 import { TInternationalization } from '../../config/setup';
 import { action_change_app_flag } from '../../redux/action/internationalization';
 import { BaseComponent } from '../_base/BaseComponent';
 import { Localization } from '../../config/localization/localization';
-import { action_remove_token } from '../../redux/action/token';
+// import { action_remove_token } from '../../redux/action/token';
 import { History } from 'history';
-import { action_remove_authentication } from '../../redux/action/authentication';
+// import { action_remove_authentication } from '../../redux/action/authentication';
 import { Modal } from 'react-bootstrap';
 import { ICartItems } from '../../redux/action/cart/cartAction';
-import { action_clear_cart } from '../../redux/action/cart';
-import { action_clear_library } from '../../redux/action/library';
-import { action_clear_collections } from '../../redux/action/collection';
+// import { action_clear_cart } from '../../redux/action/cart';
+// import { action_clear_library } from '../../redux/action/library';
+// import { action_clear_collections } from '../../redux/action/collection';
 import { CmpUtility } from '../_base/CmpUtility';
-import { action_reset_sync } from '../../redux/action/sync';
+// import { action_reset_sync } from '../../redux/action/sync';
 import { ISync_schema } from '../../redux/action/sync/syncAction';
 import { SyncWorker } from '../../webworker/sync-worker/SyncWorker';
 import { NETWORK_STATUS } from '../../enum/NetworkStatus';
-import { action_reset_reader } from '../../redux/action/reader';
+// import { action_reset_reader } from '../../redux/action/reader';
 import { AccountService } from '../../service/service.account';
 import { Utility } from '../../asset/script/utility';
 import { BtnLoader } from '../form/btn-loader/BtnLoader';
 import { ToastContainer } from 'react-toastify';
 import { IncreaseCredit } from '../increase-credit/IncreaseCredit';
 import { PaymentResult } from '../increase-credit/payment-result/PaymentResult';
-import { action_reset_downloading_book_file } from '../../redux/action/downloading-book-file';
-import { action_reset_device_Key } from '../../redux/action/device-key';
+// import { action_reset_downloading_book_file } from '../../redux/action/downloading-book-file';
+// import { action_reset_device_Key } from '../../redux/action/device-key';
 
 interface IProps {
     logged_in_user?: IUser | null;
-    do_logout: () => void;
+    // do_logout: () => void;
     change_app_flag: (internationalization: TInternationalization) => void;
     internationalization: TInternationalization;
-    remove_token: () => void;
+    // remove_token: () => void;
     history: History;
-    remove_authentication: () => void;
+    // remove_authentication: () => void;
     cart: ICartItems;
-    clear_cart: () => any;
-    clear_library: () => any;
-    clear_collections: () => any;
+    // clear_cart: () => any;
+    // clear_library: () => any;
+    // clear_collections: () => any;
     sync: ISync_schema;
-    reset_sync: () => any;
+    // reset_sync: () => any;
     network_status: NETWORK_STATUS;
-    reset_reader: () => any;
+    // reset_reader: () => any;
     match: any;
-    reset_downloading_book_file: () => any;
-    reset_device_Key: () => any;
+    // reset_downloading_book_file: () => any;
+    // reset_device_Key: () => any;
 }
 
 interface IState {
@@ -175,29 +175,7 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
 
     }
     private logout() {
-        // debugger;
         this.onApplogout(this.props.history, true);
-        /* this.props.do_logout();
-        this.props.remove_token();
-        BaseService.removeToken();
-        this.props.remove_authentication();
-        appLocalStorage.removeFromCollection('clc_eTag', LoginService.generalId_profile);
-
-        this.props.clear_cart();
-
-        this.props.clear_library();
-        appLocalStorage.removeFromCollection('clc_eTag', LibraryService.generalId);
-        this.props.clear_collections();
-        appLocalStorage.removeFromCollection('clc_eTag', CollectionService.generalId);
-
-        this.props.reset_sync();
-        this.props.reset_reader();
-        this.props.reset_device_Key();
-        this.props.reset_downloading_book_file();
-
-        appLocalStorage.afterAppLogout();
-
-        this.props.history.push('/login'); */
     }
 
     //#region modal_appInfo
@@ -495,17 +473,17 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
     return {
-        do_logout: () => dispatch(action_user_logged_out()),
+        // do_logout: () => dispatch(action_user_logged_out()),
         change_app_flag: (internationalization: TInternationalization) => dispatch(action_change_app_flag(internationalization)),
-        remove_token: () => dispatch(action_remove_token()),
-        remove_authentication: () => dispatch(action_remove_authentication()),
-        clear_cart: () => dispatch(action_clear_cart()),
-        clear_library: () => dispatch(action_clear_library()),
-        clear_collections: () => dispatch(action_clear_collections()),
-        reset_sync: () => dispatch(action_reset_sync()),
-        reset_reader: () => dispatch(action_reset_reader()),
-        reset_downloading_book_file: () => dispatch(action_reset_downloading_book_file()),
-        reset_device_Key: () => dispatch(action_reset_device_Key()),
+        // remove_token: () => dispatch(action_remove_token()),
+        // remove_authentication: () => dispatch(action_remove_authentication()),
+        // clear_cart: () => dispatch(action_clear_cart()),
+        // clear_library: () => dispatch(action_clear_library()),
+        // clear_collections: () => dispatch(action_clear_collections()),
+        // reset_sync: () => dispatch(action_reset_sync()),
+        // reset_reader: () => dispatch(action_reset_reader()),
+        // reset_downloading_book_file: () => dispatch(action_reset_downloading_book_file()),
+        // reset_device_Key: () => dispatch(action_reset_device_Key()),
     }
 }
 
