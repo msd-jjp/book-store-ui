@@ -209,7 +209,7 @@ delete sw.js in public folder (if useles)
 
 ====================================================================================
 
-remove cmp dashboard-more : props remove_token, remove_authentication,...
+
 
 ====================================================================================
 
@@ -217,22 +217,8 @@ on resetPassword modal close: reset form (if typed and not submit)
 
 ====================================================================================
 
-******
-cmp register: (check fajr project)
-    state.sendAgain_interval
-    take it outside of state.
-    line 276: this.state.sendAgain_interval = setInterval(() => ...
-
-    line 111 : translate document.title = 'register';
-    line 117 : translate ...
-
 ====================================================================================
 
-update cmp form/input --> willRece... & onBlur , ...
-layout validUser & account --> cmpWillmount --> cmpDid...
 axios 0.19.1 --> service.base.ts : // config.baseURL = '';
-update btnLoader
-	// <span>{this.props.children}</span>
-    this.props.children
 
 ====================================================================================
