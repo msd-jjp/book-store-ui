@@ -32,7 +32,8 @@ class BtnLoader extends React.Component<IProps, IState> {
                                     )
                                 default:
                                     return (
-                                        <span>{this.props.children}</span>
+                                        // <span>{this.props.children}</span>
+                                        this.props.children
                                     )
                             }
                         })()
