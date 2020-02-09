@@ -15,7 +15,7 @@ import { LANGUAGES } from '../../enum/language';
 interface ILocalization extends LocalizedStringsMethods {
     [key: string]: any; // todo
     login: string;
-    register: String;
+    register: string;
     sign_in: string;
     app_title: string;
     app_title_: string;

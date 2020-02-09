@@ -12,11 +12,11 @@ export class AppInitService extends BaseService {
         // console.log('app init service 1');
         let newVersion = process.env.REACT_APP_VERSION || '';
         let oldVersion = localStorage.getItem('app-version') || '';
-        this.reInit_onUpdate(oldVersion, newVersion);
+        this.onUpgrade(oldVersion, newVersion);
         localStorage.setItem('app-version', newVersion);
     }
 
-    reInit_onUpdate(appOldVersion: string, appNewVersion: string) {
+    private onUpgrade(appOldVersion: string, appNewVersion: string) {
         if (appOldVersion && appNewVersion && (appOldVersion !== appNewVersion)) {
             debugger;
             console.log('update if you want, app version: ' + appNewVersion);
