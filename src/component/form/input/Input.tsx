@@ -46,16 +46,29 @@ class Input extends React.Component<InputProps, InputState> {
     componentDidMount() {
         this.setValidate(this.props.defaultValue);
     }
-    componentWillReceiveProps(props: InputProps) {
+    // componentWillReceiveProps(props: InputProps) {
+    //     if (
+    //         (this.handleValidate(props.defaultValue) !== !this.state.invalid)
+    //         &&
+    //         (!this.isEmpty(this.props.defaultValue) || !this.isEmpty(props.defaultValue))
+    //     ) {
+    //         this.setValidate(props.defaultValue);
+    //         this.props.onChange && this.props.onChange(props.defaultValue, this.handleValidate(props.defaultValue));
+    //     }
+    // }
+    componentDidUpdate(prevProps: InputProps) {
+        // console.log('componentDidUpdate old: ', prevProps, this.props);
         if (
-            (this.handleValidate(props.defaultValue) !== !this.state.invalid)
+            (this.handleValidate(this.props.defaultValue) !== !this.state.invalid)
             &&
-            (!this.isEmpty(this.props.defaultValue) || !this.isEmpty(props.defaultValue))
+            (!this.isEmpty(this.props.defaultValue) || !this.isEmpty(prevProps.defaultValue))
         ) {
-            this.setValidate(props.defaultValue);
-            this.props.onChange && this.props.onChange(props.defaultValue, this.handleValidate(props.defaultValue));
+            this.setValidate(this.props.defaultValue);
+            this.props.onChange &&
+                this.props.onChange(this.props.defaultValue, this.handleValidate(this.props.defaultValue));
         }
     }
+
     isEmpty(val: any): boolean {
         if (val || val === 0) { return false }
         return true;
@@ -66,6 +79,7 @@ class Input extends React.Component<InputProps, InputState> {
         this.props.onChange && this.props.onChange(e_target_value, this.handleValidate(e_target_value));
     }
     onBlur() {
+        if (this.state.touched) return;
         this.setState({ ...this.state, touched: true });
     }
     handleValidate(val: any): boolean {
