@@ -297,7 +297,7 @@ export function libraryItem_viewGrid_render(
                 {/* <div className={"book-progress-state " + (read_percent === '100%' ? 'progress-complete' : '')}> */}
                 <div className={"book-progress-state " + ((is_read || read_percent === '100%') ? 'progress-complete' : '')}>
                     <div className="bp-state-number">
-                        <div className="text">{read_percent}</div>
+                        <div className="text center-el-in-box">{read_percent}</div>
                     </div>
                     <div className="bp-state-arrow" />
                     <div className="progress-complete-label">{Localization.readed_}</div>

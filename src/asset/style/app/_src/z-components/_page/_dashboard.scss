@@ -22,7 +22,7 @@
         color: white;
         text-align: center;
         .text {
-          @extend .center-el-in-box;
+          // @extend .center-el-in-box;
           top: 40%;
         }
       }
