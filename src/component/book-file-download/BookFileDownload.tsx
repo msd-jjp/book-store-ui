@@ -20,6 +20,7 @@ import { appLocalStorage } from "../../service/appLocalStorage";
 import { Store2 } from "../../redux/store";
 import { IBook } from "../../model/model.book";
 import { History } from 'history';
+import { Modal } from "react-bootstrap";
 
 interface IProps {
     internationalization: TInternationalization;
@@ -30,10 +31,19 @@ interface IProps {
     history: History;
 }
 interface IState {
+    modal_downloadList: {
+        show: boolean;
+        list: any[];
+        // loading: boolean;
+    }
 }
 
 class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
     state = {
+        modal_downloadList: {
+            show: false,
+            list: []
+        }
     };
 
     private is_downloadInProgress = false;
@@ -236,7 +246,68 @@ class BookFileDownloadComponent extends BaseComponent<IProps, IState> {
         }
     }
 
-    render() { return (<></>); }
+    //#region modal_downloadList
+    openModal_downloadList() {
+        this.setState({ ...this.state, modal_downloadList: { ...this.state.modal_downloadList, show: true } });
+    }
+
+    closeModal_downloadList() {
+        this.setState({ ...this.state, modal_downloadList: { ...this.state.modal_downloadList, show: false } });
+    }
+
+    modal_downloadList_render() {
+        return (
+            <>
+                <Modal show={this.state.modal_downloadList.show} onHide={() => this.closeModal_downloadList()} centered>
+                    <Modal.Body>
+                        <div className="row">
+                            <div className="col-12">
+                                <div className=" table-responsive">
+                                    <table className="table table-striped table-borderless table-hover table-sm mb-0">
+                                        <tbody>
+                                            {(this.state.modal_downloadList.list as Array<any> || []).map((item, itemIndex) => {
+                                                return (
+                                                    <tr key={itemIndex}>
+                                                        {/* <td className="max-w-25px-- align-middle text-center">{itemIndex + 1}</td> */}
+                                                        {/* <td className="align-middle">
+                                                            <BtnLoader
+                                                                btnClassName="btn btn-light btn-sm"
+                                                                loading={loading}
+                                                                onClick={() => this.removeDeviceKey(item.id)}
+                                                                disabled={this.props.network_status === NETWORK_STATUS.OFFLINE}
+                                                            >
+                                                                <i className="fa fa-times text-danger"></i>
+                                                            </BtnLoader>
+                                                        </td> */}
+                                                        <td className="text-nowrap-ellipsis">
+                                                            aaaaaa
+                                                            {/* <small className="text-muted">
+                                                                {this.getFromNowDate(item.creation_date)}
+                                                                {this.checkIfThisDevice_render(item.id)}
+                                                            </small>
+                                                            <div>{this.getDeviceKey_parsedName(item.name)}</div> */}
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer className="pt-0 border-top-0">
+                        <button className="btn btn-sm text-uppercase min-w-70px" onClick={() => this.closeModal_downloadList()}>
+                            {Localization.close}
+                        </button>
+                    </Modal.Footer>
+                </Modal>
+            </>
+        )
+    }
+    //#endregion
+
+    render() { return (<>{this.modal_downloadList_render()}</>); }
 }
 
 const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
