@@ -524,46 +524,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, modal_addToCollections: { ...this.state.modal_addToCollections, show: false } });
   }
 
-  // carousel_render_DELETE_ME(bookList: IBook[]) {
-  //   if (bookList && bookList.length) {
-
-  //     let initialSlide = 0;
-  //     if (this.props.internationalization.rtl) {
-  //       initialSlide = bookList.length - 1 - 2;
-  //       bookList = [...bookList].reverse();
-  //     }
-
-  //     return (
-  //       <>
-  //         <div className="app-carousel">
-  //           <Slider {...this.sliderSetting} initialSlide={initialSlide}>
-  //             {bookList.map((book: IBook, bookIndex) => (
-  //               <div
-  //                 key={bookIndex}
-  //                 className="item"
-  //                 onClick={() => this.gotoBookDetail(book.id)}
-  //               >
-  //                 <div className="img-scaffolding-container">
-  //                   <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
-
-  //                   <img src={CmpUtility.getBook_firstImg(book)}
-  //                     alt="book"
-  //                     className="main-img center-el-in-box"
-  //                     onError={e => CmpUtility.bookImageOnError(e)}
-  //                     loading="lazy"
-  //                   />
-  //                 </div>
-
-  //                 <span className="item-number">{bookIndex}</span>
-  //               </div>
-  //             ))}
-  //           </Slider>
-  //         </div>
-  //       </>
-  //     );
-  //   }
-  // }
-
   carousel_render(bookList: IBook[]) {
     if (bookList && bookList.length) {
 
@@ -605,40 +565,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
     }
   }
 
-  // carousel_render_preLoad_DELETE_ME(slideCount: number = 3) {
-  //   let list = [];
-  //   for (let i = 0; i < slideCount; i++) { list.push(i); }
-
-  //   // let initialSlide = 0;
-  //   // if (this.props.internationalization.rtl) {
-  //   //   initialSlide = list.length - 1 - 2;
-  //   //   list = [...list].reverse();
-  //   // }
-
-  //   return (
-  //     <>
-  //       <div className="app-carousel app-carousel-preLoad" key="app-carousel-preloader">
-  //         <Slider {...this.sliderSetting}
-  //         // initialSlide={initialSlide}
-  //         >
-  //           {list.map((_no: number, bookIndex) => (
-  //             <div key={bookIndex} className="item">
-  //               <div className="img-scaffolding-container">
-  //                 <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
-  //               </div>
-  //               <span className="item-loader-wrapper center-el-in-box">
-  //                 <div className="spinner-grow item-loader">
-  //                   <span className="sr-only">{Localization.loading_with_dots}</span>
-  //                 </div>
-  //               </span>
-  //             </div>
-  //           ))}
-  //         </Slider>
-  //       </div>
-  //     </>
-  //   );
-  // }
-
   carousel_render_preLoad(slideCount: number = 3) {
     let list = [];
     for (let i = 0; i < slideCount; i++) { list.push(i); }
@@ -666,30 +592,6 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
       </>
     );
   }
-
-  // carousel_render_error_DELETE_ME(errorMsg: string, onClick: () => void) {
-  //   return (
-  //     <>
-  //       <div className="app-carousel app-carousel-error" key="app-carousel-error">
-  //         <Slider {...this.sliderSetting}>
-  //           <div className="item">
-  //             <div className="img-scaffolding-container bg-transparent">
-  //               <img src={CmpUtility.bookSizeImagePath} className="img-scaffolding" alt="" />
-  //             </div>
-  //           </div>
-  //         </Slider>
-  //         <div className="center-el-in-box text-center">
-  //           {/* <div className="item-error--"> */}
-  //           <div className="mb-2">{errorMsg}</div>
-  //           <div onClick={() => onClick()} className="cursor-pointer">
-  //             {Localization.retry} <i className="fa fa-refresh"></i>
-  //           </div>
-  //           {/* </div> */}
-  //         </div>
-  //       </div>
-  //     </>
-  //   );
-  // }
 
   carousel_render_error(errorMsg: string, onClick: () => void) {
     return (
