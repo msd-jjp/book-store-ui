@@ -18,7 +18,7 @@
     "@types/redux-persist": "^4.3.1",
     "@types/swiper": "^4.4.5",
     "@types/wavesurfer.js": "^2.0.2",
-    "axios": "^0.19.0",
+    "axios": "^0.19.2",
     "bootstrap": "^4.3.1",
     "dexie": "^2.0.4",
     "font-awesome": "^4.7.0",

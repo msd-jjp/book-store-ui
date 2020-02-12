@@ -71,43 +71,19 @@ export abstract class BaseService {
 
     set_401_interceptors(ax_instance: AxiosInstance) {
         ax_instance.interceptors.response.use((response) => {
-            // Return a successful response back to the calling service
             return response;
-        }, (error) => {
-            const authPersisted = Store2.getState().authentication;
-            // Return any error which is not due to authentication back to the calling service
+        }, async (error) => {
+            const persistedAuth = Store2.getState().authentication;
             if (
                 !error.response
                 || (error.response && error.response.status !== 401)
-                || !authPersisted
+                || !persistedAuth
             ) {
-                return new Promise((resolve, reject) => {
-                    reject(error);
-                });
+                return Promise.reject(error);
             }
 
-
-
-            let authObj = Utility.get_decode_auth(authPersisted)
-            return this.getTokenfromServer(authObj)
-                .then((token) => {
-                    Store2.dispatch(action_set_token(token.data));
-                    BaseService.setToken(token.data);
-
-                    // New request with new token
-                    const config = error.config;
-                    config.headers['authorization'] = `Bearer ${token.data.id}`; // Authorization
-                    config.baseURL = '';
-
-                    return new Promise((resolve, reject) => {
-                        axios.request(config).then(response => {
-                            resolve(response);
-                        }).catch((error) => {
-                            reject(error);
-                        })
-                    });
-
-                })
+            const authObj = Utility.get_decode_auth(persistedAuth)
+            const tokenRes: IAPI_Response<IToken> | undefined = await this.getTokenfromServer(authObj)
                 .catch((error) => {
                     if (error.response.data.msg === "invalid_username") {
                         error.response.data['msg_ui'] = 'login_again';
@@ -116,6 +92,23 @@ export abstract class BaseService {
                         reject(error);
                     });
                 });
+
+            if (tokenRes) {
+                Store2.dispatch(action_set_token(tokenRes.data));
+                BaseService.setToken(tokenRes.data);
+
+                const config = error.config;
+                config.headers['authorization'] = `Bearer ${tokenRes.data.id}`;
+                // config.baseURL = '';
+
+                return new Promise((resolve, reject) => {
+                    axios.request(config).then(response => {
+                        resolve(response);
+                    }).catch((error) => {
+                        reject(error);
+                    })
+                });
+            }
         });
     }
 
