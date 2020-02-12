@@ -15,7 +15,7 @@ import { TAuthentication_schema } from './action/authentication/authenticationAc
 export interface redux_state {
     logged_in_user: IUser | null;
     internationalization: TInternationalization;
-    token: IToken;
+    token: IToken | null;
     authentication: TAuthentication_schema;
     network_status: NETWORK_STATUS;
     cart: ICartItems;

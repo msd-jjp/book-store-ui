@@ -36,7 +36,7 @@ import { TAuthentication_schema } from './action/authentication/authenticationAc
 const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
   logged_in_user: UserReducer as Reducer<IUser | null, AnyAction>,
   internationalization: InternationalizationReducer as Reducer<TInternationalization, AnyAction>,
-  token: TokenReducer as Reducer<IToken, AnyAction>,
+  token: TokenReducer as Reducer<IToken | null, AnyAction>,
   authentication: AuthenticationReducer as Reducer<TAuthentication_schema, AnyAction>,
   network_status: NetworkStatusReducer as Reducer<NETWORK_STATUS, AnyAction>,
   cart: CartReducer as Reducer<ICartItems, AnyAction>,
