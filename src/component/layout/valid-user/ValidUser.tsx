@@ -83,7 +83,7 @@ class LayoutValidUserComponent extends React.Component<IProps> {
     componentDidMount() { // componentWillMount
         // debugger;
         if (!this.props.logged_in_user) {
-            this.props.history.push("/login");
+            // this.props.history.push("/login");
 
         } else {
             this.start_fetchingData();
@@ -109,19 +109,19 @@ class LayoutValidUserComponent extends React.Component<IProps> {
 
     shouldComponentUpdate() {
         // debugger;
-        if (!this.props.logged_in_user) {
-            this.props.history.push("/login");
-            return false;
-        }
+        // if (!this.props.logged_in_user) {
+        //     this.props.history.push("/login");
+        //     return false;
+        // }
         return true;
     }
 
     render() {
-        if (!this.props.logged_in_user) {
-            return (
-                <div></div>
-            );
-        }
+        // if (!this.props.logged_in_user) {
+        //     return (
+        //         <div></div>
+        //     );
+        // }
         return (
             <>
                 <Router>{appValidUserRoutes}</Router>
