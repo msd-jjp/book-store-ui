@@ -531,6 +531,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
 
   async wishList_add_book(book: IBook) {
+    if (!this.props.logged_in_user) return;
+
     this.setState({ ...this.state, wishList_loader: true });
 
     let res = await this._bookService.wishList_add_book(book.id).catch(error => {
@@ -540,7 +542,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, wishList_loader: false });
 
     if (res) {
-      let logged_in_user = { ...this.props.logged_in_user! };
+      let logged_in_user = { ...this.props.logged_in_user };
       let wish_list = (logged_in_user.person && logged_in_user.person.wish_list) || [];
       wish_list.push(book);
       logged_in_user!.person!.wish_list = wish_list;
@@ -549,6 +551,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
 
   async wishList_remove_book(book: IBook) {
+    if (!this.props.logged_in_user) return;
+
     this.setState({ ...this.state, wishList_loader: true });
 
     let res = await this._bookService.wishList_remove_book(book.id).catch(error => {
@@ -558,7 +562,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     this.setState({ ...this.state, wishList_loader: false });
 
     if (res) {
-      let logged_in_user = { ...this.props.logged_in_user! };
+      let logged_in_user = { ...this.props.logged_in_user };
       let wish_list = (logged_in_user.person && logged_in_user.person.wish_list) || [];
       let new_wish_list = wish_list.filter(bk => bk.id !== book.id);
       logged_in_user!.person!.wish_list = new_wish_list;
@@ -783,6 +787,8 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
   }
 
   async addComment() {
+    if (!this.props.logged_in_user) return;
+
     this.setState({ ...this.state, newComment: { ...this.state.newComment, loader: true } });
     let res = await this._commentService.add(this.state.newComment.value!, this.bookId).catch(error => {
       this.handleError({ error: error.response, toastOptions: { toastId: 'addComment_error' } });
@@ -790,7 +796,7 @@ class BookDetailComponent extends BaseComponent<IProps, IState> {
     });
     if (res) {
       this.commentTextarea.value = '';
-      res.data.person = this.props.logged_in_user!.person!;
+      res.data.person = this.props.logged_in_user.person;
       let new_book_comments: IComment[] = this.state.book_comments || [];
       new_book_comments.unshift(res.data);
       this.setState({

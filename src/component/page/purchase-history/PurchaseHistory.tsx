@@ -78,7 +78,6 @@ class PurchaseHistoryComponent extends BaseComponent<IProps, IState> {
       this.state.pager_limit,
       this.state.pager_offset,
       {
-        // person_id: this.props.logged_in_user!.person.id,
         status: 'Invoiced'
       }
     ).catch(error => {

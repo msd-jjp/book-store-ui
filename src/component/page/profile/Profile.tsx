@@ -113,7 +113,9 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
   }
 
   private async fetchPerson() {
-    let current_person = this.props.logged_in_user!.person;
+    if (!this.props.logged_in_user) return;
+
+    let current_person = this.props.logged_in_user.person;
 
     this.setState({
       ...this.state, fetchPerson_loader: true,
@@ -130,7 +132,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
 
     if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
 
-    let res = await this._personService.byId(this.props.logged_in_user!.person.id).catch(error => {
+    let res = await this._personService.byId(this.props.logged_in_user.person.id).catch(error => {
       this.handleError({ error: error.response, toastOptions: { toastId: 'fetchPerson_error' } });
       this.setState({ ...this.state, fetchPerson_loader: false });
     });
@@ -203,6 +205,8 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
   }
 
   async update() {
+    if (!this.props.logged_in_user) return;
+
     if (!this.state.isFormValid) return;
     this.setState({ ...this.state, saveLoader: true });
 
@@ -221,7 +225,7 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
       email: this.state.person.email.value,
       // cell_no: this.state.person.cell_no.value,
     }
-    let res = await this._personService.update(newPerson, this.props.logged_in_user!.person.id).catch(e => {
+    let res = await this._personService.update(newPerson, this.props.logged_in_user.person.id).catch(e => {
       this.handleError({ error: e.response, toastOptions: { toastId: 'update_update_error' } });
     });
 
@@ -235,8 +239,9 @@ class ProfileComponent extends BaseComponent<IProps, IState> {
   }
 
   updateStoreData_profile(person: IPerson) {
-    let logged_in_user = { ...this.props.logged_in_user! };
-    if (!logged_in_user || !person) return;
+    if (!this.props.logged_in_user || !person) return;
+
+    let logged_in_user = { ...this.props.logged_in_user };
 
     logged_in_user.person.name = person.name;
     logged_in_user.person.last_name = person.last_name;

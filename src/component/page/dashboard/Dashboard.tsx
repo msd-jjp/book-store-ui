@@ -502,18 +502,24 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   }
 
   updateUserCurrentBook_client() {
-    let logged_in_user = { ...this.props.logged_in_user! };
+    //todo: update anonymous user??
+    if (!this.props.logged_in_user) return;
+    
+    let logged_in_user = { ...this.props.logged_in_user };
     if (!logged_in_user) return;
     logged_in_user.person.current_book = undefined;
     this.props.onUserLoggedIn(logged_in_user);
   }
 
   async updateUserCurrentBook_server() {
+    //todo: update anonymous user??
+    if (!this.props.logged_in_user) return;
+
     if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
     // this.setState({ ...this.state, removeFromHome_loader: true });
     await this._personService.update(
       { current_book_id: null },
-      this.props.logged_in_user!.person.id
+      this.props.logged_in_user.person.id
     ).catch(e => {
       // this.handleError({ error: e.response });
     });

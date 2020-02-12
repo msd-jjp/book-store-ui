@@ -129,8 +129,9 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   async updateUserCurrentBook_client() {
-    // const book = this._libraryItem!.book;
-    // this.setState({ ...this.state, book: book });
+    //todo: update anonymous user??
+    if (!this.props.logged_in_user) return;
+    
     let book;
     if (this._libraryItem) {
       book = this._libraryItem.book;
@@ -146,7 +147,7 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
 
     if (this.isOriginalFile !== 'true') return;
 
-    let logged_in_user = { ...this.props.logged_in_user! };
+    let logged_in_user = { ...this.props.logged_in_user };
     if (logged_in_user.person.current_book && logged_in_user.person.current_book.id === this.book_id) {
       return;
     }
@@ -155,17 +156,17 @@ class ReaderReadingComponent extends BaseComponent<IProps, IState> {
   }
 
   async updateUserCurrentBook_server() {
+    //todo: update anonymous user??
+    if (!this.props.logged_in_user) return;
+
     if (!this.book_id) return;
     if (this.props.network_status === NETWORK_STATUS.OFFLINE) return;
-    /* if (this.props.logged_in_user!.person.current_book &&
-      this.props.logged_in_user!.person.current_book.id === this.book_id) {
-      return;
-    } */
+    
     if (this.isOriginalFile !== 'true') return;
 
     await this._personService.update(
       { current_book_id: this.book_id },
-      this.props.logged_in_user!.person.id
+      this.props.logged_in_user.person.id
     ).catch(e => { });
   }
 

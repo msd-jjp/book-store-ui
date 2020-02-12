@@ -183,7 +183,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
 
     let res_fetchPrice = await this._priceService.calcPrice(
       order_items,
-      this.props.logged_in_user!.person.id
+      this.props.logged_in_user.person.id
     ).catch(error => {
       let msgObj = this.handleError({
         error: error.response,
@@ -253,7 +253,7 @@ class CartComponent extends BaseComponent<IProps, IState> {
       return false;
     }
 
-
+    
     this.setState({ ...this.state, buy_loader: true });
 
     let order_items = this.props.cart.map(ci => {
@@ -262,8 +262,6 @@ class CartComponent extends BaseComponent<IProps, IState> {
         count: ci.count
       }
     });
-
-    // let person_id = this.props.logged_in_user!.person.id;
 
     let res_order = await this._orderService.userOrder(order_items).catch(error => {
       this.handleError({ error: error.response, toastOptions: { toastId: 'buy_error' } });

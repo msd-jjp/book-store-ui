@@ -21,7 +21,6 @@ export type category_routeParam_categoryType = 'tag' | 'genre' | 'custom';
 interface IProps {
     internationalization: TInternationalization;
     history: History;
-    // token: IToken;
     match: any;
     logged_in_user: IUser | null;
 }
@@ -341,7 +340,6 @@ const dispatch2props: MapDispatchToProps<{}, {}> = (dispatch: Dispatch) => {
 const state2props = (state: redux_state) => {
     return {
         internationalization: state.internationalization,
-        // token: state.token,
         logged_in_user: state.logged_in_user,
     }
 }
