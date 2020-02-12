@@ -377,23 +377,28 @@ class DashboardMoreComponent extends BaseComponent<IProps, IState> {
                             <i className="icon fa fa-free-code-camp mr-3"></i>
                             <span className="text text-capitalize">{Localization.reading_insights}</span>
                         </li> */}
-                        <li className="more-item list-group-item p-align-0 cursor-pointer" onClick={() => this.gotoProfile()}>
-                            <div className="icon-wrapper mr-3"><i className="fa fa-user-circle-o"></i></div>
-                            <span className="text text-capitalize mr-3">{Localization.profile}</span>
-                            <img className="w-50px h-50px radius-50px mr-3"
-                                src={CmpUtility.getPerson_avatar(this.props.logged_in_user!.person)}
-                                alt="avatar"
-                                onError={e => this.personImageOnError(e)}
-                                loading="lazy"
-                            />
-                            <span>
-                                {this.props.logged_in_user!.username}
-                                &nbsp;
-                                <small>
-                                    ({this.getPersonFullName(this.props.logged_in_user!.person)})
-                                </small>
-                            </span>
-                        </li>
+
+                        {
+                            this.props.logged_in_user ?
+                                <li className="more-item list-group-item p-align-0 cursor-pointer" onClick={() => this.gotoProfile()}>
+                                    <div className="icon-wrapper mr-3"><i className="fa fa-user-circle-o"></i></div>
+                                    <span className="text text-capitalize mr-3">{Localization.profile}</span>
+                                    <img className="w-50px h-50px radius-50px mr-3"
+                                        src={CmpUtility.getPerson_avatar(this.props.logged_in_user.person)}
+                                        alt="avatar"
+                                        onError={e => this.personImageOnError(e)}
+                                        loading="lazy"
+                                    />
+                                    <span>
+                                        {this.props.logged_in_user.username}
+                                        &nbsp;
+                                        <small>
+                                            ({this.getPersonFullName(this.props.logged_in_user.person)})
+                                        </small>
+                                    </span>
+                                </li>
+                                : ''
+                        }
 
                         <li className="more-item list-group-item p-align-0 cursor-pointer"
                             onClick={() => this.gotoSettings()}>
