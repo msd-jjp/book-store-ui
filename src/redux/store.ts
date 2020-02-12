@@ -31,12 +31,13 @@ import { IDownloadingBookFile_schema } from './action/downloading-book-file/down
 import { IReader_schema } from './action/reader/readerAction';
 import { IReaderEngine_schema } from './action/reader-engine/readerEngineAction';
 import { IDeviceKey_schema } from './action/device-key/deviceKeyAction';
+import { TAuthentication_schema } from './action/authentication/authenticationAction';
 
 const reducers: ReducersMapObject<redux_state, AnyAction> = { // Action
   logged_in_user: UserReducer as Reducer<IUser | null, AnyAction>,
   internationalization: InternationalizationReducer as Reducer<TInternationalization, AnyAction>,
   token: TokenReducer as Reducer<IToken, AnyAction>,
-  authentication: AuthenticationReducer as Reducer<string, AnyAction>,
+  authentication: AuthenticationReducer as Reducer<TAuthentication_schema, AnyAction>,
   network_status: NetworkStatusReducer as Reducer<NETWORK_STATUS, AnyAction>,
   cart: CartReducer as Reducer<ICartItems, AnyAction>,
   library: LibraryReducer as Reducer<ILibrary_schema, AnyAction>,

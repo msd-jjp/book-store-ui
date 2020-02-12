@@ -10,12 +10,13 @@ import { IDownloadingBookFile_schema } from './action/downloading-book-file/down
 import { IReader_schema } from './action/reader/readerAction';
 import { IReaderEngine_schema } from './action/reader-engine/readerEngineAction';
 import { IDeviceKey_schema } from './action/device-key/deviceKeyAction';
+import { TAuthentication_schema } from './action/authentication/authenticationAction';
 
 export interface redux_state {
     logged_in_user: IUser | null;
     internationalization: TInternationalization;
     token: IToken;
-    authentication: string;
+    authentication: TAuthentication_schema;
     network_status: NETWORK_STATUS;
     cart: ICartItems;
     library: ILibrary_schema;

@@ -1,7 +1,7 @@
 import { EACTIONS } from "../../ActionEnum";
-import { IAuthenticationAction } from "../../action/authentication/authenticationAction";
+import { IAuthenticationAction, TAuthentication_schema } from "../../action/authentication/authenticationAction";
 
-export function reducer(state: string | null, action: IAuthenticationAction): string | null {
+export function reducer(state: string | null, action: IAuthenticationAction): TAuthentication_schema {
     switch (action.type) {
         case EACTIONS.SET_AUTHENTICATION:
             return action.payload;
