@@ -1,10 +1,9 @@
 import { BaseService, IAPI_ResponseList, IAPI_Response } from './service.base';
 import { IBook } from '../model/model.book';
 import { appLocalStorage } from './appLocalStorage';
-import Axios, { CancelToken, AxiosInstance, AxiosResponse } from 'axios';
-import { getLibraryItem } from '../component/library/libraryViewTemplate';
+import { CancelToken, AxiosResponse } from 'axios';
+import { getLibraryItem } from '../component/page/library/libraryViewTemplate';
 import { BOOK_TYPES } from '../enum/Book';
-import { CmpUtility } from '../component/_base/CmpUtility';
 
 export class BookService extends BaseService {
 
@@ -80,67 +79,67 @@ export class BookService extends BaseService {
         return this.axiosTokenInstance.post('/wish-list/_search', data);
     }
 
-    downloadFile_DELETE_ME(book_id: string, mainFile: boolean, cancelToken: CancelToken)
-        : Promise<IAPI_Response<ArrayBuffer>>
-    // : Promise<Uint8Array> 
-    {
+    // downloadFile_DELETE_ME(book_id: string, mainFile: boolean, cancelToken: CancelToken)
+    //     : Promise<IAPI_Response<ArrayBuffer>>
+    // // : Promise<Uint8Array> 
+    // {
 
-        return new Promise(async (resolve, reject) => {
-            await CmpUtility.waitOnMe(5000);
-            // resolve(
-            //     this.axiosTokenInstance.post(
-            //         '/books/_search',
-            //         { limit: 500, offset: 0, filter: {} },
-            //         { cancelToken }
-            //     )
-            // );
-            // debugger;
-            // this.baseURL = '';
-            // this.axiosTokenInstance.defaults.headers['Content-Type'] = 'multipart/form-data';
-            const axiosInstance: AxiosInstance = Axios.create({
-                baseURL: '',
-                headers: { 'Content-Type': 'application/json' }, // application/json  ,  multipart/form-data
-                responseType: 'arraybuffer', //'arraybuffer',
-            });
+    //     return new Promise(async (resolve, reject) => {
+    //         await CmpUtility.waitOnMe(5000);
+    //         // resolve(
+    //         //     this.axiosTokenInstance.post(
+    //         //         '/books/_search',
+    //         //         { limit: 500, offset: 0, filter: {} },
+    //         //         { cancelToken }
+    //         //     )
+    //         // );
+    //         // debugger;
+    //         // this.baseURL = '';
+    //         // this.axiosTokenInstance.defaults.headers['Content-Type'] = 'multipart/form-data';
+    //         const axiosInstance: AxiosInstance = Axios.create({
+    //             baseURL: '',
+    //             headers: { 'Content-Type': 'application/json' }, // application/json  ,  multipart/form-data
+    //             responseType: 'arraybuffer', //'arraybuffer',
+    //         });
 
-            let url = '/reader/book2.output';
-            let libItem = getLibraryItem(book_id);
-            if (libItem!.book.type === BOOK_TYPES.Audio) {
-                url = '/reader/book1.msd';
-                // url = '/reader/100MB.zip';
-            } else if (libItem!.book.type === BOOK_TYPES.Pdf) {
-                url = '/reader/pdf_book.msd';
-            }
+    //         let url = '/reader/book2.output';
+    //         let libItem = getLibraryItem(book_id);
+    //         if (libItem!.book.type === BOOK_TYPES.Audio) {
+    //             url = '/reader/book1.msd';
+    //             // url = '/reader/100MB.zip';
+    //         } else if (libItem!.book.type === BOOK_TYPES.Pdf) {
+    //             url = '/reader/pdf_book.msd';
+    //         }
 
-            resolve(
-                axiosInstance.get(
-                    // '/reader/book.output',
-                    url,
-                    { cancelToken }
-                )
-            );
-            // resolve({ data: base64ToBuffer(sampleBookFile) });
-        });
-    }
+    //         resolve(
+    //             axiosInstance.get(
+    //                 // '/reader/book.output',
+    //                 url,
+    //                 { cancelToken }
+    //             )
+    //         );
+    //         // resolve({ data: base64ToBuffer(sampleBookFile) });
+    //     });
+    // }
 
-    async downloadFile2_DELETE_ME(book_id: string, mainFile: boolean/* , cancelToken: CancelToken */): Promise<IAPI_Response<ArrayBuffer>> {
-        // await CmpUtility.waitOnMe(5000);
-        debugger;
-        this.axiosRequestConfig = {
-            baseURL: '', // todo _DELET_EME
-            responseType: 'arraybuffer',
-            // cancelToken
-        };
-        let url = '/reader/book2.output';
-        let libItem = getLibraryItem(book_id);
-        if (libItem!.book.type === BOOK_TYPES.Audio) {
-            url = '/reader/book1.msd';
-            // url = '/reader/100MB.zip';
-        } else if (libItem!.book.type === BOOK_TYPES.Pdf) {
-            url = '/reader/pdf_book.msd';
-        }
-        return this.axiosTokenInstance.get(url);
-    }
+    // async downloadFile2_DELETE_ME(book_id: string, mainFile: boolean/* , cancelToken: CancelToken */): Promise<IAPI_Response<ArrayBuffer>> {
+    //     // await CmpUtility.waitOnMe(5000);
+    //     debugger;
+    //     this.axiosRequestConfig = {
+    //         baseURL: '', // todo _DELET_EME
+    //         responseType: 'arraybuffer',
+    //         // cancelToken
+    //     };
+    //     let url = '/reader/book2.output';
+    //     let libItem = getLibraryItem(book_id);
+    //     if (libItem!.book.type === BOOK_TYPES.Audio) {
+    //         url = '/reader/book1.msd';
+    //         // url = '/reader/100MB.zip';
+    //     } else if (libItem!.book.type === BOOK_TYPES.Pdf) {
+    //         url = '/reader/pdf_book.msd';
+    //     }
+    //     return this.axiosTokenInstance.get(url);
+    // }
 
     async bookFile_detail(book_id: string, mainFile: boolean): Promise<any> {
         if (BaseService.isAppOffline()) {

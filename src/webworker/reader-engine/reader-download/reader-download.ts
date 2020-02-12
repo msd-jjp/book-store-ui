@@ -1,4 +1,5 @@
-import { isReaderEngineDownloaded_async, is_file_downloaded_async, is_file_downloading } from "../../../component/library/libraryViewTemplate";
+import { isReaderEngineDownloaded_async, 
+    is_file_downloaded_async, is_file_downloading } from "../../../component/page/library/libraryViewTemplate";
 import { Store2 } from "../../../redux/store";
 import { action_update_downloading_book_file } from "../../../redux/action/downloading-book-file";
 import { appLocalStorage } from "../../../service/appLocalStorage";

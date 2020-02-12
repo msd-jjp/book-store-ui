@@ -3,7 +3,7 @@ import {
     WasmWorkerHandler,
     IBookContent
 } from "./MsdBook";
-import { IEpubBook_chapters } from "../../component/reader/ReaderUtility";
+import { IEpubBook_chapters } from "../../component/page/reader/ReaderUtility";
 
 export interface IChapterDetail { from: number | undefined, to: number | undefined, id: string | undefined }
 

@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect, HashRouter } from 'react-router-dom';
-import { Login } from '../login/Login';
-import { Register } from '../register/Register';
+import { Login } from '../page/login/Login';
+import { Register } from '../page/register/Register';
 import { RouteLayoutAccount } from '../layout/account/Account';
 import { TInternationalization } from '../../config/setup';
 import { Localization } from '../../config/localization/localization';
 import { MapDispatchToProps, connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { redux_state } from '../../redux/app_state';
-import { ForgotPassword } from '../forgot-password/ForgotPassword';
+import { ForgotPassword } from '../page/forgot-password/ForgotPassword';
 import { appLocalStorage } from '../../service/appLocalStorage';
 import { AppInitService } from '../../service/service.app-init';
 import { BaseService } from '../../service/service.base';
