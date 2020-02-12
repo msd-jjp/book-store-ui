@@ -74,8 +74,13 @@ export abstract class BaseService {
             // Return a successful response back to the calling service
             return response;
         }, (error) => {
+            const authPersisted = Store2.getState().authentication;
             // Return any error which is not due to authentication back to the calling service
-            if (!error.response || (error.response && error.response.status !== 401)) {
+            if (
+                !error.response
+                || (error.response && error.response.status !== 401)
+                || !authPersisted
+            ) {
                 return new Promise((resolve, reject) => {
                     reject(error);
                 });
@@ -83,7 +88,7 @@ export abstract class BaseService {
 
 
 
-            let authObj = Utility.get_decode_auth(Store2.getState().authentication)
+            let authObj = Utility.get_decode_auth(authPersisted)
             return this.getTokenfromServer(authObj)
                 .then((token) => {
                     Store2.dispatch(action_set_token(token.data));
