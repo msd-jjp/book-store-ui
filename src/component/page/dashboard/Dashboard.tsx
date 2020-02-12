@@ -601,7 +601,7 @@ class DashboardComponent extends BaseComponent<IProps, IState> {
   carousel_render_error(errorMsg: string, onClick: () => void) {
     return (
       <>
-        <div className="app-swiper app-swiper-error">
+        <div className="app-swiper app-swiper-error min-h-100px">
           <div className="swiper-container" dir={this.props.internationalization.rtl ? 'rtl' : ''}>
             <div className="swiper-wrapper">
               <div className="swiper-slide">
