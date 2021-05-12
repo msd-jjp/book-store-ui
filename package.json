@@ -41,7 +41,7 @@
     "react-zoom-pan-pinch": "^1.4.5",
     "redux": "^4.0.1",
     "redux-persist": "^5.10.0",
-    "swiper": "^4.5.1",
+    "swiper": "^6.5.1",
     "typescript": "3.5.2",
     "wavesurfer.js": "^3.1.0"
   },
